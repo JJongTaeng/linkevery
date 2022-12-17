@@ -1,12 +1,12 @@
 {
   "files": {
     "main.css": "/simple-chatting/static/css/main.45f8d33b.css",
-    "main.js": "/simple-chatting/static/js/main.459ed53f.js",
+    "main.js": "/simple-chatting/static/js/main.c5952c0a.js",
     "static/js/27.eb46082b.chunk.js": "/simple-chatting/static/js/27.eb46082b.chunk.js",
     "index.html": "/simple-chatting/index.html"
   },
   "entrypoints": [
     "static/css/main.45f8d33b.css",
-    "static/js/main.459ed53f.js"
+    "static/js/main.c5952c0a.js"
   ]
 }
