@@ -9,29 +9,10 @@ enum RTC_EVENT_TYPE {
   MESSAGE = "MESSAGE",
   CONNECTING = "CONNECTING",
   DISCONNECTED = "DISCONNECTED",
+  FAILED = "FAILED",
 }
 
 type SdpType = "local" | "remote";
-
-const config = {
-  iceServers: [
-    {
-      urls: ["stun:ntk-turn-1.xirsys.com"],
-    },
-    {
-      username: process.env.REACT_APP_RTC_CONFIG_USERNAME,
-      credential: process.env.REACT_APP_RTC_CONFIG_CREDENTIAL,
-      urls: [
-        "turn:ntk-turn-1.xirsys.com:80?transport=udp",
-        "turn:ntk-turn-1.xirsys.com:3478?transport=udp",
-        "turn:ntk-turn-1.xirsys.com:80?transport=tcp",
-        "turn:ntk-turn-1.xirsys.com:3478?transport=tcp",
-        "turns:ntk-turn-1.xirsys.com:443?transport=tcp",
-        "turns:ntk-turn-1.xirsys.com:5349?transport=tcp",
-      ],
-    },
-  ],
-};
 
 export class WebRTCManager extends EventEmitter {
   private static instance: WebRTCManager;
@@ -57,13 +38,17 @@ export class WebRTCManager extends EventEmitter {
 
     peer = new RTCPeerConnection(this.config);
     peer.onconnectionstatechange = (event) => {
-      console.log(peer?.connectionState);
+      console.log(id, peer?.connectionState);
       switch (peer?.connectionState) {
+        case "failed":
+          this.emit(WebRTCManager.RTC_EVENT.FAILED);
+          break;
         case "connecting":
           // this.emit(WebRTCManager.RTC_EVENT.CONNECTING);
           break;
         case "disconnected":
           // this.emit(WebRTCManager.RTC_EVENT.DISCONNECTED);
+          this.peerMap.delete(id);
           break;
         case "connected":
           // this.emit(WebRTCManager.RTC_EVENT.CONNECTION);
@@ -75,7 +60,7 @@ export class WebRTCManager extends EventEmitter {
     };
 
     peer.onsignalingstatechange = (event) => {
-      console.log(peer?.signalingState);
+      console.log(id, peer?.signalingState);
       switch (peer?.signalingState) {
         case "stable":
           this.emit(WebRTCManager.RTC_EVENT.CONNECTION);
@@ -111,8 +96,15 @@ export class WebRTCManager extends EventEmitter {
   }
 
   public getRTCPeer(id: string): RTCPeerConnection {
-    if (!this.peerMap.get(id)) throw new Error(ERROR_TYPE.INVALID_PEER);
-    return this.peerMap.get(id)!;
+    const peer = this.peerMap.get(id);
+    if (!peer) throw new Error(ERROR_TYPE.INVALID_PEER);
+    return peer!;
+  }
+
+  public getRTCDataChannel(id: string): RTCDataChannel {
+    const datachannel = this.datachannelMap.get(id);
+    if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
+    return datachannel;
   }
 
   public getSdp({ id, type }: { id: string; type: SdpType }) {
@@ -202,7 +194,6 @@ export class WebRTCManager extends EventEmitter {
           console.log("invalid message");
         }
       };
-
       event.channel.onclose = () => {
         console.log("datachannel closed");
         this.datachannelMap.delete(id);
@@ -229,6 +220,23 @@ export class WebRTCManager extends EventEmitter {
     );
   }
 
+  public clear() {
+    this.datachannelMap.clear();
+    this.peerMap.clear();
+  }
+
+  public removePeer(id: string) {
+    const peer = this.getRTCPeer(id);
+    peer.close();
+    this.peerMap.delete(id);
+  }
+
+  public removeDataChannel(id: string) {
+    const datachannel = this.getRTCDataChannel(id);
+    datachannel.close();
+    this.datachannelMap.delete(id);
+  }
+
   private static isLocalSdp(type: SdpType) {
     return type === "local";
   }
@@ -237,5 +245,3 @@ export class WebRTCManager extends EventEmitter {
     return type === "offer";
   }
 }
-
-export const rtcManager = WebRTCManager.getInstance(config);

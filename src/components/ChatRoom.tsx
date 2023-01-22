@@ -1,11 +1,31 @@
 import React, { useEffect, useRef, useState } from "react";
-import { rtcManager, WebRTCManager } from "../lib/WebRTCManager";
+import { WebRTCManager } from "../lib/WebRTCManager";
 import { io } from "socket.io-client";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { roomNameAtom, usernameAtom } from "../store/roomInfo";
 import cloneDeep from "clone-deep";
 import { nanoid } from "nanoid";
 import { BeatLoader } from "react-spinners";
+
+const rtcManager = WebRTCManager.getInstance({
+  iceServers: [
+    {
+      urls: ["stun:ntk-turn-1.xirsys.com"],
+    },
+    {
+      username: process.env.REACT_APP_RTC_CONFIG_USERNAME,
+      credential: process.env.REACT_APP_RTC_CONFIG_CREDENTIAL,
+      urls: [
+        "turn:ntk-turn-1.xirsys.com:80?transport=udp",
+        "turn:ntk-turn-1.xirsys.com:3478?transport=udp",
+        "turn:ntk-turn-1.xirsys.com:80?transport=tcp",
+        "turn:ntk-turn-1.xirsys.com:3478?transport=tcp",
+        "turns:ntk-turn-1.xirsys.com:443?transport=tcp",
+        "turns:ntk-turn-1.xirsys.com:5349?transport=tcp",
+      ],
+    },
+  ],
+});
 
 let mySocketId = "";
 
@@ -87,6 +107,11 @@ const ChatRoom = () => {
       console.log(5, "received ice", ice);
       rtcManager.setIcecandidate({ id: callerId, ice });
     });
+    socket.on("leave", ({ callerId }) => {
+      rtcManager.removePeer(callerId);
+      rtcManager.removeDataChannel(callerId);
+      rtcManager.log();
+    });
 
     rtcManager.on(WebRTCManager.RTC_EVENT.MESSAGE, ({ name, message }) => {
       console.log(name, message);
@@ -100,9 +125,16 @@ const ChatRoom = () => {
     rtcManager.on(WebRTCManager.RTC_EVENT.CONNECTION, () => {
       setLoading(false);
     });
+    rtcManager.on(WebRTCManager.RTC_EVENT.FAILED, () => {
+      // sessionStorage.removeItem("username");
+      // setUsername("");
+      // socket.close();
+    });
     return () => {
+      socket.emit("leave", { roomName, callerId: mySocketId });
       socket.removeAllListeners();
       rtcManager.removeAllListeners();
+      rtcManager.clear();
     };
   }, []);
 
@@ -115,6 +147,8 @@ const ChatRoom = () => {
           onClick={() => {
             sessionStorage.removeItem("username");
             setUsername("");
+            socket.close();
+            rtcManager.clear();
           }}
         >
           나가기
