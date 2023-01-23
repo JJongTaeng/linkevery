@@ -125,11 +125,18 @@ const ChatRoom = () => {
     rtcManager.on(WebRTCManager.RTC_EVENT.CONNECTION, () => {
       setLoading(false);
     });
-    rtcManager.on(WebRTCManager.RTC_EVENT.FAILED, () => {
-      // sessionStorage.removeItem("username");
-      // setUsername("");
-      // socket.close();
+    rtcManager.on(WebRTCManager.RTC_EVENT.CONNECTED, () => {
+      setLoading(false);
     });
+    rtcManager.on(WebRTCManager.RTC_EVENT.STABLE, () => {
+      setLoading(false);
+    });
+    rtcManager.on(WebRTCManager.RTC_EVENT.FAILED, () => {
+      rtcManager.removeAllListeners();
+      rtcManager.clear();
+      socket.emit("joinRoom", { roomName });
+    });
+    rtcManager.on(WebRTCManager.RTC_EVENT.CLOSED, () => {});
     return () => {
       socket.emit("leave", { roomName, callerId: mySocketId });
       socket.removeAllListeners();
@@ -154,7 +161,7 @@ const ChatRoom = () => {
           나가기
         </span>
       </div>
-      <div className="divider"></div>
+      <div className="divider" />
       {loading ? (
         <div className="flex px-3 h-full justify-center items-center">
           <BeatLoader />

@@ -6,10 +6,18 @@ enum RTC_EVENT_TYPE {
   OFFER = "OFFER",
   ANSWER = "ANSWER",
   CONNECTION = "CONNECTION",
+  CONNECTED = "CONNECTED",
   MESSAGE = "MESSAGE",
   CONNECTING = "CONNECTING",
+  NEW = "NEW",
   DISCONNECTED = "DISCONNECTED",
   FAILED = "FAILED",
+  CLOSED = "CLOSED",
+  STABLE = "STABLE",
+  "HAVE_LOCAL_OFFER" = "HAVE_LOCAL_OFFER",
+  "HAVE_REMOTE_OFFER" = "HAVE_REMOTE_OFFER",
+  "HAVE_LOCAL_PRANSWER" = "HAVE_LOCAL_PRANSWER",
+  "HAVE_REMOTE_PRANSWER" = "HAVE_REMOTE_PRANSWER",
 }
 
 type SdpType = "local" | "remote";
@@ -44,17 +52,17 @@ export class WebRTCManager extends EventEmitter {
           this.emit(WebRTCManager.RTC_EVENT.FAILED);
           break;
         case "connecting":
-          // this.emit(WebRTCManager.RTC_EVENT.CONNECTING);
+          this.emit(WebRTCManager.RTC_EVENT.CONNECTING);
           break;
         case "disconnected":
-          // this.emit(WebRTCManager.RTC_EVENT.DISCONNECTED);
-          this.peerMap.delete(id);
+          this.emit(WebRTCManager.RTC_EVENT.DISCONNECTED);
+          // this.peerMap.delete(id);
           break;
         case "connected":
-          // this.emit(WebRTCManager.RTC_EVENT.CONNECTION);
+          this.emit(WebRTCManager.RTC_EVENT.CONNECTED);
           break;
         case "new":
-          // this.emit(WebRTCManager.RTC_EVENT.CONNECTING);
+          this.emit(WebRTCManager.RTC_EVENT.NEW);
           break;
       }
     };
@@ -63,13 +71,22 @@ export class WebRTCManager extends EventEmitter {
       console.log(id, peer?.signalingState);
       switch (peer?.signalingState) {
         case "stable":
-          this.emit(WebRTCManager.RTC_EVENT.CONNECTION);
+          this.emit(WebRTCManager.RTC_EVENT.STABLE);
           break;
         case "closed":
-          this.emit(WebRTCManager.RTC_EVENT.CONNECTION);
+          this.emit(WebRTCManager.RTC_EVENT.CLOSED);
           break;
-        default:
-          this.emit(WebRTCManager.RTC_EVENT.CONNECTING);
+        case "have-local-offer":
+          this.emit(WebRTCManager.RTC_EVENT.HAVE_LOCAL_OFFER);
+          break;
+        case "have-remote-offer":
+          this.emit(WebRTCManager.RTC_EVENT.HAVE_REMOTE_OFFER);
+          break;
+        case "have-local-pranswer":
+          this.emit(WebRTCManager.RTC_EVENT.HAVE_LOCAL_PRANSWER);
+          break;
+        case "have-remote-pranswer":
+          this.emit(WebRTCManager.RTC_EVENT.HAVE_REMOTE_PRANSWER);
           break;
       }
     };
@@ -214,13 +231,18 @@ export class WebRTCManager extends EventEmitter {
     console.log(
       "peerMap = ",
       this.peerMap,
-      "\n",
       "dataChannelMap = ",
       this.datachannelMap
     );
   }
 
   public clear() {
+    this.datachannelMap.forEach((value) => {
+      value.close();
+    });
+    this.peerMap.forEach((value) => {
+      value.close();
+    });
     this.datachannelMap.clear();
     this.peerMap.clear();
   }
