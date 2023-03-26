@@ -30,12 +30,14 @@ export class WebRTCManager extends EventEmitter {
 
   constructor(private config: RTCConfiguration) {
     super();
+    window.RTC = {};
     console.log("rtc manager created");
   }
 
   public static getInstance(config: RTCConfiguration) {
     if (!WebRTCManager.instance) {
       WebRTCManager.instance = new WebRTCManager(config);
+      window.RTC.peerMap = WebRTCManager.instance.peerMap;
     }
     return WebRTCManager.instance;
   }

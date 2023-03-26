@@ -6,6 +6,7 @@ import { roomNameAtom, usernameAtom } from "../store/roomInfo";
 import cloneDeep from "clone-deep";
 import { nanoid } from "nanoid";
 import { BeatLoader } from "react-spinners";
+import { socketManager } from "../lib/SocketManager";
 
 const rtcManager = WebRTCManager.getInstance({
   iceServers: [
@@ -54,18 +55,22 @@ const ChatRoom = () => {
   }, [message.length]);
 
   useEffect(() => {
-    socket.emit("joinRoom", { roomName });
-
+    socketManager.sendJoinRoom(roomName);
     socket.on("myId", ({ myId }) => {
+      console.log("my socket id", myId);
       mySocketId = myId;
     });
 
-    socket.on("welcome", async ({ callerId }) => {
+    socketManager.on(socketManager.eventType.WELCOME, async ({ callerId }) => {
       console.log(1, "welcome", callerId);
       rtcManager.createRTCPeer(callerId);
       rtcManager.createDataChannel(callerId);
       rtcManager.setEventIcecandidate(callerId, (ice) => {
-        socket.emit("ice", { callerId: mySocketId, receiverId: callerId, ice });
+        socketManager.sendIce({
+          callerId: mySocketId,
+          receiverId: callerId,
+          ice,
+        });
       });
       const offer = await rtcManager.createOffer({
         id: callerId,
