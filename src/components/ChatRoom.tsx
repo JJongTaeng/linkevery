@@ -55,22 +55,18 @@ const ChatRoom = () => {
   }, [message.length]);
 
   useEffect(() => {
-    socketManager.sendJoinRoom(roomName);
+    socket.emit("joinRoom", { roomName });
+
     socket.on("myId", ({ myId }) => {
-      console.log("my socket id", myId);
       mySocketId = myId;
     });
 
-    socketManager.on(socketManager.eventType.WELCOME, async ({ callerId }) => {
+    socket.on("welcome", async ({ callerId }) => {
       console.log(1, "welcome", callerId);
       rtcManager.createRTCPeer(callerId);
       rtcManager.createDataChannel(callerId);
       rtcManager.setEventIcecandidate(callerId, (ice) => {
-        socketManager.sendIce({
-          callerId: mySocketId,
-          receiverId: callerId,
-          ice,
-        });
+        socket.emit("ice", { callerId: mySocketId, receiverId: callerId, ice });
       });
       const offer = await rtcManager.createOffer({
         id: callerId,
