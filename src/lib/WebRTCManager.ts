@@ -30,14 +30,12 @@ export class WebRTCManager extends EventEmitter {
 
   constructor(private config: RTCConfiguration) {
     super();
-    window.RTC = {};
     console.log("rtc manager created");
   }
 
   public static getInstance(config: RTCConfiguration) {
     if (!WebRTCManager.instance) {
       WebRTCManager.instance = new WebRTCManager(config);
-      window.RTC.peerMap = WebRTCManager.instance.peerMap;
     }
     return WebRTCManager.instance;
   }
@@ -171,7 +169,7 @@ export class WebRTCManager extends EventEmitter {
     option,
   }: {
     id: string;
-    option?: RTCOfferOptions | RTCAnswerOptions;
+    option?: RTCOfferOptions;
   }) {
     const peer = this.getRTCPeer(id);
     return await peer.createOffer(option);

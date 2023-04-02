@@ -6,7 +6,6 @@ import { roomNameAtom, usernameAtom } from "../store/roomInfo";
 import cloneDeep from "clone-deep";
 import { nanoid } from "nanoid";
 import { BeatLoader } from "react-spinners";
-import { socketManager } from "../lib/SocketManager";
 
 const rtcManager = WebRTCManager.getInstance({
   iceServers: [
@@ -84,7 +83,7 @@ const ChatRoom = () => {
       rtcManager.createRTCPeer(callerId);
       rtcManager.linkDataChannel(callerId);
       rtcManager.setEventIcecandidate(callerId, (ice) => {
-        socket.emit("ice", { id: mySocketId, roomName, ice });
+        socket.emit("ice", { callerId: mySocketId, receiverId: callerId, ice });
       });
       await rtcManager.setSdp({ type: "remote", sdp, id: callerId });
       const answer = await rtcManager.createAnswer({

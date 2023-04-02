@@ -21,17 +21,23 @@ export enum PeerSignalingState {
 }
 
 export type PeerConnectionStateHandlers = {
-  [key in PeerConnectionState]: () => void;
+  [key in PeerConnectionState]?: () => void;
 };
 
 export type PeerSignalingStateHandlers = {
-  [key in PeerSignalingState]: () => void;
+  [key in PeerSignalingState]?: () => void;
 };
 
 export abstract class RTCPeerService {
   public abstract createPeerConnection(config: RTCConfiguration): void;
 
-  public abstract createDataChannel(id: string): void;
+  public abstract createDataChannel(
+    id: string,
+    fn: (datachannel: RTCDataChannel) => void
+  ): void;
+  public abstract connectDataChannel(
+    fn: (datachannel: RTCDataChannel) => void
+  ): void;
 
   public abstract createAnswer(
     option: RTCAnswerOptions

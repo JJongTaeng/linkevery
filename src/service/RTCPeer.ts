@@ -6,7 +6,7 @@ import {
   SdpType,
 } from "../interface/RTCPeerService";
 
-export abstract class RTCPeer extends RTCPeerService {
+export class RTCPeer extends RTCPeerService {
   private peer?: RTCPeerConnection;
   private dataChannel?: RTCDataChannel;
 
@@ -18,11 +18,38 @@ export abstract class RTCPeer extends RTCPeerService {
     this.peer = new RTCPeerConnection(config);
   }
 
-  public createDataChannel(id: string) {
+  public createDataChannel(
+    id: string,
+    fn: (datachannel: RTCDataChannel) => void
+  ) {
     if (!this.peer) {
       throw new Error(ERROR_TYPE.INVALID_PEER);
     }
     this.dataChannel = this.peer.createDataChannel(id);
+    this.dataChannel.onopen = () => {
+      console.log("datachannel opened");
+      fn(this.dataChannel!);
+    };
+    this.dataChannel.onclose = () => {
+      console.log("datachannel closed");
+    };
+  }
+
+  public connectDataChannel(fn: (datachannel: RTCDataChannel) => void) {
+    if (!this.peer) {
+      throw new Error(ERROR_TYPE.INVALID_PEER);
+    }
+    this.peer.ondatachannel = (event) => {
+      this.dataChannel = event.channel;
+      fn(event.channel);
+      event.channel.onopen = () => {
+        console.log("datachannel opened");
+      };
+      event.channel.onclose = () => {
+        console.log("datachannel closed");
+        this.dataChannel = undefined;
+      };
+    };
   }
 
   public async createAnswer(option?: RTCOfferOptions | RTCAnswerOptions) {
@@ -37,15 +64,6 @@ export abstract class RTCPeer extends RTCPeerService {
       throw new Error(ERROR_TYPE.INVALID_PEER);
     }
     return await this.peer.createOffer(option);
-  }
-
-  public getSdp(type: SdpType) {
-    if (!this.peer) {
-      throw new Error(ERROR_TYPE.INVALID_PEER);
-    }
-    return this.isLocalSdp(type)
-      ? this.peer.localDescription
-      : this.peer.remoteDescription;
   }
 
   public async setSdp({
@@ -65,6 +83,22 @@ export abstract class RTCPeer extends RTCPeerService {
     }
   }
 
+  public setIcecandidate(ice: RTCIceCandidate) {
+    if (!this.peer) {
+      throw new Error(ERROR_TYPE.INVALID_PEER);
+    }
+    this.peer.addIceCandidate(ice);
+  }
+
+  public getSdp(type: SdpType) {
+    if (!this.peer) {
+      throw new Error(ERROR_TYPE.INVALID_PEER);
+    }
+    return this.isLocalSdp(type)
+      ? this.peer.localDescription
+      : this.peer.remoteDescription;
+  }
+
   public getPeer() {
     return this.peer;
   }
@@ -78,6 +112,7 @@ export abstract class RTCPeer extends RTCPeerService {
       console.error("invalid peer", this.peer);
       return;
     }
+    this.dataChannel?.close();
     this.peer?.close();
   }
 
@@ -141,6 +176,14 @@ export abstract class RTCPeer extends RTCPeerService {
         case "have-remote-pranswer":
           haveRemotePranswer && haveRemotePranswer();
           break;
+      }
+    });
+  }
+
+  public onIceCandidate(fn: (ice: RTCIceCandidate) => void) {
+    this.peer?.addEventListener("icecandidate", (event) => {
+      if (event.candidate) {
+        fn(event.candidate);
       }
     });
   }
