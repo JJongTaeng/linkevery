@@ -1,4 +1,4 @@
-import { DispatchEvent } from "./DispatchEvent";
+import { DispatchEvent } from "../service/dispatch/DispatchEvent";
 
 export const EVENT_NAME = "message";
 

@@ -1,37 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
-import { WebRTCManager } from "../lib/WebRTCManager";
 import { io } from "socket.io-client";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { roomNameAtom, usernameAtom } from "../store/roomInfo";
 import cloneDeep from "clone-deep";
 import { nanoid } from "nanoid";
 import { BeatLoader } from "react-spinners";
+import { RTCManager } from "../service/rtc/RTCManager";
+import { DispatchEvent } from "../service/dispatch/DispatchEvent";
+import { HandlerManager } from "../service/handlers/HandlerManager";
 
-const rtcManager = WebRTCManager.getInstance({
-  iceServers: [
-    {
-      urls: ["stun:ntk-turn-1.xirsys.com"],
-    },
-    {
-      username: process.env.REACT_APP_RTC_CONFIG_USERNAME,
-      credential: process.env.REACT_APP_RTC_CONFIG_CREDENTIAL,
-      urls: [
-        "turn:ntk-turn-1.xirsys.com:80?transport=udp",
-        "turn:ntk-turn-1.xirsys.com:3478?transport=udp",
-        "turn:ntk-turn-1.xirsys.com:80?transport=tcp",
-        "turn:ntk-turn-1.xirsys.com:3478?transport=tcp",
-        "turns:ntk-turn-1.xirsys.com:443?transport=tcp",
-        "turns:ntk-turn-1.xirsys.com:5349?transport=tcp",
-      ],
-    },
-  ],
-});
+const rtcManager = RTCManager.getInstance();
+const socket = io(process.env.REACT_APP_REQUEST_URL + "/rtc");
 
-let mySocketId = "";
+const dispatch = new DispatchEvent(socket, rtcManager);
+new HandlerManager(socket, rtcManager, dispatch);
+
+dispatch.joinMessage({});
+
+// @ts-ignore
+window.dispatch = dispatch;
 
 const ChatRoom = () => {
   const content = useRef<HTMLDivElement>(null);
-  const socket = io(process.env.REACT_APP_REQUEST_URL + "/rtc");
   const [message, setMessage] = useState<
     {
       type: "other" | "me";
@@ -53,98 +43,6 @@ const ChatRoom = () => {
       });
   }, [message.length]);
 
-  useEffect(() => {
-    socket.emit("joinRoom", { roomName });
-
-    socket.on("myId", ({ myId }) => {
-      mySocketId = myId;
-    });
-
-    socket.on("welcome", async ({ callerId }) => {
-      console.log(1, "welcome", callerId);
-      rtcManager.createRTCPeer(callerId);
-      rtcManager.createDataChannel(callerId);
-      rtcManager.setEventIcecandidate(callerId, (ice) => {
-        socket.emit("ice", { callerId: mySocketId, receiverId: callerId, ice });
-      });
-      const offer = await rtcManager.createOffer({
-        id: callerId,
-      });
-      await rtcManager.setSdp({ type: "local", sdp: offer, id: callerId });
-      socket.emit("offer", {
-        offer,
-        callerId: mySocketId,
-        receiverId: callerId,
-      });
-    });
-
-    socket.on("offer", async ({ callerId, sdp }) => {
-      console.log(2, "offer", callerId, sdp);
-      rtcManager.createRTCPeer(callerId);
-      rtcManager.linkDataChannel(callerId);
-      rtcManager.setEventIcecandidate(callerId, (ice) => {
-        socket.emit("ice", { callerId: mySocketId, receiverId: callerId, ice });
-      });
-      await rtcManager.setSdp({ type: "remote", sdp, id: callerId });
-      const answer = await rtcManager.createAnswer({
-        id: callerId,
-      });
-      await rtcManager.setSdp({ type: "local", sdp: answer, id: callerId });
-      socket.emit("answer", {
-        answer,
-        callerId: mySocketId,
-        receiverId: callerId,
-      });
-      rtcManager.log();
-    });
-
-    socket.on("answer", async ({ callerId, sdp }) => {
-      console.log(3, "answer", callerId, sdp);
-      await rtcManager.setSdp({ type: "remote", sdp, id: callerId });
-      rtcManager.log();
-    });
-    socket.on("ice", async ({ callerId, ice }) => {
-      console.log(5, "received ice", ice);
-      rtcManager.setIcecandidate({ id: callerId, ice });
-    });
-    socket.on("leave", ({ callerId }) => {
-      rtcManager.removePeer(callerId);
-      rtcManager.removeDataChannel(callerId);
-      rtcManager.log();
-    });
-
-    rtcManager.on(WebRTCManager.RTC_EVENT.MESSAGE, ({ name, message }) => {
-      console.log(name, message);
-      setMessage((prev) =>
-        cloneDeep(prev).concat({ type: "other", name, message })
-      );
-    });
-    rtcManager.on(WebRTCManager.RTC_EVENT.CONNECTING, () => {
-      setLoading(true);
-    });
-    rtcManager.on(WebRTCManager.RTC_EVENT.CONNECTION, () => {
-      setLoading(false);
-    });
-    rtcManager.on(WebRTCManager.RTC_EVENT.CONNECTED, () => {
-      setLoading(false);
-    });
-    rtcManager.on(WebRTCManager.RTC_EVENT.STABLE, () => {
-      setLoading(false);
-    });
-    rtcManager.on(WebRTCManager.RTC_EVENT.FAILED, () => {
-      rtcManager.removeAllListeners();
-      rtcManager.clear();
-      socket.emit("joinRoom", { roomName });
-    });
-    rtcManager.on(WebRTCManager.RTC_EVENT.CLOSED, () => {});
-    return () => {
-      socket.emit("leave", { roomName, callerId: mySocketId });
-      socket.removeAllListeners();
-      rtcManager.removeAllListeners();
-      rtcManager.clear();
-    };
-  }, []);
-
   return (
     <div className="w-full min-h-full flex flex-col py-3">
       <div className={"w-full px-3 pt-3 flex justify-between"}>
@@ -154,8 +52,6 @@ const ChatRoom = () => {
           onClick={() => {
             sessionStorage.removeItem("username");
             setUsername("");
-            socket.close();
-            rtcManager.clear();
           }}
         >
           나가기
@@ -204,10 +100,6 @@ const ChatRoom = () => {
           );
           e.target.message.value = "";
           e.target.focus();
-          rtcManager.sendAllDatachannelMessage({
-            name: myName,
-            message: value,
-          });
         }}
       >
         <input

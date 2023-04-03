@@ -1,9 +1,13 @@
-import { HandlerMap, Protocol, SIGNALING_MESSAGE_ID } from "./protocol";
-import { DispatchEvent } from "./DispatchEvent";
-import { config, RTCManager } from "../lib/RTCManager";
-import { SdpType } from "../interface/RTCPeerService";
-import { StorageService } from "../lib/StorageService";
-import { ERROR_TYPE } from "../error/error";
+import {
+  HandlerMap,
+  Protocol,
+  SIGNALING_MESSAGE_ID,
+} from "../../constants/protocol";
+import { DispatchEvent } from "../dispatch/DispatchEvent";
+import { config, RTCManager } from "../rtc/RTCManager";
+import { SdpType } from "../rtc/RTCPeerService";
+import { StorageService } from "../storage/StorageService";
+import { ERROR_TYPE } from "../../error/error";
 
 const storage = StorageService.getInstance();
 const rtcManager = RTCManager.getInstance();

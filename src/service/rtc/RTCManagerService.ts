@@ -1,6 +1,6 @@
 import EventEmitter from "events";
-import { RTCPeer } from "../service/RTCPeer";
-import { Protocol } from "../test/protocol";
+import { RTCPeer } from "./RTCPeer";
+import { Protocol } from "../../constants/protocol";
 
 export abstract class RTCManagerService extends EventEmitter {
   constructor() {

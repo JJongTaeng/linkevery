@@ -8,9 +8,9 @@ import {
   Protocol,
   ProtocolData,
   SIGNALING_MESSAGE_ID,
-} from "./protocol";
+} from "../../constants/protocol";
 import { DispatchEventService } from "./DispatchEventService";
-import { RTCManager } from "../lib/RTCManager";
+import { RTCManager } from "../rtc/RTCManager";
 
 export class DispatchEvent extends DispatchEventService {
   constructor(private socket: Socket, private rtcManager: RTCManager) {

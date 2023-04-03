@@ -2,7 +2,7 @@ import {
   EVENT_MEDIA_DEVICE,
   MEDIA_TYPE,
   MediaDevice,
-} from "../lib/MediaDevice";
+} from "../service/media/MediaDevice";
 import { useEffect, useState } from "react";
 
 export interface MediaDeviceState {

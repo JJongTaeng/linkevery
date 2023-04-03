@@ -1,11 +1,11 @@
-import { ERROR_TYPE } from "../error/error";
+import { ERROR_TYPE } from "../../error/error";
 import {
   PeerConnectionStateHandlers,
   PeerSignalingStateHandlers,
   RTCPeerService,
   SdpType,
-} from "../interface/RTCPeerService";
-import { Protocol } from "../test/protocol";
+} from "./RTCPeerService";
+import { Protocol } from "../../constants/protocol";
 
 export class RTCPeer extends RTCPeerService {
   private peer?: RTCPeerConnection;

@@ -1,4 +1,4 @@
-import { Protocol } from "./protocol";
+import { Protocol } from "../../constants/protocol";
 
 export abstract class DispatchEventService {
   constructor() {}

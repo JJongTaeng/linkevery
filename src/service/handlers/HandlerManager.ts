@@ -1,10 +1,15 @@
-import { CATEGORY, EVENT_NAME, HandlerMap, Protocol } from "./protocol";
+import {
+  CATEGORY,
+  EVENT_NAME,
+  HandlerMap,
+  Protocol,
+} from "../../constants/protocol";
 import { connectionHandlers } from "./connectionHandlers";
 import { Socket } from "socket.io-client";
-import { DispatchEvent } from "./DispatchEvent";
+import { DispatchEvent } from "../dispatch/DispatchEvent";
 import { signalingHandlers } from "./signalingHandlers";
 import { chatHandlers } from "./chatHandlers";
-import { RTCManager } from "../lib/RTCManager";
+import { RTCManager } from "../rtc/RTCManager";
 
 type CategoryHandlers = { [key in CATEGORY]: HandlerMap<any> };
 
