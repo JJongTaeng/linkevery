@@ -5,6 +5,7 @@ import {
   RTCPeerService,
   SdpType,
 } from "../interface/RTCPeerService";
+import { Protocol } from "../test/protocol";
 
 export class RTCPeer extends RTCPeerService {
   private peer?: RTCPeerConnection;
@@ -186,6 +187,12 @@ export class RTCPeer extends RTCPeerService {
         fn(event.candidate);
       }
     });
+  }
+
+  public sendMessage(protocol: Protocol) {
+    if (!this.dataChannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
+    const stringify = JSON.stringify(protocol);
+    this.dataChannel.send(stringify);
   }
 
   private isLocalSdp(type: SdpType) {

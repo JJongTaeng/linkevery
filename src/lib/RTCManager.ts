@@ -29,6 +29,7 @@ export class RTCManager extends RTCManagerService {
   public static RTC_EVENT = {
     DATA: "RTC_DATA",
   };
+
   private constructor() {
     super();
   }

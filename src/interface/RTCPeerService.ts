@@ -1,3 +1,5 @@
+import { Protocol } from "../test/protocol";
+
 export enum SdpType {
   "local" = "local",
   "remote" = "remote",
@@ -70,4 +72,6 @@ export abstract class RTCPeerService {
   public abstract onChangeSignalingState(
     handlerMap: PeerSignalingStateHandlers
   ): void;
+
+  public abstract sendMessage(protocol: Protocol): void;
 }
