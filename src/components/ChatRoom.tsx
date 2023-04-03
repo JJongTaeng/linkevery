@@ -8,19 +8,13 @@ import { BeatLoader } from "react-spinners";
 import { RTCManager } from "../service/rtc/RTCManager";
 import { DispatchEvent } from "../service/dispatch/DispatchEvent";
 import { HandlerManager } from "../service/handlers/HandlerManager";
+import { StorageService } from "../service/storage/StorageService";
+import { AppService } from "../service/app/AppService";
 
-const rtcManager = RTCManager.getInstance();
-const socket = io(process.env.REACT_APP_REQUEST_URL + "/rtc");
-
-const dispatch = new DispatchEvent(socket, rtcManager);
-new HandlerManager(socket, rtcManager, dispatch);
-
-dispatch.joinMessage({});
-
-// @ts-ignore
-window.dispatch = dispatch;
+const storage = StorageService.getInstance();
 
 const ChatRoom = () => {
+  const app = useRef(AppService.getInstance()).current;
   const content = useRef<HTMLDivElement>(null);
   const [message, setMessage] = useState<
     {
@@ -42,6 +36,11 @@ const ChatRoom = () => {
         behavior: "smooth",
       });
   }, [message.length]);
+
+  useEffect(() => {
+    const dispatch = app.getDispatch();
+    dispatch.joinMessage({});
+  }, []);
 
   return (
     <div className="w-full min-h-full flex flex-col py-3">
@@ -91,13 +90,18 @@ const ChatRoom = () => {
           e.preventDefault();
           const value = e.target.message.value;
           if (!value) return;
-          setMessage((prev) =>
-            cloneDeep(prev).concat({
-              type: "me",
-              name: myName,
-              message: value,
-            })
-          );
+          // setMessage((prev) =>
+          //   cloneDeep(prev).concat({
+          //     type: "me",
+          //     name: myName,
+          //     message: value,
+          //   })
+          // );
+          const dispatch = app.getDispatch();
+          dispatch.chatMessage({
+            clientId: storage.getItem("clientId"),
+            message: value,
+          });
           e.target.message.value = "";
           e.target.focus();
         }}
