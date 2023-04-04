@@ -29,7 +29,6 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     protocol: Protocol,
     dispatch: DispatchEvent
   ) => {
-    console.log("please start signaling!!");
     const peerId = protocol.data.peerId;
     const clientId = storage.getItem("clientId");
     if (!peerId || !clientId) throw new Error(ERROR_TYPE.INVALID_PEER_ID);

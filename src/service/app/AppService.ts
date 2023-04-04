@@ -26,4 +26,8 @@ export class AppService {
   public getDispatch() {
     return this.dispatch;
   }
+
+  public start() {
+    this.dispatch.joinMessage({});
+  }
 }

@@ -28,12 +28,9 @@ export class RTCPeer extends RTCPeerService {
     }
     this.dataChannel = this.peer.createDataChannel(id);
     this.dataChannel.onopen = () => {
-      console.log("datachannel opened");
       fn(this.dataChannel!);
     };
-    this.dataChannel.onclose = () => {
-      console.log("datachannel closed");
-    };
+    this.dataChannel.onclose = () => {};
   }
 
   public connectDataChannel(fn: (datachannel: RTCDataChannel) => void) {
@@ -43,11 +40,8 @@ export class RTCPeer extends RTCPeerService {
     this.peer.ondatachannel = (event) => {
       this.dataChannel = event.channel;
       fn(event.channel);
-      event.channel.onopen = () => {
-        console.log("datachannel opened");
-      };
+      event.channel.onopen = () => {};
       event.channel.onclose = () => {
-        console.log("datachannel closed");
         this.dataChannel = undefined;
       };
     };

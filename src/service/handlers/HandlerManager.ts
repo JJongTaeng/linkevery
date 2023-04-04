@@ -24,20 +24,19 @@ export class HandlerManager {
     private rtcManager: RTCManager,
     private dispatch: DispatchEvent
   ) {
-    console.log("construct HandlerManger");
     this.subscribeHandlers();
   }
 
   subscribeHandlers() {
     this.socket.on(EVENT_NAME, (protocol: Protocol) => {
-      console.log("[receive] ", protocol);
+      console.debug("[receive] ", protocol);
       this.handlers[protocol.category][protocol.messageId](
         protocol,
         this.dispatch
       );
     });
     this.rtcManager.on(RTCManager.RTC_EVENT.DATA, (protocol: Protocol) => {
-      console.log("[receive] ", protocol);
+      console.debug("[receive] ", protocol);
       this.handlers[protocol.category][protocol.messageId](
         protocol,
         this.dispatch

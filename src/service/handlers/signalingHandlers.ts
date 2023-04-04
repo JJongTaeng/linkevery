@@ -27,7 +27,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     });
 
     rtcPeer.onIceCandidate((ice) => {
-      console.log("offer ice");
       dispatch.iceMessage({
         peerId,
         clientId,
