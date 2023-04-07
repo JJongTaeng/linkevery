@@ -2,31 +2,26 @@ import {
   CONNECTION_MESSAGE_ID,
   HandlerMap,
   Protocol,
-} from "../../constants/protocol";
-import { DispatchEvent } from "../dispatch/DispatchEvent";
-import { ERROR_TYPE } from "../../error/error";
-import { config, RTCManager } from "../rtc/RTCManager";
-import { StorageService } from "../storage/StorageService";
-import { SdpType } from "../rtc/RTCPeerService";
+} from '../../constants/protocol';
+import { DispatchEvent } from '../dispatch/DispatchEvent';
+import { ERROR_TYPE } from '../../error/error';
+import { config, RTCManager } from '../rtc/RTCManager';
+import { StorageService } from '../storage/StorageService';
+import { SdpType } from '../rtc/RTCPeerService';
 
 const storage = StorageService.getInstance();
 
 export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
-  [CONNECTION_MESSAGE_ID.JOIN]: (protocol, { dispatch }) => {
+  [CONNECTION_MESSAGE_ID.CONNECT]: (protocol, { dispatch }) => {
     const clientId = protocol.data.clientId;
-    const roomName = "room";
-    storage.setItem("clientId", clientId);
-    dispatch.connectMessage({
-      clientId,
-      roomName,
-    });
+    storage.setItem('clientId', clientId);
   },
-  [CONNECTION_MESSAGE_ID.CONNECT]: async (
+  [CONNECTION_MESSAGE_ID.JOIN_ROOM]: async (
     protocol,
-    { dispatch, rtcManager }
+    { dispatch, rtcManager },
   ) => {
-    const peerId = protocol.data.peerId;
-    const clientId = storage.getItem("clientId");
+    const { peerId } = protocol.data;
+    const clientId = storage.getItem('clientId');
     if (!peerId || !clientId) throw new Error(ERROR_TYPE.INVALID_PEER_ID);
 
     rtcManager.createPeer(peerId);
@@ -34,7 +29,7 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     rtcPeer.createPeerConnection(config);
     rtcPeer.createDataChannel(peerId, (datachannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
-      datachannel.addEventListener("message", (message) => {
+      datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });
     });

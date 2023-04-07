@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@types/clone-deep": "^4.0.1",
+    "@types/styled-components": "^5.1.26",
     "autoprefixer": "^10.4.13",
     "gh-pages": "^4.0.0",
     "prettier": "^2.8.1",

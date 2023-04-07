@@ -1,4 +1,4 @@
-import { Socket } from "socket.io-client";
+import { Socket } from 'socket.io-client';
 import {
   CATEGORY,
   CHAT_MESSAGE_ID,
@@ -8,22 +8,13 @@ import {
   Protocol,
   ProtocolData,
   SIGNALING_MESSAGE_ID,
-} from "../../constants/protocol";
-import { DispatchEventService } from "./DispatchEventService";
-import { RTCManager } from "../rtc/RTCManager";
+} from '../../constants/protocol';
+import { DispatchEventService } from './DispatchEventService';
+import { RTCManager } from '../rtc/RTCManager';
 
 export class DispatchEvent extends DispatchEventService {
   constructor(private socket: Socket, private rtcManager: RTCManager) {
     super();
-  }
-
-  joinMessage(data: ProtocolData) {
-    this.send({
-      category: CATEGORY.CONNECTION,
-      messageType: MESSAGE_TYPE.SOCKET,
-      messageId: CONNECTION_MESSAGE_ID.JOIN,
-      data,
-    });
   }
 
   connectMessage(data: ProtocolData) {
@@ -31,6 +22,15 @@ export class DispatchEvent extends DispatchEventService {
       category: CATEGORY.CONNECTION,
       messageType: MESSAGE_TYPE.SOCKET,
       messageId: CONNECTION_MESSAGE_ID.CONNECT,
+      data,
+    });
+  }
+
+  joinRoomMessage(data: ProtocolData) {
+    this.send({
+      category: CATEGORY.CONNECTION,
+      messageType: MESSAGE_TYPE.SOCKET,
+      messageId: CONNECTION_MESSAGE_ID.JOIN_ROOM,
       data,
     });
   }
@@ -72,7 +72,7 @@ export class DispatchEvent extends DispatchEventService {
   }
 
   send(protocol: Protocol) {
-    console.debug("[send] ", protocol);
+    console.debug('[send] ', protocol);
     if (protocol.messageType === MESSAGE_TYPE.SOCKET) {
       this.socket.emit(EVENT_NAME, protocol);
     } else if (protocol.messageType === MESSAGE_TYPE.RTC) {

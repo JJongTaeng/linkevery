@@ -1,33 +1,33 @@
-import { DispatchEvent } from "../service/dispatch/DispatchEvent";
-import { RTCManagerService } from "../service/rtc/RTCManagerService";
+import { DispatchEvent } from '../service/dispatch/DispatchEvent';
+import { RTCManagerService } from '../service/rtc/RTCManagerService';
 
-export const EVENT_NAME = "message";
+export const EVENT_NAME = 'message';
 
 export enum MESSAGE_TYPE {
-  RTC = "RTC",
-  SOCKET = "SOCKET",
+  RTC = 'RTC',
+  SOCKET = 'SOCKET',
 }
 
 export enum CATEGORY {
-  CONNECTION = "CONNECTION",
-  SIGNALING = "SIGNALING",
-  CHAT = "CHAT",
+  CONNECTION = 'CONNECTION',
+  SIGNALING = 'SIGNALING',
+  CHAT = 'CHAT',
 }
 
 export enum CONNECTION_MESSAGE_ID {
-  JOIN = "JOIN",
-  CONNECT = "CONNECT",
-  DISCONNECT = "DISCONNECT",
+  CONNECT = 'CONNECT',
+  JOIN_ROOM = 'JOIN_ROOM',
+  DISCONNECT = 'DISCONNECT',
 }
 
 export enum SIGNALING_MESSAGE_ID {
-  OFFER = "OFFER",
-  ANSWER = "ANSWER",
-  ICE = "ICE",
+  OFFER = 'OFFER',
+  ANSWER = 'ANSWER',
+  ICE = 'ICE',
 }
 
 export enum CHAT_MESSAGE_ID {
-  SEND = "SEND",
+  SEND = 'SEND',
 }
 
 export type MessageId =
@@ -52,6 +52,6 @@ export type HandlerMap<T extends string | number | symbol> = {
     {
       dispatch,
       rtcManager,
-    }: { dispatch: DispatchEvent; rtcManager: RTCManagerService }
+    }: { dispatch: DispatchEvent; rtcManager: RTCManagerService },
   ) => void;
 };

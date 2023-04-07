@@ -1,17 +1,18 @@
 import { useEffect, useRef } from 'react';
-import { Card } from 'antd';
 import { Route, Routes } from 'react-router-dom';
+import AppContainer from './components/container/AppContainer';
+import { AppServiceImpl } from './service/app/AppServiceImpl';
 
 function App() {
-  // const app = useRef(AppService.getInstance()).current;
+  const app = useRef(AppServiceImpl.getInstance()).current;
 
   useEffect(() => {
-    // app.start();
+    app.connectSocket();
   }, []);
 
   return (
     <Routes>
-      <Route path={'/'} element={<Card>Hello</Card>} />
+      <Route path={'/'} element={<AppContainer />} />
     </Routes>
   );
 }
