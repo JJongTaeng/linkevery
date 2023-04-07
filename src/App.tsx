@@ -1,20 +1,18 @@
 import { useEffect, useRef } from 'react';
 import { Card } from 'antd';
-import { AppService } from './service/app/AppService';
+import { Route, Routes } from 'react-router-dom';
 
 function App() {
-  const app = useRef(AppService.getInstance()).current;
+  // const app = useRef(AppService.getInstance()).current;
 
   useEffect(() => {
-    app.start();
+    // app.start();
   }, []);
 
   return (
-    <div className="App">
-      <Card onClick={() => app.getDispatch().chatMessage({ message: 'hello' })}>
-        hello
-      </Card>
-    </div>
+    <Routes>
+      <Route path={'/'} element={<Card>Hello</Card>} />
+    </Routes>
   );
 }
 

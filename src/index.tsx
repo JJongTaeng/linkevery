@@ -1,20 +1,23 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { RecoilRoot } from "recoil";
-import "antd/dist/reset.css";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import { RecoilRoot } from 'recoil';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
+import './index.css';
+import 'antd/dist/reset.css';
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+  document.getElementById('root') as HTMLElement,
 );
 
 root.render(
   // <React.StrictMode>
   <RecoilRoot>
-    <App />
-  </RecoilRoot>
+    <HashRouter>
+      <App />
+    </HashRouter>
+  </RecoilRoot>,
   // </React.StrictMode>
 );
 
