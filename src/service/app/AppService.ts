@@ -5,10 +5,11 @@ import { HandlerManager } from "../handlers/HandlerManager";
 
 export class AppService {
   private socket: Socket = io(process.env.REACT_APP_REQUEST_URL + "/rtc");
-  private dispatch = new DispatchEvent(this.socket, RTCManager.getInstance());
+  private rtcManager = new RTCManager();
+  private dispatch = new DispatchEvent(this.socket, this.rtcManager);
   public static instance: AppService;
   private constructor() {
-    new HandlerManager(this.socket, RTCManager.getInstance(), this.dispatch);
+    new HandlerManager(this.socket, this.rtcManager, this.dispatch);
   }
 
   public static getInstance() {

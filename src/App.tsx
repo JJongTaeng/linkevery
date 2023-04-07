@@ -1,14 +1,19 @@
-import React from "react";
-import { useRecoilValue } from "recoil";
-import { usernameAtom } from "./store/roomInfo";
-import { Card } from "antd";
+import { useEffect, useRef } from 'react';
+import { Card } from 'antd';
+import { AppService } from './service/app/AppService';
 
 function App() {
-  const myName = useRecoilValue(usernameAtom);
+  const app = useRef(AppService.getInstance()).current;
+
+  useEffect(() => {
+    app.start();
+  }, []);
 
   return (
     <div className="App">
-      <Card>hello</Card>
+      <Card onClick={() => app.getDispatch().chatMessage({ message: 'hello' })}>
+        hello
+      </Card>
     </div>
   );
 }

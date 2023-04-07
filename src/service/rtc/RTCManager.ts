@@ -30,16 +30,8 @@ export class RTCManager extends RTCManagerService {
     DATA: "RTC_DATA",
   };
 
-  private constructor() {
+  constructor() {
     super();
-  }
-
-  public static getInstance() {
-    if (!RTCManager.instance) {
-      RTCManager.instance = new RTCManager();
-    }
-
-    return RTCManager.instance;
   }
 
   createPeer(id: string): void {

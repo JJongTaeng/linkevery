@@ -1,19 +1,13 @@
-import {
-  HandlerMap,
-  Protocol,
-  SIGNALING_MESSAGE_ID,
-} from "../../constants/protocol";
-import { DispatchEvent } from "../dispatch/DispatchEvent";
+import { HandlerMap, SIGNALING_MESSAGE_ID } from "../../constants/protocol";
 import { config, RTCManager } from "../rtc/RTCManager";
 import { SdpType } from "../rtc/RTCPeerService";
 import { StorageService } from "../storage/StorageService";
 import { ERROR_TYPE } from "../../error/error";
 
 const storage = StorageService.getInstance();
-const rtcManager = RTCManager.getInstance();
 
 export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
-  [SIGNALING_MESSAGE_ID.OFFER]: async (protocol, dispatch) => {
+  [SIGNALING_MESSAGE_ID.OFFER]: async (protocol, { dispatch, rtcManager }) => {
     const clientId = storage.getItem("clientId");
     const { peerId, offer } = protocol.data;
     rtcManager.createPeer(peerId);
@@ -43,12 +37,12 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       peerId,
     });
   },
-  [SIGNALING_MESSAGE_ID.ANSWER]: (protocol, dispatch) => {
+  [SIGNALING_MESSAGE_ID.ANSWER]: (protocol, { dispatch, rtcManager }) => {
     const { peerId, answer } = protocol.data;
     const rtcPeer = rtcManager.getPeer(peerId);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
   },
-  [SIGNALING_MESSAGE_ID.ICE]: (protocol, dispatch) => {
+  [SIGNALING_MESSAGE_ID.ICE]: (protocol, { dispatch, rtcManager }) => {
     const { peerId, ice } = protocol.data;
     const rtcPeer = rtcManager.getPeer(peerId);
     rtcPeer.setIcecandidate(ice);

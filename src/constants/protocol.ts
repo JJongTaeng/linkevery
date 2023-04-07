@@ -1,4 +1,5 @@
 import { DispatchEvent } from "../service/dispatch/DispatchEvent";
+import { RTCManagerService } from "../service/rtc/RTCManagerService";
 
 export const EVENT_NAME = "message";
 
@@ -46,5 +47,11 @@ export interface Protocol {
 }
 
 export type HandlerMap<T extends string | number | symbol> = {
-  [key in T]: (protocol: Protocol, dispatch: DispatchEvent) => void;
+  [key in T]: (
+    protocol: Protocol,
+    {
+      dispatch,
+      rtcManager,
+    }: { dispatch: DispatchEvent; rtcManager: RTCManagerService }
+  ) => void;
 };

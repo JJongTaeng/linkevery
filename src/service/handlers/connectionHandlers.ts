@@ -10,13 +10,9 @@ import { StorageService } from "../storage/StorageService";
 import { SdpType } from "../rtc/RTCPeerService";
 
 const storage = StorageService.getInstance();
-const rtcManager = RTCManager.getInstance();
-
-// @ts-ignore
-window.rtcManager = rtcManager;
 
 export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
-  [CONNECTION_MESSAGE_ID.JOIN]: (protocol, dispatch) => {
+  [CONNECTION_MESSAGE_ID.JOIN]: (protocol, { dispatch }) => {
     const clientId = protocol.data.clientId;
     const roomName = "room";
     storage.setItem("clientId", clientId);
@@ -26,8 +22,8 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     });
   },
   [CONNECTION_MESSAGE_ID.CONNECT]: async (
-    protocol: Protocol,
-    dispatch: DispatchEvent
+    protocol,
+    { dispatch, rtcManager }
   ) => {
     const peerId = protocol.data.peerId;
     const clientId = storage.getItem("clientId");
@@ -55,7 +51,7 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
     dispatch.offerMessage({ offer, peerId, clientId });
   },
-  [CONNECTION_MESSAGE_ID.DISCONNECT]: (protocol, dispatch) => {
+  [CONNECTION_MESSAGE_ID.DISCONNECT]: (protocol, { rtcManager }) => {
     const { peerId } = protocol.data;
     rtcManager.removePeer(peerId);
   },
