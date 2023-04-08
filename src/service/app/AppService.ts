@@ -1,3 +1,4 @@
+import EventEmitter from 'events';
 import { RTCManagerService } from '../rtc/RTCManagerService';
 import { DispatchEvent } from './../dispatch/DispatchEvent';
 import { Socket } from 'socket.io-client';

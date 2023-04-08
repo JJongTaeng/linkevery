@@ -1,11 +1,11 @@
-import { ERROR_TYPE } from "../../error/error";
+import { ERROR_TYPE } from '../../error/error';
 import {
   PeerConnectionStateHandlers,
   PeerSignalingStateHandlers,
   RTCPeerService,
   SdpType,
-} from "./RTCPeerService";
-import { Protocol } from "../../constants/protocol";
+} from './RTCPeerService';
+import { Protocol } from '../../constants/protocol';
 
 export class RTCPeer extends RTCPeerService {
   private peer?: RTCPeerConnection;
@@ -21,7 +21,7 @@ export class RTCPeer extends RTCPeerService {
 
   public createDataChannel(
     id: string,
-    fn: (datachannel: RTCDataChannel) => void
+    fn: (datachannel: RTCDataChannel) => void,
   ) {
     if (!this.peer) {
       throw new Error(ERROR_TYPE.INVALID_PEER);
@@ -104,7 +104,7 @@ export class RTCPeer extends RTCPeerService {
 
   public closePeer() {
     if (!this.peer) {
-      console.error("invalid peer", this.peer);
+      console.error('invalid peer', this.peer);
       return;
     }
     this.dataChannel?.close();
@@ -118,21 +118,21 @@ export class RTCPeer extends RTCPeerService {
     connected,
     newState,
   }: PeerConnectionStateHandlers) {
-    this.peer?.addEventListener("connectionstatechange", () => {
+    this.peer?.addEventListener('connectionstatechange', () => {
       switch (this.peer?.connectionState) {
-        case "failed":
+        case 'failed':
           failed && failed();
           break;
-        case "connecting":
+        case 'connecting':
           connecting && connecting();
           break;
-        case "disconnected":
+        case 'disconnected':
           disconnected && disconnected();
           break;
-        case "connected":
+        case 'connected':
           connected && connected();
           break;
-        case "new":
+        case 'new':
           newState && newState();
           break;
       }
@@ -148,27 +148,27 @@ export class RTCPeer extends RTCPeerService {
     haveLocalOffer,
   }: PeerSignalingStateHandlers) {
     if (!this.peer) {
-      console.error("invalid peer", this.peer);
+      console.error('invalid peer', this.peer);
       return;
     }
-    this.peer.addEventListener("signalingstatechange", () => {
+    this.peer.addEventListener('signalingstatechange', () => {
       switch (this.peer?.signalingState) {
-        case "stable":
+        case 'stable':
           stable && stable();
           break;
-        case "closed":
+        case 'closed':
           closed && closed();
           break;
-        case "have-local-offer":
+        case 'have-local-offer':
           haveLocalOffer && haveLocalOffer();
           break;
-        case "have-remote-offer":
+        case 'have-remote-offer':
           haveRemoteOffer && haveRemoteOffer();
           break;
-        case "have-local-pranswer":
+        case 'have-local-pranswer':
           haveLocalPranswer && haveLocalPranswer();
           break;
-        case "have-remote-pranswer":
+        case 'have-remote-pranswer':
           haveRemotePranswer && haveRemotePranswer();
           break;
       }
@@ -176,7 +176,7 @@ export class RTCPeer extends RTCPeerService {
   }
 
   public onIceCandidate(fn: (ice: RTCIceCandidate) => void) {
-    this.peer?.addEventListener("icecandidate", (event) => {
+    this.peer?.addEventListener('icecandidate', (event) => {
       if (event.candidate) {
         fn(event.candidate);
       }

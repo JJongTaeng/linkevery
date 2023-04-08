@@ -1,0 +1,3 @@
+export enum APP_SERVICE_EVENT_NAME {
+  CHAT_MESSAGE = 'CHAT_MESSAGE',
+}

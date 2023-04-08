@@ -3,7 +3,6 @@ import {
   HandlerMap,
   Protocol,
 } from '../../constants/protocol';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { ERROR_TYPE } from '../../error/error';
 import { config, RTCManager } from '../rtc/RTCManager';
 import { StorageService } from '../storage/StorageService';

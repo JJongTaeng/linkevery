@@ -24,3 +24,25 @@ RTC를 이용한 웹 채팅 어플리케이션
 ### 화면공유
 
 - 보이스 on이 된상태에서 화면 공유 버튼을 누르면 rtc로 화면공유 연결
+
+## 프로토콜 정의
+
+```typescript
+interface Protocol {
+  messageType: MESSAGE_TYPE;
+  category: CATEGORY;
+  messageId: MessageId;
+  data: ProtocolData;
+}
+```
+
+CATEGORY
+CONNECTION - socket connection
+SIGNALING - rtc signaling
+CHAT - chat
+
+### 특이사항
+
+1. peerConnection의 생성시점
+   - CONNECT 카테고리에서 room에 입장 시 rtcManager에 peerConnection은 생성된 상태
+   - offer는 시그널링 단계에서 시작 (아마 보이스 채팅 시작 시)

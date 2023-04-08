@@ -1,17 +1,19 @@
 interface StorageData {
   clientId: string;
+  username: string;
   roomName: string;
 }
 
 type Key = keyof StorageData;
 
-const APP = "APP";
+const APP = 'APP';
 
 export class StorageService {
   private static instance: StorageService;
   private storage: StorageData = {
-    clientId: "",
-    roomName: "",
+    clientId: '',
+    roomName: '',
+    username: '',
   };
 
   private constructor() {
