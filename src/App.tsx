@@ -1,24 +1,14 @@
-import { useEffect, useRef } from 'react';
 import ContentContainer from './components/container/ContentContainer';
 import LeftMenuContainer from './components/container/LeftMenuContainer';
-import TopMenuContainer from './components/container/TopMenuContainer';
-import { AppServiceImpl } from './service/app/AppServiceImpl';
 import styled from 'styled-components';
 
 function App() {
-  const app = useRef(AppServiceImpl.getInstance()).current;
-
-  useEffect(() => {
-    app.connectSocket();
-  }, []);
-
   return (
     <Container>
       <div>
         <LeftMenuContainer />
       </div>
       <ContentSection>
-        <TopMenuContainer />
         <ContentContainer />
       </ContentSection>
     </Container>

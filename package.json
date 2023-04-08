@@ -30,7 +30,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "yarn build",
-    "deploy": "rimraf ./node_modules/.cache/gh-pages && gh-pages --branch gh-pages -d build"
+    "deploy": "rimraf ./node_modules/.cache/gh-pages && gh-pages --branch gh-pages -d build",
+    "svgs": "npx @svgr/cli --icon --typescript --out-dir ./src/components/icons/ ./src/assets/*"
   },
   "eslintConfig": {
     "extends": [

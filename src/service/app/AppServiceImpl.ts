@@ -5,9 +5,9 @@ import { HandlerManager } from '../handlers/HandlerManager';
 import { AppService } from './AppService';
 
 export class AppServiceImpl extends AppService {
-  private socket: Socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
-  private rtcManager = new RTCManager();
-  private dispatch = new DispatchEvent(this.socket, this.rtcManager);
+  readonly socket: Socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
+  readonly rtcManager = new RTCManager();
+  readonly dispatch = new DispatchEvent(this.socket, this.rtcManager);
   public static instance: AppServiceImpl;
   private constructor() {
     super();
@@ -20,17 +20,5 @@ export class AppServiceImpl extends AppService {
     }
 
     return this.instance;
-  }
-
-  public getSocket() {
-    return this.socket;
-  }
-
-  public getDispatch() {
-    return this.dispatch;
-  }
-
-  public connectSocket() {
-    this.dispatch.connectMessage({});
   }
 }
