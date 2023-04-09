@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
-import NoRoom from '../content/NoRoom';
-import Room from '../content/Room';
+import NoRoom from '../room/NoRoom';
+import Room from '../room/Room';
 
 const ContentContainer = () => {
   return (

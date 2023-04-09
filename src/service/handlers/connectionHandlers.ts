@@ -12,7 +12,7 @@ const storage = StorageService.getInstance();
 
 export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
   [CONNECTION_MESSAGE_ID.CONNECT]: (protocol, { dispatch }) => {
-    const clientId = protocol.data.clientId;
+    const { clientId } = protocol.data;
     storage.setItem('clientId', clientId);
   },
   [CONNECTION_MESSAGE_ID.JOIN_ROOM]: async (
@@ -20,6 +20,7 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     { dispatch, rtcManager },
   ) => {
     const { peerId } = protocol.data;
+
     const clientId = storage.getItem('clientId');
     if (!peerId || !clientId) throw new Error(ERROR_TYPE.INVALID_PEER_ID);
 

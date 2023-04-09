@@ -8,9 +8,9 @@ export const useChat = () => {
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const { dispatch, ee } = useRef(AppServiceImpl.getInstance()).current;
 
-  const handleChat = ({ message, clientId, date }: ChatType) => {
+  const handleChat = ({ message, clientId, date, username }: ChatType) => {
     const list = cloneDeep(chatList);
-    list.push({ message, clientId, date });
+    list.push({ message, clientId, date, username });
     setChatList(list);
   };
 
@@ -20,9 +20,9 @@ export const useChat = () => {
 
   return {
     chatList,
-    sendChat: ({ message, clientId, date }: ChatType) => {
-      dispatch.chatMessage({ message, clientId, date });
-      handleChat({ message, clientId, date });
+    sendChat: ({ message, clientId, date, username }: ChatType) => {
+      dispatch.chatMessage({ message, clientId, date, username });
+      handleChat({ message, clientId, date, username });
     },
   };
 };

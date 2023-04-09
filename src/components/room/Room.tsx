@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
@@ -10,17 +10,23 @@ import { StorageService } from '../../service/storage/StorageService';
 import dayjs from 'dayjs';
 import { Card } from 'antd';
 import { nanoid } from 'nanoid';
+import ChatBubble from '../chat/ChatBubble';
+import { useRecoilValue } from 'recoil';
+import { usernameAtom } from '../../store/roomInfo';
 
 const storage = StorageService.getInstance();
 
 const Room = () => {
-  const { dispatch, ee } = useRef(AppServiceImpl.getInstance()).current;
+  const navigate = useNavigate();
+  const { dispatch } = useRef(AppServiceImpl.getInstance()).current;
   const { chatList, sendChat } = useChat();
   const { roomName } = useParams<{
     roomName: string;
   }>();
+  const myName = useRecoilValue(usernameAtom);
 
   useEffect(() => {
+    if (!myName) navigate('/14');
     dispatch.connectMessage({});
     dispatch.joinRoomMessage({ roomName });
   }, []);
@@ -32,21 +38,13 @@ const Room = () => {
       <TopMenuContainer />
       <RoomContent>
         <ChatList>
-          {chatList.map(({ message, clientId, date }) => (
-            <div
-              className={
-                storage.getItem('clientId') === clientId
-                  ? 'my-chat'
-                  : 'peer-chat'
-              }
-              key={nanoid()}
-            >
-              <div className={'chat-name'}>{clientId}</div>
-              <Card size="small" key={nanoid()}>
-                {message}
-              </Card>
-              <div className={'chat-date'}>{date}</div>
-            </div>
+          {chatList.map(({ message, clientId, date, username }) => (
+            <ChatBubble
+              message={message}
+              date={date}
+              username={username}
+              isMyChat={clientId === storage.getItem('clientId')}
+            />
           ))}
         </ChatList>
         <ChatForm
@@ -57,6 +55,7 @@ const Room = () => {
               message: e.target?.message?.value,
               clientId: storage.getItem('clientId'),
               date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+              username: myName,
             });
             e.target.message.value = '';
           }}

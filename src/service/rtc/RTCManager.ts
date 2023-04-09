@@ -1,33 +1,32 @@
-import { RTCManagerService } from "./RTCManagerService";
-import { RTCPeer } from "./RTCPeer";
-import { ERROR_TYPE } from "../../error/error";
-import { Protocol } from "../../constants/protocol";
+import { RTCManagerService } from './RTCManagerService';
+import { RTCPeer } from './RTCPeer';
+import { ERROR_TYPE } from '../../error/error';
+import { Protocol } from '../../constants/protocol';
 
 export const config = {
   iceServers: [
     {
-      urls: ["stun:ntk-turn-1.xirsys.com"],
+      urls: ['stun:ntk-turn-1.xirsys.com'],
     },
     {
       username: process.env.REACT_APP_RTC_CONFIG_USERNAME,
       credential: process.env.REACT_APP_RTC_CONFIG_CREDENTIAL,
       urls: [
-        "turn:ntk-turn-1.xirsys.com:80?transport=udp",
-        "turn:ntk-turn-1.xirsys.com:3478?transport=udp",
-        "turn:ntk-turn-1.xirsys.com:80?transport=tcp",
-        "turn:ntk-turn-1.xirsys.com:3478?transport=tcp",
-        "turns:ntk-turn-1.xirsys.com:443?transport=tcp",
-        "turns:ntk-turn-1.xirsys.com:5349?transport=tcp",
+        'turn:ntk-turn-1.xirsys.com:80?transport=udp',
+        'turn:ntk-turn-1.xirsys.com:3478?transport=udp',
+        'turn:ntk-turn-1.xirsys.com:80?transport=tcp',
+        'turn:ntk-turn-1.xirsys.com:3478?transport=tcp',
+        'turns:ntk-turn-1.xirsys.com:443?transport=tcp',
+        'turns:ntk-turn-1.xirsys.com:5349?transport=tcp',
       ],
     },
   ],
 };
 
 export class RTCManager extends RTCManagerService {
-  private peerMap = new Map<string, RTCPeer>();
-  private static instance: RTCManager;
+  readonly peerMap = new Map<string, RTCPeer>();
   public static RTC_EVENT = {
-    DATA: "RTC_DATA",
+    DATA: 'RTC_DATA',
   };
 
   constructor() {
@@ -51,7 +50,7 @@ export class RTCManager extends RTCManagerService {
       const datachannel = peer.getDataChannel();
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
       const stringify = JSON.stringify(protocol);
-      if (datachannel.readyState === "open") datachannel.send(stringify);
+      if (datachannel.readyState === 'open') datachannel.send(stringify);
     });
   }
 
