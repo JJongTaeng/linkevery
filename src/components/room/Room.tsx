@@ -26,7 +26,7 @@ const Room = () => {
   const myName = useRecoilValue(usernameAtom);
 
   useEffect(() => {
-    if (!myName) navigate('/14');
+    if (!myName) navigate('/');
     dispatch.connectMessage({});
     dispatch.joinRoomMessage({ roomName });
   }, []);
@@ -40,6 +40,7 @@ const Room = () => {
         <ChatList>
           {chatList.map(({ message, clientId, date, username }) => (
             <ChatBubble
+              key={nanoid()}
               message={message}
               date={date}
               username={username}
@@ -88,6 +89,9 @@ const RoomContent = styled.div`
 const ChatList = styled.div`
   display: flex;
   flex-direction: column;
+  height: calc(100% - 80px);
+  overflow: auto;
+  padding: 0 16px;
   .peer-chat {
     align-self: flex-start;
   }
