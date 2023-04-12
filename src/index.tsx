@@ -1,13 +1,13 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { RecoilRoot } from 'recoil';
 import { HashRouter } from 'react-router-dom';
 import './index.css';
 import 'antd/dist/reset.css';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './style/theme';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -15,13 +15,13 @@ const root = ReactDOM.createRoot(
 
 root.render(
   // <React.StrictMode>
-  <RecoilRoot>
+  <Provider store={store}>
     <HashRouter>
       <ThemeProvider theme={theme}>
         <App />
       </ThemeProvider>
     </HashRouter>
-  </RecoilRoot>,
+  </Provider>,
   // </React.StrictMode>
 );
 

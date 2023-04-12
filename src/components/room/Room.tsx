@@ -10,8 +10,7 @@ import { StorageService } from '../../service/storage/StorageService';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import ChatBubble from '../chat/ChatBubble';
-import { useRecoilValue } from 'recoil';
-import { usernameAtom } from '../../store/roomInfo';
+import { useAppSelector } from '../../store/hooks';
 
 const storage = StorageService.getInstance();
 
@@ -22,7 +21,7 @@ const Room = () => {
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const myName = useRecoilValue(usernameAtom);
+  const myName = useAppSelector((state) => state.room.username);
 
   useEffect(() => {
     if (!myName || !roomName) navigate('/');

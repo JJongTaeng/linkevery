@@ -3,16 +3,17 @@ import { TOP_MENU_HEIGHT } from '../../style/constants';
 import TopMenuContainer from '../container/TopMenuContainer';
 import { Badge, Button, Card, Form, Input, Modal } from 'antd';
 import { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { usernameAtom } from '../../store/roomInfo';
 import { Text } from '../../style';
 import { StorageService } from '../../service/storage/StorageService';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { setUsername } from '../../features/room/roomSlice';
 
 const storage = StorageService.getInstance();
 
 const NoRoom = () => {
   const [open, setOpen] = useState(false);
-  const [username, setUsername] = useRecoilState(usernameAtom);
+  const username = useAppSelector((state) => state.room.username);
+  const dispatch = useAppDispatch();
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const NoRoom = () => {
         <Form
           form={form}
           onFinish={({ username }) => {
-            setUsername(username);
+            dispatch(setUsername({ username }));
             storage.setItem('username', username);
             setOpen(false);
           }}
