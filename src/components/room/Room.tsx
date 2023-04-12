@@ -8,7 +8,6 @@ import SvgSend from '../icons/Send';
 import { useChat } from '../../hooks/useChat';
 import { StorageService } from '../../service/storage/StorageService';
 import dayjs from 'dayjs';
-import { Card } from 'antd';
 import { nanoid } from 'nanoid';
 import ChatBubble from '../chat/ChatBubble';
 import { useRecoilValue } from 'recoil';
@@ -18,7 +17,7 @@ const storage = StorageService.getInstance();
 
 const Room = () => {
   const navigate = useNavigate();
-  const { dispatch } = useRef(AppServiceImpl.getInstance()).current;
+  const app = useRef(AppServiceImpl.getInstance()).current;
   const { chatList, sendChat } = useChat();
   const { roomName } = useParams<{
     roomName: string;
@@ -26,12 +25,14 @@ const Room = () => {
   const myName = useRecoilValue(usernameAtom);
 
   useEffect(() => {
-    if (!myName) navigate('/');
-    dispatch.connectMessage({});
-    dispatch.joinRoomMessage({ roomName });
+    if (!myName || !roomName) navigate('/');
+    app.dispatch.connectMessage({});
+    app.dispatch.joinRoomMessage({ roomName });
+    storage.setItem('roomName', roomName || '');
+    return () => {
+      app.disconnect();
+    };
   }, []);
-
-  console.log(chatList);
 
   return (
     <>

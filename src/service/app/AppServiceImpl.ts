@@ -4,8 +4,9 @@ import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
 import { AppService } from './AppService';
 import EventEmitter from 'events';
-import { APP_SERVICE_EVENT_NAME } from '../../constants/appEvent';
+import { StorageService } from '../storage/StorageService';
 
+const storage = StorageService.getInstance();
 export class AppServiceImpl extends AppService {
   readonly socket: Socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
   readonly rtcManager = new RTCManager();
@@ -24,5 +25,11 @@ export class AppServiceImpl extends AppService {
     }
 
     return this.instance;
+  }
+
+  public disconnect() {
+    const roomName = storage.getItem('roomName');
+    this.rtcManager.clearPeerMap();
+    this.dispatch.disconnectMessage({ roomName });
   }
 }

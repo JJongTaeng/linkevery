@@ -1,13 +1,16 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
+import { Button } from 'antd';
 
 const TopMenuContainer = () => {
   const { roomName } = useParams();
+  const navigate = useNavigate();
   return (
     <Container>
       심플 채팅 <Text>{roomName ? roomName : ''}</Text>
+      <Button onClick={() => navigate('/')}>나가기</Button>
     </Container>
   );
 };

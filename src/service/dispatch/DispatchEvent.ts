@@ -71,6 +71,15 @@ export class DispatchEvent extends DispatchEventService {
     });
   }
 
+  disconnectMessage(data: ProtocolData) {
+    this.send({
+      category: CATEGORY.CONNECTION,
+      messageId: CONNECTION_MESSAGE_ID.DISCONNECT,
+      messageType: MESSAGE_TYPE.SOCKET,
+      data,
+    });
+  }
+
   send(protocol: Protocol) {
     console.debug('[send] ', protocol);
     if (protocol.messageType === MESSAGE_TYPE.SOCKET) {

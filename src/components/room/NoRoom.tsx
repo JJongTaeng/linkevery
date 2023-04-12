@@ -17,6 +17,7 @@ const NoRoom = () => {
 
   useEffect(() => {
     if (!username) setOpen(true);
+    storage.setItem('roomName', '');
   }, [username]);
 
   return (
