@@ -1,8 +1,7 @@
-import React from 'react';
+import { Button } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
-import { Button } from 'antd';
 
 const TopMenuContainer = () => {
   const { roomName } = useParams();

@@ -1,6 +1,6 @@
+import styled from 'styled-components';
 import ContentContainer from './components/container/ContentContainer';
 import LeftMenuContainer from './components/container/LeftMenuContainer';
-import styled from 'styled-components';
 
 function App() {
   return (

@@ -1,8 +1,8 @@
 import { HandlerMap, SIGNALING_MESSAGE_ID } from '../../constants/protocol';
-import { config, RTCManager } from '../rtc/RTCManager';
+import { ERROR_TYPE } from '../../error/error';
+import { RTCManager, config } from '../rtc/RTCManager';
 import { SdpType } from '../rtc/RTCPeerService';
 import { StorageService } from '../storage/StorageService';
-import { ERROR_TYPE } from '../../error/error';
 
 const storage = StorageService.getInstance();
 

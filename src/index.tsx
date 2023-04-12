@@ -1,13 +1,13 @@
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { HashRouter } from 'react-router-dom';
-import './index.css';
 import 'antd/dist/reset.css';
-import { ThemeProvider } from 'styled-components';
-import { theme } from './style/theme';
+import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
+import { HashRouter } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
+import App from './App';
+import './index.css';
+import reportWebVitals from './reportWebVitals';
 import { store } from './store/store';
+import { theme } from './style/theme';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

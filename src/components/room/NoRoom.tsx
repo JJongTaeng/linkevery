@@ -1,12 +1,12 @@
-import styled from 'styled-components';
-import { TOP_MENU_HEIGHT } from '../../style/constants';
-import TopMenuContainer from '../container/TopMenuContainer';
-import { Badge, Button, Card, Form, Input, Modal } from 'antd';
+import { Button, Form, Input, Modal } from 'antd';
 import { useEffect, useState } from 'react';
-import { Text } from '../../style';
+import styled from 'styled-components';
+import { setUsername } from '../../features/room/roomSlice';
 import { StorageService } from '../../service/storage/StorageService';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setUsername } from '../../features/room/roomSlice';
+import { Text } from '../../style';
+import { TOP_MENU_HEIGHT } from '../../style/constants';
+import TopMenuContainer from '../container/TopMenuContainer';
 
 const storage = StorageService.getInstance();
 

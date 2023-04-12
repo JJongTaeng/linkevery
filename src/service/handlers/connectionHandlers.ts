@@ -1,12 +1,8 @@
-import {
-  CONNECTION_MESSAGE_ID,
-  HandlerMap,
-  Protocol,
-} from '../../constants/protocol';
+import { CONNECTION_MESSAGE_ID, HandlerMap } from '../../constants/protocol';
 import { ERROR_TYPE } from '../../error/error';
-import { config, RTCManager } from '../rtc/RTCManager';
-import { StorageService } from '../storage/StorageService';
+import { RTCManager, config } from '../rtc/RTCManager';
 import { SdpType } from '../rtc/RTCPeerService';
+import { StorageService } from '../storage/StorageService';
 
 const storage = StorageService.getInstance();
 

@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import { AppServiceImpl } from '../../service/app/AppServiceImpl';
-import { TOP_MENU_HEIGHT } from '../../style/constants';
-import TopMenuContainer from '../container/TopMenuContainer';
-import SvgSend from '../icons/Send';
-import { useChat } from '../../hooks/useChat';
-import { StorageService } from '../../service/storage/StorageService';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import ChatBubble from '../chat/ChatBubble';
+import { useEffect, useRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { useChat } from '../../hooks/useChat';
+import { AppServiceImpl } from '../../service/app/AppServiceImpl';
+import { StorageService } from '../../service/storage/StorageService';
 import { useAppSelector } from '../../store/hooks';
+import { TOP_MENU_HEIGHT } from '../../style/constants';
+import ChatBubble from '../chat/ChatBubble';
+import TopMenuContainer from '../container/TopMenuContainer';
+import SvgSend from '../icons/Send';
 
 const storage = StorageService.getInstance();
 

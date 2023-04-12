@@ -1,7 +1,7 @@
+import cloneDeep from 'clone-deep';
 import { useEffect, useRef, useState } from 'react';
 import { APP_SERVICE_EVENT_NAME } from '../constants/appEvent';
 import { AppServiceImpl } from '../service/app/AppServiceImpl';
-import cloneDeep from 'clone-deep';
 import { ChatType } from '../types';
 
 export const useChat = () => {

@@ -1,10 +1,10 @@
-import { RTCManager } from '../rtc/RTCManager';
+import EventEmitter from 'events';
 import { io, Socket } from 'socket.io-client';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
-import { AppService } from './AppService';
-import EventEmitter from 'events';
+import { RTCManager } from '../rtc/RTCManager';
 import { StorageService } from '../storage/StorageService';
+import { AppService } from './AppService';
 
 const storage = StorageService.getInstance();
 export class AppServiceImpl extends AppService {

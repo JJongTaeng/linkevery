@@ -1,7 +1,7 @@
+import { Protocol } from '../../constants/protocol';
+import { ERROR_TYPE } from '../../error/error';
 import { RTCManagerService } from './RTCManagerService';
 import { RTCPeer } from './RTCPeer';
-import { ERROR_TYPE } from '../../error/error';
-import { Protocol } from '../../constants/protocol';
 
 export const config = {
   iceServers: [
