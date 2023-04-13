@@ -27,6 +27,10 @@ export enum SIGNALING_MESSAGE_ID {
   ICE = 'ICE',
 }
 
+export enum ROOM_INFO_MESSAGE_ID {
+  GET_USERS = 'GET_USERS',
+}
+
 export enum CHAT_MESSAGE_ID {
   SEND = 'SEND',
 }
