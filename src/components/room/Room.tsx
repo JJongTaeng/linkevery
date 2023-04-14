@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useChat } from '../../hooks/useChat';
+import { useRoom } from '../../hooks/useRoom';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { StorageService } from '../../service/storage/StorageService';
 import { useAppSelector } from '../../store/hooks';
@@ -18,10 +19,12 @@ const Room = () => {
   const navigate = useNavigate();
   const app = useRef(AppServiceImpl.getInstance()).current;
   const { chatList, sendChat } = useChat();
+  const { roomUsername } = useRoom();
   const { roomName } = useParams<{
     roomName: string;
   }>();
   const myName = useAppSelector((state) => state.room.username);
+  console.log(myName, roomName, roomUsername);
 
   useEffect(() => {
     if (!myName || !roomName) navigate('/');

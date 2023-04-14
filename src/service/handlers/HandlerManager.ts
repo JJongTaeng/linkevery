@@ -1,16 +1,17 @@
+import { Socket } from 'socket.io-client';
+import { EventEmitter } from 'stream';
 import {
   CATEGORY,
   EVENT_NAME,
   HandlerMap,
   Protocol,
 } from '../../constants/protocol';
-import { connectionHandlers } from './connectionHandlers';
-import { Socket } from 'socket.io-client';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { signalingHandlers } from './signalingHandlers';
-import { chatHandlers } from './chatHandlers';
 import { RTCManager } from '../rtc/RTCManager';
-import { EventEmitter } from 'stream';
+import { chatHandlers } from './chatHandlers';
+import { connectionHandlers } from './connectionHandlers';
+import { roomHandlers } from './roomHandlers';
+import { signalingHandlers } from './signalingHandlers';
 
 type CategoryHandlers = { [key in CATEGORY]: HandlerMap<any> };
 
@@ -19,6 +20,7 @@ export class HandlerManager {
     [CATEGORY.CONNECTION]: connectionHandlers,
     [CATEGORY.SIGNALING]: signalingHandlers,
     [CATEGORY.CHAT]: chatHandlers,
+    [CATEGORY.ROOM]: roomHandlers,
   };
   constructor(
     private socket: Socket,

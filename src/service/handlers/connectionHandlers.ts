@@ -25,6 +25,7 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     rtcPeer.createPeerConnection(config);
     rtcPeer.createDataChannel(peerId, (datachannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
+      dispatch.requestMemberMessage({});
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });

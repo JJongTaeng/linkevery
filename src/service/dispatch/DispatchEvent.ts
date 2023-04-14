@@ -7,6 +7,7 @@ import {
   MESSAGE_TYPE,
   Protocol,
   ProtocolData,
+  ROOM_MESSAGE_ID,
   SIGNALING_MESSAGE_ID,
 } from '../../constants/protocol';
 import { RTCManager } from '../rtc/RTCManager';
@@ -76,6 +77,24 @@ export class DispatchEvent extends DispatchEventService {
       category: CATEGORY.CONNECTION,
       messageId: CONNECTION_MESSAGE_ID.DISCONNECT,
       messageType: MESSAGE_TYPE.SOCKET,
+      data,
+    });
+  }
+
+  requestMemberMessage(data: ProtocolData) {
+    this.send({
+      category: CATEGORY.ROOM,
+      messageId: ROOM_MESSAGE_ID.REQUEST_MEMBER_NAME,
+      messageType: MESSAGE_TYPE.RTC,
+      data,
+    });
+  }
+
+  responseMemberMessage(data: ProtocolData) {
+    this.send({
+      category: CATEGORY.ROOM,
+      messageId: ROOM_MESSAGE_ID.RESPONSE_MEMBER_NAME,
+      messageType: MESSAGE_TYPE.RTC,
       data,
     });
   }

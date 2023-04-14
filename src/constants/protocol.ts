@@ -13,6 +13,7 @@ export enum CATEGORY {
   CONNECTION = 'CONNECTION',
   SIGNALING = 'SIGNALING',
   CHAT = 'CHAT',
+  ROOM = 'ROOM',
 }
 
 export enum CONNECTION_MESSAGE_ID {
@@ -27,8 +28,9 @@ export enum SIGNALING_MESSAGE_ID {
   ICE = 'ICE',
 }
 
-export enum ROOM_INFO_MESSAGE_ID {
-  GET_USERS = 'GET_USERS',
+export enum ROOM_MESSAGE_ID {
+  REQUEST_MEMBER_NAME = 'REQUEST_MEMBER_NAME',
+  RESPONSE_MEMBER_NAME = 'RESPONSE_MEMBER_NAME',
 }
 
 export enum CHAT_MESSAGE_ID {
@@ -38,7 +40,8 @@ export enum CHAT_MESSAGE_ID {
 export type MessageId =
   | CONNECTION_MESSAGE_ID
   | CHAT_MESSAGE_ID
-  | SIGNALING_MESSAGE_ID;
+  | SIGNALING_MESSAGE_ID
+  | ROOM_MESSAGE_ID;
 
 export interface ProtocolData {
   [key: string]: any;

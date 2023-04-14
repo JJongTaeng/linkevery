@@ -15,6 +15,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcPeer.createPeerConnection(config);
     rtcPeer.connectDataChannel((datachannel: RTCDataChannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
+      dispatch.requestMemberMessage({});
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });
