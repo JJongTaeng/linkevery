@@ -63,6 +63,15 @@ export class DispatchEvent extends DispatchEventService {
     });
   }
 
+  createDataChannelMessage(data: ProtocolData) {
+    this.send({
+      category: CATEGORY.SIGNALING,
+      messageId: SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL,
+      messageType: MESSAGE_TYPE.RTC,
+      data,
+    });
+  }
+
   chatMessage(data: ProtocolData) {
     this.send({
       category: CATEGORY.CHAT,

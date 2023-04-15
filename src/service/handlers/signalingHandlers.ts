@@ -48,4 +48,10 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     const rtcPeer = rtcManager.getPeer(peerId);
     rtcPeer.setIcecandidate(ice);
   },
+  [SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL]: (
+    protocol,
+    { dispatch, rtcManager },
+  ) => {
+    dispatch.requestMemberMessage({});
+  },
 };
