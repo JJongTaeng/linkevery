@@ -25,14 +25,14 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     rtcPeer.createPeerConnection(config);
     rtcPeer.createDataChannel(peerId, (datachannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
-      dispatch.requestMemberMessage({});
+      dispatch.sendRequestMemberMessage({});
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });
     });
 
     rtcPeer.onIceCandidate((ice) => {
-      dispatch.iceMessage({
+      dispatch.sendIceMessage({
         peerId,
         clientId,
         ice,
@@ -41,7 +41,7 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
 
     const offer = await rtcPeer.createOffer();
     rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-    dispatch.offerMessage({ offer, peerId, clientId });
+    dispatch.sendOfferMessage({ offer, peerId, clientId });
   },
   [CONNECTION_MESSAGE_ID.DISCONNECT]: (protocol, { rtcManager }) => {
     const { peerId } = protocol.data;

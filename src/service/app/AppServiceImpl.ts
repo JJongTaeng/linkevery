@@ -30,6 +30,6 @@ export class AppServiceImpl extends AppService {
   public disconnect() {
     const roomName = storage.getItem('roomName');
     this.rtcManager.clearPeerMap();
-    this.dispatch.disconnectMessage({ roomName });
+    this.dispatch.sendDisconnectMessage({ roomName });
   }
 }

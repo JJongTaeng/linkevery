@@ -28,8 +28,8 @@ const Room = () => {
 
   useEffect(() => {
     if (!myName || !roomName) navigate('/');
-    app.dispatch.connectMessage({});
-    app.dispatch.joinRoomMessage({ roomName });
+    app.dispatch.sendConnectMessage({});
+    app.dispatch.sendJoinRoomMessage({ roomName });
     storage.setItem('roomName', roomName || '');
     return () => {
       app.disconnect();

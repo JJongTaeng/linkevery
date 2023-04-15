@@ -11,7 +11,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
   ) => {
     const username = storage.getItem('username');
     const clientId = storage.getItem('clientId');
-    dispatch.responseMemberMessage({ username, clientId });
+    dispatch.sendResponseMemberMessage({ username, clientId });
   },
   [ROOM_MESSAGE_ID.RESPONSE_MEMBER_NAME]: (
     protocol,

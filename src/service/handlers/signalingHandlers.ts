@@ -15,14 +15,14 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcPeer.createPeerConnection(config);
     rtcPeer.connectDataChannel((datachannel: RTCDataChannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
-      dispatch.requestMemberMessage({});
+      dispatch.sendRequestMemberMessage({});
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });
     });
 
     rtcPeer.onIceCandidate((ice) => {
-      dispatch.iceMessage({
+      dispatch.sendIceMessage({
         peerId,
         clientId,
         ice,
@@ -32,7 +32,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
-    dispatch.answerMessage({
+    dispatch.snedAnswerMessage({
       answer,
       clientId,
       peerId,
@@ -52,6 +52,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
-    dispatch.requestMemberMessage({});
+    dispatch.sendRequestMemberMessage({});
   },
 };

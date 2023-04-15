@@ -1,15 +1,26 @@
 import { Socket } from 'socket.io-client';
 import {
-  CATEGORY,
-  CHAT_MESSAGE_ID,
-  CONNECTION_MESSAGE_ID,
   EVENT_NAME,
   MESSAGE_TYPE,
   Protocol,
   ProtocolData,
-  ROOM_MESSAGE_ID,
-  SIGNALING_MESSAGE_ID,
 } from '../../constants/protocol';
+import { chatMessage } from '../messages/chat';
+import {
+  connectMessage,
+  disconnectMessage,
+  joinRoomMessage,
+} from '../messages/connection';
+import {
+  requestMemberNameMessage,
+  responseMemberNameMessage,
+} from '../messages/room';
+import {
+  answerMessage,
+  createDataChannelMessage,
+  iceMessage,
+  offerMessage,
+} from '../messages/signaling';
 import { RTCManager } from '../rtc/RTCManager';
 import { DispatchEventService } from './DispatchEventService';
 
@@ -18,94 +29,44 @@ export class DispatchEvent extends DispatchEventService {
     super();
   }
 
-  connectMessage(data: ProtocolData) {
-    this.send({
-      category: CATEGORY.CONNECTION,
-      messageType: MESSAGE_TYPE.SOCKET,
-      messageId: CONNECTION_MESSAGE_ID.CONNECT,
-      data,
-    });
+  sendConnectMessage(data: ProtocolData) {
+    this.send(connectMessage(data));
   }
 
-  joinRoomMessage(data: ProtocolData) {
-    this.send({
-      category: CATEGORY.CONNECTION,
-      messageType: MESSAGE_TYPE.SOCKET,
-      messageId: CONNECTION_MESSAGE_ID.JOIN_ROOM,
-      data,
-    });
+  sendJoinRoomMessage(data: ProtocolData) {
+    this.send(joinRoomMessage(data));
   }
 
-  offerMessage(data: ProtocolData) {
-    this.send({
-      category: CATEGORY.SIGNALING,
-      messageId: SIGNALING_MESSAGE_ID.OFFER,
-      messageType: MESSAGE_TYPE.SOCKET,
-      data,
-    });
+  sendOfferMessage(data: ProtocolData) {
+    this.send(offerMessage(data));
   }
 
-  answerMessage(data: ProtocolData) {
-    this.send({
-      category: CATEGORY.SIGNALING,
-      messageId: SIGNALING_MESSAGE_ID.ANSWER,
-      messageType: MESSAGE_TYPE.SOCKET,
-      data,
-    });
+  snedAnswerMessage(data: ProtocolData) {
+    this.send(answerMessage(data));
   }
 
-  iceMessage(data: ProtocolData) {
-    this.send({
-      category: CATEGORY.SIGNALING,
-      messageId: SIGNALING_MESSAGE_ID.ICE,
-      messageType: MESSAGE_TYPE.SOCKET,
-      data,
-    });
+  sendIceMessage(data: ProtocolData) {
+    this.send(iceMessage(data));
   }
 
-  createDataChannelMessage(data: ProtocolData) {
-    this.send({
-      category: CATEGORY.SIGNALING,
-      messageId: SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL,
-      messageType: MESSAGE_TYPE.RTC,
-      data,
-    });
+  sendCreateDataChannelMessage(data: ProtocolData) {
+    this.send(createDataChannelMessage(data));
   }
 
-  chatMessage(data: ProtocolData) {
-    this.send({
-      category: CATEGORY.CHAT,
-      messageId: CHAT_MESSAGE_ID.SEND,
-      messageType: MESSAGE_TYPE.RTC,
-      data,
-    });
+  sendChatMessage(data: ProtocolData) {
+    this.send(chatMessage(data));
   }
 
-  disconnectMessage(data: ProtocolData) {
-    this.send({
-      category: CATEGORY.CONNECTION,
-      messageId: CONNECTION_MESSAGE_ID.DISCONNECT,
-      messageType: MESSAGE_TYPE.SOCKET,
-      data,
-    });
+  sendDisconnectMessage(data: ProtocolData) {
+    this.send(disconnectMessage(data));
   }
 
-  requestMemberMessage(data: ProtocolData) {
-    this.send({
-      category: CATEGORY.ROOM,
-      messageId: ROOM_MESSAGE_ID.REQUEST_MEMBER_NAME,
-      messageType: MESSAGE_TYPE.RTC,
-      data,
-    });
+  sendRequestMemberMessage(data: ProtocolData) {
+    this.send(requestMemberNameMessage(data));
   }
 
-  responseMemberMessage(data: ProtocolData) {
-    this.send({
-      category: CATEGORY.ROOM,
-      messageId: ROOM_MESSAGE_ID.RESPONSE_MEMBER_NAME,
-      messageType: MESSAGE_TYPE.RTC,
-      data,
-    });
+  sendResponseMemberMessage(data: ProtocolData) {
+    this.send(responseMemberNameMessage(data));
   }
 
   send(protocol: Protocol) {
