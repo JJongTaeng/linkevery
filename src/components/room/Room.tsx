@@ -53,6 +53,7 @@ const Room = () => {
       <TopMenuContainer />
       <RoomContent>
         <MemberList>
+          <div className="member-item">{myName} - me</div>
           {Object.keys(member).map((clientId) => (
             <div className="member-item">{member[clientId]}</div>
           ))}
@@ -134,6 +135,10 @@ const MemberList = styled.div`
   border-top: 1px solid ${({ theme }) => theme.color.grey400};
   background-color: ${({ theme }) => theme.color.grey200};
 
+  .member-item:nth-child(1) {
+    color: ${({ theme }) => theme.color.blue800};
+    font-weight: bold;
+  }
   .member-item {
     color: ${({ theme }) => theme.color.white};
     margin-bottom: 16px;
