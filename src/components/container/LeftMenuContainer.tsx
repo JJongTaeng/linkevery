@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import RoomBadge from '../room/RoomBadge';
 
@@ -17,6 +16,7 @@ const Container = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-right: 1px solid ${({ theme }) => theme.color.grey400};
 `;
 
 export default LeftMenuContainer;

@@ -52,60 +52,68 @@ const Room = () => {
     <>
       <TopMenuContainer />
       <RoomContent>
-        <ChatList>
-          {chatList.map(({ message, clientId, date, username }) => (
-            <ChatBubble
-              key={nanoid()}
-              message={message}
-              date={date}
-              username={username}
-              isMyChat={clientId === storage.getItem('clientId')}
-            />
+        <MemberList>
+          {Object.keys(member).map((clientId) => (
+            <div className="member-item">{member[clientId]}</div>
           ))}
-        </ChatList>
-        <ChatForm
-          onSubmit={(e: any) => {
-            e.preventDefault();
-            handleChat();
-          }}
-        >
-          <div className="form-header">
-            <textarea
-              value={message}
-              onKeyDown={(e: any) => {
-                switch (e.key) {
-                  case 'Enter':
-                    e.preventDefault();
-                    if (isShift) {
-                      setMessage((message) => message + '\n');
-                      return;
-                    }
-                    handleChat();
-                    break;
-                  case 'Shift':
-                    setIsShift(true);
-                    break;
-                }
-              }}
-              onKeyUp={(e) => {
-                switch (e.key) {
-                  case 'Shift':
-                    setIsShift(false);
-                    break;
-                }
-              }}
-              onChange={(e) => setMessage(e.target.value)}
-              name="message"
-              style={{ height: 40 }}
-              placeholder={roomName + '에 메시지 보내기'}
-            />
-          </div>
-          <div className="form-footer">
-            <button type="submit">
-              <SvgSend />
-            </button>
-          </div>
-        </ChatForm>
+        </MemberList>
+        <ChatContainer>
+          <ChatList>
+            {chatList.map(({ message, clientId, date, username }) => (
+              <ChatBubble
+                key={nanoid()}
+                message={message}
+                date={date}
+                username={username}
+                isMyChat={clientId === storage.getItem('clientId')}
+              />
+            ))}
+          </ChatList>
+          <ChatForm
+            onSubmit={(e: any) => {
+              e.preventDefault();
+              console.log(123);
+              handleChat();
+            }}
+          >
+            <div className="form-header">
+              <textarea
+                value={message}
+                onKeyDown={(e: any) => {
+                  switch (e.key) {
+                    case 'Enter':
+                      e.preventDefault();
+                      if (isShift) {
+                        setMessage((message) => message + '\n');
+                        return;
+                      }
+                      handleChat();
+                      break;
+                    case 'Shift':
+                      setIsShift(true);
+                      break;
+                  }
+                }}
+                onKeyUp={(e) => {
+                  switch (e.key) {
+                    case 'Shift':
+                      setIsShift(false);
+                      break;
+                  }
+                }}
+                onChange={(e) => setMessage(e.target.value)}
+                name="message"
+                style={{ height: 40 }}
+                placeholder={roomName + '에 메시지 보내기'}
+              />
+            </div>
+            <div className="form-footer">
+              <button type="submit">
+                <SvgSend />
+              </button>
+            </div>
+          </ChatForm>
+        </ChatContainer>
       </RoomContent>
     </>
   );
@@ -114,7 +122,26 @@ const Room = () => {
 const RoomContent = styled.div`
   width: 100%;
   height: calc(100% - ${TOP_MENU_HEIGHT}px);
-  padding: 20px 20px 20px 0;
+  display: flex;
+`;
+
+const MemberList = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  padding: 16px;
+
+  border-top: 1px solid ${({ theme }) => theme.color.grey400};
+  background-color: ${({ theme }) => theme.color.grey200};
+
+  .member-item {
+    color: ${({ theme }) => theme.color.white};
+    margin-bottom: 16px;
+  }
+`;
+
+const ChatContainer = styled.div`
+  width: 100%;
   position: relative;
 `;
 
@@ -123,7 +150,7 @@ const ChatList = styled.div`
   flex-direction: column;
   height: calc(100% - 80px);
   overflow: auto;
-  padding: 0 16px 0 36px;
+  padding: 20px 16px 0 16px;
   .peer-chat {
     align-self: flex-start;
   }
@@ -138,6 +165,8 @@ const ChatList = styled.div`
 `;
 
 const ChatForm = styled.form`
+  display: flex;
+  flex-direction: column;
   position: absolute;
   left: 20px;
   right: 20px;
@@ -193,7 +222,13 @@ const ChatForm = styled.form`
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    height: 40px;
+    height: 100%;
+    background-color: ${({ theme }) => theme.color.grey400};
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    button {
+      background-color: ${({ theme }) => theme.color.grey400};
+    }
   }
 `;
 
