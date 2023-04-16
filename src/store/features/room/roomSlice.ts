@@ -1,9 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { StorageService } from '../../service/storage/StorageService';
+import { StorageService } from '../../../service/storage/StorageService';
 
 interface RoomState {
   roomName: string;
   username: string;
+  member: {
+    [key: string]: string;
+  };
 }
 
 const storage = StorageService.getInstance();
@@ -11,6 +14,7 @@ const storage = StorageService.getInstance();
 const initialState: RoomState = {
   roomName: storage.getItem('roomName'),
   username: storage.getItem('username'),
+  member: {},
 };
 
 export const roomSlice = createSlice({
@@ -23,10 +27,13 @@ export const roomSlice = createSlice({
     setUsername: (state, { payload }) => {
       state.username = payload.username;
     },
+    setMember: (state, { payload }) => {
+      state.member = payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setRoomName, setUsername } = roomSlice.actions;
+export const roomActions = roomSlice.actions;
 
 export default roomSlice.reducer;

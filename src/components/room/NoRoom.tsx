@@ -1,8 +1,8 @@
 import { Button, Form, Input, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { setUsername } from '../../features/room/roomSlice';
 import { StorageService } from '../../service/storage/StorageService';
+import { roomActions } from '../../store/features/room/roomSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Text } from '../../style';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
@@ -38,7 +38,7 @@ const NoRoom = () => {
         <Form
           form={form}
           onFinish={({ username }) => {
-            dispatch(setUsername({ username }));
+            dispatch(roomActions.setUsername({ username }));
             storage.setItem('username', username);
             setOpen(false);
           }}

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useChat } from '../../hooks/useChat';
@@ -19,12 +19,13 @@ const Room = () => {
   const navigate = useNavigate();
   const app = useRef(AppServiceImpl.getInstance()).current;
   const { chatList, sendChat } = useChat();
-  const { roomUsername } = useRoom();
+  const { member } = useRoom();
   const { roomName } = useParams<{
     roomName: string;
   }>();
   const myName = useAppSelector((state) => state.room.username);
-  console.log(myName, roomName, roomUsername);
+  const [message, setMessage] = useState('');
+  const [isShift, setIsShift] = useState<boolean>(false);
 
   useEffect(() => {
     if (!myName || !roomName) navigate('/');
@@ -35,6 +36,17 @@ const Room = () => {
       app.disconnect();
     };
   }, []);
+
+  const handleChat = () => {
+    if (!message) return;
+    sendChat({
+      message,
+      clientId: storage.getItem('clientId'),
+      date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      username: myName,
+    });
+    setMessage('');
+  };
 
   return (
     <>
@@ -54,18 +66,35 @@ const Room = () => {
         <ChatForm
           onSubmit={(e: any) => {
             e.preventDefault();
-            if (!e.target?.message?.value) return;
-            sendChat({
-              message: e.target?.message?.value,
-              clientId: storage.getItem('clientId'),
-              date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-              username: myName,
-            });
-            e.target.message.value = '';
+            handleChat();
           }}
         >
           <div className="form-header">
             <textarea
+              value={message}
+              onKeyDown={(e: any) => {
+                switch (e.key) {
+                  case 'Enter':
+                    e.preventDefault();
+                    if (isShift) {
+                      setMessage((message) => message + '\n');
+                      return;
+                    }
+                    handleChat();
+                    break;
+                  case 'Shift':
+                    setIsShift(true);
+                    break;
+                }
+              }}
+              onKeyUp={(e) => {
+                switch (e.key) {
+                  case 'Shift':
+                    setIsShift(false);
+                    break;
+                }
+              }}
+              onChange={(e) => setMessage(e.target.value)}
               name="message"
               style={{ height: 40 }}
               placeholder={roomName + '에 메시지 보내기'}
@@ -85,7 +114,7 @@ const Room = () => {
 const RoomContent = styled.div`
   width: 100%;
   height: calc(100% - ${TOP_MENU_HEIGHT}px);
-  padding: 20px;
+  padding: 20px 20px 20px 0;
   position: relative;
 `;
 
@@ -94,7 +123,7 @@ const ChatList = styled.div`
   flex-direction: column;
   height: calc(100% - 80px);
   overflow: auto;
-  padding: 0 16px;
+  padding: 0 16px 0 36px;
   .peer-chat {
     align-self: flex-start;
   }
