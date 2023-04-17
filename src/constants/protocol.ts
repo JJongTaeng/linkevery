@@ -53,6 +53,7 @@ export interface Protocol {
   category: CATEGORY;
   messageId: MessageId;
   from: string;
+  to?: string;
   data: ProtocolData;
 }
 

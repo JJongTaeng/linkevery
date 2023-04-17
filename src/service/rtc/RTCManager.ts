@@ -45,6 +45,16 @@ export class RTCManager extends RTCManagerService {
     return peer;
   }
 
+  sendTo(protocol: Protocol) {
+    const { to } = protocol;
+    if (!to) throw new Error(ERROR_TYPE.INVALID_PEER_ID);
+    const peer = this.peerMap.get(to);
+    const datachannel = peer?.getDataChannel();
+    const stringify = JSON.stringify(protocol);
+    console.debug('[send] ', protocol);
+    datachannel?.send(stringify);
+  }
+
   sendAll(protocol: Protocol) {
     this.peerMap.forEach((peer, key) => {
       const datachannel = peer.getDataChannel();
