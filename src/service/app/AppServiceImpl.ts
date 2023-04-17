@@ -17,6 +17,10 @@ export class AppServiceImpl extends AppService {
   private constructor() {
     super();
     new HandlerManager(this.socket, this.rtcManager, this.dispatch, this.ee);
+
+    window.debug = {
+      rtcManager: this.rtcManager,
+    };
   }
 
   public static getInstance() {

@@ -15,7 +15,7 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
-    const { peerId } = protocol.data;
+    const { peerId, roomName } = protocol.data;
 
     const clientId = storage.getItem('clientId');
     if (!peerId || !clientId) throw new Error(ERROR_TYPE.INVALID_PEER_ID);
@@ -23,9 +23,8 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     rtcManager.createPeer(peerId);
     const rtcPeer = rtcManager.getPeer(peerId);
     rtcPeer.createPeerConnection(config);
-    rtcPeer.createDataChannel(peerId, (datachannel) => {
+    rtcPeer.createDataChannel(roomName, (datachannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
-      dispatch.sendRequestMemberMessage({});
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });

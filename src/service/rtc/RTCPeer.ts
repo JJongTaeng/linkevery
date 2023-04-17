@@ -1,3 +1,4 @@
+import { Protocol } from '../../constants/protocol';
 import { ERROR_TYPE } from '../../error/error';
 import {
   PeerConnectionStateHandlers,
@@ -5,7 +6,6 @@ import {
   RTCPeerService,
   SdpType,
 } from './RTCPeerService';
-import { Protocol } from '../../constants/protocol';
 
 export class RTCPeer extends RTCPeerService {
   private peer?: RTCPeerConnection;
@@ -39,10 +39,11 @@ export class RTCPeer extends RTCPeerService {
     }
     this.peer.ondatachannel = (event) => {
       this.dataChannel = event.channel;
-      fn(event.channel);
-      event.channel.onopen = () => {};
+      event.channel.onopen = () => {
+        fn(event.channel);
+      };
       event.channel.onclose = () => {
-        this.dataChannel = undefined;
+        // this.dataChannel = undefined;
       };
     };
   }

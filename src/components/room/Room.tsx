@@ -55,7 +55,9 @@ const Room = () => {
         <MemberList>
           <div className="member-item">{myName} - me</div>
           {Object.keys(member).map((clientId) => (
-            <div className="member-item">{member[clientId]}</div>
+            <div key={clientId} className="member-item">
+              {member[clientId]}
+            </div>
           ))}
         </MemberList>
         <ChatContainer>
@@ -73,7 +75,6 @@ const Room = () => {
           <ChatForm
             onSubmit={(e: any) => {
               e.preventDefault();
-              console.log(123);
               handleChat();
             }}
           >
@@ -153,7 +154,7 @@ const ChatContainer = styled.div`
 const ChatList = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100% - 80px);
+  height: calc(100% - 100px);
   overflow: auto;
   padding: 20px 16px 0 16px;
   .peer-chat {

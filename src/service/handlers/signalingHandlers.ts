@@ -15,10 +15,14 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcPeer.createPeerConnection(config);
     rtcPeer.connectDataChannel((datachannel: RTCDataChannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
-      dispatch.sendRequestMemberMessage({});
+
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });
+      console.debug('open datachannel peerId = ', peerId);
+      // const stringify = JSON.stringify(createDataChannelMessage({}));
+      // datachannel.send(stringify);
+      dispatch.sendCreateDataChannelMessage({});
     });
 
     rtcPeer.onIceCandidate((ice) => {
@@ -52,6 +56,8 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
-    dispatch.sendRequestMemberMessage({});
+    const username = storage.getItem('username');
+    const clientId = storage.getItem('clientId');
+    dispatch.sendRequestMemberMessage({ username, clientId });
   },
 };

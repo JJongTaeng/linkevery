@@ -11,13 +11,20 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
   ) => {
     const username = storage.getItem('username');
     const clientId = storage.getItem('clientId');
-    dispatch.sendResponseMemberMessage({ username, clientId });
+    ee.emit(APP_SERVICE_EVENT_NAME.ROOM_USERNAME, {
+      username: protocol.data.username,
+      clientId: protocol.data.peerId,
+    });
+    dispatch.sendResponseMemberMessage({ username, peerId: clientId });
   },
   [ROOM_MESSAGE_ID.RESPONSE_MEMBER_NAME]: (
     protocol,
     { dispatch, rtcManager, ee },
   ) => {
-    const { username, clientId } = protocol.data;
-    ee.emit(APP_SERVICE_EVENT_NAME.ROOM_USERNAME, { username, clientId });
+    const { username, peerId } = protocol.data;
+    ee.emit(APP_SERVICE_EVENT_NAME.ROOM_USERNAME, {
+      username,
+      clientId: peerId,
+    });
   },
 };

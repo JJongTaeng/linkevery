@@ -3,6 +3,6 @@ export {};
 
 declare global {
   interface Window {
-    RTC: any;
+    debug: any;
   }
 }

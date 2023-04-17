@@ -70,8 +70,8 @@ export class DispatchEvent extends DispatchEventService {
   }
 
   send(protocol: Protocol) {
-    console.debug('[send] ', protocol);
     if (protocol.messageType === MESSAGE_TYPE.SOCKET) {
+      console.debug('[send] ', protocol);
       this.socket.emit(EVENT_NAME, protocol);
     } else if (protocol.messageType === MESSAGE_TYPE.RTC) {
       this.rtcManager.sendAll(protocol);
