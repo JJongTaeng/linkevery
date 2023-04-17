@@ -52,6 +52,7 @@ export interface Protocol {
   messageType: MESSAGE_TYPE;
   category: CATEGORY;
   messageId: MessageId;
+  from: string;
   data: ProtocolData;
 }
 

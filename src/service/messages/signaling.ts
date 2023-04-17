@@ -1,14 +1,13 @@
 import {
   CATEGORY,
   MESSAGE_TYPE,
-  Protocol,
   ProtocolData,
   SIGNALING_MESSAGE_ID,
 } from '../../constants/protocol';
-import { createProtocolMessage } from './index';
+import { CreateProtocolFunctionParam, createProtocolMessage } from './index';
 
 export const signalingProtocolMessage = (
-  protocol: Omit<Protocol, 'category'>,
+  protocol: CreateProtocolFunctionParam,
 ) => {
   const protocolMessage = createProtocolMessage(CATEGORY.SIGNALING);
   return protocolMessage(protocol);

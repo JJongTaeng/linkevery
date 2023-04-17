@@ -1,14 +1,13 @@
-import { createProtocolMessage } from '.';
+import { CreateProtocolFunctionParam, createProtocolMessage } from '.';
 import {
   CATEGORY,
   CONNECTION_MESSAGE_ID,
   MESSAGE_TYPE,
-  Protocol,
   ProtocolData,
 } from '../../constants/protocol';
 
 export const connectionProtocolMessage = (
-  protocol: Omit<Protocol, 'category'>,
+  protocol: CreateProtocolFunctionParam,
 ) => {
   const protocolMessage = createProtocolMessage(CATEGORY.CONNECTION);
   return protocolMessage(protocol);

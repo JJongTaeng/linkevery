@@ -1,13 +1,12 @@
 import {
   CATEGORY,
   MESSAGE_TYPE,
-  Protocol,
   ProtocolData,
   ROOM_MESSAGE_ID,
 } from '../../constants/protocol';
-import { createProtocolMessage } from './index';
+import { CreateProtocolFunctionParam, createProtocolMessage } from './index';
 
-export const roomProtocolMessage = (protocol: Omit<Protocol, 'category'>) => {
+export const roomProtocolMessage = (protocol: CreateProtocolFunctionParam) => {
   const protocolMessage = createProtocolMessage(CATEGORY.ROOM);
   return protocolMessage(protocol);
 };
