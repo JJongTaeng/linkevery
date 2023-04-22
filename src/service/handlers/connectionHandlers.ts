@@ -15,35 +15,35 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
-    const { peerId, roomName } = protocol.data;
+    const { roomName } = protocol.data;
+    const { from } = protocol;
+    console.log(from);
+    if (!from) throw new Error(ERROR_TYPE.INVALID_PEER_ID);
 
-    const clientId = storage.getItem('clientId');
-    if (!peerId || !clientId) throw new Error(ERROR_TYPE.INVALID_PEER_ID);
-
-    rtcManager.createPeer(peerId);
-    const rtcPeer = rtcManager.getPeer(peerId);
+    rtcManager.createPeer(from);
+    const rtcPeer = rtcManager.getPeer(from);
     rtcPeer.createPeerConnection(config);
     rtcPeer.createDataChannel(roomName, (datachannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });
+      dispatch.sendCreateDataChannelMessage({ to: from });
     });
 
     rtcPeer.onIceCandidate((ice) => {
       dispatch.sendIceMessage({
-        peerId,
-        clientId,
+        to: from,
         ice,
       });
     });
 
     const offer = await rtcPeer.createOffer();
     rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-    dispatch.sendOfferMessage({ offer, peerId, clientId });
+    dispatch.sendOfferMessage({ offer, to: from });
   },
   [CONNECTION_MESSAGE_ID.DISCONNECT]: (protocol, { rtcManager }) => {
-    const { peerId } = protocol.data;
-    rtcManager.removePeer(peerId);
+    const { from } = protocol;
+    rtcManager.removePeer(from);
   },
 };

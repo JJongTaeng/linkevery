@@ -21,7 +21,7 @@ export const useChat = () => {
   return {
     chatList,
     sendChat: ({ message, clientId, date, username }: ChatType) => {
-      dispatch.sendChatMessage({ message, peerId: clientId, date, username });
+      dispatch.sendChatMessage({ message, date, username });
       handleChat({ message, clientId, date, username });
     },
   };

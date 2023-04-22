@@ -8,10 +8,10 @@ const storage = StorageService.getInstance();
 
 export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
   [SIGNALING_MESSAGE_ID.OFFER]: async (protocol, { dispatch, rtcManager }) => {
-    const clientId = storage.getItem('clientId');
-    const { peerId, offer } = protocol.data;
-    rtcManager.createPeer(peerId);
-    const rtcPeer = rtcManager.getPeer(peerId);
+    const { offer } = protocol.data;
+    const { from } = protocol;
+    rtcManager.createPeer(from);
+    const rtcPeer = rtcManager.getPeer(from);
     rtcPeer.createPeerConnection(config);
     rtcPeer.connectDataChannel((datachannel: RTCDataChannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
@@ -19,16 +19,15 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });
-      console.debug('open datachannel peerId = ', peerId);
+      console.debug('open datachannel = ', from);
       // const stringify = JSON.stringify(createDataChannelMessage({}));
       // datachannel.send(stringify);
-      dispatch.sendCreateDataChannelMessage({});
+      dispatch.sendCreateDataChannelMessage({ to: from });
     });
 
     rtcPeer.onIceCandidate((ice) => {
       dispatch.sendIceMessage({
-        peerId,
-        clientId,
+        to: from,
         ice,
       });
     });
@@ -38,18 +37,17 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
     dispatch.snedAnswerMessage({
       answer,
-      clientId,
-      peerId,
+      to: from,
     });
   },
   [SIGNALING_MESSAGE_ID.ANSWER]: (protocol, { dispatch, rtcManager }) => {
-    const { peerId, answer } = protocol.data;
-    const rtcPeer = rtcManager.getPeer(peerId);
+    const { answer } = protocol.data;
+    const rtcPeer = rtcManager.getPeer(protocol.from);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
   },
   [SIGNALING_MESSAGE_ID.ICE]: (protocol, { dispatch, rtcManager }) => {
-    const { peerId, ice } = protocol.data;
-    const rtcPeer = rtcManager.getPeer(peerId);
+    const { ice } = protocol.data;
+    const rtcPeer = rtcManager.getPeer(protocol.from);
     rtcPeer.setIcecandidate(ice);
   },
   [SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL]: (
@@ -57,7 +55,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     { dispatch, rtcManager },
   ) => {
     const username = storage.getItem('username');
-    const clientId = storage.getItem('clientId');
-    dispatch.sendRequestMemberMessage({ username, clientId });
+    dispatch.sendRequestMemberMessage({ username });
   },
 };
