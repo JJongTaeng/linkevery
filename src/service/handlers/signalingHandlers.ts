@@ -55,6 +55,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     { dispatch, rtcManager },
   ) => {
     const username = storage.getItem('username');
-    dispatch.sendRequestMemberMessage({ username });
+    dispatch.sendRequestMemberMessage({ username, to: protocol.from });
   },
 };

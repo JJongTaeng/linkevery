@@ -15,8 +15,8 @@ export const useRoom = () => {
     ee.on(APP_SERVICE_EVENT_NAME.ROOM_USERNAME, ({ username, clientId }) => {
       dispatch(
         roomActions.setMember({
-          ...member,
-          [clientId]: username,
+          clientId,
+          username,
         }),
       );
     });

@@ -28,7 +28,12 @@ export const roomSlice = createSlice({
       state.username = payload.username;
     },
     setMember: (state, { payload }) => {
-      state.member = payload;
+      const { clientId, username } = payload;
+      state.member[clientId] = username;
+    },
+    deleteMember: (state, { payload }) => {
+      const { clientId } = payload;
+      delete state.member[clientId];
     },
   },
 });

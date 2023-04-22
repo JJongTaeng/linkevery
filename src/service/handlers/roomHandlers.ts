@@ -14,7 +14,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
       username: protocol.data.username,
       clientId: protocol.from,
     });
-    dispatch.sendResponseMemberMessage({ username });
+    dispatch.sendResponseMemberMessage({ username, to: protocol.from });
   },
   [ROOM_MESSAGE_ID.RESPONSE_MEMBER_NAME]: (
     protocol,

@@ -1,5 +1,7 @@
 import { CONNECTION_MESSAGE_ID, HandlerMap } from '../../constants/protocol';
 import { ERROR_TYPE } from '../../error/error';
+import { roomActions } from '../../store/features/room/roomSlice';
+import { store } from '../../store/store';
 import { RTCManager, config } from '../rtc/RTCManager';
 import { SdpType } from '../rtc/RTCPeerService';
 import { StorageService } from '../storage/StorageService';
@@ -45,5 +47,6 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
   [CONNECTION_MESSAGE_ID.DISCONNECT]: (protocol, { rtcManager }) => {
     const { from } = protocol;
     rtcManager.removePeer(from);
+    store.dispatch(roomActions.deleteMember({ clientId: from }));
   },
 };
