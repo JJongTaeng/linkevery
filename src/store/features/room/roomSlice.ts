@@ -35,6 +35,10 @@ export const roomSlice = createSlice({
       const { clientId } = payload;
       delete state.member[clientId];
     },
+    leaveRoom: (state) => {
+      storage.setItem('roomName', '');
+      state.roomName = '';
+    },
   },
 });
 

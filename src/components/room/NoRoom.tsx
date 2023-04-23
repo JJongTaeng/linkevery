@@ -54,7 +54,7 @@ const NoRoom = () => {
       </Modal>
       <TopMenuContainer />
       <NoRoomContent>
-        <Text bold={true} size={'md'} color={'grey100'}>
+        <Text bold={true} size={'md'} color={'primary100'}>
           {username && username + '님 안녕하세요.'}
         </Text>
         <span className={'no-room-description'}>방에 입장해주세요 ~</span>

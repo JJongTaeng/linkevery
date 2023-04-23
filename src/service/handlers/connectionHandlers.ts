@@ -19,7 +19,6 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
   ) => {
     const { roomName } = protocol.data;
     const { from } = protocol;
-    console.log(from);
     if (!from) throw new Error(ERROR_TYPE.INVALID_PEER_ID);
 
     rtcManager.createPeer(from);
@@ -46,7 +45,7 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
   },
   [CONNECTION_MESSAGE_ID.DISCONNECT]: (protocol, { rtcManager }) => {
     const { from } = protocol;
-    rtcManager.removePeer(from);
     store.dispatch(roomActions.deleteMember({ clientId: from }));
+    rtcManager.removePeer(from);
   },
 };

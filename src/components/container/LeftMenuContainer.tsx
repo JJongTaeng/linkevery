@@ -12,11 +12,10 @@ const LeftMenuContainer = () => {
 const Container = styled.section`
   height: 100%;
   width: 70px;
-  background-color: ${({ theme }) => theme.color.grey100};
+  background-color: ${({ theme }) => theme.color.primary100};
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-right: 1px solid ${({ theme }) => theme.color.grey400};
 `;
 
 export default LeftMenuContainer;

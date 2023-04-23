@@ -89,6 +89,7 @@ const Room = () => {
                         setMessage((message) => message + '\n');
                         return;
                       }
+                      if (e.nativeEvent.isComposing) return;
                       handleChat();
                       break;
                     case 'Shift':
@@ -133,15 +134,14 @@ const MemberList = styled.div`
   width: 240px;
   padding: 16px;
 
-  border-top: 1px solid ${({ theme }) => theme.color.grey400};
-  background-color: ${({ theme }) => theme.color.grey200};
+  background-color: ${({ theme }) => theme.color.primary800};
 
   .member-item:nth-child(1) {
-    color: ${({ theme }) => theme.color.blue800};
+    color: ${({ theme }) => theme.color.primary100};
     font-weight: bold;
   }
   .member-item {
-    color: ${({ theme }) => theme.color.white};
+    color: ${({ theme }) => theme.color.grey100};
     margin-bottom: 16px;
   }
 `;
@@ -165,7 +165,7 @@ const ChatList = styled.div`
   }
   .chat-name,
   .chat-date {
-    color: ${({ theme }) => theme.color.grey200};
+    color: ${({ theme }) => theme.color.primary200};
     font-size: 12px;
   }
 `;
@@ -180,7 +180,7 @@ const ChatForm = styled.form`
 
   height: 80px;
 
-  border: 1px solid ${({ theme }) => theme.color.grey400};
+  border: 1px solid ${({ theme }) => theme.color.primary400};
   border-radius: 8px;
 
   textarea {
@@ -195,7 +195,7 @@ const ChatForm = styled.form`
 
     resize: none;
     box-sizing: border-box;
-    border-bottom: 1px solid ${({ theme }) => theme.color.grey400};
+    border-bottom: 1px solid ${({ theme }) => theme.color.primary400};
   }
   textarea::placeholder {
   }
@@ -215,7 +215,7 @@ const ChatForm = styled.form`
     cursor: default;
     svg {
       path {
-        stroke: ${({ theme }) => theme.color.grey400};
+        stroke: ${({ theme }) => theme.color.primary400};
       }
     }
   }
@@ -229,11 +229,11 @@ const ChatForm = styled.form`
     justify-content: flex-end;
     align-items: center;
     height: 100%;
-    background-color: ${({ theme }) => theme.color.grey400};
+    background-color: ${({ theme }) => theme.color.grey800};
     border-bottom-right-radius: 8px;
     border-bottom-left-radius: 8px;
     button {
-      background-color: ${({ theme }) => theme.color.grey400};
+      background-color: ${({ theme }) => theme.color.grey800};
     }
   }
 `;

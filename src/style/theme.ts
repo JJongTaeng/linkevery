@@ -1,12 +1,12 @@
 import { DefaultTheme } from 'styled-components';
 const color = {
   white: '#ffffff',
-  blue100: '#1234ff',
-  blue800: '#abcdff',
-  grey100: '#272727',
-  grey200: '#444444',
-  grey400: '#cccccc',
-  grey800: '#efefef',
+  primary100: '#2e2a63',
+  primary200: '#47419c',
+  primary400: '#c7b9ed',
+  primary800: '#f9f7fc',
+  grey100: '#3c3a42',
+  grey800: '#dddae6',
 };
 
 const size = {

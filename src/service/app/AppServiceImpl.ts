@@ -1,5 +1,7 @@
 import EventEmitter from 'events';
 import { io, Socket } from 'socket.io-client';
+import { roomActions } from '../../store/features/room/roomSlice';
+import { store } from '../../store/store';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
 import { RTCManager } from '../rtc/RTCManager';
@@ -33,7 +35,8 @@ export class AppServiceImpl extends AppService {
 
   public disconnect() {
     const roomName = storage.getItem('roomName');
-    this.rtcManager.clearPeerMap();
+    store.dispatch(roomActions.leaveRoom());
     this.dispatch.sendDisconnectMessage({ roomName });
+    this.rtcManager.clearPeerMap();
   }
 }

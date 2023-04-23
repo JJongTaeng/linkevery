@@ -9,7 +9,12 @@ const TopMenuContainer = () => {
   return (
     <Container>
       심플 채팅 <Text>{roomName ? roomName : ''}</Text>
-      <SvgOutDoor className={'out-door'} onClick={() => navigate('/')} />
+      <SvgOutDoor
+        className={'out-door'}
+        onClick={() => {
+          navigate('/');
+        }}
+      />
     </Container>
   );
 };
@@ -17,7 +22,7 @@ const TopMenuContainer = () => {
 const Container = styled.div`
   width: 100%;
   height: ${TOP_MENU_HEIGHT}px;
-  background-color: ${({ theme }) => theme.color.grey200};
+  background-color: ${({ theme }) => theme.color.primary200};
   color: ${({ theme }) => theme.color.white};
   display: flex;
   align-items: center;
@@ -33,14 +38,14 @@ const Container = styled.div`
     }
     &:hover {
       path {
-        fill: ${({ theme }) => theme.color.blue800};
+        fill: ${({ theme }) => theme.color.primary800};
       }
     }
   }
 `;
 
 const Text = styled.span`
-  color: ${({ theme }) => theme.color.grey100};
+  color: ${({ theme }) => theme.color.primary100};
   font-weight: bold;
   color: ${({ theme }) => theme.color.white};
   margin-left: 16px;
