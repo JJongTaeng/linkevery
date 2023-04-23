@@ -7,6 +7,7 @@ interface RoomState {
   member: {
     [key: string]: string;
   };
+  size: number;
 }
 
 const storage = StorageService.getInstance();
@@ -15,6 +16,7 @@ const initialState: RoomState = {
   roomName: storage.getItem('roomName'),
   username: storage.getItem('username'),
   member: {},
+  size: 0,
 };
 
 export const roomSlice = createSlice({
@@ -38,6 +40,9 @@ export const roomSlice = createSlice({
     leaveRoom: (state) => {
       storage.setItem('roomName', '');
       state.roomName = '';
+    },
+    setMemberSize: (state, { payload }) => {
+      state.size = payload;
     },
   },
 });

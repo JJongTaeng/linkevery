@@ -17,9 +17,10 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
-    const { roomName } = protocol.data;
+    const { roomName, size } = protocol.data;
     const { from } = protocol;
     if (!from) throw new Error(ERROR_TYPE.INVALID_PEER_ID);
+    store.dispatch(roomActions.setMemberSize(size));
 
     rtcManager.createPeer(from);
     const rtcPeer = rtcManager.getPeer(from);
