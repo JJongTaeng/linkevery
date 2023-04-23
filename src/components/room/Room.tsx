@@ -155,7 +155,7 @@ const ChatList = styled.div`
   display: flex;
   flex-direction: column;
   height: calc(100% - 100px);
-  overflow: auto;
+  overflow: overlay;
   padding: 20px 16px 0 16px;
   .peer-chat {
     align-self: flex-start;
