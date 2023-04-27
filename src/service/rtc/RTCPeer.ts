@@ -184,6 +184,10 @@ export class RTCPeer extends RTCPeerService {
     });
   }
 
+  public addTrack(track: MediaStreamTrack, stream: MediaStream) {
+    this.peer?.addTrack(track, stream);
+  }
+
   public sendMessage(protocol: Protocol) {
     if (!this.dataChannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
     const stringify = JSON.stringify(protocol);
