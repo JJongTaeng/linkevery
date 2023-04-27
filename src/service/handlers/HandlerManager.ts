@@ -12,6 +12,7 @@ import { chatHandlers } from './chatHandlers';
 import { connectionHandlers } from './connectionHandlers';
 import { roomHandlers } from './roomHandlers';
 import { signalingHandlers } from './signalingHandlers';
+import { voiceHandlers } from './voiceHandlers';
 
 type CategoryHandlers = { [key in CATEGORY]: HandlerMap<any> };
 
@@ -21,6 +22,7 @@ export class HandlerManager {
     [CATEGORY.SIGNALING]: signalingHandlers,
     [CATEGORY.CHAT]: chatHandlers,
     [CATEGORY.ROOM]: roomHandlers,
+    [CATEGORY.VOICE]: voiceHandlers,
   };
   constructor(
     private socket: Socket,

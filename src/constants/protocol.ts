@@ -14,6 +14,7 @@ export enum CATEGORY {
   SIGNALING = 'SIGNALING',
   CHAT = 'CHAT',
   ROOM = 'ROOM',
+  VOICE = 'VOICE',
 }
 
 export enum CONNECTION_MESSAGE_ID {
@@ -36,6 +37,12 @@ export enum ROOM_MESSAGE_ID {
 
 export enum CHAT_MESSAGE_ID {
   SEND = 'SEND',
+}
+
+export enum VOICE_MESSAGE_ID {
+  JOIN_VOICE = 'JOIN_VOICE',
+  CONNECTION_START = 'CONNECTION_START',
+  CONNECTED = 'CONNECTED',
 }
 
 export type MessageId =
