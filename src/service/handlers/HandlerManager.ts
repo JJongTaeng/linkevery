@@ -1,5 +1,4 @@
 import { Socket } from 'socket.io-client';
-import { EventEmitter } from 'stream';
 import {
   CATEGORY,
   EVENT_NAME,
@@ -28,7 +27,6 @@ export class HandlerManager {
     private socket: Socket,
     private rtcManager: RTCManager,
     private dispatch: DispatchEvent,
-    private ee: EventEmitter,
   ) {
     this.subscribeHandlers();
   }
@@ -39,7 +37,6 @@ export class HandlerManager {
       this.handlers[protocol.category][protocol.messageId](protocol, {
         dispatch: this.dispatch,
         rtcManager: this.rtcManager,
-        ee: this.ee,
       });
     });
     this.rtcManager.on(RTCManager.RTC_EVENT.DATA, (protocol: Protocol) => {
@@ -47,7 +44,6 @@ export class HandlerManager {
       this.handlers[protocol.category][protocol.messageId](protocol, {
         dispatch: this.dispatch,
         rtcManager: this.rtcManager,
-        ee: this.ee,
       });
     });
   }

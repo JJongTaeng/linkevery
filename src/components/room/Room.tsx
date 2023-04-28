@@ -3,11 +3,10 @@ import { nanoid } from 'nanoid';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useChat } from '../../hooks/useChat';
-import { useRoom } from '../../hooks/useRoom';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { StorageService } from '../../service/storage/StorageService';
-import { useAppSelector } from '../../store/hooks';
+import { chatActions } from '../../store/features/chatSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
@@ -18,12 +17,16 @@ const storage = StorageService.getInstance();
 const Room = () => {
   const navigate = useNavigate();
   const app = useRef(AppServiceImpl.getInstance()).current;
-  const { chatList, sendChat } = useChat();
-  const { member } = useRoom();
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const myName = useAppSelector((state) => state.room.username);
+  const { myName, messageList, member } = useAppSelector((state) => ({
+    myName: state.room.username,
+    member: state.room.member,
+    messageList: state.chat.messageList,
+  }));
+  const dispatch = useAppDispatch();
+
   const [message, setMessage] = useState('');
   const [isShift, setIsShift] = useState<boolean>(false);
 
@@ -39,12 +42,14 @@ const Room = () => {
 
   const handleChat = () => {
     if (!message) return;
-    sendChat({
-      message,
-      clientId: storage.getItem('clientId'),
-      date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-      username: myName,
-    });
+    dispatch(
+      chatActions.sendChat({
+        message,
+        clientId: storage.getItem('clientId'),
+        date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        username: myName,
+      }),
+    );
     setMessage('');
   };
 
@@ -62,7 +67,7 @@ const Room = () => {
         </MemberList>
         <ChatContainer>
           <ChatList>
-            {chatList.map(({ message, clientId, date, username }) => (
+            {messageList.map(({ message, clientId, date, username }) => (
               <ChatBubble
                 key={nanoid()}
                 message={message}

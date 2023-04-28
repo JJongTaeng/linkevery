@@ -1,15 +1,17 @@
-import { APP_SERVICE_EVENT_NAME } from '../../constants/appEvent';
 import { CHAT_MESSAGE_ID, HandlerMap } from '../../constants/protocol';
+import { chatActions } from '../../store/features/chatSlice';
+import { store } from '../../store/store';
 
 export const chatHandlers: HandlerMap<CHAT_MESSAGE_ID> = {
-  [CHAT_MESSAGE_ID.SEND]: (protocol, { dispatch, rtcManager, ee }) => {
+  [CHAT_MESSAGE_ID.SEND]: (protocol, { dispatch, rtcManager }) => {
     const { message, date, username } = protocol.data;
-
-    ee.emit(APP_SERVICE_EVENT_NAME.CHAT_MESSAGE, {
-      message,
-      clientId: protocol.from,
-      date,
-      username,
-    });
+    store.dispatch(
+      chatActions.receivedChat({
+        message,
+        clientId: protocol.from,
+        date,
+        username,
+      }),
+    );
   },
 };

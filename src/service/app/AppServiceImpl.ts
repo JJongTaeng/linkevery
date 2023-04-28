@@ -1,6 +1,5 @@
-import EventEmitter from 'events';
 import { io, Socket } from 'socket.io-client';
-import { roomActions } from '../../store/features/room/roomSlice';
+import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
@@ -13,12 +12,11 @@ export class AppServiceImpl extends AppService {
   readonly socket: Socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
   readonly rtcManager = new RTCManager();
   readonly dispatch = new DispatchEvent(this.socket, this.rtcManager);
-  readonly ee = new EventEmitter();
 
   public static instance: AppServiceImpl;
   private constructor() {
     super();
-    new HandlerManager(this.socket, this.rtcManager, this.dispatch, this.ee);
+    new HandlerManager(this.socket, this.rtcManager, this.dispatch);
 
     window.debug = {
       rtcManager: this.rtcManager,

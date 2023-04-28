@@ -2,7 +2,7 @@ import { Button, Form, Input, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { StorageService } from '../../service/storage/StorageService';
-import { roomActions } from '../../store/features/room/roomSlice';
+import { roomActions } from '../../store/features/roomSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Text } from '../../style';
 import { TOP_MENU_HEIGHT } from '../../style/constants';

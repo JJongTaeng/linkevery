@@ -1,6 +1,6 @@
 import { CONNECTION_MESSAGE_ID, HandlerMap } from '../../constants/protocol';
 import { ERROR_TYPE } from '../../error/error';
-import { roomActions } from '../../store/features/room/roomSlice';
+import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { RTCManager, config } from '../rtc/RTCManager';
 import { SdpType } from '../rtc/RTCPeerService';

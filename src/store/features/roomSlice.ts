@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { StorageService } from '../../../service/storage/StorageService';
+import { StorageService } from '../../service/storage/StorageService';
 
 interface RoomState {
   roomName: string;

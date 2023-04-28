@@ -1,4 +1,3 @@
-import { EventEmitter } from 'stream';
 import { DispatchEvent } from '../service/dispatch/DispatchEvent';
 import { RTCManagerService } from '../service/rtc/RTCManagerService';
 
@@ -70,11 +69,9 @@ export type HandlerMap<T extends string | number | symbol> = {
     {
       dispatch,
       rtcManager,
-      ee,
     }: {
       dispatch: DispatchEvent;
       rtcManager: RTCManagerService;
-      ee: EventEmitter;
     },
   ) => void;
 };
