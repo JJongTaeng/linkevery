@@ -40,7 +40,7 @@ export enum CHAT_MESSAGE_ID {
 }
 
 export enum VOICE_MESSAGE_ID {
-  JOIN_VOICE = 'JOIN_VOICE',
+  JOIN = 'JOIN',
   CONNECTION_START = 'CONNECTION_START',
   CONNECTED = 'CONNECTED',
 }
@@ -49,7 +49,8 @@ export type MessageId =
   | CONNECTION_MESSAGE_ID
   | CHAT_MESSAGE_ID
   | SIGNALING_MESSAGE_ID
-  | ROOM_MESSAGE_ID;
+  | ROOM_MESSAGE_ID
+  | VOICE_MESSAGE_ID;
 
 export interface ProtocolData {
   [key: string]: any;
