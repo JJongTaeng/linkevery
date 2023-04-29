@@ -190,11 +190,7 @@ export class RTCPeer extends RTCPeerService {
   }
 
   public onTrack() {
-    console.log('onTrack', this.peer);
-    if (!this.peer) {
-      return;
-    }
-    this.peer.addEventListener('track', (e) => {
+    this.peer?.addEventListener('track', (e) => {
       console.log('e', e);
       this.peerStream = e.streams[0];
     });

@@ -32,7 +32,6 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
       });
       dispatch.sendCreateDataChannelMessage({ to: from });
     });
-    rtcPeer.onTrack();
 
     rtcPeer.onIceCandidate((ice) => {
       dispatch.sendIceMessage({
