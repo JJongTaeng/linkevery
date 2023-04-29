@@ -22,9 +22,10 @@ import {
   offerMessage,
 } from '../messages/signaling';
 import {
-  voiceConnectedMessage,
-  voiceConnectionStartMessage,
+  voiceAnswerMessage,
+  voiceIceMessage,
   voiceJoinMessage,
+  voiceOfferMessage,
 } from '../messages/voice';
 import { RTCManager } from '../rtc/RTCManager';
 import { DispatchEventService } from './DispatchEventService';
@@ -46,7 +47,7 @@ export class DispatchEvent extends DispatchEventService {
     this.send(offerMessage(data));
   }
 
-  snedAnswerMessage(data: ProtocolData) {
+  sendAnswerMessage(data: ProtocolData) {
     this.send(answerMessage(data));
   }
 
@@ -78,12 +79,16 @@ export class DispatchEvent extends DispatchEventService {
     this.send(voiceJoinMessage(data));
   }
 
-  sendVoiceConnectionStartMessage(data: ProtocolData) {
-    this.send(voiceConnectionStartMessage(data));
+  sendVoiceOfferMessage(data: ProtocolData) {
+    this.send(voiceOfferMessage(data));
   }
 
-  sendVoiceConnectedMessage(data: ProtocolData) {
-    this.send(voiceConnectedMessage(data));
+  sendVoiceAnswerMessage(data: ProtocolData) {
+    this.send(voiceAnswerMessage(data));
+  }
+
+  sendVoiceIceMessage(data: ProtocolData) {
+    this.send(voiceIceMessage(data));
   }
 
   send(protocol: Protocol) {

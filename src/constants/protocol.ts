@@ -40,8 +40,9 @@ export enum CHAT_MESSAGE_ID {
 
 export enum VOICE_MESSAGE_ID {
   JOIN = 'JOIN',
-  CONNECTION_START = 'CONNECTION_START',
-  CONNECTING = 'CONNECTING',
+  OFFER = 'OFFER',
+  ANSWER = 'ANSWER',
+  ICE = 'ICE',
 }
 
 export type MessageId =

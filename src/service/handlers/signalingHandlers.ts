@@ -35,7 +35,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
-    dispatch.snedAnswerMessage({
+    dispatch.sendAnswerMessage({
       answer,
       to: from,
     });
