@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { StorageService } from '../../service/storage/StorageService';
 import { chatActions } from '../../store/features/chatSlice';
+import { roomActions } from '../../store/features/roomSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
@@ -34,6 +35,7 @@ const Room = () => {
     if (!myName || !roomName) navigate('/');
     app.dispatch.sendConnectMessage({});
     app.dispatch.sendJoinRoomMessage({ roomName });
+    dispatch(roomActions.setRoomName(roomName));
     storage.setItem('roomName', roomName || '');
     return () => {
       app.disconnect();
