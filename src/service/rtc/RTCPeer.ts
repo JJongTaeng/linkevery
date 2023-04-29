@@ -10,6 +10,7 @@ import {
 export class RTCPeer extends RTCPeerService {
   private peer?: RTCPeerConnection;
   private dataChannel?: RTCDataChannel;
+  private peerStream?: MediaStream;
 
   constructor() {
     super();
@@ -103,6 +104,10 @@ export class RTCPeer extends RTCPeerService {
     return this.dataChannel;
   }
 
+  public getPeerStream() {
+    return this.peerStream;
+  }
+
   public closePeer() {
     if (!this.peer) {
       console.error('invalid peer', this.peer);
@@ -181,6 +186,17 @@ export class RTCPeer extends RTCPeerService {
       if (event.candidate) {
         fn(event.candidate);
       }
+    });
+  }
+
+  public onTrack() {
+    console.log('onTrack', this.peer);
+    if (!this.peer) {
+      return;
+    }
+    this.peer.addEventListener('track', (e) => {
+      console.log('e', e);
+      this.peerStream = e.streams[0];
     });
   }
 

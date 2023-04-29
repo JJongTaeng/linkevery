@@ -29,7 +29,7 @@ export const voiceConnectionStartMessage = (data: ProtocolData) => {
 
 export const voiceConnectedMessage = (data: ProtocolData) => {
   return voiceProtocolMessage({
-    messageId: VOICE_MESSAGE_ID.CONNECTED,
+    messageId: VOICE_MESSAGE_ID.CONNECTING,
     messageType: MESSAGE_TYPE.RTC,
     data,
   });
