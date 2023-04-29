@@ -8,7 +8,7 @@ const TopMenuContainer = () => {
   const navigate = useNavigate();
   return (
     <Container>
-      심플 채팅 <Text>{roomName ? roomName : ''}</Text>
+      심플 채팅 <Text>{roomName ? roomName?.split('_')[0] : ''}</Text>
       <SvgOutDoor
         className={'out-door'}
         onClick={() => {

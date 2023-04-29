@@ -10,6 +10,7 @@ const color = {
 };
 
 const size = {
+  xxl: 40,
   xl: 24,
   lg: 20,
   md: 16,

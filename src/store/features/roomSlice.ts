@@ -24,7 +24,7 @@ export const roomSlice = createSlice({
   initialState,
   reducers: {
     setRoomName: (state, { payload }) => {
-      state.roomName = payload.roomName;
+      state.roomName = payload;
     },
     setUsername: (state, { payload }) => {
       state.username = payload.username;
