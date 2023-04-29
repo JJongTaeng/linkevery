@@ -43,6 +43,7 @@ export enum VOICE_MESSAGE_ID {
   OFFER = 'OFFER',
   ANSWER = 'ANSWER',
   ICE = 'ICE',
+  DISCONNECT = 'DICONNECT',
 }
 
 export type MessageId =

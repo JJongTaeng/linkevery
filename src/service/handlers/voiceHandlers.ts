@@ -1,6 +1,7 @@
 import { HandlerMap, VOICE_MESSAGE_ID } from '../../constants/protocol';
 import { UserStatus } from '../../store/features/userInfoSlice';
 import { store } from '../../store/store';
+import { audioManager } from '../audio/AudioManager';
 import { config } from '../rtc/RTCManager';
 import { SdpType } from '../rtc/RTCPeerService';
 
@@ -16,7 +17,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     const rtcVoicePeer = rtcVoiceManager.getPeer(from);
     rtcVoicePeer.createPeerConnection(config);
 
-    rtcVoicePeer.onTrack();
+    rtcVoicePeer.onTrack(from);
 
     rtcVoicePeer.onIceCandidate((ice) => {
       dispatch.sendVoiceIceMessage({
@@ -33,10 +34,6 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       const peer = rtcVoiceManager.getPeer(from);
       console.log(track, mediaStream);
       peer.addTrack(track, mediaStream);
-      const audio = document.createElement('audio');
-      audio.srcObject = mediaStream;
-      document.body.appendChild(audio);
-      audio.play();
     });
 
     const offer = await rtcVoicePeer.createOffer();
@@ -49,7 +46,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     rtcVoiceManager.createPeer(from);
     const rtcVoicePeer = rtcVoiceManager.getPeer(from);
     rtcVoicePeer.createPeerConnection(config);
-    rtcVoicePeer.onTrack();
+    rtcVoicePeer.onTrack(from);
     rtcVoicePeer.onIceCandidate((ice) => {
       dispatch.sendVoiceIceMessage({
         to: from,
@@ -66,10 +63,6 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       const peer = rtcVoiceManager.getPeer(from);
       console.log(track, mediaStream);
       peer.addTrack(track, mediaStream);
-      const audio = document.createElement('audio');
-      audio.srcObject = mediaStream;
-      document.body.appendChild(audio);
-      audio.play();
     });
 
     const answer = await rtcVoicePeer.createAnswer();
@@ -88,5 +81,13 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     const { ice } = protocol.data;
     const rtcVoicePeer = rtcVoiceManager.getPeer(protocol.from);
     rtcVoicePeer.setIcecandidate(ice);
+  },
+  [VOICE_MESSAGE_ID.DISCONNECT]: (protocol, { dispatch, rtcVoiceManager }) => {
+    const { from } = protocol;
+    if (store.getState().userInfo.status !== UserStatus.VOICE) {
+      return;
+    }
+    rtcVoiceManager.removePeer(from);
+    audioManager.removeAudio(from);
   },
 };

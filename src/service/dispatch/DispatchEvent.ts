@@ -23,6 +23,7 @@ import {
 } from '../messages/signaling';
 import {
   voiceAnswerMessage,
+  voiceDisconnectMessage,
   voiceIceMessage,
   voiceJoinMessage,
   voiceOfferMessage,
@@ -89,6 +90,10 @@ export class DispatchEvent extends DispatchEventService {
 
   sendVoiceIceMessage(data: ProtocolData) {
     this.send(voiceIceMessage(data));
+  }
+
+  sendVoiceDisconnectMessage(data: ProtocolData) {
+    this.send(voiceDisconnectMessage(data));
   }
 
   send(protocol: Protocol) {

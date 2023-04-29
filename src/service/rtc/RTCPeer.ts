@@ -1,5 +1,6 @@
 import { Protocol } from '../../constants/protocol';
 import { ERROR_TYPE } from '../../error/error';
+import { audioManager } from '../audio/AudioManager';
 import {
   PeerConnectionStateHandlers,
   PeerSignalingStateHandlers,
@@ -189,14 +190,11 @@ export class RTCPeer extends RTCPeerService {
     });
   }
 
-  public onTrack() {
+  public onTrack(id: string) {
     this.peer?.addEventListener('track', (e) => {
       console.log('e', e);
       this.peerStream = e.streams[0];
-      const audio = document.createElement('audio');
-      audio.srcObject = this.peerStream;
-      document.body.appendChild(audio);
-      audio.play();
+      audioManager.addAudio(id, this.peerStream);
     });
   }
 

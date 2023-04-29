@@ -42,3 +42,11 @@ export const voiceIceMessage = (data: ProtocolData) => {
     data,
   });
 };
+
+export const voiceDisconnectMessage = (data: ProtocolData) => {
+  return voiceProtocolMessage({
+    messageId: VOICE_MESSAGE_ID.DISCONNECT,
+    messageType: MESSAGE_TYPE.RTC,
+    data,
+  });
+};

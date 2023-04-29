@@ -1,9 +1,10 @@
 import { Button, Form, Input, Modal, Switch } from 'antd';
 import { nanoid } from 'nanoid';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
+import { audioManager } from '../../service/audio/AudioManager';
 import { roomActions } from '../../store/features/roomSlice';
 import {
   UserStatus,
@@ -16,7 +17,9 @@ import SvgMicOff from '../icons/MicOn2';
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { dispatch: appDispatch } = AppServiceImpl.getInstance();
+  const { dispatch: appDispatch, rtcVoiceManager } = useRef(
+    AppServiceImpl.getInstance(),
+  ).current;
   const dispatch = useAppDispatch();
   const { status, roomName } = useAppSelector((state) => ({
     status: state.userInfo.status,
@@ -37,6 +40,9 @@ const LeftMenuContainer = () => {
                 appDispatch.sendVoiceJoinMessage({});
                 dispatch(userInfoActions.changeStatus(UserStatus.VOICE));
               } else {
+                appDispatch.sendVoiceDisconnectMessage({});
+                rtcVoiceManager.clearPeerMap();
+                audioManager.clearAllAudio();
               }
             }}
           />
