@@ -69,9 +69,11 @@ export type HandlerMap<T extends string | number | symbol> = {
     {
       dispatch,
       rtcManager,
+      rtcVoiceManager,
     }: {
       dispatch: DispatchEvent;
       rtcManager: RTCManagerService;
+      rtcVoiceManager: RTCManagerService;
     },
   ) => void;
 };

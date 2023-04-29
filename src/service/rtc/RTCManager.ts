@@ -1,7 +1,6 @@
 import { Protocol } from '../../constants/protocol';
 import { ERROR_TYPE } from '../../error/error';
 import { RTCManagerService } from './RTCManagerService';
-import { RTCPeer } from './RTCPeer';
 
 export const config = {
   iceServers: [
@@ -24,25 +23,12 @@ export const config = {
 };
 
 export class RTCManager extends RTCManagerService {
-  readonly peerMap = new Map<string, RTCPeer>();
   public static RTC_EVENT = {
     DATA: 'RTC_DATA',
   };
 
   constructor() {
     super();
-  }
-
-  createPeer(id: string): void {
-    if (this.peerMap.has(id)) return;
-    const peer = new RTCPeer();
-    this.peerMap.set(id, peer);
-  }
-
-  getPeer(id: string): RTCPeer {
-    const peer = this.peerMap.get(id);
-    if (!peer) throw new Error(ERROR_TYPE.INVALID_PEER + `id = ${id}`);
-    return peer;
   }
 
   sendTo(protocol: Protocol) {
@@ -63,19 +49,6 @@ export class RTCManager extends RTCManagerService {
       const stringify = JSON.stringify(protocol);
       console.debug('[send] ', protocol);
       datachannel.send(stringify);
-    });
-  }
-
-  removePeer(id: string): void {
-    const peer = this.getPeer(id);
-    peer.closePeer();
-    this.peerMap.delete(id);
-  }
-
-  clearPeerMap(): void {
-    this.peerMap.forEach((peer, key) => {
-      peer.closePeer();
-      this.peerMap.delete(key);
     });
   }
 }

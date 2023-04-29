@@ -4,6 +4,7 @@ import { store } from '../../store/store';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
 import { RTCManager } from '../rtc/RTCManager';
+import { RTCVoiceManager } from '../rtc/RTCVoiceManager';
 import { StorageService } from '../storage/StorageService';
 import { AppService } from './AppService';
 
@@ -11,12 +12,18 @@ const storage = StorageService.getInstance();
 export class AppServiceImpl extends AppService {
   readonly socket: Socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
   readonly rtcManager = new RTCManager();
+  readonly rtcVoiceManager = new RTCVoiceManager();
   readonly dispatch = new DispatchEvent(this.socket, this.rtcManager);
 
   public static instance: AppServiceImpl;
   private constructor() {
     super();
-    new HandlerManager(this.socket, this.rtcManager, this.dispatch);
+    new HandlerManager(
+      this.socket,
+      this.rtcManager,
+      this.rtcVoiceManager,
+      this.dispatch,
+    );
 
     window.debug = {
       rtcManager: this.rtcManager,

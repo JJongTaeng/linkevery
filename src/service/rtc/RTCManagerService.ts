@@ -1,19 +1,34 @@
 import EventEmitter from 'events';
+import { ERROR_TYPE } from '../../error/error';
 import { RTCPeer } from './RTCPeer';
-import { Protocol } from '../../constants/protocol';
 
 export abstract class RTCManagerService extends EventEmitter {
   constructor() {
     super();
   }
+  readonly peerMap = new Map<string, RTCPeer>();
 
-  public abstract createPeer(id: string): void;
+  createPeer(id: string): void {
+    if (this.peerMap.has(id)) return;
+    const peer = new RTCPeer();
+    this.peerMap.set(id, peer);
+  }
+  getPeer(id: string): RTCPeer {
+    const peer = this.peerMap.get(id);
+    if (!peer) throw new Error(ERROR_TYPE.INVALID_PEER + `id = ${id}`);
+    return peer;
+  }
 
-  public abstract getPeer(id: string): RTCPeer;
+  removePeer(id: string): void {
+    const peer = this.getPeer(id);
+    peer.closePeer();
+    this.peerMap.delete(id);
+  }
 
-  public abstract sendAll(protocol: Protocol): void;
-
-  public abstract removePeer(id: string): void;
-
-  public abstract clearPeerMap(): void;
+  clearPeerMap(): void {
+    this.peerMap.forEach((peer, key) => {
+      peer.closePeer();
+      this.peerMap.delete(key);
+    });
+  }
 }
