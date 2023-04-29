@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal } from 'antd';
+import { Button, Form, Input, Modal, Switch } from 'antd';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,8 @@ import {
   userInfoActions,
 } from '../../store/features/userInfoSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import SvgMicOn from '../icons/MicOn';
+import SvgMicOff from '../icons/MicOn2';
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
@@ -26,14 +28,18 @@ const LeftMenuContainer = () => {
     <Container>
       <div>
         {roomName && (
-          <Button
-            onClick={() => {
-              appDispatch.sendVoiceJoinMessage({});
-              dispatch(userInfoActions.changeStatus(UserStatus.VOICE));
+          <Switch
+            checkedChildren={<SvgMicOn />}
+            unCheckedChildren={<SvgMicOff />}
+            defaultChecked={false}
+            onChange={(value) => {
+              if (value) {
+                appDispatch.sendVoiceJoinMessage({});
+                dispatch(userInfoActions.changeStatus(UserStatus.VOICE));
+              } else {
+              }
             }}
-          >
-            voice
-          </Button>
+          />
         )}
       </div>
       <div>{!roomName && <Button onClick={() => setOpen(true)}>+</Button>}</div>
@@ -80,6 +86,12 @@ const Container = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  svg {
+    margin-top: 4px;
+  }
+  g {
+    fill: white;
+  }
 `;
 
 export default LeftMenuContainer;

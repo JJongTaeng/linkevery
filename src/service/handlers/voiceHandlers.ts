@@ -19,7 +19,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     rtcVoicePeer.onTrack();
 
     rtcVoicePeer.onIceCandidate((ice) => {
-      dispatch.sendIceMessage({
+      dispatch.sendVoiceIceMessage({
         to: from,
         ice,
       });
@@ -33,13 +33,15 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       const peer = rtcVoiceManager.getPeer(from);
       console.log(track, mediaStream);
       peer.addTrack(track, mediaStream);
+      const audio = document.createElement('audio');
+      audio.srcObject = mediaStream;
+      document.body.appendChild(audio);
+      audio.play();
     });
 
     const offer = await rtcVoicePeer.createOffer();
     rtcVoicePeer.setSdp({ sdp: offer, type: SdpType.local });
-    // dispatch.sendOfferMessage({ offer, to: from }); voice offer로변경
-
-    // dispatch.sendVoiceConnectionStartMessage({ to: from });
+    dispatch.sendVoiceOfferMessage({ offer, to: from });
   },
   [VOICE_MESSAGE_ID.OFFER]: async (protocol, { dispatch, rtcVoiceManager }) => {
     const { offer } = protocol.data;
@@ -49,11 +51,12 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     rtcVoicePeer.createPeerConnection(config);
     rtcVoicePeer.onTrack();
     rtcVoicePeer.onIceCandidate((ice) => {
-      dispatch.sendIceMessage({
+      dispatch.sendVoiceIceMessage({
         to: from,
         ice,
       });
     });
+    await rtcVoicePeer.setSdp({ sdp: offer, type: SdpType.remote });
 
     const mediaStream = await navigator.mediaDevices.getUserMedia({
       video: false,
@@ -63,15 +66,18 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       const peer = rtcVoiceManager.getPeer(from);
       console.log(track, mediaStream);
       peer.addTrack(track, mediaStream);
+      const audio = document.createElement('audio');
+      audio.srcObject = mediaStream;
+      document.body.appendChild(audio);
+      audio.play();
     });
 
-    await rtcVoicePeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcVoicePeer.createAnswer();
     await rtcVoicePeer.setSdp({ sdp: answer, type: SdpType.local });
-    // dispatch.snedAnswerMessage({ voice answer dispatch로 변경
-    //   answer,
-    //   to: from,
-    // });
+    dispatch.sendVoiceAnswerMessage({
+      answer,
+      to: from,
+    });
   },
   [VOICE_MESSAGE_ID.ANSWER]: (protocol, { dispatch, rtcVoiceManager }) => {
     const { answer } = protocol.data;
