@@ -22,7 +22,9 @@ const ChatBubble = ({ message, date, username, isMyChat }: ChatBubbleProps) => {
           <p>{message}</p>
         </StyledCard>
       </Badge.Ribbon>
-      <span className={'chat-date'}>{date}</span>
+      <div className={'chat-date'}>
+        <span>{date}</span>
+      </div>
     </div>
   );
 };

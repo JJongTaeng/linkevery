@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface UserInfoState {
+interface voiceState {
   status: boolean;
 }
 
-const initialState: UserInfoState = {
+const initialState: voiceState = {
   status: false,
 };
 

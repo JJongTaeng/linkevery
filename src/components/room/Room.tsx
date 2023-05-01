@@ -180,15 +180,28 @@ const ChatList = styled.div`
   overflow: overlay;
   padding: 20px 16px 0 16px;
   .peer-chat {
+    margin-bottom: 8px;
     align-self: flex-start;
+    .chat-date {
+      display: flex;
+      justify-content: flex-start;
+    }
   }
   .my-chat {
+    margin-bottom: 8px;
+
     align-self: flex-end;
+    .chat-date {
+      display: flex;
+      justify-content: flex-end;
+    }
   }
   .chat-name,
   .chat-date {
-    color: ${({ theme }) => theme.color.primary200};
-    font-size: 12px;
+    span {
+      color: ${({ theme }) => theme.color.primary200};
+      font-size: 12px;
+    }
   }
 `;
 
