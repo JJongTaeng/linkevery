@@ -7,10 +7,12 @@ import {
 } from '../../constants/protocol';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { RTCManager } from '../rtc/RTCManager';
+import { RTCScreenShareManager } from '../rtc/RTCScreenShareManager';
 import { RTCVoiceManager } from '../rtc/RTCVoiceManager';
 import { chatHandlers } from './chatHandlers';
 import { connectionHandlers } from './connectionHandlers';
 import { roomHandlers } from './roomHandlers';
+import { screenShareHandlers } from './screenShareHandlers';
 import { signalingHandlers } from './signalingHandlers';
 import { voiceHandlers } from './voiceHandlers';
 
@@ -23,11 +25,13 @@ export class HandlerManager {
     [CATEGORY.CHAT]: chatHandlers,
     [CATEGORY.ROOM]: roomHandlers,
     [CATEGORY.VOICE]: voiceHandlers,
+    [CATEGORY.SCREEN_SHARE]: screenShareHandlers,
   };
   constructor(
     private socket: Socket,
     private rtcManager: RTCManager,
     private rtcVoiceManager: RTCVoiceManager,
+    private rtcScreenShareManager: RTCScreenShareManager,
     private dispatch: DispatchEvent,
   ) {
     this.subscribeHandlers();
@@ -40,6 +44,7 @@ export class HandlerManager {
         dispatch: this.dispatch,
         rtcManager: this.rtcManager,
         rtcVoiceManager: this.rtcVoiceManager,
+        rtcScreenShareManager: this.rtcScreenShareManager,
       });
     });
     this.rtcManager.on(RTCManager.RTC_EVENT.DATA, (protocol: Protocol) => {
@@ -48,6 +53,7 @@ export class HandlerManager {
         dispatch: this.dispatch,
         rtcManager: this.rtcManager,
         rtcVoiceManager: this.rtcVoiceManager,
+        rtcScreenShareManager: this.rtcScreenShareManager,
       });
     });
   }

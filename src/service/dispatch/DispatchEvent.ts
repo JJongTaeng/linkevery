@@ -93,6 +93,26 @@ export class DispatchEvent extends DispatchEventService {
     this.send(voiceDisconnectMessage(data));
   }
 
+  sendScreenShareJoinMessage(data: ProtocolData) {
+    this.send(voiceJoinMessage(data));
+  }
+
+  sendScreenShareOfferMessage(data: ProtocolData) {
+    this.send(voiceOfferMessage(data));
+  }
+
+  sendScreenShareAnswerMessage(data: ProtocolData) {
+    this.send(voiceAnswerMessage(data));
+  }
+
+  sendScreenShareIceMessage(data: ProtocolData) {
+    this.send(voiceIceMessage(data));
+  }
+
+  sendScreenShareDisconnectMessage(data: ProtocolData) {
+    this.send(voiceDisconnectMessage(data));
+  }
+
   send(protocol: Protocol) {
     if (protocol.messageType === MESSAGE_TYPE.SOCKET) {
       console.debug('[send] ', protocol);
