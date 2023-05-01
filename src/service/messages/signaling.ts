@@ -13,6 +13,14 @@ export const signalingProtocolMessage = (
   return protocolMessage(protocol);
 };
 
+export const joinRoomMessage = (data: ProtocolData) => {
+  return signalingProtocolMessage({
+    messageId: SIGNALING_MESSAGE_ID.JOIN_ROOM,
+    messageType: MESSAGE_TYPE.SOCKET,
+    data,
+  });
+};
+
 export const offerMessage = (data: ProtocolData) => {
   return signalingProtocolMessage({
     messageId: SIGNALING_MESSAGE_ID.OFFER,
