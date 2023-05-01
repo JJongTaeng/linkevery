@@ -14,6 +14,7 @@ export class AppServiceImpl extends AppService {
   readonly socket: Socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
   readonly rtcManager = new RTCManager();
   readonly rtcVoiceManager = new RTCVoiceManager();
+  readonly rtcScreenShareManager = new RTCVoiceManager();
   readonly dispatch = new DispatchEvent(this.socket, this.rtcManager);
 
   public static instance: AppServiceImpl;
@@ -23,6 +24,7 @@ export class AppServiceImpl extends AppService {
       this.socket,
       this.rtcManager,
       this.rtcVoiceManager,
+      this.rtcScreenShareManager,
       this.dispatch,
     );
 

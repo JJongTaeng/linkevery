@@ -1,6 +1,7 @@
-import { Protocol } from '../../constants/protocol';
+import { Protocol, RTC_MANAGER_TYPE } from '../../constants/protocol';
 import { ERROR_TYPE } from '../../error/error';
-import { audioManager } from '../audio/AudioManager';
+import { audioManager } from '../media/AudioManager';
+import { videoManager } from '../media/VideoManager';
 import {
   PeerConnectionStateHandlers,
   PeerSignalingStateHandlers,
@@ -190,11 +191,17 @@ export class RTCPeer extends RTCPeerService {
     });
   }
 
-  public onTrack(id: string) {
+  public onTrack(id: string, rtcType: RTC_MANAGER_TYPE) {
+    console.log('onTrack', rtcType);
     this.peer?.addEventListener('track', (e) => {
       console.log('e', e);
       this.peerStream = e.streams[0];
-      audioManager.addAudio(id, this.peerStream);
+      if (rtcType === RTC_MANAGER_TYPE.RTC_VOICE) {
+        audioManager.addAudio(id, this.peerStream);
+      } else if (rtcType === RTC_MANAGER_TYPE.RTC_SCREEN_SHARE) {
+        // videoManager.addAudio(id, this.peerStream);
+        videoManager.addVideo(id, this.peerStream);
+      }
     });
   }
 

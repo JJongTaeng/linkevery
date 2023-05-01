@@ -54,11 +54,8 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
           dispatch.sendCreateDataChannelMessage({ to: from });
         });
         break;
-      case RTC_MANAGER_TYPE.RTC_VOICE:
-        if (!store.getState().voice.status) {
-          return;
-        }
-        rtcPeer.onTrack(from);
+      case RTC_MANAGER_TYPE.RTC_VOICE: {
+        rtcPeer.onTrack(from, rtcType);
         const mediaStream = await navigator.mediaDevices.getUserMedia({
           video: false,
           audio: true,
@@ -67,8 +64,12 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
           rtcPeer.addTrack(track, mediaStream);
         });
         break;
-      case RTC_MANAGER_TYPE.RTC_SCREEN_SHARE:
+      }
+      case RTC_MANAGER_TYPE.RTC_SCREEN_SHARE: {
+        rtcPeer.onTrack(from, rtcType);
+
         break;
+      }
     }
     const offer = await rtcPeer.createOffer();
     rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
@@ -85,6 +86,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtc.createPeer(from);
     const rtcPeer = rtc.getPeer(from);
     rtcPeer.createPeerConnection(config);
+
     rtcPeer.onIceCandidate((ice) => {
       dispatch.sendIceMessage({
         to: from,
@@ -110,7 +112,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
 
         break;
       case RTC_MANAGER_TYPE.RTC_VOICE:
-        rtcPeer.onTrack(from);
+        rtcPeer.onTrack(from, rtcType);
         const mediaStream = await navigator.mediaDevices.getUserMedia({
           video: false,
           audio: true,
@@ -119,8 +121,17 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
           rtcPeer.addTrack(track, mediaStream);
         });
         break;
-      case RTC_MANAGER_TYPE.RTC_SCREEN_SHARE:
+      case RTC_MANAGER_TYPE.RTC_SCREEN_SHARE: {
+        rtcPeer.onTrack(from, rtcType);
+        const mediaStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: { echoCancellation: true, noiseSuppression: true },
+        });
+        mediaStream?.getTracks().forEach((track) => {
+          rtcPeer.addTrack(track, mediaStream);
+        });
         break;
+      }
     }
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });

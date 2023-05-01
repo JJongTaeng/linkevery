@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { RTC_MANAGER_TYPE } from '../../constants/protocol';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
-import { audioManager } from '../../service/audio/AudioManager';
+import { audioManager } from '../../service/media/AudioManager';
 import { roomActions } from '../../store/features/roomSlice';
 import { voiceActions } from '../../store/features/voliceSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -38,6 +38,29 @@ const LeftMenuContainer = () => {
                 appDispatch.sendJoinRoomMessage({
                   roomName: roomName + '_voice',
                   rtcType: RTC_MANAGER_TYPE.RTC_VOICE,
+                });
+                dispatch(voiceActions.changeStatus(true));
+              } else {
+                appDispatch.sendVoiceDisconnectMessage({});
+                rtcVoiceManager.clearPeerMap();
+                audioManager.clearAllAudio();
+                dispatch(voiceActions.changeStatus(false));
+              }
+            }}
+          />
+        )}
+      </div>
+      <div>
+        {roomName && (
+          <Switch
+            checkedChildren={'o'}
+            unCheckedChildren={'x'}
+            defaultChecked={false}
+            onChange={(value) => {
+              if (value) {
+                appDispatch.sendJoinRoomMessage({
+                  roomName: roomName + '_voice',
+                  rtcType: RTC_MANAGER_TYPE.RTC_SCREEN_SHARE,
                 });
                 dispatch(voiceActions.changeStatus(true));
               } else {

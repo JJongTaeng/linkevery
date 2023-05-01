@@ -7,6 +7,7 @@ import {
 } from '../../constants/protocol';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { RTCManager } from '../rtc/RTCManager';
+import { RTCScreenShareManager } from '../rtc/RTCScreenShareManager';
 import { RTCVoiceManager } from '../rtc/RTCVoiceManager';
 import { RTC_MANAGER_TYPE } from './../../constants/protocol';
 import { chatHandlers } from './chatHandlers';
@@ -29,6 +30,7 @@ export class HandlerManager {
     private socket: Socket,
     private rtcManager: RTCManager,
     private rtcVoiceManager: RTCVoiceManager,
+    private rtcScreenShareManager: RTCScreenShareManager,
     private dispatch: DispatchEvent,
   ) {
     this.subscribeHandlers();
@@ -43,7 +45,7 @@ export class HandlerManager {
         rtcManagerMap: {
           [RTC_MANAGER_TYPE.RTC_CHAT]: this.rtcManager,
           [RTC_MANAGER_TYPE.RTC_VOICE]: this.rtcVoiceManager,
-          [RTC_MANAGER_TYPE.RTC_SCREEN_SHARE]: this.rtcManager,
+          [RTC_MANAGER_TYPE.RTC_SCREEN_SHARE]: this.rtcScreenShareManager,
         },
       });
     });
@@ -55,7 +57,7 @@ export class HandlerManager {
         rtcManagerMap: {
           [RTC_MANAGER_TYPE.RTC_CHAT]: this.rtcManager,
           [RTC_MANAGER_TYPE.RTC_VOICE]: this.rtcVoiceManager,
-          [RTC_MANAGER_TYPE.RTC_SCREEN_SHARE]: this.rtcManager,
+          [RTC_MANAGER_TYPE.RTC_SCREEN_SHARE]: this.rtcScreenShareManager,
         },
       });
     });

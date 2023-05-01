@@ -4,7 +4,7 @@ import {
   VOICE_MESSAGE_ID,
 } from '../../constants/protocol';
 import { store } from '../../store/store';
-import { audioManager } from '../audio/AudioManager';
+import { audioManager } from '../media/AudioManager';
 
 export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   [VOICE_MESSAGE_ID.DISCONNECT]: (protocol, { dispatch, rtcManagerMap }) => {
