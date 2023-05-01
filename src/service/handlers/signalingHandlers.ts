@@ -92,7 +92,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
         rtcType,
       });
     });
-
+    await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     switch (rtcType) {
       case RTC_MANAGER_TYPE.RTC_CHAT:
         rtcPeer.connectDataChannel((datachannel: RTCDataChannel) => {
@@ -122,7 +122,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       case RTC_MANAGER_TYPE.RTC_SCREEN_SHARE:
         break;
     }
-    await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
     dispatch.sendAnswerMessage({
