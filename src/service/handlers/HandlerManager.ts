@@ -8,6 +8,7 @@ import {
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { RTCManager } from '../rtc/RTCManager';
 import { RTCVoiceManager } from '../rtc/RTCVoiceManager';
+import { RTC_MANAGER_TYPE } from './../../constants/protocol';
 import { chatHandlers } from './chatHandlers';
 import { connectionHandlers } from './connectionHandlers';
 import { roomHandlers } from './roomHandlers';
@@ -38,8 +39,12 @@ export class HandlerManager {
       console.debug('[receive] ', protocol);
       this.handlers[protocol.category][protocol.messageId](protocol, {
         dispatch: this.dispatch,
-        rtcManager: this.rtcManager,
-        rtcVoiceManager: this.rtcVoiceManager,
+        rtcManager: this.rtcManager, // default rtc manager
+        rtcManagerMap: {
+          [RTC_MANAGER_TYPE.RTC_CHAT]: this.rtcManager,
+          [RTC_MANAGER_TYPE.RTC_VOICE]: this.rtcVoiceManager,
+          [RTC_MANAGER_TYPE.RTC_SCREEN_SHARE]: this.rtcManager,
+        },
       });
     });
     this.rtcManager.on(RTCManager.RTC_EVENT.DATA, (protocol: Protocol) => {
@@ -47,7 +52,11 @@ export class HandlerManager {
       this.handlers[protocol.category][protocol.messageId](protocol, {
         dispatch: this.dispatch,
         rtcManager: this.rtcManager,
-        rtcVoiceManager: this.rtcVoiceManager,
+        rtcManagerMap: {
+          [RTC_MANAGER_TYPE.RTC_CHAT]: this.rtcManager,
+          [RTC_MANAGER_TYPE.RTC_VOICE]: this.rtcVoiceManager,
+          [RTC_MANAGER_TYPE.RTC_SCREEN_SHARE]: this.rtcManager,
+        },
       });
     });
   }

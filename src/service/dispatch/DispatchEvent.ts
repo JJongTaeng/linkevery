@@ -18,13 +18,7 @@ import {
   joinRoomMessage,
   offerMessage,
 } from '../messages/signaling';
-import {
-  voiceAnswerMessage,
-  voiceDisconnectMessage,
-  voiceIceMessage,
-  voiceJoinMessage,
-  voiceOfferMessage,
-} from '../messages/voice';
+import { voiceDisconnectMessage } from '../messages/voice';
 import { RTCManager } from '../rtc/RTCManager';
 import { DispatchEventService } from './DispatchEventService';
 
@@ -71,22 +65,6 @@ export class DispatchEvent extends DispatchEventService {
 
   sendResponseMemberMessage(data: ProtocolData) {
     this.send(responseMemberNameMessage(data));
-  }
-
-  sendVoiceJoinMessage(data: ProtocolData) {
-    this.send(voiceJoinMessage(data));
-  }
-
-  sendVoiceOfferMessage(data: ProtocolData) {
-    this.send(voiceOfferMessage(data));
-  }
-
-  sendVoiceAnswerMessage(data: ProtocolData) {
-    this.send(voiceAnswerMessage(data));
-  }
-
-  sendVoiceIceMessage(data: ProtocolData) {
-    this.send(voiceIceMessage(data));
   }
 
   sendVoiceDisconnectMessage(data: ProtocolData) {

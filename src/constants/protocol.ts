@@ -3,6 +3,12 @@ import { RTCManagerService } from '../service/rtc/RTCManagerService';
 
 export const EVENT_NAME = 'message';
 
+export enum RTC_MANAGER_TYPE {
+  RTC_CHAT = 'RTC_CHAT',
+  RTC_VOICE = 'RTC_VOICE',
+  RTC_SCREEN_SHARE = 'RTC_SCREEN_SHARE',
+}
+
 export enum MESSAGE_TYPE {
   RTC = 'RTC',
   SOCKET = 'SOCKET',
@@ -39,10 +45,6 @@ export enum CHAT_MESSAGE_ID {
 }
 
 export enum VOICE_MESSAGE_ID {
-  JOIN = 'JOIN',
-  OFFER = 'OFFER',
-  ANSWER = 'ANSWER',
-  ICE = 'ICE',
   DISCONNECT = 'DISCONNECT',
 }
 
@@ -65,17 +67,23 @@ export interface Protocol {
   data: ProtocolData;
 }
 
+interface RTCManagerMap {
+  [RTC_MANAGER_TYPE.RTC_CHAT]: RTCManagerService;
+  [RTC_MANAGER_TYPE.RTC_VOICE]: RTCManagerService;
+  [RTC_MANAGER_TYPE.RTC_SCREEN_SHARE]: RTCManagerService;
+}
+
 export type HandlerMap<T extends string | number | symbol> = {
   [key in T]: (
     protocol: Protocol,
     {
       dispatch,
       rtcManager,
-      rtcVoiceManager,
+      rtcManagerMap,
     }: {
       dispatch: DispatchEvent;
       rtcManager: RTCManagerService;
-      rtcVoiceManager: RTCManagerService;
+      rtcManagerMap: RTCManagerMap;
     },
   ) => void;
 };

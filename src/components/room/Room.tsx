@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { RTC_MANAGER_TYPE } from '../../constants/protocol';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { StorageService } from '../../service/storage/StorageService';
 import { chatActions } from '../../store/features/chatSlice';
@@ -37,7 +38,10 @@ const Room = () => {
   useEffect(() => {
     if (myName && roomName) {
       app.dispatch.sendConnectMessage({});
-      app.dispatch.sendJoinRoomMessage({ roomName });
+      app.dispatch.sendJoinRoomMessage({
+        roomName,
+        rtcType: RTC_MANAGER_TYPE.RTC_CHAT,
+      });
       dispatch(roomActions.setRoomName(roomName));
       storage.setItem('roomName', roomName);
     } else {

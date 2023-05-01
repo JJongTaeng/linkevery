@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { RTC_MANAGER_TYPE } from '../../constants/protocol';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { audioManager } from '../../service/audio/AudioManager';
 import { roomActions } from '../../store/features/roomSlice';
@@ -19,7 +20,7 @@ const LeftMenuContainer = () => {
   ).current;
   const dispatch = useAppDispatch();
   const { status, roomName } = useAppSelector((state) => ({
-    status: state.userInfo.status,
+    status: state.voice.status,
     roomName: state.room.roomName,
   }));
   const [form] = Form.useForm();
@@ -34,7 +35,10 @@ const LeftMenuContainer = () => {
             defaultChecked={false}
             onChange={(value) => {
               if (value) {
-                appDispatch.sendVoiceJoinMessage({});
+                appDispatch.sendJoinRoomMessage({
+                  roomName: roomName + '_voice',
+                  rtcType: RTC_MANAGER_TYPE.RTC_VOICE,
+                });
                 dispatch(voiceActions.changeStatus(true));
               } else {
                 appDispatch.sendVoiceDisconnectMessage({});
