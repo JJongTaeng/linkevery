@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import chatReducer from './features/chatSlice';
 import roomReducer from './features/roomSlice';
-import userInfoReducer from './features/userInfoSlice';
+import userInfoReducer from './features/voliceSlice';
 
 export const store = configureStore({
   reducer: {

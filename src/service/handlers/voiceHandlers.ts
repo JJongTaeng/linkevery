@@ -1,5 +1,4 @@
 import { HandlerMap, VOICE_MESSAGE_ID } from '../../constants/protocol';
-import { UserStatus } from '../../store/features/userInfoSlice';
 import { store } from '../../store/store';
 import { audioManager } from '../audio/AudioManager';
 import { config } from '../rtc/RTCManager';
@@ -9,7 +8,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   [VOICE_MESSAGE_ID.JOIN]: async (protocol, { dispatch, rtcVoiceManager }) => {
     // voice 상태 확인 후 connection 시작
     const { from } = protocol;
-    if (store.getState().userInfo.status !== UserStatus.VOICE) {
+    if (!store.getState().userInfo.status) {
       return;
     }
 
@@ -84,7 +83,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   },
   [VOICE_MESSAGE_ID.DISCONNECT]: (protocol, { dispatch, rtcVoiceManager }) => {
     const { from } = protocol;
-    if (store.getState().userInfo.status !== UserStatus.VOICE) {
+    if (!store.getState().userInfo.status) {
       return;
     }
     rtcVoiceManager.removePeer(from);

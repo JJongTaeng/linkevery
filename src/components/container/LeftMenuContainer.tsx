@@ -6,10 +6,7 @@ import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { audioManager } from '../../service/audio/AudioManager';
 import { roomActions } from '../../store/features/roomSlice';
-import {
-  UserStatus,
-  userInfoActions,
-} from '../../store/features/userInfoSlice';
+import { voiceActions } from '../../store/features/voliceSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import SvgMicOn from '../icons/MicOn';
 import SvgMicOff from '../icons/MicOn2';
@@ -38,11 +35,12 @@ const LeftMenuContainer = () => {
             onChange={(value) => {
               if (value) {
                 appDispatch.sendVoiceJoinMessage({});
-                dispatch(userInfoActions.changeStatus(UserStatus.VOICE));
+                dispatch(voiceActions.changeStatus(true));
               } else {
                 appDispatch.sendVoiceDisconnectMessage({});
                 rtcVoiceManager.clearPeerMap();
                 audioManager.clearAllAudio();
+                dispatch(voiceActions.changeStatus(false));
               }
             }}
           />
