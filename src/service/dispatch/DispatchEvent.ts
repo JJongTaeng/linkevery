@@ -6,11 +6,7 @@ import {
   ProtocolData,
 } from '../../constants/protocol';
 import { chatMessage } from '../messages/chat';
-import {
-  connectMessage,
-  disconnectMessage,
-  joinRoomMessage,
-} from '../messages/connection';
+import { connectMessage, disconnectMessage } from '../messages/connection';
 import {
   requestMemberNameMessage,
   responseMemberNameMessage,
@@ -19,6 +15,7 @@ import {
   answerMessage,
   createDataChannelMessage,
   iceMessage,
+  joinRoomMessage,
   offerMessage,
 } from '../messages/signaling';
 import {
