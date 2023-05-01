@@ -1,7 +1,8 @@
+import { Form } from 'antd';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { StorageService } from '../../service/storage/StorageService';
@@ -12,11 +13,13 @@ import { TOP_MENU_HEIGHT } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
 import SvgSend from '../icons/Send';
+import UsernameModal from './UsernameModal';
 
 const storage = StorageService.getInstance();
 
 const Room = () => {
-  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [form] = Form.useForm();
   const app = useRef(AppServiceImpl.getInstance()).current;
   const { roomName } = useParams<{
     roomName: string;
@@ -32,15 +35,19 @@ const Room = () => {
   const [isShift, setIsShift] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!myName || !roomName) navigate('/');
-    app.dispatch.sendConnectMessage({});
-    app.dispatch.sendJoinRoomMessage({ roomName });
-    dispatch(roomActions.setRoomName(roomName));
-    storage.setItem('roomName', roomName || '');
+    if (myName && roomName) {
+      app.dispatch.sendConnectMessage({});
+      app.dispatch.sendJoinRoomMessage({ roomName });
+      dispatch(roomActions.setRoomName(roomName));
+      storage.setItem('roomName', roomName);
+    } else {
+      setOpen(true);
+    }
+
     return () => {
       app.disconnect();
     };
-  }, []);
+  }, [myName, roomName]);
 
   const handleChat = () => {
     if (!message) return;
@@ -124,6 +131,14 @@ const Room = () => {
             </div>
           </ChatForm>
         </ChatContainer>
+        <UsernameModal
+          open={open}
+          onSubmit={(username) => {
+            dispatch(roomActions.setUsername({ username }));
+            storage.setItem('username', username);
+            setOpen(false);
+          }}
+        />
       </RoomContent>
     </>
   );

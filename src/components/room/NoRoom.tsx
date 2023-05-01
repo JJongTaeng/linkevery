@@ -1,9 +1,8 @@
-import { Button, Form, Input, Modal } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button } from 'antd';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { StorageService } from '../../service/storage/StorageService';
-import { roomActions } from '../../store/features/roomSlice';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppSelector } from '../../store/hooks';
 import { Text } from '../../style';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
 import TopMenuContainer from '../container/TopMenuContainer';
@@ -11,47 +10,14 @@ import TopMenuContainer from '../container/TopMenuContainer';
 const storage = StorageService.getInstance();
 
 const NoRoom = () => {
-  const [open, setOpen] = useState(false);
   const username = useAppSelector((state) => state.room.username);
-  const dispatch = useAppDispatch();
-  const [form] = Form.useForm();
 
   useEffect(() => {
-    if (!username) setOpen(true);
     storage.setItem('roomName', '');
   }, [username]);
 
   return (
     <>
-      <Modal
-        closable={false}
-        footer={
-          <>
-            <Button type="primary" onClick={() => form.submit()}>
-              등록
-            </Button>
-          </>
-        }
-        title={'사용자 이름 등록'}
-        open={open}
-      >
-        <Form
-          form={form}
-          onFinish={({ username }) => {
-            dispatch(roomActions.setUsername({ username }));
-            storage.setItem('username', username);
-            setOpen(false);
-          }}
-        >
-          <Form.Item
-            name="username"
-            label="사용자명"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
       <TopMenuContainer />
       <NoRoomContent>
         <div>
