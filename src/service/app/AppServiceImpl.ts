@@ -25,7 +25,6 @@ export class AppServiceImpl extends AppService {
       this.socket,
       this.rtcManager,
       this.rtcVoiceManager,
-      this.rtcScreenShareManager,
       this.dispatch,
     );
 

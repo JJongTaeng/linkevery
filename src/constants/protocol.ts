@@ -1,6 +1,5 @@
 import { DispatchEvent } from '../service/dispatch/DispatchEvent';
 import { RTCManagerService } from '../service/rtc/RTCManagerService';
-import { RTCScreenShareManager } from '../service/rtc/RTCScreenShareManager';
 
 export const EVENT_NAME = 'message';
 
@@ -15,7 +14,6 @@ export enum CATEGORY {
   CHAT = 'CHAT',
   ROOM = 'ROOM',
   VOICE = 'VOICE',
-  SCREEN_SHARE = 'SCREEN_SHARE',
 }
 
 export enum CONNECTION_MESSAGE_ID {
@@ -48,21 +46,12 @@ export enum VOICE_MESSAGE_ID {
   DISCONNECT = 'DISCONNECT',
 }
 
-export enum SCREEN_SHARE_MESSAGE_ID {
-  JOIN = 'JOIN',
-  OFFER = 'OFFER',
-  ANSWER = 'ANSWER',
-  ICE = 'ICE',
-  DISCONNECT = 'DISCONNECT',
-}
-
 export type MessageId =
   | CONNECTION_MESSAGE_ID
   | CHAT_MESSAGE_ID
   | SIGNALING_MESSAGE_ID
   | ROOM_MESSAGE_ID
-  | VOICE_MESSAGE_ID
-  | SCREEN_SHARE_MESSAGE_ID;
+  | VOICE_MESSAGE_ID;
 
 export interface ProtocolData {
   [key: string]: any;
@@ -83,12 +72,10 @@ export type HandlerMap<T extends string | number | symbol> = {
       dispatch,
       rtcManager,
       rtcVoiceManager,
-      rtcScreenShareManager,
     }: {
       dispatch: DispatchEvent;
       rtcManager: RTCManagerService;
       rtcVoiceManager: RTCManagerService;
-      rtcScreenShareManager: RTCScreenShareManager;
     },
   ) => void;
 };

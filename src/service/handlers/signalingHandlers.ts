@@ -21,6 +21,11 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcManager.createPeer(from);
     const rtcPeer = rtcManager.getPeer(from);
     rtcPeer.createPeerConnection(config);
+    rtcPeer.getPeer()!.onnegotiationneeded = async (e) => {
+      const offer = await rtcPeer.createOffer();
+      rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
+      dispatch.sendOfferMessage({ offer, to: from });
+    };
     rtcPeer.createDataChannel(roomName, (datachannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
       datachannel.addEventListener('message', (message) => {
@@ -35,10 +40,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
         ice,
       });
     });
-
-    const offer = await rtcPeer.createOffer();
-    rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-    dispatch.sendOfferMessage({ offer, to: from });
   },
   [SIGNALING_MESSAGE_ID.OFFER]: async (protocol, { dispatch, rtcManager }) => {
     const { offer } = protocol.data;
@@ -46,6 +47,12 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcManager.createPeer(from);
     const rtcPeer = rtcManager.getPeer(from);
     rtcPeer.createPeerConnection(config);
+    rtcPeer.getPeer()!.onnegotiationneeded = async (e) => {
+      const offer = await rtcPeer.createOffer();
+      rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
+      dispatch.sendOfferMessage({ offer, to: from });
+    };
+
     rtcPeer.connectDataChannel((datachannel: RTCDataChannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
 

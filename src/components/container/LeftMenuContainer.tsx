@@ -19,7 +19,7 @@ const LeftMenuContainer = () => {
   ).current;
   const dispatch = useAppDispatch();
   const { status, roomName } = useAppSelector((state) => ({
-    status: state.userInfo.status,
+    status: state.voice.status,
     roomName: state.room.roomName,
   }));
   const [form] = Form.useForm();
@@ -34,7 +34,9 @@ const LeftMenuContainer = () => {
             defaultChecked={false}
             onChange={(value) => {
               if (value) {
-                appDispatch.sendVoiceJoinMessage({});
+                appDispatch.sendVoiceJoinMessage({
+                  roomName: roomName + '_voice',
+                });
                 dispatch(voiceActions.changeStatus(true));
               } else {
                 appDispatch.sendVoiceDisconnectMessage({});
