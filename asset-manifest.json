@@ -1,12 +1,12 @@
 {
   "files": {
     "main.css": "/linkevery/static/css/main.3bc058fc.css",
-    "main.js": "/linkevery/static/js/main.6bcf4f81.js",
+    "main.js": "/linkevery/static/js/main.f934bfaf.js",
     "static/js/27.eb46082b.chunk.js": "/linkevery/static/js/27.eb46082b.chunk.js",
     "index.html": "/linkevery/index.html"
   },
   "entrypoints": [
     "static/css/main.3bc058fc.css",
-    "static/js/main.6bcf4f81.js"
+    "static/js/main.f934bfaf.js"
   ]
 }
