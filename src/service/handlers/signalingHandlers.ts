@@ -21,10 +21,22 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcManager.createPeer(from);
     const rtcPeer = rtcManager.getPeer(from);
     rtcPeer.createPeerConnection(config);
-    rtcPeer.getPeer()!.onnegotiationneeded = async (e) => {
+    rtcPeer.onIceCandidate((ice) => {
+      dispatch.sendIceMessage({
+        to: from,
+        ice,
+      });
+    });
+    rtcPeer.onTrack(from);
+    rtcPeer.getPeer()!.onnegotiationneeded = async (e: any) => {
       const offer = await rtcPeer.createOffer();
       rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-      dispatch.sendOfferMessage({ offer, to: from });
+      console.log('connection state = ', e.currentTarget?.connectionState);
+      if (e.currentTarget?.connectionState === 'new') {
+        dispatch.sendOfferMessage({ offer, to: from });
+      } else if (e.currentTarget?.connectionState === 'connected') {
+        dispatch.sendNegotiationOfferMessage({ offer, to: from });
+      }
     };
     rtcPeer.createDataChannel(roomName, (datachannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
@@ -33,13 +45,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       });
       dispatch.sendCreateDataChannelMessage({ to: from });
     });
-
-    rtcPeer.onIceCandidate((ice) => {
-      dispatch.sendIceMessage({
-        to: from,
-        ice,
-      });
-    });
   },
   [SIGNALING_MESSAGE_ID.OFFER]: async (protocol, { dispatch, rtcManager }) => {
     const { offer } = protocol.data;
@@ -47,10 +52,22 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcManager.createPeer(from);
     const rtcPeer = rtcManager.getPeer(from);
     rtcPeer.createPeerConnection(config);
-    rtcPeer.getPeer()!.onnegotiationneeded = async (e) => {
+    rtcPeer.onIceCandidate((ice) => {
+      dispatch.sendIceMessage({
+        to: from,
+        ice,
+      });
+    });
+    rtcPeer.onTrack(from);
+    rtcPeer.getPeer()!.onnegotiationneeded = async (e: any) => {
       const offer = await rtcPeer.createOffer();
       rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-      dispatch.sendOfferMessage({ offer, to: from });
+      console.log('connection state = ', e.currentTarget?.connectionState);
+      if (e.currentTarget?.connectionState === 'new') {
+        dispatch.sendOfferMessage({ offer, to: from });
+      } else if (e.currentTarget?.connectionState === 'connected') {
+        dispatch.sendNegotiationOfferMessage({ offer, to: from });
+      }
     };
 
     rtcPeer.connectDataChannel((datachannel: RTCDataChannel) => {
@@ -63,13 +80,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       // const stringify = JSON.stringify(createDataChannelMessage({}));
       // datachannel.send(stringify);
       dispatch.sendCreateDataChannelMessage({ to: from });
-    });
-
-    rtcPeer.onIceCandidate((ice) => {
-      dispatch.sendIceMessage({
-        to: from,
-        ice,
-      });
     });
 
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });

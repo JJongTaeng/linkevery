@@ -8,6 +8,10 @@ import {
 import { chatMessage } from '../messages/chat';
 import { connectMessage, disconnectMessage } from '../messages/connection';
 import {
+  negotiationAnswerMessage,
+  negotiationOfferMessage,
+} from '../messages/negotiation';
+import {
   requestMemberNameMessage,
   responseMemberNameMessage,
 } from '../messages/room';
@@ -19,11 +23,9 @@ import {
   offerMessage,
 } from '../messages/signaling';
 import {
-  voiceAnswerMessage,
   voiceDisconnectMessage,
-  voiceIceMessage,
   voiceJoinMessage,
-  voiceOfferMessage,
+  voiceStartMessage,
 } from '../messages/voice';
 import { RTCManager } from '../rtc/RTCManager';
 import { DispatchEventService } from './DispatchEventService';
@@ -77,20 +79,18 @@ export class DispatchEvent extends DispatchEventService {
     this.send(voiceJoinMessage(data));
   }
 
-  sendVoiceOfferMessage(data: ProtocolData) {
-    this.send(voiceOfferMessage(data));
+  sendVoiceStartMessage(data: ProtocolData) {
+    this.send(voiceStartMessage(data));
   }
-
-  sendVoiceAnswerMessage(data: ProtocolData) {
-    this.send(voiceAnswerMessage(data));
-  }
-
-  sendVoiceIceMessage(data: ProtocolData) {
-    this.send(voiceIceMessage(data));
-  }
-
   sendVoiceDisconnectMessage(data: ProtocolData) {
     this.send(voiceDisconnectMessage(data));
+  }
+  sendNegotiationOfferMessage(data: ProtocolData) {
+    this.send(negotiationOfferMessage(data));
+  }
+
+  sendNegotiationAnswerMessage(data: ProtocolData) {
+    this.send(negotiationAnswerMessage(data));
   }
 
   send(protocol: Protocol) {

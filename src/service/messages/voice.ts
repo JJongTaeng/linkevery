@@ -14,31 +14,15 @@ export const voiceProtocolMessage = (protocol: CreateProtocolFunctionParam) => {
 export const voiceJoinMessage = (data: ProtocolData) => {
   return voiceProtocolMessage({
     messageId: VOICE_MESSAGE_ID.JOIN,
-    messageType: MESSAGE_TYPE.SOCKET,
+    messageType: MESSAGE_TYPE.RTC,
     data,
   });
 };
 
-export const voiceOfferMessage = (data: ProtocolData) => {
+export const voiceStartMessage = (data: ProtocolData) => {
   return voiceProtocolMessage({
-    messageId: VOICE_MESSAGE_ID.OFFER,
-    messageType: MESSAGE_TYPE.SOCKET,
-    data,
-  });
-};
-
-export const voiceAnswerMessage = (data: ProtocolData) => {
-  return voiceProtocolMessage({
-    messageId: VOICE_MESSAGE_ID.ANSWER,
-    messageType: MESSAGE_TYPE.SOCKET,
-    data,
-  });
-};
-
-export const voiceIceMessage = (data: ProtocolData) => {
-  return voiceProtocolMessage({
-    messageId: VOICE_MESSAGE_ID.ICE,
-    messageType: MESSAGE_TYPE.SOCKET,
+    messageId: VOICE_MESSAGE_ID.START,
+    messageType: MESSAGE_TYPE.RTC,
     data,
   });
 };

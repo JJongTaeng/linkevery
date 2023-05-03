@@ -14,6 +14,7 @@ export enum CATEGORY {
   CHAT = 'CHAT',
   ROOM = 'ROOM',
   VOICE = 'VOICE',
+  NEGOTIATION = 'NEGOTIATION',
 }
 
 export enum CONNECTION_MESSAGE_ID {
@@ -40,10 +41,13 @@ export enum CHAT_MESSAGE_ID {
 
 export enum VOICE_MESSAGE_ID {
   JOIN = 'JOIN',
+  START = 'START',
+  DISCONNECT = 'DISCONNECT',
+}
+
+export enum NEGOTIATION_MESSAGE_ID {
   OFFER = 'OFFER',
   ANSWER = 'ANSWER',
-  ICE = 'ICE',
-  DISCONNECT = 'DISCONNECT',
 }
 
 export type MessageId =
@@ -51,7 +55,8 @@ export type MessageId =
   | CHAT_MESSAGE_ID
   | SIGNALING_MESSAGE_ID
   | ROOM_MESSAGE_ID
-  | VOICE_MESSAGE_ID;
+  | VOICE_MESSAGE_ID
+  | NEGOTIATION_MESSAGE_ID;
 
 export interface ProtocolData {
   [key: string]: any;
@@ -71,11 +76,9 @@ export type HandlerMap<T extends string | number | symbol> = {
     {
       dispatch,
       rtcManager,
-      rtcVoiceManager,
     }: {
       dispatch: DispatchEvent;
       rtcManager: RTCManagerService;
-      rtcVoiceManager: RTCManagerService;
     },
   ) => void;
 };

@@ -2,6 +2,7 @@ class AudioManager {
   constructor() {}
 
   addAudio(id: string, mediaStream: MediaStream) {
+    this.removeAudio(id);
     const audio = document.createElement('audio');
     audio.setAttribute('id', id);
     audio.classList.add('voice-audio');

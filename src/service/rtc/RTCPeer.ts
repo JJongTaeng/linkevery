@@ -12,6 +12,7 @@ export class RTCPeer extends RTCPeerService {
   private peer?: RTCPeerConnection;
   private dataChannel?: RTCDataChannel;
   private peerStream?: MediaStream;
+  private sender?: RTCRtpSender;
 
   constructor() {
     super();
@@ -199,7 +200,12 @@ export class RTCPeer extends RTCPeerService {
   }
 
   public addTrack(track: MediaStreamTrack, stream: MediaStream) {
-    this.peer?.addTrack(track, stream);
+    this.sender = this.peer?.addTrack(track, stream);
+  }
+
+  public removeTrack() {
+    if (!this.sender) return;
+    this.peer?.removeTrack(this.sender);
   }
 
   public sendMessage(protocol: Protocol) {

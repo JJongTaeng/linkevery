@@ -14,9 +14,7 @@ import SvgMicOff from '../icons/MicOn2';
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { dispatch: appDispatch, rtcVoiceManager } = useRef(
-    AppServiceImpl.getInstance(),
-  ).current;
+  const app = useRef(AppServiceImpl.getInstance()).current;
   const dispatch = useAppDispatch();
   const { status, roomName } = useAppSelector((state) => ({
     status: state.voice.status,
@@ -34,15 +32,12 @@ const LeftMenuContainer = () => {
             defaultChecked={false}
             onChange={(value) => {
               if (value) {
-                appDispatch.sendVoiceJoinMessage({
-                  roomName: roomName + '_voice',
-                });
                 dispatch(voiceActions.changeStatus(true));
+                app.dispatch.sendVoiceJoinMessage({});
               } else {
-                appDispatch.sendVoiceDisconnectMessage({});
-                rtcVoiceManager.clearPeerMap();
                 audioManager.clearAllAudio();
                 dispatch(voiceActions.changeStatus(false));
+                app.disconnectVoice();
               }
             }}
           />
