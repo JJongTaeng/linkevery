@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import chatReducer from './features/chatSlice';
 import roomReducer from './features/roomSlice';
-import userInfoReducer from './features/voliceSlice';
+import voiceReducer from './features/voliceSlice';
 
 export const store = configureStore({
   reducer: {
     room: roomReducer,
     chat: chatReducer,
-    userInfo: userInfoReducer,
+    voice: voiceReducer,
   },
 });
 // Infer the `RootState` and `AppDispatch` types from the store itself
