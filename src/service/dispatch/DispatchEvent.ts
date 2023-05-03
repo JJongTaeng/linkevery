@@ -16,6 +16,11 @@ import {
   responseMemberNameMessage,
 } from '../messages/room';
 import {
+  screenShareDisconnectMessage,
+  screenShareReadyMessage,
+  screenShareReadyOkMessage,
+} from '../messages/screenShare';
+import {
   answerMessage,
   createDataChannelMessage,
   iceMessage,
@@ -82,9 +87,23 @@ export class DispatchEvent extends DispatchEventService {
   sendVoiceStartMessage(data: ProtocolData) {
     this.send(voiceStartMessage(data));
   }
+
   sendVoiceDisconnectMessage(data: ProtocolData) {
     this.send(voiceDisconnectMessage(data));
   }
+
+  sendScreenShareReadyMessage(data: ProtocolData) {
+    this.send(screenShareReadyMessage(data));
+  }
+
+  sendScreenShareReadyOkMessage(data: ProtocolData) {
+    this.send(screenShareReadyOkMessage(data));
+  }
+
+  sendScreenShareDisonnectMessage(data: ProtocolData) {
+    this.send(screenShareDisconnectMessage(data));
+  }
+
   sendNegotiationOfferMessage(data: ProtocolData) {
     this.send(negotiationOfferMessage(data));
   }

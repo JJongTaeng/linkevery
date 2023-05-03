@@ -9,8 +9,9 @@ import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { RTCManager } from '../rtc/RTCManager';
 import { chatHandlers } from './chatHandlers';
 import { connectionHandlers } from './connectionHandlers';
-import { negotiationHandler } from './negotiationHandlers';
+import { negotiationHandlers } from './negotiationHandlers';
 import { roomHandlers } from './roomHandlers';
+import { screenShareHandlers } from './screenShareHandlers';
 import { signalingHandlers } from './signalingHandlers';
 import { voiceHandlers } from './voiceHandlers';
 
@@ -23,7 +24,8 @@ export class HandlerManager {
     [CATEGORY.CHAT]: chatHandlers,
     [CATEGORY.ROOM]: roomHandlers,
     [CATEGORY.VOICE]: voiceHandlers,
-    [CATEGORY.NEGOTIATION]: negotiationHandler,
+    [CATEGORY.NEGOTIATION]: negotiationHandlers,
+    [CATEGORY.SCREEN_SHARE]: screenShareHandlers,
   };
   constructor(
     private socket: Socket,

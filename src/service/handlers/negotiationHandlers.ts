@@ -1,7 +1,7 @@
 import { HandlerMap, NEGOTIATION_MESSAGE_ID } from '../../constants/protocol';
 import { SdpType } from '../rtc/RTCPeerService';
 
-export const negotiationHandler: HandlerMap<NEGOTIATION_MESSAGE_ID> = {
+export const negotiationHandlers: HandlerMap<NEGOTIATION_MESSAGE_ID> = {
   [NEGOTIATION_MESSAGE_ID.OFFER]: async (
     protocol,
     { dispatch, rtcManager },

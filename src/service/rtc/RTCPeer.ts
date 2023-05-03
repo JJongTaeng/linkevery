@@ -195,7 +195,17 @@ export class RTCPeer extends RTCPeerService {
     this.peer?.addEventListener('track', (e) => {
       console.log('e', e);
       this.peerStream = e.streams[0];
-      audioManager.addAudio(id, this.peerStream);
+      const videoTrack = e.streams[0].getVideoTracks()[0];
+      if (videoTrack) {
+        const video = document.createElement('video');
+        video.srcObject = this.peerStream;
+        video.play();
+        video.autoplay = true;
+
+        document.body.appendChild(video);
+      } else {
+        audioManager.addAudio(id, this.peerStream);
+      }
     });
   }
 

@@ -14,6 +14,7 @@ export enum CATEGORY {
   CHAT = 'CHAT',
   ROOM = 'ROOM',
   VOICE = 'VOICE',
+  SCREEN_SHARE = 'SCREEN_SHARE',
   NEGOTIATION = 'NEGOTIATION',
 }
 
@@ -45,6 +46,12 @@ export enum VOICE_MESSAGE_ID {
   DISCONNECT = 'DISCONNECT',
 }
 
+export enum SCREEN_SHARE_MESSAGE_ID {
+  READY = 'READY',
+  READY_OK = 'READY_OK',
+  DISCONNECT = 'DISCONNECT',
+}
+
 export enum NEGOTIATION_MESSAGE_ID {
   OFFER = 'OFFER',
   ANSWER = 'ANSWER',
@@ -56,7 +63,8 @@ export type MessageId =
   | SIGNALING_MESSAGE_ID
   | ROOM_MESSAGE_ID
   | VOICE_MESSAGE_ID
-  | NEGOTIATION_MESSAGE_ID;
+  | NEGOTIATION_MESSAGE_ID
+  | SCREEN_SHARE_MESSAGE_ID;
 
 export interface ProtocolData {
   [key: string]: any;

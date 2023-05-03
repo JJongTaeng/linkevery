@@ -42,6 +42,19 @@ const LeftMenuContainer = () => {
             }}
           />
         )}
+        {roomName && (
+          <Switch
+            checkedChildren={<SvgMicOn />}
+            unCheckedChildren={<SvgMicOff />}
+            defaultChecked={false}
+            onChange={(value) => {
+              if (value) {
+                app.dispatch.sendScreenShareReadyMessage({});
+              } else {
+              }
+            }}
+          />
+        )}
       </div>
       <div>{!roomName && <Button onClick={() => setOpen(true)}>+</Button>}</div>
       <Modal
