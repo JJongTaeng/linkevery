@@ -29,6 +29,14 @@ export const screenShareReadyOkMessage = (data: ProtocolData) => {
   });
 };
 
+export const screenShareConnectedMessage = (data: ProtocolData) => {
+  return screenShareProtocolMessage({
+    messageId: SCREEN_SHARE_MESSAGE_ID.CONNECTED,
+    messageType: MESSAGE_TYPE.RTC,
+    data,
+  });
+};
+
 export const screenShareDisconnectMessage = (data: ProtocolData) => {
   return screenShareProtocolMessage({
     messageId: SCREEN_SHARE_MESSAGE_ID.DISCONNECT,

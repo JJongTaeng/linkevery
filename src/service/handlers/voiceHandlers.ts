@@ -1,5 +1,6 @@
 import { notification } from 'antd';
 import { HandlerMap, VOICE_MESSAGE_ID } from '../../constants/protocol';
+import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { audioManager } from '../audio/AudioManager';
 
@@ -22,10 +23,13 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
 
     notification.info({
       message: `${
-        store.getState().room.member[from]
+        store.getState().room.member[from].username
       }이 보이스채팅에 연결되었습니다.`,
     });
 
+    store.dispatch(
+      roomActions.setMemberVoiceStatus({ clientId: from, voiceStatus: true }),
+    );
     dispatch.sendVoiceStartMessage({});
   },
   [VOICE_MESSAGE_ID.START]: async (protocol, { dispatch, rtcManager }) => {
@@ -46,9 +50,12 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
 
     notification.info({
       message: `${
-        store.getState().room.member[from]
+        store.getState().room.member[from].username
       }이 보이스채팅에 연결되었습니다.`,
     });
+    store.dispatch(
+      roomActions.setMemberVoiceStatus({ clientId: from, voiceStatus: true }),
+    );
   },
   [VOICE_MESSAGE_ID.DISCONNECT]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
@@ -60,8 +67,11 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     audioManager.removeAudio(from);
     notification.info({
       message: `${
-        store.getState().room.member[from]
+        store.getState().room.member[from].username
       }이 보이스채팅에서 나갔습니다.`,
     });
+    store.dispatch(
+      roomActions.setMemberVoiceStatus({ clientId: from, voiceStatus: false }),
+    );
   },
 };

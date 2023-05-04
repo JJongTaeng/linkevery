@@ -1,4 +1,6 @@
+import { notification } from 'antd';
 import { HandlerMap, SCREEN_SHARE_MESSAGE_ID } from '../../constants/protocol';
+import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 
 export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
@@ -25,9 +27,35 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       console.log(track, mediaStream);
       peer.addTrack(track, mediaStream);
     });
+    dispatch.sendScreenShareConnectedMessage({});
+  },
+  [SCREEN_SHARE_MESSAGE_ID.CONNECTED]: (protocol, { dispatch, rtcManager }) => {
+    const { from } = protocol;
+
+    store.dispatch(
+      roomActions.setMemberScreenShareStatus({
+        clientId: from,
+        screenShareStatus: true,
+      }),
+    );
+
+    notification.info({
+      message: `${
+        store.getState().room.member[from].username
+      }이 화면공유를 시작했습니다.`,
+    });
   },
   [SCREEN_SHARE_MESSAGE_ID.DISCONNECT]: (
     protocol,
     { dispatch, rtcManager },
-  ) => {},
+  ) => {
+    const { from } = protocol;
+
+    store.dispatch(
+      roomActions.setMemberScreenShareStatus({
+        clientId: from,
+        screenShareStatus: false,
+      }),
+    );
+  },
 };

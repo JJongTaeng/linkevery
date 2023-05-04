@@ -16,6 +16,7 @@ import {
   responseMemberNameMessage,
 } from '../messages/room';
 import {
+  screenShareConnectedMessage,
   screenShareDisconnectMessage,
   screenShareReadyMessage,
   screenShareReadyOkMessage,
@@ -98,6 +99,9 @@ export class DispatchEvent extends DispatchEventService {
 
   sendScreenShareReadyOkMessage(data: ProtocolData) {
     this.send(screenShareReadyOkMessage(data));
+  }
+  sendScreenShareConnectedMessage(data: ProtocolData) {
+    this.send(screenShareConnectedMessage(data));
   }
 
   sendScreenShareDisonnectMessage(data: ProtocolData) {
