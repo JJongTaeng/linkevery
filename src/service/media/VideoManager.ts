@@ -3,9 +3,7 @@ class VideoManager {
   private videoElementMap: { [key: string]: HTMLVideoElement } = {};
 
   addVideo(id: string, mediaStream: MediaStream) {
-    this.removeVideo(id);
     const video = document.createElement('video');
-
     video.setAttribute('id', id);
     video.classList.add('screen-share-video');
     video.srcObject = mediaStream;

@@ -18,16 +18,28 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
+    console.log('###', store.getState().room.screenShareStatus);
+    if (store.getState().room.screenShareStatus) return;
+    store.dispatch(roomActions.changeScreenShareStatus(true));
+
+    const voiceMember = [];
+    const member = store.getState().room.member;
+    for (const key in member) {
+      if (member[key].voiceStatus) voiceMember.push(key);
+    }
+
     const mediaStream = await navigator.mediaDevices.getDisplayMedia({
       video: true,
       audio: { echoCancellation: true, noiseSuppression: true },
     });
-    mediaStream?.getTracks().forEach((track) => {
-      const peer = rtcManager.getPeer(protocol.from);
-      console.log(track, mediaStream);
-      peer.addTrack(track, mediaStream);
-    });
-    dispatch.sendScreenShareConnectedMessage({ to: protocol.from });
+    for (const key of voiceMember) {
+      mediaStream?.getTracks().forEach((track) => {
+        const peer = rtcManager.getPeer(key);
+        console.log(track, mediaStream);
+        peer.addTrack(track, mediaStream);
+      });
+      dispatch.sendScreenShareConnectedMessage({ to: key });
+    }
   },
   [SCREEN_SHARE_MESSAGE_ID.CONNECTED]: (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;

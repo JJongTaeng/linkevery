@@ -65,7 +65,6 @@ const LeftMenuContainer = () => {
               unCheckedChildren={<SvgScreenShareOff />}
               defaultChecked={false}
               onChange={(value) => {
-                dispatch(roomActions.changeScreenShareStatus(value));
                 if (value) {
                   app.dispatch.sendScreenShareReadyMessage({});
                 } else {

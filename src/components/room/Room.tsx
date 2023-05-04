@@ -1,4 +1,4 @@
-import { Button, Form } from 'antd';
+import { Button } from 'antd';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { useEffect, useRef, useState } from 'react';
@@ -23,8 +23,8 @@ const storage = StorageService.getInstance();
 
 const Room = () => {
   const [open, setOpen] = useState(false);
-  const [isSideView, setSideView] = useState(false);
-  const [form] = Form.useForm();
+  const [isSideView, setisSideView] = useState(false);
+  const [selectedClientId, setSelectedClientId] = useState('');
   const app = useRef(AppServiceImpl.getInstance()).current;
   const { roomName } = useParams<{
     roomName: string;
@@ -85,8 +85,14 @@ const Room = () => {
                   size="small"
                   shape="circle"
                   onClick={() => {
-                    setSideView(true);
-                    videoManager.appendVideo(clientId);
+                    if (clientId === selectedClientId) {
+                      setisSideView(false);
+                      setSelectedClientId('');
+                    } else {
+                      setisSideView(true);
+                      setSelectedClientId(clientId);
+                      videoManager.appendVideo(clientId);
+                    }
                   }}
                   icon={<SvgScreenShareOn />}
                 />
