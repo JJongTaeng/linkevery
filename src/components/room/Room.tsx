@@ -1,4 +1,4 @@
-import { Form } from 'antd';
+import { Button, Form } from 'antd';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { useEffect, useRef, useState } from 'react';
@@ -9,16 +9,20 @@ import { StorageService } from '../../service/storage/StorageService';
 import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { highlight } from '../../style';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
+import SvgScreenShareOn from '../icons/ScreenShareOn';
 import SvgSend from '../icons/Send';
+import SvgSpeakerOn from '../icons/SpeakerOn';
 import UsernameModal from './UsernameModal';
 
 const storage = StorageService.getInstance();
 
 const Room = () => {
   const [open, setOpen] = useState(false);
+  const [isSideView, setSideView] = useState(false);
   const [form] = Form.useForm();
   const app = useRef(AppServiceImpl.getInstance()).current;
   const { roomName } = useParams<{
@@ -70,67 +74,80 @@ const Room = () => {
           <div className="member-item">{myName} - me</div>
           {Object.keys(member).map((clientId) => (
             <div key={clientId} className="member-item">
-              {member[clientId]}
+              <span>{member[clientId]}</span>
+              <Button size="small" shape="circle" icon={<SvgSpeakerOn />} />
+              <Button
+                className={'screen-share-button'}
+                size="small"
+                shape="circle"
+                onClick={() => setSideView((value) => !value)}
+                icon={<SvgScreenShareOn />}
+              />
             </div>
           ))}
         </MemberList>
-        <ChatContainer>
-          <ChatList>
-            {messageList.map(({ message, clientId, date, username }) => (
-              <ChatBubble
-                key={nanoid()}
-                message={message}
-                date={date}
-                username={username}
-                isMyChat={clientId === storage.getItem('clientId')}
-              />
-            ))}
-          </ChatList>
-          <ChatForm
-            onSubmit={(e: any) => {
-              e.preventDefault();
-              handleChat();
-            }}
-          >
-            <div className="form-header">
-              <textarea
-                value={message}
-                onKeyDown={(e: any) => {
-                  switch (e.key) {
-                    case 'Enter':
-                      e.preventDefault();
-                      if (isShift) {
-                        setMessage((message) => message + '\n');
-                        return;
-                      }
-                      if (e.nativeEvent.isComposing) return;
-                      handleChat();
-                      break;
-                    case 'Shift':
-                      setIsShift(true);
-                      break;
-                  }
-                }}
-                onKeyUp={(e) => {
-                  switch (e.key) {
-                    case 'Shift':
-                      setIsShift(false);
-                      break;
-                  }
-                }}
-                onChange={(e) => setMessage(e.target.value)}
-                name="message"
-                style={{ height: 40 }}
-                placeholder={roomName?.split('_')[0] + '에 메시지 보내기'}
-              />
-            </div>
-            <div className="form-footer">
-              <button type="submit">
-                <SvgSend />
-              </button>
-            </div>
-          </ChatForm>
-        </ChatContainer>
+        <ContentContainer>
+          <VideoContainer isVisible={isSideView}>
+            <video></video>
+          </VideoContainer>
+          <ChatContainer>
+            <ChatList>
+              {messageList.map(({ message, clientId, date, username }) => (
+                <ChatBubble
+                  key={nanoid()}
+                  message={message}
+                  date={date}
+                  username={username}
+                  isMyChat={clientId === storage.getItem('clientId')}
+                />
+              ))}
+            </ChatList>
+            <ChatForm
+              onSubmit={(e: any) => {
+                e.preventDefault();
+                handleChat();
+              }}
+            >
+              <div className="form-header">
+                <textarea
+                  value={message}
+                  onKeyDown={(e: any) => {
+                    switch (e.key) {
+                      case 'Enter':
+                        e.preventDefault();
+                        if (isShift) {
+                          setMessage((message) => message + '\n');
+                          return;
+                        }
+                        if (e.nativeEvent.isComposing) return;
+                        handleChat();
+                        break;
+                      case 'Shift':
+                        setIsShift(true);
+                        break;
+                    }
+                  }}
+                  onKeyUp={(e) => {
+                    switch (e.key) {
+                      case 'Shift':
+                        setIsShift(false);
+                        break;
+                    }
+                  }}
+                  onChange={(e) => setMessage(e.target.value)}
+                  name="message"
+                  style={{ height: 40 }}
+                  placeholder={roomName?.split('_')[0] + '에 메시지 보내기'}
+                />
+              </div>
+              <div className="form-footer">
+                <button type="submit">
+                  <SvgSend />
+                </button>
+              </div>
+            </ChatForm>
+          </ChatContainer>
+        </ContentContainer>
         <UsernameModal
           open={open}
           onSubmit={(username) => {
@@ -165,20 +182,49 @@ const MemberList = styled.div`
   .member-item {
     color: ${({ theme }) => theme.color.grey100};
     margin-bottom: 16px;
+    path {
+      stroke: #000;
+    }
+    .ant-btn {
+      margin-left: 4px;
+    }
+    .screen-share-button {
+      animation: ${highlight} 2s 1s infinite linear alternate;
+    }
   }
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  width: 100%;
+  position: relative;
+`;
+
+const VideoContainer = styled.div<{ isVisible: boolean }>`
+  flex-shrink: 0;
+  width: ${({ isVisible }) => (isVisible ? '70%' : '0px')};
+  height: 100%;
+  transition: 0.3s;
+  background-color: ${({ theme }) => theme.color.primary800};
 `;
 
 const ChatContainer = styled.div`
   width: 100%;
+  min-width: 30%;
   position: relative;
 `;
 
 const ChatList = styled.div`
   display: flex;
+  box-sizing: border-box;
   flex-direction: column;
+  width: 100%;
   height: calc(100% - 100px);
   overflow: overlay;
-  padding: 20px 16px 0 16px;
+  padding: 20px 40px 0 40px;
+  .chat-bubble {
+    max-width: 100%;
+  }
   .peer-chat {
     margin-bottom: 8px;
     align-self: flex-start;

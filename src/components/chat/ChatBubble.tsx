@@ -12,7 +12,9 @@ interface ChatBubbleProps {
 const ChatBubble = ({ message, date, username, isMyChat }: ChatBubbleProps) => {
   const padding = isMyChat ? '10px 80px 10px 20px' : '10px 20px 10px 80px';
   return (
-    <div className={isMyChat ? 'my-chat' : 'peer-chat'}>
+    <div
+      className={isMyChat ? 'chat-bubble  my-chat' : 'chat-bubble peer-chat'}
+    >
       <Badge.Ribbon
         color={isMyChat ? theme.color.primary200 : theme.color.primary400}
         placement={isMyChat ? 'end' : 'start'}
@@ -31,7 +33,8 @@ const ChatBubble = ({ message, date, username, isMyChat }: ChatBubbleProps) => {
 
 const StyledCard = styled(Card)`
   p {
-    white-space: pre;
+    word-wrap: break-word;
+    white-space: pre-wrap;
     margin: 0;
   }
 `;

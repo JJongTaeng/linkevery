@@ -1,3 +1,4 @@
+import { ConfigProvider } from 'antd';
 import 'antd/dist/reset.css';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
@@ -18,7 +19,15 @@ root.render(
   <Provider store={store}>
     <HashRouter>
       <ThemeProvider theme={theme}>
-        <App />
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: theme.color.primary200,
+            },
+          }}
+        >
+          <App />
+        </ConfigProvider>
       </ThemeProvider>
     </HashRouter>
   </Provider>,

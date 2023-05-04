@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Switch } from 'antd';
+import { Button, Form, Input, Modal, Switch, Tooltip } from 'antd';
 import { nanoid } from 'nanoid';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,52 +10,59 @@ import { voiceActions } from '../../store/features/voliceSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import SvgMicOn from '../icons/MicOn';
 import SvgMicOff from '../icons/MicOn2';
+import SvgScreenShareOff from '../icons/ScreenShareOff';
+import SvgScreenShareOn from '../icons/ScreenShareOn';
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const app = useRef(AppServiceImpl.getInstance()).current;
   const dispatch = useAppDispatch();
-  const { status, roomName } = useAppSelector((state) => ({
-    status: state.voice.status,
+  const { voiceStatus, roomName } = useAppSelector((state) => ({
+    voiceStatus: state.voice.status,
     roomName: state.room.roomName,
   }));
   const [form] = Form.useForm();
 
   return (
     <Container>
-      <div>
+      <ControllerContainer>
         {roomName && (
-          <Switch
-            checkedChildren={<SvgMicOn />}
-            unCheckedChildren={<SvgMicOff />}
-            defaultChecked={false}
-            onChange={(value) => {
-              if (value) {
-                dispatch(voiceActions.changeStatus(true));
-                app.dispatch.sendVoiceJoinMessage({});
-              } else {
-                audioManager.clearAllAudio();
-                dispatch(voiceActions.changeStatus(false));
-                app.disconnectVoice();
-              }
-            }}
-          />
+          <Tooltip defaultOpen={true} placement="right" title="음성채팅">
+            <Switch
+              style={{ marginBottom: 8 }}
+              checkedChildren={<SvgMicOn />}
+              unCheckedChildren={<SvgMicOff />}
+              defaultChecked={false}
+              onChange={(value) => {
+                if (value) {
+                  dispatch(voiceActions.changeStatus(true));
+                  app.dispatch.sendVoiceJoinMessage({});
+                } else {
+                  audioManager.clearAllAudio();
+                  dispatch(voiceActions.changeStatus(false));
+                  app.disconnectVoice();
+                }
+              }}
+            />
+          </Tooltip>
         )}
-        {roomName && (
-          <Switch
-            checkedChildren={<SvgMicOn />}
-            unCheckedChildren={<SvgMicOff />}
-            defaultChecked={false}
-            onChange={(value) => {
-              if (value) {
-                app.dispatch.sendScreenShareReadyMessage({});
-              } else {
-              }
-            }}
-          />
+        {roomName && voiceStatus && (
+          <Tooltip defaultOpen={true} placement="right" title="화면공유">
+            <Switch
+              checkedChildren={<SvgScreenShareOn />}
+              unCheckedChildren={<SvgScreenShareOff />}
+              defaultChecked={false}
+              onChange={(value) => {
+                if (value) {
+                  app.dispatch.sendScreenShareReadyMessage({});
+                } else {
+                }
+              }}
+            />
+          </Tooltip>
         )}
-      </div>
+      </ControllerContainer>
       <div>{!roomName && <Button onClick={() => setOpen(true)}>+</Button>}</div>
       <Modal
         title={'방 생성'}
@@ -106,6 +113,13 @@ const Container = styled.section`
   g {
     fill: white;
   }
+`;
+
+const ControllerContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 export default LeftMenuContainer;

@@ -1,3 +1,4 @@
+import { notification } from 'antd';
 import { HandlerMap, VOICE_MESSAGE_ID } from '../../constants/protocol';
 import { store } from '../../store/store';
 import { audioManager } from '../audio/AudioManager';
@@ -19,6 +20,12 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       peer.addTrack(track, mediaStream);
     });
 
+    notification.info({
+      message: `${
+        store.getState().room.member[from]
+      }이 보이스채팅에 연결되었습니다.`,
+    });
+
     dispatch.sendVoiceStartMessage({});
   },
   [VOICE_MESSAGE_ID.START]: async (protocol, { dispatch, rtcManager }) => {
@@ -36,6 +43,12 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       console.log(track, mediaStream);
       peer.addTrack(track, mediaStream);
     });
+
+    notification.info({
+      message: `${
+        store.getState().room.member[from]
+      }이 보이스채팅에 연결되었습니다.`,
+    });
   },
   [VOICE_MESSAGE_ID.DISCONNECT]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
@@ -43,7 +56,12 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       return;
     }
     const peer = rtcManager.getPeer(from);
-    peer.removeTrack();
+    peer.removeAudioTrack();
     audioManager.removeAudio(from);
+    notification.info({
+      message: `${
+        store.getState().room.member[from]
+      }이 보이스채팅에서 나갔습니다.`,
+    });
   },
 };

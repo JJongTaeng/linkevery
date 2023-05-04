@@ -12,7 +12,8 @@ export class RTCPeer extends RTCPeerService {
   private peer?: RTCPeerConnection;
   private dataChannel?: RTCDataChannel;
   private peerStream?: MediaStream;
-  private sender?: RTCRtpSender;
+  private videoSender?: RTCRtpSender;
+  private audioSender?: RTCRtpSender;
 
   constructor() {
     super();
@@ -195,14 +196,13 @@ export class RTCPeer extends RTCPeerService {
     this.peer?.addEventListener('track', (e) => {
       console.log('e', e);
       this.peerStream = e.streams[0];
-      const videoTrack = e.streams[0].getVideoTracks()[0];
+      const videoTrack = this.peerStream.getVideoTracks()[0];
       if (videoTrack) {
-        const video = document.createElement('video');
-        video.srcObject = this.peerStream;
-        video.play();
-        video.autoplay = true;
-
-        document.body.appendChild(video);
+        // const video = document.createElement('video');
+        // video.srcObject = this.peerStream;
+        // video.play();
+        // video.autoplay = true;
+        // document.body.appendChild(video);
       } else {
         audioManager.addAudio(id, this.peerStream);
       }
@@ -210,12 +210,21 @@ export class RTCPeer extends RTCPeerService {
   }
 
   public addTrack(track: MediaStreamTrack, stream: MediaStream) {
-    this.sender = this.peer?.addTrack(track, stream);
+    if (stream.getVideoTracks()[0]) {
+      this.videoSender = this.peer?.addTrack(track, stream);
+    } else {
+      this.audioSender = this.peer?.addTrack(track, stream);
+    }
   }
 
-  public removeTrack() {
-    if (!this.sender) return;
-    this.peer?.removeTrack(this.sender);
+  public removeAudioTrack() {
+    if (!this.audioSender) return;
+    this.peer?.removeTrack(this.audioSender);
+  }
+
+  public removeVideoTrack() {
+    if (!this.videoSender) return;
+    this.peer?.removeTrack(this.videoSender);
   }
 
   public sendMessage(protocol: Protocol) {
