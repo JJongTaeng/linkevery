@@ -5,7 +5,11 @@ interface RoomState {
   roomName: string;
   username: string;
   member: {
-    [key: string]: string;
+    [key: string]: {
+      username: string;
+      voiceStatus: boolean;
+      screenShareStatus: boolean;
+    };
   };
   size: number;
   voiceStatus: boolean;
@@ -33,9 +37,37 @@ export const roomSlice = createSlice({
     setUsername: (state, { payload }) => {
       state.username = payload.username;
     },
-    setMember: (state, { payload }) => {
+    setMemberUsername: (
+      state,
+      { payload }: { payload: { username: string; clientId: string } },
+    ) => {
       const { clientId, username } = payload;
-      state.member[clientId] = username;
+      state.member[clientId] = {
+        ...state.member[clientId],
+        username,
+      };
+    },
+    setMemberVoiceStatus: (
+      state,
+      { payload }: { payload: { voiceStatus: boolean; clientId: string } },
+    ) => {
+      const { clientId, voiceStatus } = payload;
+      state.member[clientId] = {
+        ...state.member[clientId],
+        voiceStatus,
+      };
+    },
+    setMemberScreenShareStatus: (
+      state,
+      {
+        payload,
+      }: { payload: { screenShareStatus: boolean; clientId: string } },
+    ) => {
+      const { clientId, screenShareStatus } = payload;
+      state.member[clientId] = {
+        ...state.member[clientId],
+        screenShareStatus,
+      };
     },
     deleteMember: (state, { payload }) => {
       const { clientId } = payload;

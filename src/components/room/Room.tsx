@@ -74,15 +74,19 @@ const Room = () => {
           <div className="member-item">{myName} - me</div>
           {Object.keys(member).map((clientId) => (
             <div key={clientId} className="member-item">
-              <span>{member[clientId]}</span>
-              <Button size="small" shape="circle" icon={<SvgSpeakerOn />} />
-              <Button
-                className={'screen-share-button'}
-                size="small"
-                shape="circle"
-                onClick={() => setSideView((value) => !value)}
-                icon={<SvgScreenShareOn />}
-              />
+              <span>{member[clientId].username}</span>
+              {member[clientId].voiceStatus && (
+                <Button size="small" shape="circle" icon={<SvgSpeakerOn />} />
+              )}
+              {member[clientId].screenShareStatus && (
+                <Button
+                  className={'screen-share-button'}
+                  size="small"
+                  shape="circle"
+                  onClick={() => setSideView((value) => !value)}
+                  icon={<SvgScreenShareOn />}
+                />
+              )}
             </div>
           ))}
         </MemberList>
