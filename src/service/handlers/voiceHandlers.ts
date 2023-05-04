@@ -2,7 +2,7 @@ import { notification } from 'antd';
 import { HandlerMap, VOICE_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
-import { audioManager } from '../audio/AudioManager';
+import { audioManager } from '../media/AudioManager';
 
 export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   [VOICE_MESSAGE_ID.JOIN]: async (protocol, { dispatch, rtcManager }) => {
@@ -30,7 +30,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     store.dispatch(
       roomActions.setMemberVoiceStatus({ clientId: from, voiceStatus: true }),
     );
-    dispatch.sendVoiceStartMessage({});
+    dispatch.sendVoiceStartMessage({ to: from });
   },
   [VOICE_MESSAGE_ID.START]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;

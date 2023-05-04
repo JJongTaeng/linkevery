@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
+import { videoManager } from '../../service/media/VideoManager';
 import { StorageService } from '../../service/storage/StorageService';
 import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
@@ -83,7 +84,10 @@ const Room = () => {
                   className={'screen-share-button'}
                   size="small"
                   shape="circle"
-                  onClick={() => setSideView((value) => !value)}
+                  onClick={() => {
+                    setSideView(true);
+                    videoManager.appendVideo(clientId);
+                  }}
                   icon={<SvgScreenShareOn />}
                 />
               )}
@@ -91,9 +95,10 @@ const Room = () => {
           ))}
         </MemberList>
         <ContentContainer>
-          <VideoContainer isVisible={isSideView}>
-            <video></video>
-          </VideoContainer>
+          <VideoContainer
+            id={'video-container'}
+            isVisible={isSideView}
+          ></VideoContainer>
           <ChatContainer>
             <ChatList>
               {messageList.map(({ message, clientId, date, username }) => (
@@ -210,6 +215,10 @@ const VideoContainer = styled.div<{ isVisible: boolean }>`
   height: 100%;
   transition: 0.3s;
   background-color: ${({ theme }) => theme.color.primary800};
+
+  video {
+    width: 100%;
+  }
 `;
 
 const ChatContainer = styled.div`

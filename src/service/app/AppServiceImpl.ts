@@ -3,6 +3,8 @@ import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
+import { audioManager } from '../media/AudioManager';
+import { videoManager } from '../media/VideoManager';
 import { RTCManager } from '../rtc/RTCManager';
 import { RTCScreenShareManager } from '../rtc/RTCScreenShareManager';
 import { StorageService } from '../storage/StorageService';
@@ -44,5 +46,12 @@ export class AppServiceImpl extends AppService {
   public disconnectVoice() {
     this.dispatch.sendVoiceDisconnectMessage({});
     this.rtcManager.clearTrack();
+    audioManager.clearAllAudio();
+  }
+
+  public disconnectScreenShare() {
+    this.dispatch.sendScreenShareDisonnectMessage({});
+    this.rtcManager.clearVideoTrack();
+    videoManager.clearAllVideo();
   }
 }

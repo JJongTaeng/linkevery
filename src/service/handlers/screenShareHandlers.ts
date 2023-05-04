@@ -12,7 +12,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       return;
     }
 
-    dispatch.sendScreenShareReadyOkMessage({});
+    dispatch.sendScreenShareReadyOkMessage({ to: protocol.from });
   },
   [SCREEN_SHARE_MESSAGE_ID.READY_OK]: async (
     protocol,
@@ -27,7 +27,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       console.log(track, mediaStream);
       peer.addTrack(track, mediaStream);
     });
-    dispatch.sendScreenShareConnectedMessage({});
+    dispatch.sendScreenShareConnectedMessage({ to: protocol.from });
   },
   [SCREEN_SHARE_MESSAGE_ID.CONNECTED]: (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;

@@ -4,7 +4,6 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
-import { audioManager } from '../../service/audio/AudioManager';
 import { roomActions } from '../../store/features/roomSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import SvgMicOn from '../icons/MicOn';
@@ -17,11 +16,23 @@ const LeftMenuContainer = () => {
   const [open, setOpen] = useState(false);
   const app = useRef(AppServiceImpl.getInstance()).current;
   const dispatch = useAppDispatch();
-  const { voiceStatus, roomName } = useAppSelector((state) => ({
-    voiceStatus: state.room.voiceStatus,
-    roomName: state.room.roomName,
-  }));
+  const { voiceStatus, screenShareStatus, roomName, member } = useAppSelector(
+    (state) => ({
+      member: state.room.member,
+      voiceStatus: state.room.voiceStatus,
+      screenShareStatus: state.room.screenShareStatus,
+      roomName: state.room.roomName,
+    }),
+  );
   const [form] = Form.useForm();
+
+  const isOnVoiceMember = () => {
+    for (const key in member) {
+      if (member[key].voiceStatus) {
+        return true;
+      }
+    }
+  };
 
   return (
     <Container>
@@ -29,17 +40,16 @@ const LeftMenuContainer = () => {
         {roomName && (
           <Tooltip defaultOpen={true} placement="right" title="음성채팅">
             <Switch
+              checked={voiceStatus}
               style={{ marginBottom: 8 }}
               checkedChildren={<SvgMicOn />}
               unCheckedChildren={<SvgMicOff />}
               defaultChecked={false}
               onChange={(value) => {
+                dispatch(roomActions.changeVoiceStatus(value));
                 if (value) {
-                  dispatch(roomActions.changeVoiceStatus(true));
                   app.dispatch.sendVoiceJoinMessage({});
                 } else {
-                  audioManager.clearAllAudio();
-                  dispatch(roomActions.changeVoiceStatus(false));
                   app.disconnectVoice();
                 }
               }}
@@ -49,13 +59,17 @@ const LeftMenuContainer = () => {
         {roomName && voiceStatus && (
           <Tooltip defaultOpen={true} placement="right" title="화면공유">
             <Switch
+              disabled={!isOnVoiceMember()}
+              checked={screenShareStatus}
               checkedChildren={<SvgScreenShareOn />}
               unCheckedChildren={<SvgScreenShareOff />}
               defaultChecked={false}
               onChange={(value) => {
+                dispatch(roomActions.changeScreenShareStatus(value));
                 if (value) {
                   app.dispatch.sendScreenShareReadyMessage({});
                 } else {
+                  app.disconnectScreenShare();
                 }
               }}
             />

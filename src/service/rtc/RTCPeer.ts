@@ -1,6 +1,7 @@
 import { Protocol } from '../../constants/protocol';
 import { ERROR_TYPE } from '../../error/error';
-import { audioManager } from '../audio/AudioManager';
+import { audioManager } from '../media/AudioManager';
+import { videoManager } from '../media/VideoManager';
 import {
   PeerConnectionStateHandlers,
   PeerSignalingStateHandlers,
@@ -198,11 +199,7 @@ export class RTCPeer extends RTCPeerService {
       this.peerStream = e.streams[0];
       const videoTrack = this.peerStream.getVideoTracks()[0];
       if (videoTrack) {
-        // const video = document.createElement('video');
-        // video.srcObject = this.peerStream;
-        // video.play();
-        // video.autoplay = true;
-        // document.body.appendChild(video);
+        videoManager.addVideo(id, this.peerStream);
       } else {
         audioManager.addAudio(id, this.peerStream);
       }
