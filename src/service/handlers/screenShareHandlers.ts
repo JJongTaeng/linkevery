@@ -6,7 +6,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
-    if (!store.getState().voice.status) {
+    if (!store.getState().room.voiceStatus) {
       return;
     }
 

@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { audioManager } from '../../service/audio/AudioManager';
 import { roomActions } from '../../store/features/roomSlice';
-import { voiceActions } from '../../store/features/voliceSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import SvgMicOn from '../icons/MicOn';
 import SvgMicOff from '../icons/MicOn2';
@@ -19,7 +18,7 @@ const LeftMenuContainer = () => {
   const app = useRef(AppServiceImpl.getInstance()).current;
   const dispatch = useAppDispatch();
   const { voiceStatus, roomName } = useAppSelector((state) => ({
-    voiceStatus: state.voice.status,
+    voiceStatus: state.room.voiceStatus,
     roomName: state.room.roomName,
   }));
   const [form] = Form.useForm();
@@ -36,11 +35,11 @@ const LeftMenuContainer = () => {
               defaultChecked={false}
               onChange={(value) => {
                 if (value) {
-                  dispatch(voiceActions.changeStatus(true));
+                  dispatch(roomActions.changeVoiceStatus(true));
                   app.dispatch.sendVoiceJoinMessage({});
                 } else {
                   audioManager.clearAllAudio();
-                  dispatch(voiceActions.changeStatus(false));
+                  dispatch(roomActions.changeVoiceStatus(false));
                   app.disconnectVoice();
                 }
               }}

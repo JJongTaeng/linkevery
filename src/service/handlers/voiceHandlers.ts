@@ -6,7 +6,7 @@ import { audioManager } from '../audio/AudioManager';
 export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   [VOICE_MESSAGE_ID.JOIN]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
-    if (!store.getState().voice.status) {
+    if (!store.getState().room.voiceStatus) {
       return;
     }
 
@@ -30,7 +30,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   },
   [VOICE_MESSAGE_ID.START]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
-    if (!store.getState().voice.status) {
+    if (!store.getState().room.voiceStatus) {
       return;
     }
 
@@ -52,7 +52,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   },
   [VOICE_MESSAGE_ID.DISCONNECT]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
-    if (!store.getState().voice.status) {
+    if (!store.getState().room.voiceStatus) {
       return;
     }
     const peer = rtcManager.getPeer(from);
