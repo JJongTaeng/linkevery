@@ -17,7 +17,10 @@ const TopMenuContainer = () => {
         <Text>{roomName ? roomName?.split('_')[0] : ''}</Text>
         <div>
           {roomName && (
-            <Tooltip title="복사된 URL을 초대할 사람에게 보내주세요.">
+            <Tooltip
+              defaultOpen={true}
+              title="복사된 URL을 초대할 사람에게 보내주세요."
+            >
               <SvgInviteMember
                 onClick={() => {
                   clipboard.updateClipboard(window.location.href);
