@@ -14,6 +14,7 @@ interface RoomState {
   size: number;
   voiceStatus: boolean;
   screenShareStatus: boolean;
+  leftSideView: boolean;
 }
 
 const storage = StorageService.getInstance();
@@ -25,6 +26,7 @@ const initialState: RoomState = {
   size: 0,
   voiceStatus: false,
   screenShareStatus: false,
+  leftSideView: false,
 };
 
 export const roomSlice = createSlice({
@@ -85,6 +87,9 @@ export const roomSlice = createSlice({
     },
     changeScreenShareStatus: (state, { payload }) => {
       state.screenShareStatus = payload;
+    },
+    changeLeftSideView: (state, { payload }) => {
+      state.leftSideView = payload;
     },
   },
 });

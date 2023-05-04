@@ -69,5 +69,6 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
         screenShareStatus: false,
       }),
     );
+    store.dispatch(roomActions.changeLeftSideView(false));
   },
 };

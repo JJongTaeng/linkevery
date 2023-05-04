@@ -49,8 +49,11 @@ const LeftMenuContainer = () => {
                 dispatch(roomActions.changeVoiceStatus(value));
                 if (value) {
                   app.dispatch.sendVoiceJoinMessage({});
+                  dispatch(roomActions.changeVoiceStatus(true));
                 } else {
                   app.disconnectVoice();
+                  dispatch(roomActions.changeScreenShareStatus(false));
+                  dispatch(roomActions.changeVoiceStatus(false));
                 }
               }}
             />
@@ -69,6 +72,7 @@ const LeftMenuContainer = () => {
                   app.dispatch.sendScreenShareReadyMessage({});
                 } else {
                   app.disconnectScreenShare();
+                  dispatch(roomActions.changeScreenShareStatus(false));
                 }
               }}
             />

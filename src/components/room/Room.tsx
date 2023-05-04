@@ -23,17 +23,19 @@ const storage = StorageService.getInstance();
 
 const Room = () => {
   const [open, setOpen] = useState(false);
-  const [isSideView, setisSideView] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState('');
   const app = useRef(AppServiceImpl.getInstance()).current;
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { myName, messageList, member } = useAppSelector((state) => ({
-    myName: state.room.username,
-    member: state.room.member,
-    messageList: state.chat.messageList,
-  }));
+  const { myName, messageList, member, leftSideView } = useAppSelector(
+    (state) => ({
+      leftSideView: state.room.leftSideView,
+      myName: state.room.username,
+      member: state.room.member,
+      messageList: state.chat.messageList,
+    }),
+  );
   const dispatch = useAppDispatch();
 
   const [message, setMessage] = useState('');
@@ -86,10 +88,10 @@ const Room = () => {
                   shape="circle"
                   onClick={() => {
                     if (clientId === selectedClientId) {
-                      setisSideView(false);
+                      dispatch(roomActions.changeLeftSideView(true));
                       setSelectedClientId('');
                     } else {
-                      setisSideView(true);
+                      dispatch(roomActions.changeLeftSideView(false));
                       setSelectedClientId(clientId);
                       videoManager.appendVideo(clientId);
                     }
@@ -103,7 +105,7 @@ const Room = () => {
         <ContentContainer>
           <VideoContainer
             id={'video-container'}
-            isVisible={isSideView}
+            isVisible={leftSideView}
           ></VideoContainer>
           <ChatContainer>
             <ChatList>
@@ -216,14 +218,18 @@ const ContentContainer = styled.div`
 `;
 
 const VideoContainer = styled.div<{ isVisible: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex-shrink: 0;
   width: ${({ isVisible }) => (isVisible ? '70%' : '0px')};
   height: 100%;
   transition: 0.3s;
-  background-color: ${({ theme }) => theme.color.primary800};
+  background-color: ${({ theme }) => theme.color.primary400};
 
   video {
     width: 100%;
+    height: 100%;
   }
 `;
 
