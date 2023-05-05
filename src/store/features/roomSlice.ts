@@ -15,6 +15,7 @@ interface RoomState {
   voiceStatus: boolean;
   screenShareStatus: boolean;
   leftSideView: boolean;
+  isScrollButtonView: boolean;
 }
 
 const storage = StorageService.getInstance();
@@ -27,6 +28,7 @@ const initialState: RoomState = {
   voiceStatus: false,
   screenShareStatus: false,
   leftSideView: false,
+  isScrollButtonView: false,
 };
 
 export const roomSlice = createSlice({
@@ -90,6 +92,9 @@ export const roomSlice = createSlice({
     },
     changeLeftSideView: (state, { payload }) => {
       state.leftSideView = payload;
+    },
+    changeIsScrollBottomView: (state, { payload }) => {
+      state.isScrollButtonView = payload;
     },
   },
 });

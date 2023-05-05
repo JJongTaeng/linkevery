@@ -28,19 +28,18 @@ const Room = () => {
   const chatListElement = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState('');
-  const [scrollBottomButtonView, setScrollBottomButtonView] = useState(false);
   const app = useRef(AppServiceImpl.getInstance()).current;
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { myName, messageList, member, leftSideView } = useAppSelector(
-    (state) => ({
+  const { myName, messageList, member, leftSideView, isReadAllChat } =
+    useAppSelector((state) => ({
       leftSideView: state.room.leftSideView,
       myName: state.room.username,
       member: state.room.member,
       messageList: state.chat.messageList,
-    }),
-  );
+      isReadAllChat: state.room.isScrollButtonView,
+    }));
   const dispatch = useAppDispatch();
 
   const [message, setMessage] = useState('');
@@ -61,7 +60,7 @@ const Room = () => {
 
   const handleScrollChatList = () => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
-      setScrollBottomButtonView(false);
+      dispatch(roomActions.changeIsScrollBottomView(false));
     }
   };
 
@@ -89,7 +88,7 @@ const Room = () => {
         behavior: 'smooth',
       });
     } else {
-      setScrollBottomButtonView(true);
+      dispatch(roomActions.changeIsScrollBottomView(true));
     }
   }, [messageList.length]);
 
@@ -159,7 +158,7 @@ const Room = () => {
                 ref={chatScrollViewElement}
               ></div>
             </ChatList>
-            {scrollBottomButtonView && (
+            {isReadAllChat && (
               <Button
                 onClick={() => {
                   chatScrollViewElement?.current?.scrollIntoView({
