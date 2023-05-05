@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { videoManager } from '../../service/media/VideoManager';
 import { StorageService } from '../../service/storage/StorageService';
+import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -14,6 +15,7 @@ import { highlight } from '../../style';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
+import SvgArrowDown from '../icons/ArrowDown';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
 import SvgSend from '../icons/Send';
 import SvgSpeakerOn from '../icons/SpeakerOn';
@@ -22,8 +24,11 @@ import UsernameModal from './UsernameModal';
 const storage = StorageService.getInstance();
 
 const Room = () => {
+  const chatScrollViewElement = useRef<HTMLDivElement>(null);
+  const chatListElement = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState('');
+  const [scrollBottomButtonView, setScrollBottomButtonView] = useState(false);
   const app = useRef(AppServiceImpl.getInstance()).current;
   const { roomName } = useParams<{
     roomName: string;
@@ -56,6 +61,27 @@ const Room = () => {
       dispatch(chatActions.resetChatList());
     };
   }, [myName, roomName]);
+
+  useEffect(() => {
+    if (utils.isBottomScrollElement(chatListElement.current!)) {
+      chatScrollViewElement?.current?.scrollIntoView({
+        block: 'end',
+        inline: 'end',
+        behavior: 'smooth',
+      });
+    } else {
+      setScrollBottomButtonView(true);
+    }
+  }, [messageList.length]);
+
+  useEffect(() => {
+    if (!chatListElement.current) return;
+    chatListElement.current.addEventListener('scroll', (e) => {
+      if (utils.isBottomScrollElement(chatListElement.current!)) {
+        setScrollBottomButtonView(false);
+      }
+    });
+  }, []);
 
   const handleChat = () => {
     if (!message) return;
@@ -109,7 +135,7 @@ const Room = () => {
             isVisible={leftSideView}
           ></VideoContainer>
           <ChatContainer>
-            <ChatList>
+            <ChatList ref={chatListElement}>
               {messageList.map(({ message, clientId, date, username }) => (
                 <ChatBubble
                   key={nanoid()}
@@ -119,7 +145,26 @@ const Room = () => {
                   isMyChat={clientId === storage.getItem('clientId')}
                 />
               ))}
+              <div
+                style={{ background: 'red', width: '100%' }}
+                ref={chatScrollViewElement}
+              ></div>
             </ChatList>
+            {scrollBottomButtonView && (
+              <Button
+                onClick={() => {
+                  chatScrollViewElement?.current?.scrollIntoView({
+                    block: 'end',
+                    inline: 'end',
+                    behavior: 'smooth',
+                  });
+                }}
+                shape="circle"
+                danger
+              >
+                <SvgArrowDown />
+              </Button>
+            )}
             <ChatForm
               onSubmit={(e: any) => {
                 e.preventDefault();
@@ -158,6 +203,7 @@ const Room = () => {
                   placeholder={roomName?.split('_')[0] + '에 메시지 보내기'}
                 />
               </div>
+
               <div className="form-footer">
                 <button type="submit">
                   <SvgSend />
@@ -238,6 +284,19 @@ const ChatContainer = styled.div`
   width: 100%;
   min-width: 30%;
   position: relative;
+  .ant-btn-dangerous {
+    position: absolute;
+    left: calc(50% - 16px);
+    bottom: 110px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    path {
+      stroke: #ff7875;
+      fill: #ff7875;
+    }
+    animation: ${highlight} 2s 1s infinite linear alternate;
+  }
 `;
 
 const ChatList = styled.div`
