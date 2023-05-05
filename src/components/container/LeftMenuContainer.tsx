@@ -119,6 +119,11 @@ const Container = styled.section`
   height: 100%;
   width: 70px;
   background-color: ${({ theme }) => theme.color.primary100};
+  background: linear-gradient(
+    180deg,
+    ${({ theme }) => theme.color.primary100} 40%,
+    ${({ theme }) => theme.color.primary400} 100%
+  );
   display: flex;
   flex-direction: column;
   align-items: center;
