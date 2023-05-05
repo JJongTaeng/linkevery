@@ -3,6 +3,7 @@ import { HandlerMap, VOICE_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { audioManager } from '../media/AudioManager';
+import { soundEffect } from '../media/SoundEffect';
 
 export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   [VOICE_MESSAGE_ID.JOIN]: async (protocol, { dispatch, rtcManager }) => {
@@ -25,6 +26,8 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
         store.getState().room.member[from].username
       }이 보이스채팅에 연결되었습니다.`,
     });
+
+    soundEffect.startVoice();
 
     store.dispatch(
       roomActions.setMemberVoiceStatus({ clientId: from, voiceStatus: true }),
@@ -51,6 +54,8 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
         store.getState().room.member[from].username
       }이 보이스채팅에 연결되었습니다.`,
     });
+    soundEffect.startVoice();
+
     store.dispatch(
       roomActions.setMemberVoiceStatus({ clientId: from, voiceStatus: true }),
     );
