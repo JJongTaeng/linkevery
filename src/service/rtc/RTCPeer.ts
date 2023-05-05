@@ -12,7 +12,8 @@ import {
 export class RTCPeer extends RTCPeerService {
   private peer?: RTCPeerConnection;
   private dataChannel?: RTCDataChannel;
-  private peerStream?: MediaStream;
+  private videoStream?: MediaStream;
+  private audioStream?: MediaStream;
   private videoSender?: RTCRtpSender;
   private audioSender?: RTCRtpSender;
 
@@ -108,8 +109,12 @@ export class RTCPeer extends RTCPeerService {
     return this.dataChannel;
   }
 
-  public getPeerStream() {
-    return this.peerStream;
+  public getAudioStream() {
+    return this.audioStream;
+  }
+
+  public getVideoStream() {
+    return this.videoStream;
   }
 
   public closePeer() {
@@ -196,31 +201,38 @@ export class RTCPeer extends RTCPeerService {
   public onTrack(id: string) {
     this.peer?.addEventListener('track', (e) => {
       console.log('e', e);
-      this.peerStream = e.streams[0];
-      const videoTrack = this.peerStream.getVideoTracks()[0];
+      const videoTrack = e.streams[0].getVideoTracks()[0];
       if (videoTrack) {
-        videoManager.addVideo(id, this.peerStream);
+        this.videoStream = e.streams[0];
+        videoManager.addVideo(id, this.videoStream);
       } else {
-        audioManager.addAudio(id, this.peerStream);
+        this.audioStream = e.streams[0];
+        audioManager.addAudio(id, this.audioStream);
       }
     });
   }
 
   public addTrack(track: MediaStreamTrack, stream: MediaStream) {
     if (stream.getVideoTracks()[0]) {
+      this.videoStream = stream;
       this.videoSender = this.peer?.addTrack(track, stream);
     } else {
+      this.audioStream = stream;
       this.audioSender = this.peer?.addTrack(track, stream);
     }
   }
 
   public removeAudioTrack() {
     if (!this.audioSender) return;
+    this.audioStream?.getTracks().forEach((track) => track.stop());
+    this.audioStream = undefined;
     this.peer?.removeTrack(this.audioSender);
   }
 
   public removeVideoTrack() {
     if (!this.videoSender) return;
+    this.videoStream?.getTracks().forEach((track) => track.stop());
+    this.videoStream = undefined;
     this.peer?.removeTrack(this.videoSender);
   }
 

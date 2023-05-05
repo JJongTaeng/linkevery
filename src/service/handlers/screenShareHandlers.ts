@@ -2,6 +2,7 @@ import { notification } from 'antd';
 import { HandlerMap, SCREEN_SHARE_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
+import { videoManager } from '../media/VideoManager';
 
 export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
   [SCREEN_SHARE_MESSAGE_ID.READY]: async (
@@ -18,7 +19,6 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
-    console.log('###', store.getState().room.screenShareStatus);
     if (store.getState().room.screenShareStatus) return;
     store.dispatch(roomActions.changeScreenShareStatus(true));
 
@@ -69,6 +69,8 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
         screenShareStatus: false,
       }),
     );
+    videoManager.clearVideo(from);
+    videoManager.removeVideoNode(from);
     store.dispatch(roomActions.changeLeftSideView(false));
   },
 };

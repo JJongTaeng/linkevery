@@ -12,8 +12,8 @@ class VideoManager {
     this.videoElementMap[id] = video;
   }
 
-  appendVideo(id: string) {
-    this.clearAllVideo();
+  appendVideoNode(id: string) {
+    this.removeAllVideoNode();
     const container = document.querySelector('#video-container');
     if (!container) {
       throw new Error('video container not defined');
@@ -21,17 +21,35 @@ class VideoManager {
     container.appendChild(this.videoElementMap[id]);
   }
 
-  removeVideo(id: string) {
-    const video = document.getElementById(id);
+  removeVideoNode(id: string) {
+    const video = document.getElementById(id) as HTMLVideoElement;
     if (!video) return;
     video.parentNode?.removeChild(video);
   }
 
-  clearAllVideo() {
+  removeAllVideoNode() {
     const videoNodeList = document.querySelectorAll('.screen-share-video');
     videoNodeList.forEach((node) => {
       node.parentNode?.removeChild(node);
     });
+  }
+
+  clearAllVideo() {
+    this.removeAllVideoNode();
+    for (const key in this.videoElementMap) {
+      // @ts-ignore
+      this.clearVideo(key);
+    }
+  }
+
+  clearVideo(id: string) {
+    // @ts-ignore
+    const tracks = this.videoElementMap[id].srcObject?.getTracks();
+    tracks.forEach((track: any) => {
+      track.stop();
+    });
+    delete this.videoElementMap[id];
+    this.removeVideoNode(id);
   }
 }
 

@@ -88,12 +88,12 @@ const Room = () => {
                   shape="circle"
                   onClick={() => {
                     if (clientId === selectedClientId) {
-                      dispatch(roomActions.changeLeftSideView(true));
+                      dispatch(roomActions.changeLeftSideView(false));
                       setSelectedClientId('');
                     } else {
-                      dispatch(roomActions.changeLeftSideView(false));
+                      dispatch(roomActions.changeLeftSideView(true));
                       setSelectedClientId(clientId);
-                      videoManager.appendVideo(clientId);
+                      videoManager.appendVideoNode(clientId);
                     }
                   }}
                   icon={<SvgScreenShareOn />}
