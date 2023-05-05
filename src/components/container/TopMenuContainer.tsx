@@ -12,7 +12,7 @@ const TopMenuContainer = () => {
 
   return (
     <Container>
-      <div>Linkevery </div>
+      <div>링크에브리</div>
       <RoomName>
         <Text>{roomName ? roomName?.split('_')[0] : ''}</Text>
         <div>
