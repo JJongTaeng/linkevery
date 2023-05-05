@@ -200,7 +200,6 @@ export class RTCPeer extends RTCPeerService {
 
   public onTrack(id: string) {
     this.peer?.addEventListener('track', (e) => {
-      console.log('e', e);
       const videoTrack = e.streams[0].getVideoTracks()[0];
       if (videoTrack) {
         this.videoStream = e.streams[0];

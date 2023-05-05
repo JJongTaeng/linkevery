@@ -17,7 +17,6 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     });
     mediaStream?.getTracks().forEach((track) => {
       const peer = rtcManager.getPeer(from);
-      console.log(track, mediaStream);
       peer.addTrack(track, mediaStream);
     });
 
@@ -44,7 +43,6 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     });
     mediaStream?.getTracks().forEach((track) => {
       const peer = rtcManager.getPeer(from);
-      console.log(track, mediaStream);
       peer.addTrack(track, mediaStream);
     });
 

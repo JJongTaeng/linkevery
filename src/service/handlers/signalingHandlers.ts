@@ -31,7 +31,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcPeer.getPeer()!.onnegotiationneeded = async (e: any) => {
       const offer = await rtcPeer.createOffer();
       rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-      console.log('connection state = ', e.currentTarget?.connectionState);
+      console.debug('[connection state] ', e.currentTarget?.connectionState);
       if (e.currentTarget?.connectionState === 'new') {
         dispatch.sendOfferMessage({ offer, to: from });
       } else if (e.currentTarget?.connectionState === 'connected') {
@@ -40,6 +40,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     };
     rtcPeer.createDataChannel(roomName, (datachannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
+      console.debug('[open datachannel] ', from);
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });
@@ -62,7 +63,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcPeer.getPeer()!.onnegotiationneeded = async (e: any) => {
       const offer = await rtcPeer.createOffer();
       rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-      console.log('connection state = ', e.currentTarget?.connectionState);
+      console.debug('[connection state] ', e.currentTarget?.connectionState);
       if (e.currentTarget?.connectionState === 'new') {
         dispatch.sendOfferMessage({ offer, to: from });
       } else if (e.currentTarget?.connectionState === 'connected') {
@@ -76,7 +77,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });
-      console.debug('open datachannel = ', from);
+      console.debug('[open datachannel] ', from);
       // const stringify = JSON.stringify(createDataChannelMessage({}));
       // datachannel.send(stringify);
       dispatch.sendCreateDataChannelMessage({ to: from });

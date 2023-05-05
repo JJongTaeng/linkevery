@@ -35,7 +35,6 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     for (const key of voiceMember) {
       mediaStream?.getTracks().forEach((track) => {
         const peer = rtcManager.getPeer(key);
-        console.log(track, mediaStream);
         peer.addTrack(track, mediaStream);
       });
       dispatch.sendScreenShareConnectedMessage({ to: key });
