@@ -73,11 +73,6 @@ const Room = () => {
     } else {
       setOpen(true);
     }
-
-    return () => {
-      app.disconnect();
-      dispatch(chatActions.resetChatList());
-    };
   }, [myName, roomName]);
 
   useEffect(() => {
@@ -101,6 +96,8 @@ const Room = () => {
         'scroll',
         handleScrollChatList,
       );
+      app.disconnect();
+      dispatch(chatActions.resetChatList());
     };
   }, []);
 
