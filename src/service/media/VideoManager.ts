@@ -43,8 +43,13 @@ class VideoManager {
   }
 
   clearVideo(id: string) {
+    const video = this.videoElementMap[id];
+    if (!video) {
+      return;
+    }
     // @ts-ignore
-    const tracks = this.videoElementMap[id].srcObject?.getTracks();
+    const tracks = video.srcObject?.getTracks();
+    if (!tracks) return;
     tracks.forEach((track: any) => {
       track.stop();
     });
