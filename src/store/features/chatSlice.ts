@@ -27,6 +27,9 @@ export const chatSlice = createSlice({
     ) => {
       state.messageList.push({ message, clientId, date, username });
     },
+    resetChatList: (state) => {
+      state.messageList = [];
+    },
   },
 });
 

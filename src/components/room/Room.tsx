@@ -53,6 +53,7 @@ const Room = () => {
 
     return () => {
       app.disconnect();
+      dispatch(chatActions.resetChatList());
     };
   }, [myName, roomName]);
 
