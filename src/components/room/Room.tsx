@@ -76,6 +76,11 @@ const Room = () => {
   }, [myName, roomName]);
 
   useEffect(() => {
+    if (!member[selectedClientId])
+      dispatch(roomActions.changeLeftSideView(false));
+  }, [member]);
+
+  useEffect(() => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
       chatScrollViewElement?.current?.scrollIntoView({
         block: 'end',
