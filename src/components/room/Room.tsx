@@ -46,6 +46,25 @@ const Room = () => {
   const [message, setMessage] = useState('');
   const [isShift, setIsShift] = useState<boolean>(false);
 
+  const handleChat = () => {
+    if (!message) return;
+    dispatch(
+      chatActions.sendChat({
+        message,
+        clientId: storage.getItem('clientId'),
+        date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        username: myName,
+      }),
+    );
+    setMessage('');
+  };
+
+  const handleScrollChatList = () => {
+    if (utils.isBottomScrollElement(chatListElement.current!)) {
+      setScrollBottomButtonView(false);
+    }
+  };
+
   useEffect(() => {
     if (myName && roomName) {
       app.dispatch.sendConnectMessage({});
@@ -76,25 +95,15 @@ const Room = () => {
 
   useEffect(() => {
     if (!chatListElement.current) return;
-    chatListElement.current.addEventListener('scroll', (e) => {
-      if (utils.isBottomScrollElement(chatListElement.current!)) {
-        setScrollBottomButtonView(false);
-      }
-    });
-  }, []);
+    chatListElement.current.addEventListener('scroll', handleScrollChatList);
 
-  const handleChat = () => {
-    if (!message) return;
-    dispatch(
-      chatActions.sendChat({
-        message,
-        clientId: storage.getItem('clientId'),
-        date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-        username: myName,
-      }),
-    );
-    setMessage('');
-  };
+    return () => {
+      chatListElement.current?.removeEventListener(
+        'scroll',
+        handleScrollChatList,
+      );
+    };
+  }, []);
 
   return (
     <>
