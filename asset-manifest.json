@@ -1,12 +1,14 @@
 {
   "files": {
     "main.css": "/linkevery/static/css/main.3bc058fc.css",
-    "main.js": "/linkevery/static/js/main.3b3c5da2.js",
+    "main.js": "/linkevery/static/js/main.a5f723e0.js",
     "static/js/27.eb46082b.chunk.js": "/linkevery/static/js/27.eb46082b.chunk.js",
+    "static/media/chat.mp3": "/linkevery/static/media/chat.ca3856e41b7ce870071c.mp3",
+    "static/media/voiceOn.mp3": "/linkevery/static/media/voiceOn.af210ab9eb7fbf4c7122.mp3",
     "index.html": "/linkevery/index.html"
   },
   "entrypoints": [
     "static/css/main.3bc058fc.css",
-    "static/js/main.3b3c5da2.js"
+    "static/js/main.a5f723e0.js"
   ]
 }
