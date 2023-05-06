@@ -33,7 +33,6 @@ class AudioManager {
 
   public changeVolume(id: string, volume: number) {
     const audio = this.audioMap[id];
-    console.log(audio);
     audio.volume = volume;
   }
 }
