@@ -52,7 +52,6 @@ export class AppServiceImpl extends AppService {
 
   public disconnectScreenShare(id: string) {
     this.dispatch.sendScreenShareDisonnectMessage({});
-    videoManager.clearVideo(id);
     this.rtcManager.clearVideoTrack();
   }
 }

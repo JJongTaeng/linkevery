@@ -77,7 +77,6 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       }),
     );
     videoManager.clearVideo(from);
-    videoManager.removeVideoNode(from);
     store.dispatch(roomActions.changeLeftSideView(false));
   },
 };

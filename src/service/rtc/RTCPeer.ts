@@ -202,11 +202,9 @@ export class RTCPeer extends RTCPeerService {
     this.peer?.addEventListener('track', (e) => {
       const videoTrack = e.streams[0].getVideoTracks()[0];
       if (videoTrack) {
-        this.videoStream = e.streams[0];
-        videoManager.addVideo(id, this.videoStream);
+        videoManager.addVideo(id, e.streams[0]);
       } else {
-        this.audioStream = e.streams[0];
-        audioManager.addAudio(id, this.audioStream);
+        audioManager.addAudio(id, e.streams[0]);
       }
     });
   }
