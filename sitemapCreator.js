@@ -12,8 +12,8 @@ const end = `
  `;
 
 const URL = 'https://jjongtaeng.github.io/linkevery/';
-const lastmod = dayjs().format('YYYY-MM-DD');
-const changefreq = 'monthly';
+const lastmod = dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00');
+const changefreq = 'daily';
 const priority = 0.5;
 
 const url = `
