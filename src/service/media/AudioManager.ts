@@ -1,35 +1,40 @@
 class AudioManager {
+  private audioMap: { [key: string]: HTMLAudioElement } = {};
   constructor() {}
 
-  addAudio(id: string, mediaStream: MediaStream) {
-    this.removeAudio(id);
-    const audio = document.createElement('audio');
-    audio.setAttribute('id', id + '_audio');
-    audio.classList.add('voice-audio');
+  public addAudio(id: string, mediaStream: MediaStream) {
+    const audio = new Audio();
     audio.srcObject = mediaStream;
-    document.body.appendChild(audio);
     audio.volume = 0.5;
+    this.audioMap[id] = audio;
+
     audio.play();
   }
 
-  removeAudio(id: string) {
-    const audio = document.getElementById(id + '_audio');
+  public removeAudio(id: string) {
+    const audio = this.audioMap[id];
     if (!audio) return;
-    audio.parentNode?.removeChild(audio);
-  }
 
-  changeVolume(id: string, value: number) {
-    const audio = document.getElementById(id + '_audio') as HTMLAudioElement;
-    if (!audio) return;
-    audio.volume = value;
-  }
-
-  clearAllAudio() {
-    const audioNodeList = document.querySelectorAll('.voice-audio');
-    audioNodeList.forEach((node) => {
-      node.parentNode?.removeChild(node);
+    //@ts-ignore
+    const tracks = audio.srcObject?.getTracks();
+    if (!tracks) return;
+    tracks.forEach((track: any) => {
+      track.stop();
     });
+
+    delete this.audioMap[id];
+  }
+
+  public removeAllAudio() {
+    for (const key in this.audioMap) {
+      this.removeAudio(key);
+    }
+  }
+
+  public changeVolume(id: string, volume: number) {
+    const audio = this.audioMap[id];
+    console.log(audio);
+    audio.volume = volume;
   }
 }
-
 export const audioManager = new AudioManager();

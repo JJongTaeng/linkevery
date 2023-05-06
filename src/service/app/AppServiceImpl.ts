@@ -46,7 +46,7 @@ export class AppServiceImpl extends AppService {
   public disconnectVoice() {
     this.dispatch.sendVoiceDisconnectMessage({});
     this.rtcManager.clearTrack();
-    audioManager.clearAllAudio();
+    audioManager.removeAllAudio();
     videoManager.clearAllVideo();
   }
 

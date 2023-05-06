@@ -37,7 +37,6 @@ class VideoManager {
   clearAllVideo() {
     this.removeAllVideoNode();
     for (const key in this.videoElementMap) {
-      // @ts-ignore
       this.clearVideo(key);
     }
   }

@@ -14,7 +14,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
 
     const mediaStream = await navigator.mediaDevices.getUserMedia({
       video: false,
-      audio: true,
+      audio: { echoCancellation: true, noiseSuppression: true },
     });
     mediaStream?.getTracks().forEach((track) => {
       const peer = rtcManager.getPeer(from);
@@ -42,7 +42,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
 
     const mediaStream = await navigator.mediaDevices.getUserMedia({
       video: false,
-      audio: true,
+      audio: { echoCancellation: true, noiseSuppression: true },
     });
     mediaStream?.getTracks().forEach((track) => {
       const peer = rtcManager.getPeer(from);
