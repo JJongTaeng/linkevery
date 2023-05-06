@@ -13,15 +13,13 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
 import SvgArrowDown from '../icons/ArrowDown';
-import SvgScreenShareOn from '../icons/ScreenShareOn';
 import SvgSend from '../icons/Send';
-import SvgSpeakerOn from '../icons/SpeakerOn';
+import MemberListContainer from './MemberListContainer';
 import {
   ChatContainer,
   ChatForm,
   ChatList,
   ContentContainer,
-  MemberList,
   RoomContent,
   VideoContainer,
 } from './Room.styled';
@@ -116,35 +114,18 @@ const Room = () => {
     <>
       <TopMenuContainer />
       <RoomContent>
-        <MemberList>
-          <div className="member-item">{myName} - me</div>
-          {Object.keys(member).map((clientId) => (
-            <div key={clientId} className="member-item">
-              <span>{member[clientId].username}</span>
-              {member[clientId].voiceStatus && (
-                <Button size="small" shape="circle" icon={<SvgSpeakerOn />} />
-              )}
-              {member[clientId].screenShareStatus && (
-                <Button
-                  className={'screen-share-button'}
-                  size="small"
-                  shape="circle"
-                  onClick={() => {
-                    if (clientId === selectedClientId) {
-                      dispatch(roomActions.changeLeftSideView(false));
-                      setSelectedClientId('');
-                    } else {
-                      dispatch(roomActions.changeLeftSideView(true));
-                      setSelectedClientId(clientId);
-                      videoManager.appendVideoNode(clientId);
-                    }
-                  }}
-                  icon={<SvgScreenShareOn />}
-                />
-              )}
-            </div>
-          ))}
-        </MemberList>
+        <MemberListContainer
+          onClickMemberScreenShare={(id: string) => {
+            if (id === selectedClientId) {
+              dispatch(roomActions.changeLeftSideView(false));
+              setSelectedClientId('');
+            } else {
+              dispatch(roomActions.changeLeftSideView(true));
+              setSelectedClientId(id);
+              videoManager.appendVideoNode(id);
+            }
+          }}
+        />
         <ContentContainer>
           <VideoContainer
             id={'video-container'}
