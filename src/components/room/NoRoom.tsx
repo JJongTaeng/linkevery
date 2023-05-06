@@ -1,7 +1,9 @@
 import { Button } from 'antd';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { StorageService } from '../../service/storage/StorageService';
+import { roomActions } from '../../store/features/roomSlice';
 import { useAppSelector } from '../../store/hooks';
 import { Text } from '../../style';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
@@ -11,9 +13,11 @@ const storage = StorageService.getInstance();
 
 const NoRoom = () => {
   const username = useAppSelector((state) => state.room.username);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     storage.setItem('roomName', '');
+    dispatch(roomActions.setRoomName(''));
   }, [username]);
 
   return (
