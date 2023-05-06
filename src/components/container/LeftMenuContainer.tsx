@@ -13,12 +13,15 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { mdUtils } from '../../service/media/MediaDeviceUtils';
+import { StorageService } from '../../service/storage/StorageService';
 import { roomActions } from '../../store/features/roomSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import SvgMicOn from '../icons/MicOn';
 import SvgMicOff from '../icons/MicOn2';
 import SvgScreenShareOff from '../icons/ScreenShareOff';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
+
+const storage = StorageService.getInstance();
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
@@ -87,7 +90,8 @@ const LeftMenuContainer = () => {
                 if (value) {
                   app.dispatch.sendScreenShareReadyMessage({});
                 } else {
-                  app.disconnectScreenShare();
+                  const id = storage.getItem('clientId');
+                  app.disconnectScreenShare(id);
                   dispatch(roomActions.changeScreenShareStatus(false));
                 }
               }}

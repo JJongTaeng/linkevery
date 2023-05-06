@@ -27,17 +27,25 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     for (const key in member) {
       if (member[key].voiceStatus) voiceMember.push(key);
     }
-
-    const mediaStream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-      audio: { echoCancellation: true, noiseSuppression: true },
-    });
-    for (const key of voiceMember) {
-      mediaStream?.getTracks().forEach((track) => {
-        const peer = rtcManager.getPeer(key);
-        peer.addTrack(track, mediaStream);
+    try {
+      const mediaStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: { echoCancellation: true, noiseSuppression: true },
       });
-      dispatch.sendScreenShareConnectedMessage({ to: key });
+      for (const key of voiceMember) {
+        mediaStream?.getTracks().forEach((track) => {
+          const peer = rtcManager.getPeer(key);
+          peer.addTrack(track, mediaStream);
+        });
+        dispatch.sendScreenShareConnectedMessage({ to: key });
+      }
+    } catch (error: any) {
+      if (error?.name === 'NotAllowedError') {
+        notification.info({
+          message: `화면공유 권한 설정을 확인해주세요.`,
+        });
+        store.dispatch(roomActions.changeScreenShareStatus(false));
+      }
     }
   },
   [SCREEN_SHARE_MESSAGE_ID.CONNECTED]: (protocol, { dispatch, rtcManager }) => {
