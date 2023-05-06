@@ -6,6 +6,9 @@ export const RoomContent = styled.div`
   width: 100%;
   height: calc(100% - ${TOP_MENU_HEIGHT}px);
   display: flex;
+  ${({ theme }) => theme.media.mobile`
+    flex-direction: column;
+  `}
 `;
 
 export const MemberList = styled.div`
@@ -13,7 +16,9 @@ export const MemberList = styled.div`
   flex-direction: column;
   width: 240px;
   ${({ theme }) => theme.media.mobile`
-    width: 140px;
+    width: 100%;
+    height: 66px;
+    overflow: overlay;
   `}
   padding: 16px;
 
@@ -42,6 +47,9 @@ export const ContentContainer = styled.div`
   display: flex;
   width: 100%;
   position: relative;
+  ${({ theme }) => theme.media.mobile`
+      height: calc(100% - 66px);
+  `}
 `;
 
 export const VideoContainer = styled.div<{ isVisible: boolean }>`
