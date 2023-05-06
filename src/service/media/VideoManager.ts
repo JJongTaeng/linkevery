@@ -19,6 +19,7 @@ class VideoManager {
       throw new Error('video container not defined');
     }
     container.appendChild(this.videoElementMap[id]);
+    this.videoElementMap[id].play();
   }
 
   removeVideoNode(id: string) {
