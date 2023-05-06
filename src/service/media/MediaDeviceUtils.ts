@@ -2,7 +2,6 @@ class MediaDeviceUtils {
   public async isAvailableAudioInput() {
     const deviceList = await navigator.mediaDevices.enumerateDevices();
     for (const device of deviceList) {
-      console.log(device);
       if (device.kind === 'audioinput') return true;
     }
     return false;

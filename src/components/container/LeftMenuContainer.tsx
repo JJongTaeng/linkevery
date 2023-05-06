@@ -1,9 +1,18 @@
-import { Button, Form, Input, Modal, Switch, Tooltip } from 'antd';
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Switch,
+  Tooltip,
+  notification,
+} from 'antd';
 import { nanoid } from 'nanoid';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
+import { mdUtils } from '../../service/media/MediaDeviceUtils';
 import { roomActions } from '../../store/features/roomSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import SvgMicOn from '../icons/MicOn';
@@ -45,11 +54,17 @@ const LeftMenuContainer = () => {
               checkedChildren={<SvgMicOn />}
               unCheckedChildren={<SvgMicOff />}
               defaultChecked={false}
-              onChange={(value) => {
-                dispatch(roomActions.changeVoiceStatus(value));
+              onChange={async (value) => {
                 if (value) {
-                  app.dispatch.sendVoiceReadyMessage({});
+                  if (!(await mdUtils.isAvailableAudioInput())) {
+                    notification.info({
+                      message: `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
+                    });
+                    return;
+                  }
+
                   dispatch(roomActions.changeVoiceStatus(true));
+                  app.dispatch.sendVoiceReadyMessage({});
                 } else {
                   app.disconnectVoice();
                   dispatch(roomActions.changeScreenShareStatus(false));
