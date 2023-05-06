@@ -69,6 +69,7 @@ const LeftMenuContainer = () => {
                   app.disconnectVoice();
                   dispatch(roomActions.changeScreenShareStatus(false));
                   dispatch(roomActions.changeVoiceStatus(false));
+                  dispatch(roomActions.setAllMemberVoiceOff());
                 }
               }}
             />

@@ -96,6 +96,11 @@ export const roomSlice = createSlice({
     changeIsScrollBottomView: (state, { payload }) => {
       state.isScrollButtonView = payload;
     },
+    setAllMemberVoiceOff: (state) => {
+      for (const key in state.member) {
+        state.member[key].voiceStatus = false;
+      }
+    },
   },
 });
 
