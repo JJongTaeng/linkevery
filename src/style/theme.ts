@@ -1,4 +1,11 @@
-import { DefaultTheme } from 'styled-components';
+import { CSSProp, DefaultTheme, css } from 'styled-components';
+
+interface MediaTest {
+  mobile: (literals: TemplateStringsArray, ...args: string[]) => CSSProp;
+  tablet: (literals: TemplateStringsArray, ...args: string[]) => CSSProp;
+  desktop: (literals: TemplateStringsArray, ...args: string[]) => CSSProp;
+}
+
 const color = {
   white: '#ffffff',
   primary100: '#2e2a63',
@@ -9,6 +16,30 @@ const color = {
   grey800: '#dddae6',
 };
 
+const mediaSize = {
+  mobile: 580,
+  tablet: 768,
+  desktop: 1284,
+};
+
+const media: MediaTest = {
+  mobile: (literals, ...args) => css`
+    @media only screen and (max-width: ${mediaSize.mobile}px) {
+      ${css(literals, ...args)}
+    }
+  `,
+  tablet: (literals, ...args) => css`
+    @media only screen and (max-width: ${mediaSize.tablet}px) {
+      ${css(literals, ...args)}
+    }
+  `,
+  desktop: (literals, ...args) => css`
+    @media only screen and (max-width: ${mediaSize.desktop}px) {
+      ${css(literals, ...args)}
+    }
+  `,
+};
+
 const size = {
   xxl: 40,
   xl: 24,
@@ -17,10 +48,14 @@ const size = {
   sm: 12,
 };
 
+const t = {};
+
 export const theme: DefaultTheme = {
   color,
   size,
+  media,
 };
 
 export type ColorsTypes = typeof color;
 export type SizeTypes = typeof size;
+export type MediaTypes = typeof media;

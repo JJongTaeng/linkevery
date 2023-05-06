@@ -12,6 +12,9 @@ export const MemberList = styled.div`
   display: flex;
   flex-direction: column;
   width: 240px;
+  ${({ theme }) => theme.media.mobile`
+    width: 140px;
+  `}
   padding: 16px;
 
   background-color: ${({ theme }) => theme.color.primary800};

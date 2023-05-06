@@ -18,7 +18,6 @@ function App() {
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  min-width: 900px;
   background-color: ${({ theme }) => theme.color.white};
   display: flex;
 `;
