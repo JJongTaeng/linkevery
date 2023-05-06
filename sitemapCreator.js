@@ -1,28 +1,10 @@
 const fs = require('fs');
 const dayjs = require('dayjs');
-/*
+
+const start = `---
+---
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-   <url>
-
-      <loc>http://www.example.com/</loc>
-
-      <lastmod>2005-01-01</lastmod>
-
-      <changefreq>monthly</changefreq>
-
-      <priority>0.8</priority>
-
-   </url>
-
-</urlset> 
-
-*/
-
-const start = `
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 `;
 
 const end = `
