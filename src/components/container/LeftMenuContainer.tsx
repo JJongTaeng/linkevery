@@ -48,7 +48,7 @@ const LeftMenuContainer = () => {
               onChange={(value) => {
                 dispatch(roomActions.changeVoiceStatus(value));
                 if (value) {
-                  app.dispatch.sendVoiceJoinMessage({});
+                  app.dispatch.sendVoiceReadyMessage({});
                   dispatch(roomActions.changeVoiceStatus(true));
                 } else {
                   app.disconnectVoice();

@@ -29,9 +29,10 @@ import {
   offerMessage,
 } from '../messages/signaling';
 import {
+  voiceConnectedMessage,
   voiceDisconnectMessage,
-  voiceJoinMessage,
-  voiceStartMessage,
+  voiceReadyMessage,
+  voiceReadyOkMessage,
 } from '../messages/voice';
 import { RTCManager } from '../rtc/RTCManager';
 import { DispatchEventService } from './DispatchEventService';
@@ -81,12 +82,16 @@ export class DispatchEvent extends DispatchEventService {
     this.send(responseMemberNameMessage(data));
   }
 
-  sendVoiceJoinMessage(data: ProtocolData) {
-    this.send(voiceJoinMessage(data));
+  sendVoiceReadyMessage(data: ProtocolData) {
+    this.send(voiceReadyMessage(data));
   }
 
-  sendVoiceStartMessage(data: ProtocolData) {
-    this.send(voiceStartMessage(data));
+  sendVoiceReadyOkMessage(data: ProtocolData) {
+    this.send(voiceReadyOkMessage(data));
+  }
+
+  sendVoiceConnectedMessage(data: ProtocolData) {
+    this.send(voiceConnectedMessage(data));
   }
 
   sendVoiceDisconnectMessage(data: ProtocolData) {

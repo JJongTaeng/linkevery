@@ -41,8 +41,9 @@ export enum CHAT_MESSAGE_ID {
 }
 
 export enum VOICE_MESSAGE_ID {
-  JOIN = 'JOIN',
-  START = 'START',
+  READY = 'READY',
+  READY_OK = 'READY_OK',
+  CONNECTED = 'CONNECTED',
   DISCONNECT = 'DISCONNECT',
 }
 

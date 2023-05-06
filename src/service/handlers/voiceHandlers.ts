@@ -3,12 +3,27 @@ import { HandlerMap, VOICE_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { audioManager } from '../media/AudioManager';
+import { mdUtils } from '../media/MediaDeviceUtils';
 import { soundEffect } from '../media/SoundEffect';
 
 export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
-  [VOICE_MESSAGE_ID.JOIN]: async (protocol, { dispatch, rtcManager }) => {
+  [VOICE_MESSAGE_ID.READY]: async (protocol, { dispatch, rtcManager }) => {
+    if (!store.getState().room.voiceStatus) {
+      return;
+    }
+
+    dispatch.sendVoiceReadyOkMessage({ to: protocol.from });
+  },
+  [VOICE_MESSAGE_ID.READY_OK]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
     if (!store.getState().room.voiceStatus) {
+      return;
+    }
+
+    if (await mdUtils.isAvailableAudioInput()) {
+      notification.info({
+        message: `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
+      });
       return;
     }
 
@@ -32,9 +47,9 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     store.dispatch(
       roomActions.setMemberVoiceStatus({ clientId: from, voiceStatus: true }),
     );
-    dispatch.sendVoiceStartMessage({ to: from });
+    dispatch.sendVoiceConnectedMessage({ to: from });
   },
-  [VOICE_MESSAGE_ID.START]: async (protocol, { dispatch, rtcManager }) => {
+  [VOICE_MESSAGE_ID.CONNECTED]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
     if (!store.getState().room.voiceStatus) {
       return;

@@ -11,17 +11,25 @@ export const voiceProtocolMessage = (protocol: CreateProtocolFunctionParam) => {
   return protocolMessage(protocol);
 };
 
-export const voiceJoinMessage = (data: ProtocolData) => {
+export const voiceReadyMessage = (data: ProtocolData) => {
   return voiceProtocolMessage({
-    messageId: VOICE_MESSAGE_ID.JOIN,
+    messageId: VOICE_MESSAGE_ID.READY,
     messageType: MESSAGE_TYPE.RTC,
     data,
   });
 };
 
-export const voiceStartMessage = (data: ProtocolData) => {
+export const voiceReadyOkMessage = (data: ProtocolData) => {
   return voiceProtocolMessage({
-    messageId: VOICE_MESSAGE_ID.START,
+    messageId: VOICE_MESSAGE_ID.READY_OK,
+    messageType: MESSAGE_TYPE.RTC,
+    data,
+  });
+};
+
+export const voiceConnectedMessage = (data: ProtocolData) => {
+  return voiceProtocolMessage({
+    messageId: VOICE_MESSAGE_ID.CONNECTED,
     messageType: MESSAGE_TYPE.RTC,
     data,
   });
