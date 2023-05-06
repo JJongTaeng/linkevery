@@ -4,7 +4,7 @@ class VideoManager {
 
   addVideo(id: string, mediaStream: MediaStream) {
     const video = document.createElement('video');
-    video.setAttribute('id', id);
+    video.setAttribute('id', id + '_video');
     video.classList.add('screen-share-video');
     video.srcObject = mediaStream;
     video.play();
@@ -22,7 +22,7 @@ class VideoManager {
   }
 
   removeVideoNode(id: string) {
-    const video = document.getElementById(id) as HTMLVideoElement;
+    const video = document.getElementById(id + '_video') as HTMLVideoElement;
     if (!video) return;
     video.parentNode?.removeChild(video);
   }

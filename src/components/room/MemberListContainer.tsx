@@ -1,4 +1,5 @@
-import { Button } from 'antd';
+import { Button, Popover, Slider } from 'antd';
+import { audioManager } from '../../service/media/AudioManager';
 import { useAppSelector } from '../../store/hooks';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
 import SvgSpeakerOn from '../icons/SpeakerOn';
@@ -18,15 +19,18 @@ const MemberListContainer = ({
     messageList: state.chat.messageList,
     isReadAllChat: state.room.isScrollButtonView,
   }));
+
+  const onChangeVolume = (id: string, volume: number) => {
+    audioManager.changeVolume(id, volume);
+  };
+
   return (
     <MemberList>
       <div className="member-item">{myName} - me</div>
       {Object.keys(member).map((clientId) => (
         <div key={clientId} className="member-item">
           <span>{member[clientId].username}</span>
-          {member[clientId].voiceStatus && (
-            <Button size="small" shape="circle" icon={<SvgSpeakerOn />} />
-          )}
+
           {member[clientId].screenShareStatus && (
             <Button
               className={'screen-share-button'}
@@ -37,6 +41,26 @@ const MemberListContainer = ({
               }}
               icon={<SvgScreenShareOn />}
             />
+          )}
+          {member[clientId].voiceStatus && (
+            <Popover
+              placement="right"
+              content={
+                <Slider
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  style={{ width: 80 }}
+                  onChange={(value) => {
+                    onChangeVolume(clientId, value);
+                  }}
+                  defaultValue={0.5}
+                />
+              }
+              trigger="click"
+            >
+              <Button size="small" shape="circle" icon={<SvgSpeakerOn />} />
+            </Popover>
           )}
         </div>
       ))}

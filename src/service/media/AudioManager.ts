@@ -4,17 +4,24 @@ class AudioManager {
   addAudio(id: string, mediaStream: MediaStream) {
     this.removeAudio(id);
     const audio = document.createElement('audio');
-    audio.setAttribute('id', id);
+    audio.setAttribute('id', id + '_audio');
     audio.classList.add('voice-audio');
     audio.srcObject = mediaStream;
     document.body.appendChild(audio);
+    audio.volume = 0.5;
     audio.play();
   }
 
   removeAudio(id: string) {
-    const audio = document.getElementById(id);
+    const audio = document.getElementById(id + '_audio');
     if (!audio) return;
     audio.parentNode?.removeChild(audio);
+  }
+
+  changeVolume(id: string, value: number) {
+    const audio = document.getElementById(id + '_audio') as HTMLAudioElement;
+    if (!audio) return;
+    audio.volume = value;
   }
 
   clearAllAudio() {
