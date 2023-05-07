@@ -150,7 +150,6 @@ export const ChatList = styled.div`
   height: calc(100% - 100px);
   overflow: overlay;
   padding: 20px 40px 0 40px;
-  width: 0px;
   .chat-bubble {
     max-width: 100%;
   }
