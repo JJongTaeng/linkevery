@@ -12,6 +12,7 @@ const TopMenuContainer = () => {
 
   return (
     <Container>
+      <div />
       <RoomName>
         <Text>{roomName ? roomName?.split('_')[0] : ''}</Text>
         <div>

@@ -40,7 +40,7 @@ export const MemberList = styled.div`
       margin-left: 4px;
     }
     .screen-share-button {
-      animation: ${highlight} 2s 1s infinite linear alternate;
+      animation: ${highlight} 1s 1s infinite linear alternate;
     }
   }
 `;
