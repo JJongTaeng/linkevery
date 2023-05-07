@@ -65,9 +65,14 @@ export const VideoContainer = styled.div<{ isVisible: boolean }>`
   background-color: ${({ theme }) => theme.color.primary400};
 
   ${({ theme, isVisible }) => theme.media.mobile`
-    width: 0px;
+    width: 1px;
+    height: 1px;
   `}
   video {
+    ${({ theme }) => theme.media.mobile`
+      position: fixed;
+      left: -1000px;
+    `}
     width: 100%;
     height: 100%;
   }
