@@ -113,6 +113,13 @@ export const VideoContainer = styled.div<{
     position: absolute;
     right: 20px;
     top: 20px;
+    background: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     svg {
       width: 20px;
       height: 20px;
