@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/linkevery/static/css/main.362710a0.css",
+    "main.css": "/linkevery/static/css/main.67447605.css",
     "main.js": "/linkevery/static/js/main.113ff724.js",
     "static/js/27.eb46082b.chunk.js": "/linkevery/static/js/27.eb46082b.chunk.js",
     "static/media/chat.mp3": "/linkevery/static/media/chat.ca3856e41b7ce870071c.mp3",
@@ -8,7 +8,7 @@
     "index.html": "/linkevery/index.html"
   },
   "entrypoints": [
-    "static/css/main.362710a0.css",
+    "static/css/main.67447605.css",
     "static/js/main.113ff724.js"
   ]
 }
