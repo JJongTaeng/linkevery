@@ -13,6 +13,8 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
 import SvgArrowDown from '../icons/ArrowDown';
+import SvgCloseFullScreen from '../icons/CloseFullScreen';
+import SvgFullScreen from '../icons/FullScreen';
 import SvgSend from '../icons/Send';
 import MemberListContainer from './MemberListContainer';
 import {
@@ -32,6 +34,7 @@ const Room = () => {
   const chatListElement = useRef<HTMLDivElement>(null);
   const [usernameModalVisible, setUsernameModalVisible] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState('');
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const app = useRef(AppServiceImpl.getInstance()).current;
   const { roomName } = useParams<{
     roomName: string;
@@ -130,8 +133,16 @@ const Room = () => {
           <VideoContainer
             id={'video-container'}
             isVisible={leftSideView}
-          ></VideoContainer>
-          <ChatContainer>
+            isFullScreen={isFullScreen}
+          >
+            <div
+              onClick={() => setIsFullScreen((value) => !value)}
+              className="full-screen"
+            >
+              {isFullScreen ? <SvgCloseFullScreen /> : <SvgFullScreen />}
+            </div>
+          </VideoContainer>
+          <ChatContainer leftSideView={leftSideView}>
             <ChatList ref={chatListElement}>
               {messageList.map(({ message, clientId, date, username }) => (
                 <ChatBubble
