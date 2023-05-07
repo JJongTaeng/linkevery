@@ -7,6 +7,7 @@ import {
   Tooltip,
   notification,
 } from 'antd';
+import Bowser from 'bowser';
 import { nanoid } from 'nanoid';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +23,7 @@ import SvgScreenShareOff from '../icons/ScreenShareOff';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
 
 const storage = StorageService.getInstance();
+const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
@@ -78,7 +80,7 @@ const LeftMenuContainer = () => {
             />
           </Tooltip>
         )}
-        {roomName && voiceStatus && (
+        {roomName && voiceStatus && agentInfo.platform.type === 'desktop' && (
           <Tooltip defaultOpen={true} placement="right" title="화면공유">
             <Switch
               disabled={!isOnVoiceMember()}

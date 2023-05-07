@@ -19,6 +19,8 @@ export const MemberList = styled.div`
     width: 100%;
     height: 66px;
     overflow: overlay;
+    border-bottom: 1px solid ${theme.color.primary400};
+    padding: 8px;
   `}
   padding: 16px;
 
@@ -62,6 +64,9 @@ export const VideoContainer = styled.div<{ isVisible: boolean }>`
   transition: 0.3s;
   background-color: ${({ theme }) => theme.color.primary400};
 
+  ${({ theme, isVisible }) => theme.media.mobile`
+    width: 0px;
+  `}
   video {
     width: 100%;
     height: 100%;
