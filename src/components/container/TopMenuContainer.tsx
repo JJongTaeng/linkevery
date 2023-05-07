@@ -12,7 +12,6 @@ const TopMenuContainer = () => {
 
   return (
     <Container>
-      <div>링크에브리</div>
       <RoomName>
         <Text>{roomName ? roomName?.split('_')[0] : ''}</Text>
         <div>
@@ -67,7 +66,6 @@ const Text = styled.span`
   color: ${({ theme }) => theme.color.primary100};
   font-weight: bold;
   color: ${({ theme }) => theme.color.white};
-  margin-left: 16px;
 `;
 
 const RoomName = styled.div`

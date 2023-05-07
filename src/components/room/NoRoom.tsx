@@ -47,6 +47,7 @@ const NoRoomContent = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  padding: 0 16px;
 
   & > div {
     margin-bottom: 20px;

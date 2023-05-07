@@ -50,58 +50,64 @@ const LeftMenuContainer = () => {
 
   return (
     <Container>
-      <ControllerContainer>
-        {roomName && (
-          <Tooltip defaultOpen={true} placement="right" title="음성채팅">
-            <Switch
-              checked={voiceStatus}
-              style={{ marginBottom: 8 }}
-              checkedChildren={<SvgMicOn />}
-              unCheckedChildren={<SvgMicOff />}
-              defaultChecked={false}
-              onChange={async (value) => {
-                if (value) {
-                  if (!(await mdUtils.isAvailableAudioInput())) {
-                    notification.info({
-                      message: `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
-                    });
-                    return;
-                  }
+      <div className={'logo-container'}>
+        <img src="/linkevery/logo512.png" />
+      </div>
 
-                  dispatch(roomActions.changeVoiceStatus(true));
-                  app.dispatch.sendVoiceReadyMessage({});
-                } else {
-                  app.disconnectVoice();
-                  dispatch(roomActions.changeScreenShareStatus(false));
-                  dispatch(roomActions.changeVoiceStatus(false));
-                  dispatch(roomActions.setAllMemberVoiceOff());
-                }
-              }}
-            />
-          </Tooltip>
-        )}
-        {roomName && voiceStatus && agentInfo.platform.type === 'desktop' && (
-          <Tooltip defaultOpen={true} placement="right" title="화면공유">
-            <Switch
-              disabled={!isOnVoiceMember()}
-              checked={screenShareStatus}
-              checkedChildren={<SvgScreenShareOn />}
-              unCheckedChildren={<SvgScreenShareOff />}
-              defaultChecked={false}
-              onChange={(value) => {
-                if (value) {
-                  app.dispatch.sendScreenShareReadyMessage({});
-                } else {
-                  const id = storage.getItem('clientId');
-                  app.disconnectScreenShare(id);
-                  dispatch(roomActions.changeScreenShareStatus(false));
-                }
-              }}
-            />
-          </Tooltip>
-        )}
-      </ControllerContainer>
-      <div>{!roomName && <Button onClick={() => setOpen(true)}>+</Button>}</div>
+      <div>
+        <ControllerContainer>
+          {roomName && voiceStatus && agentInfo.platform.type === 'desktop' && (
+            <Tooltip defaultOpen={true} placement="right" title="화면공유">
+              <Switch
+                style={{ marginBottom: 8 }}
+                disabled={!isOnVoiceMember()}
+                checked={screenShareStatus}
+                checkedChildren={<SvgScreenShareOn />}
+                unCheckedChildren={<SvgScreenShareOff />}
+                defaultChecked={false}
+                onChange={(value) => {
+                  if (value) {
+                    app.dispatch.sendScreenShareReadyMessage({});
+                  } else {
+                    const id = storage.getItem('clientId');
+                    app.disconnectScreenShare(id);
+                    dispatch(roomActions.changeScreenShareStatus(false));
+                  }
+                }}
+              />
+            </Tooltip>
+          )}
+          {roomName && (
+            <Tooltip defaultOpen={true} placement="right" title="음성채팅">
+              <Switch
+                checked={voiceStatus}
+                checkedChildren={<SvgMicOn />}
+                unCheckedChildren={<SvgMicOff />}
+                defaultChecked={false}
+                onChange={async (value) => {
+                  if (value) {
+                    if (!(await mdUtils.isAvailableAudioInput())) {
+                      notification.info({
+                        message: `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
+                      });
+                      return;
+                    }
+
+                    dispatch(roomActions.changeVoiceStatus(true));
+                    app.dispatch.sendVoiceReadyMessage({});
+                  } else {
+                    app.disconnectVoice();
+                    dispatch(roomActions.changeScreenShareStatus(false));
+                    dispatch(roomActions.changeVoiceStatus(false));
+                    dispatch(roomActions.setAllMemberVoiceOff());
+                  }
+                }}
+              />
+            </Tooltip>
+          )}
+        </ControllerContainer>
+        {!roomName && <Button onClick={() => setOpen(true)}>+</Button>}
+      </div>
       <Modal
         title={'방 생성'}
         onOk={() => {
@@ -155,6 +161,21 @@ const Container = styled.section`
   }
   g {
     fill: white;
+  }
+
+  .logo-container {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.color.primary800};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 60px;
+      height: 60px;
+    }
   }
 `;
 
