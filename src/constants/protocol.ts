@@ -24,7 +24,7 @@ export enum CONNECTION_MESSAGE_ID {
 }
 
 export enum SIGNALING_MESSAGE_ID {
-  JOIN_ROOM = 'JOIN_ROOM',
+  START = 'START',
   OFFER = 'OFFER',
   ANSWER = 'ANSWER',
   ICE = 'ICE',

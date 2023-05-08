@@ -9,10 +9,7 @@ import { StorageService } from '../storage/StorageService';
 const storage = StorageService.getInstance();
 
 export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
-  [SIGNALING_MESSAGE_ID.JOIN_ROOM]: async (
-    protocol,
-    { dispatch, rtcManager },
-  ) => {
+  [SIGNALING_MESSAGE_ID.START]: async (protocol, { dispatch, rtcManager }) => {
     const { roomName, size } = protocol.data;
     const { from } = protocol;
     if (!from) throw new Error(ERROR_TYPE.INVALID_PEER_ID);
@@ -38,9 +35,11 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
         dispatch.sendNegotiationOfferMessage({ offer, to: from });
       }
     };
+    rtcPeer.getPeer()?.addEventListener('connectionstatechange', (e: any) => {
+      console.log(e.currentTarget.connectionState);
+    });
     rtcPeer.createDataChannel(roomName, (datachannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
-      console.debug('[open datachannel] ', from);
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });
@@ -70,16 +69,14 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
         dispatch.sendNegotiationOfferMessage({ offer, to: from });
       }
     };
-
+    rtcPeer.getPeer()?.addEventListener('connectionstatechange', (e: any) => {
+      console.log(e.currentTarget.connectionState);
+    });
     rtcPeer.connectDataChannel((datachannel: RTCDataChannel) => {
       if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
-
       datachannel.addEventListener('message', (message) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
       });
-      console.debug('[open datachannel] ', from);
-      // const stringify = JSON.stringify(createDataChannelMessage({}));
-      // datachannel.send(stringify);
       dispatch.sendCreateDataChannelMessage({ to: from });
     });
 

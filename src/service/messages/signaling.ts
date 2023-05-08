@@ -13,9 +13,9 @@ export const signalingProtocolMessage = (
   return protocolMessage(protocol);
 };
 
-export const joinRoomMessage = (data: ProtocolData) => {
+export const signalingStartMessage = (data: ProtocolData) => {
   return signalingProtocolMessage({
-    messageId: SIGNALING_MESSAGE_ID.JOIN_ROOM,
+    messageId: SIGNALING_MESSAGE_ID.START,
     messageType: MESSAGE_TYPE.SOCKET,
     data,
   });

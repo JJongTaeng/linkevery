@@ -25,8 +25,8 @@ import {
   answerMessage,
   createDataChannelMessage,
   iceMessage,
-  joinRoomMessage,
   offerMessage,
+  signalingStartMessage,
 } from '../messages/signaling';
 import {
   voiceConnectedMessage,
@@ -47,7 +47,7 @@ export class DispatchEvent extends DispatchEventService {
   }
 
   sendJoinRoomMessage(data: ProtocolData) {
-    this.send(joinRoomMessage(data));
+    this.send(signalingStartMessage(data));
   }
 
   sendOfferMessage(data: ProtocolData) {
