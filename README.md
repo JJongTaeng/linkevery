@@ -41,6 +41,14 @@ CONNECTION - socket connection
 SIGNALING - rtc signaling
 CHAT - chat
 
+## 저장 데이터 구조
+
+- UserKey: primary key // 저장 데이터 조회용 키값 (통신 키 값과는 별개)
+
+- RoomList: string[]
+  - id: string
+  - messageList: ChatType[]
+
 ### 특이사항
 
 1. peerConnection의 생성시점
