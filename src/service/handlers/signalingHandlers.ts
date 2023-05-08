@@ -12,9 +12,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
   [SIGNALING_MESSAGE_ID.START]: async (protocol, { dispatch, rtcManager }) => {
     const { roomName, size } = protocol.data;
     const { from } = protocol;
-    if (!from) throw new Error(ERROR_TYPE.INVALID_PEER_ID);
     store.dispatch(roomActions.setMemberSize(size));
-
     rtcManager.createPeer(from);
     const rtcPeer = rtcManager.getPeer(from);
     rtcPeer.createPeerConnection(config);
@@ -30,7 +28,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
       console.debug('[connection state] ', e.currentTarget?.connectionState);
       if (e.currentTarget?.connectionState === 'new') {
-        dispatch.sendOfferMessage({ offer, to: from });
+        dispatch.sendOfferMessage({ offer, to: from, roomName });
       } else if (e.currentTarget?.connectionState === 'connected') {
         dispatch.sendNegotiationOfferMessage({ offer, to: from });
       }
@@ -47,8 +45,9 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     });
   },
   [SIGNALING_MESSAGE_ID.OFFER]: async (protocol, { dispatch, rtcManager }) => {
-    const { offer } = protocol.data;
+    const { offer, size } = protocol.data;
     const { from } = protocol;
+    store.dispatch(roomActions.setMemberSize(size));
     rtcManager.createPeer(from);
     const rtcPeer = rtcManager.getPeer(from);
     rtcPeer.createPeerConnection(config);

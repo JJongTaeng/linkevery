@@ -20,6 +20,7 @@ export enum CATEGORY {
 
 export enum CONNECTION_MESSAGE_ID {
   CONNECT = 'CONNECT',
+  JOIN_ROOM = 'JOIN_ROOM',
   DISCONNECT = 'DISCONNECT',
 }
 

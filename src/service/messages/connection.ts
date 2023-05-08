@@ -21,6 +21,14 @@ export const connectMessage = (data: ProtocolData) => {
   });
 };
 
+export const joinRoomMessage = (data: ProtocolData) => {
+  return connectionProtocolMessage({
+    messageId: CONNECTION_MESSAGE_ID.JOIN_ROOM,
+    messageType: MESSAGE_TYPE.SOCKET,
+    data,
+  });
+};
+
 export const disconnectMessage = (data: ProtocolData) => {
   return connectionProtocolMessage({
     messageId: CONNECTION_MESSAGE_ID.DISCONNECT,

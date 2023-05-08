@@ -6,7 +6,11 @@ import {
   ProtocolData,
 } from '../../constants/protocol';
 import { chatMessage } from '../messages/chat';
-import { connectMessage, disconnectMessage } from '../messages/connection';
+import {
+  connectMessage,
+  disconnectMessage,
+  joinRoomMessage,
+} from '../messages/connection';
 import {
   negotiationAnswerMessage,
   negotiationOfferMessage,
@@ -47,6 +51,10 @@ export class DispatchEvent extends DispatchEventService {
   }
 
   sendJoinRoomMessage(data: ProtocolData) {
+    this.send(joinRoomMessage(data));
+  }
+
+  sendSignalingStartMessage(data: ProtocolData) {
     this.send(signalingStartMessage(data));
   }
 
@@ -126,6 +134,12 @@ export class DispatchEvent extends DispatchEventService {
       console.debug('[send] ', protocol);
       this.socket.emit(EVENT_NAME, protocol);
     } else if (protocol.messageType === MESSAGE_TYPE.RTC) {
+      // if (!this.rtcManager.isAllConnectedPeer(size)) {
+      // TODO: 모든 RTC 연결이 이루어지지 않을 때 어떤로직을 탈건지?
+      // this.sendSignalingStartMessage({
+      //   roomName,
+      // });
+      // }
       const { to } = protocol.data;
       if (to) this.rtcManager.sendTo(protocol);
       else this.rtcManager.sendAll(protocol);

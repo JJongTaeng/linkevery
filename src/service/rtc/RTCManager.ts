@@ -33,7 +33,10 @@ export class RTCManager extends RTCManagerService {
 
   sendTo(protocol: Protocol) {
     const { to } = protocol.data;
-    if (!to) throw new Error(ERROR_TYPE.INVALID_PEER_ID);
+    if (!to)
+      throw new Error(
+        ERROR_TYPE.INVALID_PEER_ID + 'sendTo Error 잘못연결된 Peer가 있습니다.',
+      );
     const peer = this.peerMap.get(to);
     const datachannel = peer?.getDataChannel();
     const stringify = JSON.stringify(protocol);

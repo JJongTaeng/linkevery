@@ -44,4 +44,10 @@ export abstract class RTCManagerService extends EventEmitter {
       peer.removeVideoTrack();
     });
   }
+
+  isAllConnectedPeer(roomMemberSize: number): boolean {
+    const peerSize = this.peerMap.size;
+
+    return roomMemberSize - 1 === peerSize;
+  }
 }

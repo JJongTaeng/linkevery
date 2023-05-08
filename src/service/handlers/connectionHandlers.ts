@@ -12,6 +12,13 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     const { clientId } = protocol.data;
     storage.setItem('clientId', clientId);
   },
+  [CONNECTION_MESSAGE_ID.JOIN_ROOM]: (protocol, { dispatch }) => {
+    const { roomName } = protocol.data;
+    dispatch.sendSignalingStartMessage({
+      roomName,
+      to: protocol.from,
+    });
+  },
   [CONNECTION_MESSAGE_ID.DISCONNECT]: (protocol, { rtcManager, dispatch }) => {
     const { from } = protocol;
     store.dispatch(roomActions.deleteMember({ clientId: from }));
