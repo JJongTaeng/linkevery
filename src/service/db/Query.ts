@@ -20,7 +20,7 @@ class Query {
       return;
     }
 
-    this.db.user.add({ name, key: nanoid() });
+    this.db.user.add({ username: name, key: nanoid() });
   }
 
   async updateUser(name: string) {
@@ -28,20 +28,21 @@ class Query {
       .where('id')
       .equals(1)
       .modify((value, ref) => {
-        ref.value.name = name;
+        ref.value.username = name;
       });
   }
 
-  async addRoomInfo(roomInfo: Room) {
+  async addRoomInfo(newRoom: Room) {
+    if (!newRoom?.roomName) return;
     const room = await this.db.room
       .where('roomName')
-      .equals(roomInfo.roomName)
+      .equals(newRoom?.roomName)
       .first();
     if (room) {
       return;
     }
 
-    await this.db.room.add({ ...roomInfo });
+    await this.db.room.add({ ...newRoom });
   }
 
   async updateMessageList(roomName: string, message: Message) {
@@ -50,7 +51,7 @@ class Query {
       .equals(roomName)
       .modify((value, ref) => {
         const messageList = ref.value.messageList;
-        messageList.push(message);
+        messageList?.push(message);
         ref.value.messageList = messageList;
       });
   }

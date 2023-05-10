@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { StorageService } from '../../service/storage/StorageService';
+import { Room } from './../../service/db/LinkeveryDB';
 
 interface RoomState {
   roomName: string;
@@ -10,6 +11,7 @@ interface RoomState {
       screenShareStatus: boolean;
     };
   };
+  room: Room;
   size: number;
 }
 
@@ -18,6 +20,7 @@ const storage = StorageService.getInstance();
 const initialState: RoomState = {
   roomName: storage.getItem('roomName'),
   member: {},
+  room: {},
   size: 0,
 };
 

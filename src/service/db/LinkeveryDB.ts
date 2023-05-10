@@ -4,7 +4,7 @@ import Dexie, { Table } from 'dexie';
 export interface User {
   id?: number;
   key: string;
-  name: string;
+  username: string;
 }
 
 export interface Message {
@@ -13,10 +13,20 @@ export interface Message {
   messageType: string;
   date: string;
 }
+
+export interface Member {
+  [key: string]: {
+    username: string;
+    clientId: string;
+    voiceStatus: boolean;
+    screenShareStatus: boolean;
+  };
+}
 export interface Room {
   id?: number;
-  roomName: string;
-  messageList: Message[];
+  roomName?: string;
+  messageList?: Message[];
+  member?: Member;
 }
 
 export class LinkeveryDB extends Dexie {
@@ -27,8 +37,8 @@ export class LinkeveryDB extends Dexie {
   constructor() {
     super('linkevery');
     this.version(1).stores({
-      user: '++id, &key, &name', // Primary key and indexed props
-      room: '++id, &roomName, messageList',
+      user: '++id, &key, &username', // Primary key and indexed props
+      room: '++id, &roomName, messageList, member',
     });
   }
 }
