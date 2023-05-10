@@ -13,7 +13,7 @@ const MemberListContainer = ({
   onClickMemberScreenShare,
 }: MemberListContainerProps) => {
   const { myName, member } = useAppSelector((state) => ({
-    myName: state.room.username,
+    myName: state.user.username,
     member: state.room.member,
     messageList: state.chat.messageList,
     leftSideView: state.user.leftSideView,

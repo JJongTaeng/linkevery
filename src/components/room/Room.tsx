@@ -40,11 +40,11 @@ const Room = () => {
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { myName, messageList, member, leftSideView, isReadAllChat } =
+  const { username, messageList, member, leftSideView, isReadAllChat } =
     useAppSelector((state) => ({
-      myName: state.room.username,
       member: state.room.member,
       messageList: state.chat.messageList,
+      username: state.user.username,
       leftSideView: state.user.leftSideView,
       isReadAllChat: state.user.isScrollButtonView,
     }));
@@ -60,7 +60,7 @@ const Room = () => {
         message,
         clientId: storage.getItem('clientId'),
         date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-        username: myName,
+        username: username,
       }),
     );
     setMessage('');
@@ -73,7 +73,7 @@ const Room = () => {
   };
 
   useEffect(() => {
-    if (myName && roomName) {
+    if (username && roomName) {
       app.dispatch.sendConnectMessage({});
       app.dispatch.sendJoinRoomMessage({ roomName });
       dispatch(roomActions.setRoomName(roomName));
@@ -81,7 +81,7 @@ const Room = () => {
     } else {
       setUsernameModalVisible(true);
     }
-  }, [myName, roomName]);
+  }, [username, roomName]);
 
   useEffect(() => {
     if (!member[selectedClientId])
@@ -224,7 +224,7 @@ const Room = () => {
         <UsernameModal
           open={usernameModalVisible}
           onSubmit={(username) => {
-            dispatch(roomActions.setUsername({ username }));
+            dispatch(userActions.setUsername({ username }));
             storage.setItem('username', username);
             setUsernameModalVisible(false);
           }}

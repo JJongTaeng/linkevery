@@ -3,7 +3,6 @@ import { StorageService } from '../../service/storage/StorageService';
 
 interface RoomState {
   roomName: string;
-  username: string;
   member: {
     [key: string]: {
       username: string;
@@ -18,7 +17,6 @@ const storage = StorageService.getInstance();
 
 const initialState: RoomState = {
   roomName: storage.getItem('roomName'),
-  username: storage.getItem('username'),
   member: {},
   size: 0,
 };
@@ -29,9 +27,6 @@ export const roomSlice = createSlice({
   reducers: {
     setRoomName: (state, { payload }) => {
       state.roomName = payload;
-    },
-    setUsername: (state, { payload }) => {
-      state.username = payload.username;
     },
     setMemberUsername: (
       state,

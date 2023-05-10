@@ -12,7 +12,9 @@ import TopMenuContainer from '../container/TopMenuContainer';
 const storage = StorageService.getInstance();
 
 const NoRoom = () => {
-  const username = useAppSelector((state) => state.room.username);
+  const { username } = useAppSelector((state) => ({
+    username: state.user.username,
+  }));
   const dispatch = useDispatch();
 
   useEffect(() => {

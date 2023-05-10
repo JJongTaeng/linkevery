@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { StorageService } from '../../service/storage/StorageService';
 
 interface UserState {
   key: string;
@@ -9,9 +10,11 @@ interface UserState {
   isScrollButtonView: boolean;
 }
 
+const storage = StorageService.getInstance();
+
 const initialState: UserState = {
   key: '',
-  username: '',
+  username: storage.getItem('username'),
   voiceStatus: false,
   screenShareStatus: false,
   leftSideView: false,
@@ -22,6 +25,9 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    setUsername: (state, { payload }) => {
+      state.username = payload.username;
+    },
     changeVoiceStatus: (state, { payload }) => {
       state.voiceStatus = payload;
     },
