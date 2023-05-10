@@ -7,7 +7,7 @@ import { soundEffect } from '../media/SoundEffect';
 
 export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   [VOICE_MESSAGE_ID.READY]: async (protocol, { dispatch, rtcManager }) => {
-    if (!store.getState().room.voiceStatus) {
+    if (!store.getState().user.voiceStatus) {
       return;
     }
 
@@ -15,7 +15,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   },
   [VOICE_MESSAGE_ID.READY_OK]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
-    if (!store.getState().room.voiceStatus) {
+    if (!store.getState().user.voiceStatus) {
       return;
     }
 
@@ -43,7 +43,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   },
   [VOICE_MESSAGE_ID.CONNECTED]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
-    if (!store.getState().room.voiceStatus) {
+    if (!store.getState().user.voiceStatus) {
       return;
     }
 
@@ -69,7 +69,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   },
   [VOICE_MESSAGE_ID.DISCONNECT]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
-    if (!store.getState().room.voiceStatus) {
+    if (!store.getState().user.voiceStatus) {
       return;
     }
     const peer = rtcManager.getPeer(from);

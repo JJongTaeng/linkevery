@@ -13,11 +13,11 @@ const MemberListContainer = ({
   onClickMemberScreenShare,
 }: MemberListContainerProps) => {
   const { myName, member } = useAppSelector((state) => ({
-    leftSideView: state.room.leftSideView,
     myName: state.room.username,
     member: state.room.member,
     messageList: state.chat.messageList,
-    isReadAllChat: state.room.isScrollButtonView,
+    leftSideView: state.user.leftSideView,
+    isReadAllChat: state.user.isScrollButtonView,
   }));
 
   const onChangeVolume = (id: string, volume: number) => {

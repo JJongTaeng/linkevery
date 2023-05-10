@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { roomActions } from '../../store/features/roomSlice';
+import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
@@ -38,7 +39,7 @@ export class AppServiceImpl extends AppService {
   public disconnect() {
     const roomName = storage.getItem('roomName');
     store.dispatch(roomActions.leaveRoom());
-    store.dispatch(roomActions.changeVoiceStatus(false));
+    store.dispatch(userActions.changeVoiceStatus(false));
     this.dispatch.sendDisconnectMessage({ roomName });
     this.rtcManager.clearPeerMap();
   }

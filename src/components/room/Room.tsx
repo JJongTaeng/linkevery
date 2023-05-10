@@ -9,6 +9,7 @@ import { StorageService } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
+import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
@@ -41,11 +42,11 @@ const Room = () => {
   }>();
   const { myName, messageList, member, leftSideView, isReadAllChat } =
     useAppSelector((state) => ({
-      leftSideView: state.room.leftSideView,
       myName: state.room.username,
       member: state.room.member,
       messageList: state.chat.messageList,
-      isReadAllChat: state.room.isScrollButtonView,
+      leftSideView: state.user.leftSideView,
+      isReadAllChat: state.user.isScrollButtonView,
     }));
   const dispatch = useAppDispatch();
 
@@ -67,7 +68,7 @@ const Room = () => {
 
   const handleScrollChatList = () => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
-      dispatch(roomActions.changeIsScrollBottomView(false));
+      dispatch(userActions.changeIsScrollBottomView(false));
     }
   };
 
@@ -84,7 +85,7 @@ const Room = () => {
 
   useEffect(() => {
     if (!member[selectedClientId])
-      dispatch(roomActions.changeLeftSideView(false));
+      dispatch(userActions.changeLeftSideView(false));
   }, [member]);
 
   useEffect(() => {
@@ -95,7 +96,7 @@ const Room = () => {
         behavior: 'smooth',
       });
     } else {
-      dispatch(roomActions.changeIsScrollBottomView(true));
+      dispatch(userActions.changeIsScrollBottomView(true));
     }
   }, [messageList.length]);
 
@@ -120,10 +121,10 @@ const Room = () => {
         <MemberListContainer
           onClickMemberScreenShare={(id: string) => {
             if (id === selectedClientId) {
-              dispatch(roomActions.changeLeftSideView(false));
+              dispatch(userActions.changeLeftSideView(false));
               setSelectedClientId('');
             } else {
-              dispatch(roomActions.changeLeftSideView(true));
+              dispatch(userActions.changeLeftSideView(true));
               setSelectedClientId(id);
               videoManager.appendVideoNode(id);
             }

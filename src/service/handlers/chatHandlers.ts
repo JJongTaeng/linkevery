@@ -18,7 +18,7 @@ export const chatHandlers: HandlerMap<CHAT_MESSAGE_ID> = {
       }),
     );
 
-    if (store.getState().room.isScrollButtonView) {
+    if (store.getState().user.isScrollButtonView) {
       soundEffect.receivedChat();
     }
   },

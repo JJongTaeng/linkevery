@@ -12,10 +12,6 @@ interface RoomState {
     };
   };
   size: number;
-  voiceStatus: boolean;
-  screenShareStatus: boolean;
-  leftSideView: boolean;
-  isScrollButtonView: boolean;
 }
 
 const storage = StorageService.getInstance();
@@ -25,10 +21,6 @@ const initialState: RoomState = {
   username: storage.getItem('username'),
   member: {},
   size: 0,
-  voiceStatus: false,
-  screenShareStatus: false,
-  leftSideView: false,
-  isScrollButtonView: false,
 };
 
 export const roomSlice = createSlice({
@@ -83,18 +75,6 @@ export const roomSlice = createSlice({
     },
     setMemberSize: (state, { payload }) => {
       state.size = payload;
-    },
-    changeVoiceStatus: (state, { payload }) => {
-      state.voiceStatus = payload;
-    },
-    changeScreenShareStatus: (state, { payload }) => {
-      state.screenShareStatus = payload;
-    },
-    changeLeftSideView: (state, { payload }) => {
-      state.leftSideView = payload;
-    },
-    changeIsScrollBottomView: (state, { payload }) => {
-      state.isScrollButtonView = payload;
     },
     setAllMemberVoiceOff: (state) => {
       for (const key in state.member) {

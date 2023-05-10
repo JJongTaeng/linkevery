@@ -1,6 +1,7 @@
 import { notification } from 'antd';
 import { HandlerMap, SCREEN_SHARE_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
+import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
 import { videoManager } from '../media/VideoManager';
 
@@ -9,7 +10,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
-    if (!store.getState().room.voiceStatus) {
+    if (!store.getState().user.voiceStatus) {
       return;
     }
 
@@ -19,8 +20,8 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
-    if (store.getState().room.screenShareStatus) return;
-    store.dispatch(roomActions.changeScreenShareStatus(true));
+    if (store.getState().user.screenShareStatus) return;
+    store.dispatch(userActions.changeScreenShareStatus(true));
 
     const voiceMember = [];
     const member = store.getState().room.member;
@@ -44,7 +45,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
         notification.info({
           message: `화면공유 권한 설정을 확인해주세요.`,
         });
-        store.dispatch(roomActions.changeScreenShareStatus(false));
+        store.dispatch(userActions.changeScreenShareStatus(false));
       }
     }
   },
@@ -77,6 +78,6 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       }),
     );
     videoManager.clearVideo(from);
-    store.dispatch(roomActions.changeLeftSideView(false));
+    store.dispatch(userActions.changeLeftSideView(false));
   },
 };

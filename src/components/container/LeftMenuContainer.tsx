@@ -16,6 +16,7 @@ import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { mdUtils } from '../../service/media/MediaDeviceUtils';
 import { StorageService } from '../../service/storage/StorageService';
 import { roomActions } from '../../store/features/roomSlice';
+import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import SvgMicOn from '../icons/MicOn';
 import SvgMicOff from '../icons/MicOn2';
@@ -33,9 +34,9 @@ const LeftMenuContainer = () => {
   const { voiceStatus, screenShareStatus, roomName, member } = useAppSelector(
     (state) => ({
       member: state.room.member,
-      voiceStatus: state.room.voiceStatus,
-      screenShareStatus: state.room.screenShareStatus,
       roomName: state.room.roomName,
+      voiceStatus: state.user.voiceStatus,
+      screenShareStatus: state.user.screenShareStatus,
     }),
   );
   const [form] = Form.useForm();
@@ -71,7 +72,7 @@ const LeftMenuContainer = () => {
                   } else {
                     const id = storage.getItem('clientId');
                     app.disconnectScreenShare(id);
-                    dispatch(roomActions.changeScreenShareStatus(false));
+                    dispatch(userActions.changeScreenShareStatus(false));
                   }
                 }}
               />
@@ -93,12 +94,12 @@ const LeftMenuContainer = () => {
                       return;
                     }
 
-                    dispatch(roomActions.changeVoiceStatus(true));
+                    dispatch(userActions.changeVoiceStatus(true));
                     app.dispatch.sendVoiceReadyMessage({});
                   } else {
                     app.disconnectVoice();
-                    dispatch(roomActions.changeScreenShareStatus(false));
-                    dispatch(roomActions.changeVoiceStatus(false));
+                    dispatch(userActions.changeScreenShareStatus(false));
+                    dispatch(userActions.changeVoiceStatus(false));
                     dispatch(roomActions.setAllMemberVoiceOff());
                   }
                 }}
