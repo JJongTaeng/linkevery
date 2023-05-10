@@ -2,6 +2,7 @@ interface StorageData {
   clientId: string;
   username: string;
   roomName: string;
+  userKey: string;
 }
 
 type Key = keyof StorageData;
@@ -14,6 +15,7 @@ export class StorageService {
     clientId: '',
     roomName: '',
     username: '',
+    userKey: '',
   };
 
   private constructor() {

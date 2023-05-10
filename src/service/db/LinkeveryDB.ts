@@ -1,32 +1,34 @@
 // db.ts
 import Dexie, { Table } from 'dexie';
 
-export interface UserKey {
+export interface User {
   id?: number;
-  userKey: string;
+  key: string;
+  name: string;
 }
 
-export interface RoomList {
+export interface Message {
+  userKey: string;
+  message: string;
+  messageType: string;
+  date: string;
+}
+export interface Room {
   id?: number;
   roomName: string;
-  messageList: {
-    userKey: string;
-    message: string;
-    messageType: string;
-    date: string;
-  }[];
+  messageList: Message[];
 }
 
 export class LinkeveryDB extends Dexie {
   // 'friends' is added by dexie when declaring the stores()
   // We just tell the typing system this is the case
-  userKey!: Table<UserKey>;
-  roomList!: Table<RoomList>;
+  user!: Table<User>;
+  room!: Table<Room>;
   constructor() {
     super('linkevery');
     this.version(1).stores({
-      userKey: '++id, userKey', // Primary key and indexed props
-      roomList: '++id, roomName, messageList',
+      user: '++id, &key, &name', // Primary key and indexed props
+      room: '++id, &roomName, messageList',
     });
   }
 }

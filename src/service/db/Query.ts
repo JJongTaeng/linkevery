@@ -1,18 +1,62 @@
 import { nanoid } from 'nanoid';
-import { LinkeveryDB } from './LinkeveryDB';
+import { StorageService } from '../storage/StorageService';
+import { LinkeveryDB, Message, Room } from './LinkeveryDB';
+
+const storage = StorageService.getInstance();
 
 class Query {
   db = new LinkeveryDB();
 
-  constructor() {
-    const userKey = this.db.userKey.where('id').equals(1).first();
-    userKey.then((value) => {
-      if (!value) {
-        this.db.userKey.add({
-          userKey: nanoid(),
-        });
-      }
-    });
+  constructor() {}
+
+  async getUser() {
+    const user = await this.db.user.toCollection().first();
+    return user;
+  }
+
+  async addUser(name: string) {
+    const user = await this.db.user.toCollection().first();
+    if (user) {
+      return;
+    }
+
+    this.db.user.add({ name, key: nanoid() });
+  }
+
+  async updateUser(name: string) {
+    this.db.user
+      .where('id')
+      .equals(1)
+      .modify((value, ref) => {
+        ref.value.name = name;
+      });
+  }
+
+  async addRoomInfo(roomInfo: Room) {
+    const room = await this.db.room
+      .where('roomName')
+      .equals(roomInfo.roomName)
+      .first();
+    if (room) {
+      return;
+    }
+
+    await this.db.room.add({ ...roomInfo });
+  }
+
+  async updateMessageList(roomName: string, message: Message) {
+    this.db.room
+      .where('roomName')
+      .equals(roomName)
+      .modify((value, ref) => {
+        const messageList = ref.value.messageList;
+        messageList.push(message);
+        ref.value.messageList = messageList;
+      });
+  }
+
+  async getRoomInfo(roomName: string) {
+    return await this.db.room.where('roomName').equals(roomName).first();
   }
 }
 
