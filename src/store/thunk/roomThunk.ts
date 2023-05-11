@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Message, Room } from '../../service/db/LinkeveryDB';
+import { Member, Message, Room } from '../../service/db/LinkeveryDB';
 import { query } from '../../service/db/Query';
 
 export const getRoom = createAsyncThunk(
@@ -45,5 +45,12 @@ export const updateMessageList = createAsyncThunk(
     messageList: Message[];
   }) => {
     return await query.updateMessageList(roomName, messageList);
+  },
+);
+
+export const updateMember = createAsyncThunk(
+  'db/updateMember',
+  async ({ roomName, member }: { roomName: string; member: Member }) => {
+    return await query.updateMember(roomName, member);
   },
 );

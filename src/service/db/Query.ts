@@ -1,4 +1,4 @@
-import { LinkeveryDB, Message, Room } from './LinkeveryDB';
+import { LinkeveryDB, Member, Message, Room } from './LinkeveryDB';
 
 class Query {
   db = new LinkeveryDB();
@@ -63,6 +63,15 @@ class Query {
 
   async getRoomByRoomName(roomName: string) {
     return await this.db.room.where('roomName').equals(roomName).first();
+  }
+
+  async updateMember(roomName: string, member: Member) {
+    this.db.room
+      .where('roomName')
+      .equals(roomName)
+      .modify((value, ref) => {
+        ref.value.member = member;
+      });
   }
 }
 

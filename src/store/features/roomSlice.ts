@@ -8,6 +8,7 @@ interface RoomState {
   member: {
     [key: string]: {
       username: string;
+      clientId: string;
       voiceStatus: boolean;
       screenShareStatus: boolean;
     };
@@ -43,6 +44,19 @@ export const roomSlice = createSlice({
       const { clientId, username } = payload;
       state.member[clientId] = {
         ...state.member[clientId],
+        username,
+      };
+    },
+    updateMember: (
+      state,
+      {
+        payload,
+      }: { payload: { userKey: string; username: string; clientId: string } },
+    ) => {
+      const { clientId, userKey, username } = payload;
+      console.log('###', payload);
+      state.room.member[userKey] = {
+        clientId,
         username,
       };
     },

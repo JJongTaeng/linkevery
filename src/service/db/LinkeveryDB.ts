@@ -18,8 +18,8 @@ export interface Member {
   [key: string]: {
     username: string;
     clientId: string;
-    voiceStatus: boolean;
-    screenShareStatus: boolean;
+    voiceStatus?: boolean;
+    screenShareStatus?: boolean;
   };
 }
 export interface Room {
