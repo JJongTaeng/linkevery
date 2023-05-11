@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { StorageService } from '../../service/storage/StorageService';
+import { addRoom, getRoom } from '../thunk/roomThunk';
 import { Room } from './../../service/db/LinkeveryDB';
 
 interface RoomState {
@@ -11,7 +12,7 @@ interface RoomState {
       screenShareStatus: boolean;
     };
   };
-  room: Room;
+  room: Omit<Room, 'id'>;
   size: number;
 }
 
@@ -20,7 +21,11 @@ const storage = StorageService.getInstance();
 const initialState: RoomState = {
   roomName: storage.getItem('roomName'),
   member: {},
-  room: {},
+  room: {
+    member: {},
+    messageList: [],
+    roomName: '',
+  },
   size: 0,
 };
 
@@ -79,6 +84,14 @@ export const roomSlice = createSlice({
         state.member[key].voiceStatus = false;
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getRoom.fulfilled, (state, { payload }) => {
+        console.log('###', payload);
+        state.room = payload;
+      })
+      .addCase(addRoom.fulfilled, (state, { payload }) => {});
   },
 });
 

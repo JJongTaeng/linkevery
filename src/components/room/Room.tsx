@@ -11,6 +11,7 @@ import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { getRoom } from '../../store/thunk/roomThunk';
 import { addUser, getUser } from '../../store/thunk/userThunk';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
@@ -79,6 +80,7 @@ const Room = () => {
       dispatch(userActions.changeIsScrollBottomView(false));
     }
   };
+
   useEffect(() => {
     dispatch(getUser());
   }, []);
@@ -90,6 +92,7 @@ const Room = () => {
       app.dispatch.sendJoinRoomMessage({ roomName });
       dispatch(roomActions.setRoomName(roomName));
       storage.setItem('roomName', roomName);
+      dispatch(getRoom(roomName));
     } else {
       setUsernameModalVisible(true);
     }

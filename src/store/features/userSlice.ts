@@ -45,7 +45,6 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getUser.fulfilled, (state, { payload }) => {
-        console.log(payload);
         state.username = payload?.username || '';
         state.key = payload?.key || '';
       })

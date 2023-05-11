@@ -1,7 +1,4 @@
-import { StorageService } from '../storage/StorageService';
 import { LinkeveryDB, Message, Room } from './LinkeveryDB';
-
-const storage = StorageService.getInstance();
 
 class Query {
   db = new LinkeveryDB();
@@ -31,7 +28,7 @@ class Query {
       });
   }
 
-  async addRoomInfo(newRoom: Room) {
+  async addRoom(newRoom: Room) {
     if (!newRoom?.roomName) return;
     const room = await this.db.room
       .where('roomName')
@@ -44,7 +41,7 @@ class Query {
     await this.db.room.add({ ...newRoom });
   }
 
-  async updateMessageList(roomName: string, message: Message) {
+  async addMessage(roomName: string, message: Message) {
     this.db.room
       .where('roomName')
       .equals(roomName)
@@ -55,7 +52,16 @@ class Query {
       });
   }
 
-  async getRoomInfo(roomName: string) {
+  async updateMessageList(roomName: string, messageList: Message[]) {
+    this.db.room
+      .where('roomName')
+      .equals(roomName)
+      .modify((value, ref) => {
+        ref.value.messageList = messageList;
+      });
+  }
+
+  async getRoomByRoomName(roomName: string) {
     return await this.db.room.where('roomName').equals(roomName).first();
   }
 }

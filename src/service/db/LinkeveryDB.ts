@@ -24,9 +24,9 @@ export interface Member {
 }
 export interface Room {
   id?: number;
-  roomName?: string;
-  messageList?: Message[];
-  member?: Member;
+  roomName: string;
+  messageList: Message[];
+  member: Member;
 }
 
 export class LinkeveryDB extends Dexie {
