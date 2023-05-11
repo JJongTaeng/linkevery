@@ -1,9 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Message, Room } from '../../service/db/LinkeveryDB';
 import { query } from '../../service/db/Query';
-import { StorageService } from './../../service/storage/StorageService';
-
-const storage = StorageService.getInstance();
 
 export const getRoom = createAsyncThunk(
   'db/getRoom',

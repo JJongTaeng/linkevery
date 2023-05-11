@@ -88,7 +88,6 @@ export const roomSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getRoom.fulfilled, (state, { payload }) => {
-        console.log('###', payload);
         state.room = payload;
       })
       .addCase(addRoom.fulfilled, (state, { payload }) => {});

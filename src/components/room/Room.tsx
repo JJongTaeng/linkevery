@@ -49,9 +49,11 @@ const Room = () => {
     leftSideView,
     isReadAllChat,
     loading,
+    room,
   } = useAppSelector((state) => ({
     member: state.room.member,
     messageList: state.chat.messageList,
+    room: state.room,
     username: state.user.username,
     leftSideView: state.user.leftSideView,
     isReadAllChat: state.user.isScrollButtonView,
@@ -59,6 +61,7 @@ const Room = () => {
   }));
   const dispatch = useAppDispatch();
 
+  console.log(room);
   const [message, setMessage] = useState('');
   const [isShift, setIsShift] = useState<boolean>(false);
 
