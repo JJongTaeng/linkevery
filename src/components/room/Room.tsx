@@ -11,6 +11,7 @@ import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { addUser, getUser } from '../../store/thunk/userThunk';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
 import SvgArrowDown from '../icons/ArrowDown';
@@ -40,14 +41,21 @@ const Room = () => {
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { username, messageList, member, leftSideView, isReadAllChat } =
-    useAppSelector((state) => ({
-      member: state.room.member,
-      messageList: state.chat.messageList,
-      username: state.user.username,
-      leftSideView: state.user.leftSideView,
-      isReadAllChat: state.user.isScrollButtonView,
-    }));
+  const {
+    username,
+    messageList,
+    member,
+    leftSideView,
+    isReadAllChat,
+    loading,
+  } = useAppSelector((state) => ({
+    member: state.room.member,
+    messageList: state.chat.messageList,
+    username: state.user.username,
+    leftSideView: state.user.leftSideView,
+    isReadAllChat: state.user.isScrollButtonView,
+    loading: state.loading,
+  }));
   const dispatch = useAppDispatch();
 
   const [message, setMessage] = useState('');
@@ -71,9 +79,13 @@ const Room = () => {
       dispatch(userActions.changeIsScrollBottomView(false));
     }
   };
+  useEffect(() => {
+    dispatch(getUser());
+  }, []);
 
   useEffect(() => {
     if (username && roomName) {
+      setUsernameModalVisible(false);
       app.dispatch.sendConnectMessage({});
       app.dispatch.sendJoinRoomMessage({ roomName });
       dispatch(roomActions.setRoomName(roomName));
@@ -224,7 +236,9 @@ const Room = () => {
         <UsernameModal
           open={usernameModalVisible}
           onSubmit={(username) => {
-            dispatch(userActions.setUsername({ username }));
+            const key = nanoid();
+            dispatch(addUser({ username, key }));
+            storage.setItem('userKey', key);
             storage.setItem('username', username);
             setUsernameModalVisible(false);
           }}

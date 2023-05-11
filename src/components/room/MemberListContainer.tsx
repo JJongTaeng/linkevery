@@ -24,6 +24,8 @@ const MemberListContainer = ({
     audioManager.changeVolume(id, volume);
   };
 
+  console.log(member);
+
   return (
     <MemberList>
       <div className="member-item">{myName} - me</div>

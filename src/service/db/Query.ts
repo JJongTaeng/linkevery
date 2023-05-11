@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import { StorageService } from '../storage/StorageService';
 import { LinkeveryDB, Message, Room } from './LinkeveryDB';
 
@@ -14,13 +13,13 @@ class Query {
     return user;
   }
 
-  async addUser(name: string) {
+  async addUser(name: string, key: string) {
     const user = await this.db.user.toCollection().first();
     if (user) {
       return;
     }
 
-    this.db.user.add({ username: name, key: nanoid() });
+    this.db.user.add({ username: name, key });
   }
 
   async updateUser(name: string) {

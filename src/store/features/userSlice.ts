@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { StorageService } from '../../service/storage/StorageService';
+import { addUser, getUser } from '../thunk/userThunk';
 
 interface UserState {
   key: string;
@@ -13,7 +14,7 @@ interface UserState {
 const storage = StorageService.getInstance();
 
 const initialState: UserState = {
-  key: '',
+  key: storage.getItem('userKey'),
   username: storage.getItem('username'),
   voiceStatus: false,
   screenShareStatus: false,
@@ -40,6 +41,15 @@ export const userSlice = createSlice({
     changeIsScrollBottomView: (state, { payload }) => {
       state.isScrollButtonView = payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getUser.fulfilled, (state, { payload }) => {
+        console.log(payload);
+        state.username = payload?.username || '';
+        state.key = payload?.key || '';
+      })
+      .addCase(addUser.fulfilled, (state, { payload }) => {});
   },
 });
 
