@@ -41,16 +41,22 @@ class Query {
     await this.db.room.add({ ...newRoom });
   }
 
+  async getRoomByRoomName(roomName: string) {
+    return await this.db.room.where('roomName').equals(roomName).first();
+  }
+
+  async getRoomList() {
+    return await this.db.room.toArray((roomList) =>
+      roomList.map((room) => room.roomName),
+    );
+  }
+
   async addMessage(message: Message) {
     await this.db.message.add(message);
   }
 
   async addMessageList(messageList: Message[]) {
     await this.db.message.bulkAdd(messageList);
-  }
-
-  async getRoomByRoomName(roomName: string) {
-    return await this.db.room.where('roomName').equals(roomName).first();
   }
 
   async updateMember(roomName: string, member: Member) {

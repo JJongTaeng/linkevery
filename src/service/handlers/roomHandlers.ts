@@ -41,7 +41,6 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
       }),
     );
 
-    console.log(store.getState().room.room.member);
     store.dispatch(
       updateMemberByDB({ roomName, member: store.getState().room.room.member }),
     );

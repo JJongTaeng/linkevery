@@ -9,7 +9,7 @@ import {
 } from 'antd';
 import Bowser from 'bowser';
 import { nanoid } from 'nanoid';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
@@ -18,6 +18,7 @@ import { storage } from '../../service/storage/StorageService';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { getRoomListByDB } from '../../store/thunk/roomThunk';
 import SvgMicOn from '../icons/MicOn';
 import SvgMicOff from '../icons/MicOn2';
 import SvgScreenShareOff from '../icons/ScreenShareOff';
@@ -30,14 +31,14 @@ const LeftMenuContainer = () => {
   const [open, setOpen] = useState(false);
   const app = useRef(AppServiceImpl.getInstance()).current;
   const dispatch = useAppDispatch();
-  const { voiceStatus, screenShareStatus, roomName, room } = useAppSelector(
-    (state) => ({
+  const { voiceStatus, screenShareStatus, roomName, room, roomList } =
+    useAppSelector((state) => ({
       room: state.room.room,
       roomName: state.room.roomName,
+      roomList: state.room.roomList,
       voiceStatus: state.user.voiceStatus,
       screenShareStatus: state.user.screenShareStatus,
-    }),
-  );
+    }));
   const [form] = Form.useForm();
 
   const isOnVoiceMember = () => {
@@ -47,6 +48,12 @@ const LeftMenuContainer = () => {
       }
     }
   };
+
+  useEffect(() => {
+    dispatch(getRoomListByDB());
+  }, []);
+
+  console.log('###', roomList);
 
   return (
     <Container>

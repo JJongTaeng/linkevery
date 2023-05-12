@@ -50,7 +50,6 @@ const Room = () => {
     }));
   const dispatch = useAppDispatch();
 
-  console.log(room);
   const [message, setMessage] = useState('');
   const [isShift, setIsShift] = useState<boolean>(false);
 
