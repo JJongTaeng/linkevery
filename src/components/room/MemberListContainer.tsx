@@ -7,7 +7,7 @@ import SvgSpeakerOn from '../icons/SpeakerOn';
 import { MemberList } from './Room.styled';
 
 interface MemberListContainerProps {
-  onClickMemberScreenShare: (id: string) => void;
+  onClickMemberScreenShare: (userKey: string) => void;
 }
 
 const MemberListContainer = ({
@@ -35,7 +35,7 @@ const MemberListContainer = ({
               size="small"
               shape="circle"
               onClick={() => {
-                onClickMemberScreenShare(room.member[userKey].clientId);
+                onClickMemberScreenShare(userKey);
               }}
               icon={<SvgScreenShareOn />}
             />

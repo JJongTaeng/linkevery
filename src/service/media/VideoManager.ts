@@ -12,14 +12,14 @@ class VideoManager {
     this.videoElementMap[id] = video;
   }
 
-  appendVideoNode(id: string) {
+  appendVideoNode(clientId: string) {
     this.removeAllVideoNode();
     const container = document.querySelector('#video-container');
     if (!container) {
       throw new Error('video container not defined');
     }
-    container.appendChild(this.videoElementMap[id]);
-    this.videoElementMap[id].play();
+    container.appendChild(this.videoElementMap[clientId]);
+    this.videoElementMap[clientId].play();
   }
 
   removeVideoNode(id: string) {

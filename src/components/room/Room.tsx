@@ -11,7 +11,7 @@ import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { getRoom } from '../../store/thunk/roomThunk';
+import { getRoomByDB } from '../../store/thunk/roomThunk';
 import { addUser, getUser } from '../../store/thunk/userThunk';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
@@ -34,29 +34,20 @@ const Room = () => {
   const chatScrollViewElement = useRef<HTMLDivElement>(null);
   const chatListElement = useRef<HTMLDivElement>(null);
   const [usernameModalVisible, setUsernameModalVisible] = useState(false);
-  const [selectedClientId, setSelectedClientId] = useState('');
+  const [selectedUserKey, setSelectedUserKey] = useState('');
   const [isFullScreen, setIsFullScreen] = useState(false);
   const app = useRef(AppServiceImpl.getInstance()).current;
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const {
-    username,
-    messageList,
-    member,
-    leftSideView,
-    isReadAllChat,
-    loading,
-    room,
-  } = useAppSelector((state) => ({
-    member: state.room.member,
-    messageList: state.chat.messageList,
-    room: state.room.room,
-    username: state.user.username,
-    leftSideView: state.user.leftSideView,
-    isReadAllChat: state.user.isScrollButtonView,
-    loading: state.loading,
-  }));
+  const { username, messageList, leftSideView, isReadAllChat, room } =
+    useAppSelector((state) => ({
+      messageList: state.chat.messageList,
+      room: state.room.room,
+      username: state.user.username,
+      leftSideView: state.user.leftSideView,
+      isReadAllChat: state.user.isScrollButtonView,
+    }));
   const dispatch = useAppDispatch();
 
   console.log(room);
@@ -93,16 +84,16 @@ const Room = () => {
       app.dispatch.sendJoinRoomMessage({ roomName });
       dispatch(roomActions.setRoomName(roomName));
       storage.setItem('roomName', roomName);
-      dispatch(getRoom(roomName));
+      dispatch(getRoomByDB(roomName));
     } else {
       setUsernameModalVisible(true);
     }
   }, [username, roomName]);
 
   useEffect(() => {
-    if (!member[selectedClientId])
+    if (!room.member[selectedUserKey])
       dispatch(userActions.changeLeftSideView(false));
-  }, [member]);
+  }, [room.member]);
 
   useEffect(() => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
@@ -135,14 +126,14 @@ const Room = () => {
       <TopMenuContainer />
       <RoomContent>
         <MemberListContainer
-          onClickMemberScreenShare={(id: string) => {
-            if (id === selectedClientId) {
+          onClickMemberScreenShare={(userKey: string) => {
+            if (userKey === selectedUserKey) {
               dispatch(userActions.changeLeftSideView(false));
-              setSelectedClientId('');
+              setSelectedUserKey('');
             } else {
               dispatch(userActions.changeLeftSideView(true));
-              setSelectedClientId(id);
-              videoManager.appendVideoNode(id);
+              setSelectedUserKey(userKey);
+              videoManager.appendVideoNode(room.member[userKey].clientId);
             }
           }}
         />

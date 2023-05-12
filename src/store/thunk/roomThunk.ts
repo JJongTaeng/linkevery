@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Member, Message, Room } from '../../service/db/LinkeveryDB';
 import { query } from '../../service/db/Query';
 
-export const getRoom = createAsyncThunk(
+export const getRoomByDB = createAsyncThunk(
   'db/getRoom',
   async (roomName: string) => {
     let room = await query.getRoomByRoomName(roomName);
@@ -22,27 +22,37 @@ export const getRoom = createAsyncThunk(
   },
 );
 
-export const addRoom = createAsyncThunk('db/addRoom', async (room: Room) => {
-  return await query.addRoom(room);
-});
+export const addRoomByDB = createAsyncThunk(
+  'db/addRoom',
+  async (room: Room) => {
+    return await query.addRoom(room);
+  },
+);
 
-export const addMessage = createAsyncThunk(
+export const addMessageByDB = createAsyncThunk(
   'db/addMessage',
   async ({ message }: { message: Message }) => {
     return await query.addMessage(message);
   },
 );
 
-export const updateMessageList = createAsyncThunk(
+export const updateMessageListByDB = createAsyncThunk(
   'db/updateMessageList',
   async ({ messageList }: { messageList: Message[] }) => {
     return await query.addMessageList(messageList);
   },
 );
 
-export const updateMember = createAsyncThunk(
+export const updateMemberByDB = createAsyncThunk(
   'db/updateMember',
   async ({ roomName, member }: { roomName: string; member: Member }) => {
     return await query.updateMember(roomName, member);
+  },
+);
+
+export const deleteMemberByDB = createAsyncThunk(
+  'db/deleteMember',
+  async ({ roomName, userKey }: { roomName: string; userKey: string }) => {
+    return await query.deleteMember(roomName, userKey);
   },
 );

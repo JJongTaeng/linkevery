@@ -1,25 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { storage } from '../../service/storage/StorageService';
-import { addRoom, getRoom } from '../thunk/roomThunk';
+import { addRoomByDB, getRoomByDB } from '../thunk/roomThunk';
 import { Room } from './../../service/db/LinkeveryDB';
 
 interface RoomState {
   roomName: string;
-  member: {
-    [key: string]: {
-      username: string;
-      clientId: string;
-      voiceStatus: boolean;
-      screenShareStatus: boolean;
-    };
-  };
   room: Omit<Room, 'id'>;
   size: number;
 }
 
 const initialState: RoomState = {
   roomName: storage.getItem('roomName'),
-  member: {},
   room: {
     member: {},
     roomName: '',
@@ -41,7 +32,6 @@ export const roomSlice = createSlice({
       }: { payload: { userKey: string; username: string; clientId: string } },
     ) => {
       const { clientId, userKey, username } = payload;
-      console.log('###', payload);
       state.room.member[userKey] = {
         clientId,
         username,
@@ -68,8 +58,8 @@ export const roomSlice = createSlice({
       };
     },
     deleteMember: (state, { payload }) => {
-      const { clientId } = payload;
-      delete state.member[clientId];
+      const { userKey } = payload;
+      delete state.room.member[userKey];
     },
     leaveRoom: (state) => {
       storage.setItem('roomName', '');
@@ -86,10 +76,10 @@ export const roomSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getRoom.fulfilled, (state, { payload }) => {
+      .addCase(getRoomByDB.fulfilled, (state, { payload }) => {
         state.room = payload;
       })
-      .addCase(addRoom.fulfilled, (state, { payload }) => {});
+      .addCase(addRoomByDB.fulfilled, (state, { payload }) => {});
   },
 });
 

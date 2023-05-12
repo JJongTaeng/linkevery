@@ -1,7 +1,7 @@
 import { HandlerMap, ROOM_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
-import { updateMember } from '../../store/thunk/roomThunk';
+import { updateMemberByDB } from '../../store/thunk/roomThunk';
 import { storage } from '../storage/StorageService';
 
 export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
@@ -24,7 +24,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
       userKey,
     });
     store.dispatch(
-      updateMember({ roomName, member: store.getState().room.room.member }),
+      updateMemberByDB({ roomName, member: store.getState().room.room.member }),
     );
   },
   [ROOM_MESSAGE_ID.RESPONSE_MEMBER_NAME]: (
@@ -43,7 +43,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
 
     console.log(store.getState().room.room.member);
     store.dispatch(
-      updateMember({ roomName, member: store.getState().room.room.member }),
+      updateMemberByDB({ roomName, member: store.getState().room.room.member }),
     );
   },
 };
