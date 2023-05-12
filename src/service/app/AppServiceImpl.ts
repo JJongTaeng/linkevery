@@ -45,7 +45,9 @@ export class AppServiceImpl extends AppService {
   }
 
   public disconnectVoice() {
-    this.dispatch.sendVoiceDisconnectMessage({});
+    const userKey = storage.getItem('userKey');
+
+    this.dispatch.sendVoiceDisconnectMessage({ userKey });
     this.rtcManager.clearTrack();
     audioManager.removeAllAudio();
     videoManager.clearAllVideo();

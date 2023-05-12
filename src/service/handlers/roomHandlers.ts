@@ -14,12 +14,6 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
     const username = storage.getItem('username');
     const userKey = storage.getItem('userKey');
     const roomName = storage.getItem('roomName');
-    store.dispatch(
-      roomActions.setMemberUsername({
-        username: protocol.data.username,
-        clientId: protocol.from,
-      }),
-    );
 
     store.dispatch(
       roomActions.updateMember({
@@ -42,12 +36,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
     { dispatch, rtcManager },
   ) => {
     const roomName = storage.getItem('roomName');
-    store.dispatch(
-      roomActions.setMemberUsername({
-        username: protocol.data.username,
-        clientId: protocol.from,
-      }),
-    );
+
     store.dispatch(
       roomActions.updateMember({
         username: protocol.data.username,

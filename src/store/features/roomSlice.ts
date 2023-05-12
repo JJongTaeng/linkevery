@@ -36,16 +36,6 @@ export const roomSlice = createSlice({
     setRoomName: (state, { payload }) => {
       state.roomName = payload;
     },
-    setMemberUsername: (
-      state,
-      { payload }: { payload: { username: string; clientId: string } },
-    ) => {
-      const { clientId, username } = payload;
-      state.member[clientId] = {
-        ...state.member[clientId],
-        username,
-      };
-    },
     updateMember: (
       state,
       {
@@ -61,11 +51,11 @@ export const roomSlice = createSlice({
     },
     setMemberVoiceStatus: (
       state,
-      { payload }: { payload: { voiceStatus: boolean; clientId: string } },
+      { payload }: { payload: { voiceStatus: boolean; userKey: string } },
     ) => {
-      const { clientId, voiceStatus } = payload;
-      state.member[clientId] = {
-        ...state.member[clientId],
+      const { userKey, voiceStatus } = payload;
+      state.room.member[userKey] = {
+        ...state.room.member[userKey],
         voiceStatus,
       };
     },
@@ -93,8 +83,8 @@ export const roomSlice = createSlice({
       state.size = payload;
     },
     setAllMemberVoiceOff: (state) => {
-      for (const key in state.member) {
-        state.member[key].voiceStatus = false;
+      for (const key in state.room.member) {
+        state.room.member[key].voiceStatus = false;
       }
     },
   },

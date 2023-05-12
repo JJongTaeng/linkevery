@@ -4,16 +4,21 @@ import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { audioManager } from '../media/AudioManager';
 import { soundEffect } from '../media/SoundEffect';
+import { StorageService } from '../storage/StorageService';
+
+const storage = StorageService.getInstance();
 
 export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   [VOICE_MESSAGE_ID.READY]: async (protocol, { dispatch, rtcManager }) => {
+    const userKey = storage.getItem('userKey');
     if (!store.getState().user.voiceStatus) {
       return;
     }
 
-    dispatch.sendVoiceReadyOkMessage({ to: protocol.from });
+    dispatch.sendVoiceReadyOkMessage({ to: protocol.from, userKey });
   },
   [VOICE_MESSAGE_ID.READY_OK]: async (protocol, { dispatch, rtcManager }) => {
+    const userKey = storage.getItem('userKey');
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
       return;
@@ -30,16 +35,19 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
 
     notification.info({
       message: `${
-        store.getState().room.member[from].username
+        store.getState().room.room.member[protocol.data.userKey].username
       }이 보이스채팅에 연결되었습니다.`,
     });
 
     soundEffect.startVoice();
 
     store.dispatch(
-      roomActions.setMemberVoiceStatus({ clientId: from, voiceStatus: true }),
+      roomActions.setMemberVoiceStatus({
+        voiceStatus: true,
+        userKey: protocol.data.userKey,
+      }),
     );
-    dispatch.sendVoiceConnectedMessage({ to: from });
+    dispatch.sendVoiceConnectedMessage({ to: from, userKey });
   },
   [VOICE_MESSAGE_ID.CONNECTED]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
@@ -58,13 +66,16 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
 
     notification.info({
       message: `${
-        store.getState().room.member[from].username
+        store.getState().room.room.member[protocol.data.userKey].username
       }이 보이스채팅에 연결되었습니다.`,
     });
     soundEffect.startVoice();
 
     store.dispatch(
-      roomActions.setMemberVoiceStatus({ clientId: from, voiceStatus: true }),
+      roomActions.setMemberVoiceStatus({
+        userKey: protocol.data.userKey,
+        voiceStatus: true,
+      }),
     );
   },
   [VOICE_MESSAGE_ID.DISCONNECT]: async (protocol, { dispatch, rtcManager }) => {
@@ -77,11 +88,14 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     audioManager.removeAudio(from);
     notification.info({
       message: `${
-        store.getState().room.member[from].username
+        store.getState().room.room.member[protocol.data.userKey].username
       }이 보이스채팅에서 나갔습니다.`,
     });
     store.dispatch(
-      roomActions.setMemberVoiceStatus({ clientId: from, voiceStatus: false }),
+      roomActions.setMemberVoiceStatus({
+        userKey: protocol.data.userKey,
+        voiceStatus: false,
+      }),
     );
   },
 };
