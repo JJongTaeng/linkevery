@@ -215,7 +215,7 @@ const Room = () => {
                   onChange={(e) => setMessage(e.target.value)}
                   name="message"
                   style={{ height: 40 }}
-                  placeholder={roomName?.split('_')[0] + ' 에 메시지 보내기'}
+                  placeholder={roomName?.split('+')[0] + ' 에 메시지 보내기'}
                 />
               </div>
 

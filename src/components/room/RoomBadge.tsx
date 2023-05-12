@@ -10,7 +10,7 @@ const RoomBadge = ({ roomName }: RoomBadgeProps) => {
   const navigate = useNavigate();
   return (
     <Badge onClick={() => navigate('/' + roomName)} size={50}>
-      {roomName[0]}
+      {roomName.split('+')[0]}
     </Badge>
   );
 };

@@ -23,6 +23,7 @@ import SvgMicOn from '../icons/MicOn';
 import SvgMicOff from '../icons/MicOn2';
 import SvgScreenShareOff from '../icons/ScreenShareOff';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
+import RoomBadge from '../room/RoomBadge';
 
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
@@ -59,6 +60,11 @@ const LeftMenuContainer = () => {
     <Container>
       <div className={'logo-container'}>
         <img src="/linkevery/logo512.png" />
+      </div>
+      <div>
+        {roomList.map((roomName) => (
+          <RoomBadge roomName={roomName} key={roomName} />
+        ))}
       </div>
 
       <div>
@@ -132,7 +138,7 @@ const LeftMenuContainer = () => {
           name="basic"
           style={{ maxWidth: 600 }}
           onFinish={(values) => {
-            const roomName = values.roomName + '_' + nanoid();
+            const roomName = values.roomName + '+' + nanoid();
             dispatch(roomActions.setRoomName(roomName));
             form.resetFields();
             navigate(`/${roomName}`);

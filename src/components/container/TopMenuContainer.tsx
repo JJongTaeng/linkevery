@@ -14,7 +14,7 @@ const TopMenuContainer = () => {
     <Container>
       <div />
       <RoomName>
-        <Text>{roomName ? roomName?.split('_')[0] : ''}</Text>
+        <Text>{roomName ? roomName?.split('+')[0] : ''}</Text>
         <div>
           {roomName && (
             <Tooltip
