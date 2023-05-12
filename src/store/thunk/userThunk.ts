@@ -1,8 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { query } from '../../service/db/Query';
-import { StorageService } from './../../service/storage/StorageService';
-
-const storage = StorageService.getInstance();
+import { storage } from './../../service/storage/StorageService';
 
 export const getUser = createAsyncThunk('db/getUser', async () => {
   const user = await query.getUser();

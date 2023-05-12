@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { StorageService } from '../../service/storage/StorageService';
+import { storage } from '../../service/storage/StorageService';
 import { addUser, getUser } from '../thunk/userThunk';
 
 interface UserState {
@@ -11,8 +11,6 @@ interface UserState {
   isScrollButtonView: boolean;
   roomList: string[];
 }
-
-const storage = StorageService.getInstance();
 
 const initialState: UserState = {
   key: storage.getItem('userKey'),

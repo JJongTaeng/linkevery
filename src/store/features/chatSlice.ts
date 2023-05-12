@@ -1,13 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
-import { StorageService } from '../../service/storage/StorageService';
 import { ChatType } from '../../types';
 
 interface ChatState {
   messageList: ChatType[];
 }
 
-const storage = StorageService.getInstance();
 const initialState: ChatState = {
   messageList: [],
 };

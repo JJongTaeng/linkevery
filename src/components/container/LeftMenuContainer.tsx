@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { mdUtils } from '../../service/media/MediaDeviceUtils';
-import { StorageService } from '../../service/storage/StorageService';
+import { storage } from '../../service/storage/StorageService';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -23,7 +23,6 @@ import SvgMicOff from '../icons/MicOn2';
 import SvgScreenShareOff from '../icons/ScreenShareOff';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
 
-const storage = StorageService.getInstance();
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const LeftMenuContainer = () => {
@@ -31,9 +30,9 @@ const LeftMenuContainer = () => {
   const [open, setOpen] = useState(false);
   const app = useRef(AppServiceImpl.getInstance()).current;
   const dispatch = useAppDispatch();
-  const { voiceStatus, screenShareStatus, roomName, member } = useAppSelector(
+  const { voiceStatus, screenShareStatus, roomName, room } = useAppSelector(
     (state) => ({
-      member: state.room.member,
+      room: state.room.room,
       roomName: state.room.roomName,
       voiceStatus: state.user.voiceStatus,
       screenShareStatus: state.user.screenShareStatus,
@@ -42,8 +41,8 @@ const LeftMenuContainer = () => {
   const [form] = Form.useForm();
 
   const isOnVoiceMember = () => {
-    for (const key in member) {
-      if (member[key].voiceStatus) {
+    for (const key in room.member) {
+      if (room.member[key].voiceStatus) {
         return true;
       }
     }
@@ -98,7 +97,11 @@ const LeftMenuContainer = () => {
                     app.dispatch.sendVoiceReadyMessage({});
                   } else {
                     app.disconnectVoice();
-                    dispatch(userActions.changeScreenShareStatus(false));
+                    if (screenShareStatus) {
+                      const id = storage.getItem('clientId');
+                      app.disconnectScreenShare(id);
+                      dispatch(userActions.changeScreenShareStatus(false));
+                    }
                     dispatch(userActions.changeVoiceStatus(false));
                     dispatch(roomActions.setAllMemberVoiceOff());
                   }

@@ -3,9 +3,7 @@ import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { audioManager } from '../media/AudioManager';
 import { videoManager } from '../media/VideoManager';
-import { StorageService } from '../storage/StorageService';
-
-const storage = StorageService.getInstance();
+import { storage } from '../storage/StorageService';
 
 export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
   [CONNECTION_MESSAGE_ID.CONNECT]: (protocol, { dispatch }) => {

@@ -5,13 +5,11 @@ import { store } from '../../store/store';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
 import { audioManager } from '../media/AudioManager';
-import { videoManager } from '../media/VideoManager';
 import { RTCManager } from '../rtc/RTCManager';
 import { RTCScreenShareManager } from '../rtc/RTCScreenShareManager';
-import { StorageService } from '../storage/StorageService';
+import { storage } from '../storage/StorageService';
 import { AppService } from './AppService';
 
-const storage = StorageService.getInstance();
 export class AppServiceImpl extends AppService {
   readonly socket: Socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
   readonly rtcManager = new RTCManager();
@@ -48,13 +46,15 @@ export class AppServiceImpl extends AppService {
     const userKey = storage.getItem('userKey');
 
     this.dispatch.sendVoiceDisconnectMessage({ userKey });
-    this.rtcManager.clearTrack();
+    this.rtcManager.clearAudioTrack();
     audioManager.removeAllAudio();
-    videoManager.clearAllVideo();
   }
 
   public disconnectScreenShare(id: string) {
-    this.dispatch.sendScreenShareDisonnectMessage({});
+    const userKey = storage.getItem('userKey');
+    this.dispatch.sendScreenShareDisonnectMessage({
+      userKey,
+    });
     this.rtcManager.clearVideoTrack();
   }
 }

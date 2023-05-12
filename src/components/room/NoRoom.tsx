@@ -2,14 +2,12 @@ import { Button } from 'antd';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { StorageService } from '../../service/storage/StorageService';
+import { storage } from '../../service/storage/StorageService';
 import { roomActions } from '../../store/features/roomSlice';
 import { useAppSelector } from '../../store/hooks';
 import { Text } from '../../style';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
 import TopMenuContainer from '../container/TopMenuContainer';
-
-const storage = StorageService.getInstance();
 
 const NoRoom = () => {
   const { username } = useAppSelector((state) => ({

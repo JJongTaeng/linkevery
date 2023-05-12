@@ -4,9 +4,7 @@ import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { RTCManager, config } from '../rtc/RTCManager';
 import { SdpType } from '../rtc/RTCPeerService';
-import { StorageService } from '../storage/StorageService';
-
-const storage = StorageService.getInstance();
+import { storage } from '../storage/StorageService';
 
 export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
   [SIGNALING_MESSAGE_ID.START]: async (protocol, { dispatch, rtcManager }) => {

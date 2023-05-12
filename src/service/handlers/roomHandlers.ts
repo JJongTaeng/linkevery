@@ -2,18 +2,14 @@ import { HandlerMap, ROOM_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { updateMember } from '../../store/thunk/roomThunk';
-import { StorageService } from '../storage/StorageService';
-
-const storage = StorageService.getInstance();
+import { storage } from '../storage/StorageService';
 
 export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
   [ROOM_MESSAGE_ID.REQUEST_MEMBER_NAME]: (
     protocol,
     { dispatch, rtcManager },
   ) => {
-    const username = storage.getItem('username');
-    const userKey = storage.getItem('userKey');
-    const roomName = storage.getItem('roomName');
+    const { username, userKey, roomName } = storage.getAll();
 
     store.dispatch(
       roomActions.updateMember({

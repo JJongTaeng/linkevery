@@ -1,7 +1,5 @@
 import { CATEGORY, Protocol } from '../../constants/protocol';
-import { StorageService } from '../storage/StorageService';
-
-const storage = StorageService.getInstance();
+import { storage } from '../storage/StorageService';
 
 export type CreateProtocolFunctionParam = Omit<Protocol, 'category' | 'from'>;
 

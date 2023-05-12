@@ -4,6 +4,7 @@ import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
 import { videoManager } from '../media/VideoManager';
+import { storage } from '../storage/StorageService';
 
 export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
   [SCREEN_SHARE_MESSAGE_ID.READY]: async (
@@ -20,25 +21,26 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
+    const { userKey } = storage.getAll();
     if (store.getState().user.screenShareStatus) return;
     store.dispatch(userActions.changeScreenShareStatus(true));
 
     const voiceMember = [];
-    const member = store.getState().room.member;
+    const member = store.getState().room.room.member;
     for (const key in member) {
-      if (member[key].voiceStatus) voiceMember.push(key);
+      if (member[key].voiceStatus) voiceMember.push(member[key].clientId);
     }
     try {
       const mediaStream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
         audio: { echoCancellation: true, noiseSuppression: true },
       });
-      for (const key of voiceMember) {
+      for (const clientId of voiceMember) {
         mediaStream?.getTracks().forEach((track) => {
-          const peer = rtcManager.getPeer(key);
+          const peer = rtcManager.getPeer(clientId);
           peer.addTrack(track, mediaStream);
         });
-        dispatch.sendScreenShareConnectedMessage({ to: key });
+        dispatch.sendScreenShareConnectedMessage({ to: clientId, userKey });
       }
     } catch (error: any) {
       if (error?.name === 'NotAllowedError') {
@@ -50,18 +52,16 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     }
   },
   [SCREEN_SHARE_MESSAGE_ID.CONNECTED]: (protocol, { dispatch, rtcManager }) => {
-    const { from } = protocol;
-
     store.dispatch(
       roomActions.setMemberScreenShareStatus({
-        clientId: from,
+        userKey: protocol.data.userKey,
         screenShareStatus: true,
       }),
     );
 
     notification.info({
       message: `${
-        store.getState().room.member[from].username
+        store.getState().room.room.member[protocol.data.userKey].username
       }이 화면공유를 시작했습니다.`,
     });
   },
@@ -73,7 +73,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
 
     store.dispatch(
       roomActions.setMemberScreenShareStatus({
-        clientId: from,
+        userKey: protocol.data.userKey,
         screenShareStatus: false,
       }),
     );

@@ -39,6 +39,12 @@ export abstract class RTCManagerService extends EventEmitter {
     });
   }
 
+  clearAudioTrack(): void {
+    this.peerMap.forEach((peer, key) => {
+      peer.removeAudioTrack();
+    });
+  }
+
   clearVideoTrack(): void {
     this.peerMap.forEach((peer, key) => {
       peer.removeVideoTrack();

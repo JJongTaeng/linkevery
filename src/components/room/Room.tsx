@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { videoManager } from '../../service/media/VideoManager';
-import { StorageService } from '../../service/storage/StorageService';
+import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
@@ -29,8 +29,6 @@ import {
   VideoContainer,
 } from './Room.styled';
 import UsernameModal from './UsernameModal';
-
-const storage = StorageService.getInstance();
 
 const Room = () => {
   const chatScrollViewElement = useRef<HTMLDivElement>(null);

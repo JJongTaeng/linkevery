@@ -4,9 +4,7 @@ import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { audioManager } from '../media/AudioManager';
 import { soundEffect } from '../media/SoundEffect';
-import { StorageService } from '../storage/StorageService';
-
-const storage = StorageService.getInstance();
+import { storage } from '../storage/StorageService';
 
 export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
   [VOICE_MESSAGE_ID.READY]: async (protocol, { dispatch, rtcManager }) => {

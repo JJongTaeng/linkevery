@@ -10,7 +10,6 @@ type Key = keyof StorageData;
 const APP = 'APP';
 
 export class StorageService {
-  private static instance: StorageService;
   private storage: StorageData = {
     clientId: '',
     roomName: '',
@@ -18,20 +17,18 @@ export class StorageService {
     userKey: '',
   };
 
-  private constructor() {
+  constructor() {
     this.load();
-  }
-
-  public static getInstance() {
-    if (!StorageService.instance) {
-      this.instance = new StorageService();
-    }
-    return this.instance;
   }
 
   public getItem(key: Key) {
     this.load();
     return this.storage[key];
+  }
+
+  public getAll() {
+    this.load();
+    return this.storage;
   }
 
   public setItem(key: Key, value: StorageData[Key]) {
@@ -53,3 +50,5 @@ export class StorageService {
     this.storage = JSON.parse(storage ?? JSON.stringify(this.storage));
   }
 }
+
+export const storage = new StorageService();
