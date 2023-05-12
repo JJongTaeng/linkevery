@@ -41,24 +41,12 @@ class Query {
     await this.db.room.add({ ...newRoom });
   }
 
-  async addMessage(roomName: string, message: Message) {
-    this.db.room
-      .where('roomName')
-      .equals(roomName)
-      .modify((value, ref) => {
-        const messageList = ref.value.messageList;
-        messageList?.push(message);
-        ref.value.messageList = messageList;
-      });
+  async addMessage(message: Message) {
+    await this.db.message.add(message);
   }
 
-  async updateMessageList(roomName: string, messageList: Message[]) {
-    this.db.room
-      .where('roomName')
-      .equals(roomName)
-      .modify((value, ref) => {
-        ref.value.messageList = messageList;
-      });
+  async addMessageList(messageList: Message[]) {
+    await this.db.message.bulkAdd(messageList);
   }
 
   async getRoomByRoomName(roomName: string) {

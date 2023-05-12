@@ -8,6 +8,9 @@ export interface User {
 }
 
 export interface Message {
+  id?: string;
+  roomName: string;
+  messageKey: string;
   userKey: string;
   message: string;
   messageType: string;
@@ -25,7 +28,6 @@ export interface Member {
 export interface Room {
   id?: number;
   roomName: string;
-  messageList: Message[];
   member: Member;
 }
 
@@ -34,11 +36,14 @@ export class LinkeveryDB extends Dexie {
   // We just tell the typing system this is the case
   user!: Table<User>;
   room!: Table<Room>;
+  message!: Table<Message>;
   constructor() {
     super('linkevery');
     this.version(1).stores({
       user: '++id, &key, &username', // Primary key and indexed props
-      room: '++id, &roomName, messageList, member',
+      room: '++id, &roomName, member',
+      message:
+        '++id, &messageKey, roomName, userKey, message, messageType, date',
     });
   }
 }

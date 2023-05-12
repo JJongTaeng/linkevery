@@ -24,7 +24,6 @@ const initialState: RoomState = {
   member: {},
   room: {
     member: {},
-    messageList: [],
     roomName: '',
   },
   size: 0,

@@ -53,7 +53,7 @@ const Room = () => {
   } = useAppSelector((state) => ({
     member: state.room.member,
     messageList: state.chat.messageList,
-    room: state.room,
+    room: state.room.room,
     username: state.user.username,
     leftSideView: state.user.leftSideView,
     isReadAllChat: state.user.isScrollButtonView,

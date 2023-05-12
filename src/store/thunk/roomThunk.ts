@@ -10,7 +10,6 @@ export const getRoom = createAsyncThunk(
       const emptyRoom = {
         roomName,
         member: {},
-        messageList: [],
       };
       await query.addRoom(emptyRoom);
       return emptyRoom;
@@ -18,7 +17,6 @@ export const getRoom = createAsyncThunk(
       return {
         roomName,
         member: room.member,
-        messageList: room.messageList,
       };
     }
   },
@@ -30,21 +28,15 @@ export const addRoom = createAsyncThunk('db/addRoom', async (room: Room) => {
 
 export const addMessage = createAsyncThunk(
   'db/addMessage',
-  async ({ roomName, message }: { roomName: string; message: Message }) => {
-    return await query.addMessage(roomName, message);
+  async ({ message }: { message: Message }) => {
+    return await query.addMessage(message);
   },
 );
 
 export const updateMessageList = createAsyncThunk(
   'db/updateMessageList',
-  async ({
-    roomName,
-    messageList,
-  }: {
-    roomName: string;
-    messageList: Message[];
-  }) => {
-    return await query.updateMessageList(roomName, messageList);
+  async ({ messageList }: { messageList: Message[] }) => {
+    return await query.addMessageList(messageList);
   },
 );
 
