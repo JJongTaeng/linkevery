@@ -65,7 +65,8 @@ const LeftMenuContainer = () => {
         {roomList.map((roomName) => (
           <RoomBadge
             onClick={() => {
-              app.navigate('/' + roomName);
+              app.disconnect();
+              navigate('/' + roomName);
             }}
             name={roomName}
             key={roomName}
