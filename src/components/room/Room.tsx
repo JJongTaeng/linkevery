@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
+import { query } from '../../service/db/Query';
 import { videoManager } from '../../service/media/VideoManager';
 import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
@@ -74,6 +75,9 @@ const Room = () => {
 
   useEffect(() => {
     dispatch(getUser());
+    window.addEventListener('beforeunload', async () => {
+      await query.deleteAllMember(roomName || '');
+    });
   }, []);
 
   useEffect(() => {

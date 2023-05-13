@@ -76,6 +76,14 @@ class Query {
         delete ref.value.member[userKey];
       });
   }
+  async deleteAllMember(roomName: string) {
+    this.db.room
+      .where('roomName')
+      .equals(roomName)
+      .modify((value, ref) => {
+        ref.value.member = {};
+      });
+  }
 }
 
 export const query = new Query();
