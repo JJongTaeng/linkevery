@@ -1,6 +1,6 @@
 export interface ChatType {
   message: string;
-  clientId: string;
+  userKey: string;
   date: string;
   username: string;
 }

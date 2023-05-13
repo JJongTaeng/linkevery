@@ -60,6 +60,10 @@ class Query {
     await this.db.message.bulkAdd(messageList);
   }
 
+  async getMessageList() {
+    return await this.db.message.toArray();
+  }
+
   async updateMember(roomName: string, member: Member) {
     this.db.room
       .where('roomName')

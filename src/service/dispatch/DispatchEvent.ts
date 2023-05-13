@@ -5,7 +5,7 @@ import {
   Protocol,
   ProtocolData,
 } from '../../constants/protocol';
-import { chatMessage } from '../messages/chat';
+import { chatMessage, okMessage } from '../messages/chat';
 import {
   connectMessage,
   disconnectMessage,
@@ -77,7 +77,9 @@ export class DispatchEvent extends DispatchEventService {
   sendChatMessage(data: ProtocolData) {
     this.send(chatMessage(data));
   }
-
+  sendChatOkMessage(data: ProtocolData) {
+    this.send(okMessage(data));
+  }
   sendDisconnectMessage(data: ProtocolData) {
     this.send(disconnectMessage(data));
   }

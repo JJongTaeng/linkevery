@@ -39,6 +39,7 @@ export enum ROOM_MESSAGE_ID {
 
 export enum CHAT_MESSAGE_ID {
   SEND = 'SEND',
+  OK = 'OK',
 }
 
 export enum VOICE_MESSAGE_ID {

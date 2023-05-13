@@ -18,3 +18,11 @@ export const chatMessage = (data: ProtocolData) => {
     data,
   });
 };
+
+export const okMessage = (data: ProtocolData) => {
+  return chatProtocolMessage({
+    messageId: CHAT_MESSAGE_ID.OK,
+    messageType: MESSAGE_TYPE.RTC,
+    data,
+  });
+};

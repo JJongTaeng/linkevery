@@ -11,6 +11,7 @@ import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { getChatListByDB } from '../../store/thunk/chatThunk';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
 import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import ChatBubble from '../chat/ChatBubble';
@@ -53,16 +54,19 @@ const Room = () => {
   const [message, setMessage] = useState('');
   const [isShift, setIsShift] = useState<boolean>(false);
 
+  console.log('###', messageList);
+
   const handleChat = () => {
     if (!message) return;
-    dispatch(
-      chatActions.sendChat({
-        message,
-        clientId: storage.getItem('clientId'),
-        date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-        username: username,
-      }),
-    );
+    const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
+    app.dispatch.sendChatMessage({
+      message,
+      date,
+      username,
+      userKey: storage.getItem('userKey'),
+      messageType: 'text',
+      messageKey: username + '+' + date,
+    });
     setMessage('');
   };
 
@@ -87,11 +91,13 @@ const Room = () => {
       dispatch(roomActions.setRoomName(roomName));
       storage.setItem('roomName', roomName);
       dispatch(getRoomByDB(roomName));
+      dispatch(getChatListByDB());
     } else {
       setUsernameModalVisible(true);
     }
     return () => {
       app.disconnect();
+      dispatch(chatActions.resetChatList());
     };
   }, [username, roomName]);
 
@@ -121,7 +127,6 @@ const Room = () => {
         'scroll',
         handleScrollChatList,
       );
-      dispatch(chatActions.resetChatList());
       roomName && dispatch(deleteAllMemberByDB({ roomName }));
     };
   }, []);
@@ -157,13 +162,13 @@ const Room = () => {
           </VideoContainer>
           <ChatContainer leftSideView={leftSideView}>
             <ChatList ref={chatListElement}>
-              {messageList.map(({ message, clientId, date, username }) => (
+              {messageList.map(({ message, userKey, date, username }) => (
                 <ChatBubble
                   key={nanoid()}
                   message={message}
                   date={date}
                   username={username}
-                  isMyChat={clientId === storage.getItem('clientId')}
+                  isMyChat={userKey === storage.getItem('userKey')}
                 />
               ))}
               <div

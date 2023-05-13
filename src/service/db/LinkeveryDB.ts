@@ -10,6 +10,7 @@ export interface User {
 export interface Message {
   id?: string;
   roomName: string;
+  username: string;
   messageKey: string;
   userKey: string;
   message: string;
@@ -43,7 +44,7 @@ export class LinkeveryDB extends Dexie {
       user: '++id, &key, &username', // Primary key and indexed props
       room: '++id, &roomName, member',
       message:
-        '++id, &messageKey, roomName, userKey, message, messageType, date',
+        '++id, &messageKey, roomName, username, userKey, message, messageType, date',
     });
   }
 }
