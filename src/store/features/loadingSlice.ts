@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getUser } from '../thunk/userThunk';
+import { getUserByDB } from '../thunk/userThunk';
 
 interface LoadingState {
   getUser: boolean;
@@ -15,10 +15,10 @@ export const loadingSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getUser.pending, (state, { payload }) => {
+      .addCase(getUserByDB.pending, (state, { payload }) => {
         state.getUser = true;
       })
-      .addCase(getUser.fulfilled, (state, { payload }) => {
+      .addCase(getUserByDB.fulfilled, (state, { payload }) => {
         state.getUser = false;
       });
   },

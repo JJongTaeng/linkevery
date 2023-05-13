@@ -13,10 +13,11 @@ class Query {
   async addUser(name: string, key: string) {
     const user = await this.db.user.toCollection().first();
     if (user) {
-      return;
+      return user;
     }
 
-    this.db.user.add({ username: name, key });
+    await this.db.user.add({ username: name, key });
+    return { username: name, key };
   }
 
   async updateUser(name: string) {
@@ -87,3 +88,6 @@ class Query {
 }
 
 export const query = new Query();
+
+// @ts-ignore
+window.query = query;

@@ -12,7 +12,7 @@ import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
-import { addUser, getUser } from '../../store/thunk/userThunk';
+import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
 import SvgArrowDown from '../icons/ArrowDown';
@@ -73,7 +73,7 @@ const Room = () => {
   };
 
   useEffect(() => {
-    dispatch(getUser());
+    dispatch(getUserByDB());
     window.addEventListener('beforeunload', async () => {
       roomName && dispatch(deleteAllMemberByDB({ roomName }));
     });
@@ -237,7 +237,8 @@ const Room = () => {
           open={usernameModalVisible}
           onSubmit={(username) => {
             const key = nanoid();
-            dispatch(addUser({ username, key }));
+            dispatch(addUserByDB({ username, key }));
+            dispatch(getUserByDB());
             storage.setItem('userKey', key);
             storage.setItem('username', username);
             setUsernameModalVisible(false);

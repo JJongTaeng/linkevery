@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { storage } from '../../service/storage/StorageService';
-import { addUser, getUser } from '../thunk/userThunk';
+import { addUserByDB, getUserByDB } from '../thunk/userThunk';
 
 interface UserState {
   key: string;
@@ -44,11 +44,14 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getUser.fulfilled, (state, { payload }) => {
+      .addCase(getUserByDB.fulfilled, (state, { payload }) => {
         state.username = payload?.username || '';
         state.key = payload?.key || '';
       })
-      .addCase(addUser.fulfilled, (state, { payload }) => {});
+      .addCase(addUserByDB.fulfilled, (state, { payload }) => {
+        state.username = payload?.username || '';
+        state.key = payload?.key || '';
+      });
   },
 });
 

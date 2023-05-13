@@ -78,8 +78,15 @@ export const roomSlice = createSlice({
     builder
       .addCase(getRoomByDB.fulfilled, (state, { payload }) => {
         state.room = payload;
+        if (!state.roomList.includes(payload.roomName)) {
+          state.roomList.push(payload.roomName);
+        }
       })
-      .addCase(addRoomByDB.fulfilled, (state, { payload }) => {})
+      .addCase(addRoomByDB.fulfilled, (state, { payload }) => {
+        if (!state.roomList.includes(payload.roomName)) {
+          state.roomList.push(payload.roomName);
+        }
+      })
       .addCase(getRoomListByDB.fulfilled, (state, { payload }) => {
         state.roomList = payload || [];
       });

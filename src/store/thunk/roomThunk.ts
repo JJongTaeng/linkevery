@@ -29,7 +29,8 @@ export const getRoomListByDB = createAsyncThunk('db/getRoomList', async () => {
 export const addRoomByDB = createAsyncThunk(
   'db/addRoom',
   async (room: Room) => {
-    return await query.addRoom(room);
+    await query.addRoom(room);
+    return room;
   },
 );
 

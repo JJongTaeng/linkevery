@@ -18,7 +18,7 @@ import { storage } from '../../service/storage/StorageService';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { getRoomListByDB } from '../../store/thunk/roomThunk';
+import { addRoomByDB, getRoomListByDB } from '../../store/thunk/roomThunk';
 import SvgMicOn from '../icons/MicOn';
 import SvgMicOff from '../icons/MicOn2';
 import SvgScreenShareOff from '../icons/ScreenShareOff';
@@ -145,6 +145,8 @@ const LeftMenuContainer = () => {
           onFinish={(values) => {
             const roomName = values.roomName + '+' + nanoid();
             dispatch(roomActions.setRoomName(roomName));
+            dispatch(addRoomByDB({ roomName, member: {} }));
+
             form.resetFields();
             navigate(`/${roomName}`);
             setOpen(false);
