@@ -35,7 +35,7 @@ const LeftMenuContainer = () => {
   const { voiceStatus, screenShareStatus, roomName, room, roomList } =
     useAppSelector((state) => ({
       room: state.room.room,
-      roomName: state.room.roomName,
+      roomName: state.room.room.roomName,
       roomList: state.room.roomList,
       voiceStatus: state.user.voiceStatus,
       screenShareStatus: state.user.screenShareStatus,
@@ -53,8 +53,6 @@ const LeftMenuContainer = () => {
   useEffect(() => {
     dispatch(getRoomListByDB());
   }, []);
-
-  console.log('###', roomList);
 
   return (
     <Container>

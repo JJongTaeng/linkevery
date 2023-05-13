@@ -4,7 +4,6 @@ import { nanoid } from 'nanoid';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
-import { query } from '../../service/db/Query';
 import { videoManager } from '../../service/media/VideoManager';
 import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
@@ -12,7 +11,7 @@ import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { getRoomByDB } from '../../store/thunk/roomThunk';
+import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
 import { addUser, getUser } from '../../store/thunk/userThunk';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
@@ -76,7 +75,7 @@ const Room = () => {
   useEffect(() => {
     dispatch(getUser());
     window.addEventListener('beforeunload', async () => {
-      await query.deleteAllMember(roomName || '');
+      roomName && dispatch(deleteAllMemberByDB({ roomName }));
     });
   }, []);
 
@@ -123,6 +122,7 @@ const Room = () => {
         handleScrollChatList,
       );
       dispatch(chatActions.resetChatList());
+      roomName && dispatch(deleteAllMemberByDB({ roomName }));
     };
   }, []);
 

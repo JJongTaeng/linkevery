@@ -4,14 +4,12 @@ import { addRoomByDB, getRoomByDB, getRoomListByDB } from '../thunk/roomThunk';
 import { Room } from './../../service/db/LinkeveryDB';
 
 interface RoomState {
-  roomName: string;
   room: Omit<Room, 'id'>;
   roomList: string[];
   size: number;
 }
 
 const initialState: RoomState = {
-  roomName: storage.getItem('roomName'),
   room: {
     member: {},
     roomName: '',
@@ -25,7 +23,7 @@ export const roomSlice = createSlice({
   initialState,
   reducers: {
     setRoomName: (state, { payload }) => {
-      state.roomName = payload;
+      state.room.roomName = payload;
     },
     updateMember: (
       state,
@@ -65,7 +63,7 @@ export const roomSlice = createSlice({
     },
     leaveRoom: (state) => {
       storage.setItem('roomName', '');
-      state.roomName = '';
+      state.room.roomName = '';
     },
     setMemberSize: (state, { payload }) => {
       state.size = payload;

@@ -60,3 +60,10 @@ export const deleteMemberByDB = createAsyncThunk(
     return await query.deleteMember(roomName, userKey);
   },
 );
+
+export const deleteAllMemberByDB = createAsyncThunk(
+  'db/deleteMember',
+  async ({ roomName }: { roomName: string }) => {
+    return await query.deleteAllMember(roomName);
+  },
+);
