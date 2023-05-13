@@ -61,7 +61,7 @@ const LeftMenuContainer = () => {
       <div className={'logo-container'}>
         <img src="/linkevery/logo512.png" />
       </div>
-      <div>
+      <div className={'room-list'}>
         {roomList.map((roomName) => (
           <RoomBadge roomName={roomName} key={roomName} />
         ))}
@@ -193,6 +193,18 @@ const Container = styled.section`
       width: 60px;
       height: 60px;
     }
+  }
+
+  .room-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: overlay;
+    width: 100%;
+    height: 100%;
+  }
+  .room-list::-webkit-scrollbar {
+    display: none;
   }
 `;
 
