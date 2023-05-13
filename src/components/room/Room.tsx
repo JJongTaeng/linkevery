@@ -91,6 +91,9 @@ const Room = () => {
     } else {
       setUsernameModalVisible(true);
     }
+    return () => {
+      app.disconnect();
+    };
   }, [username, roomName]);
 
   useEffect(() => {
@@ -119,7 +122,6 @@ const Room = () => {
         'scroll',
         handleScrollChatList,
       );
-      app.disconnect();
       dispatch(chatActions.resetChatList());
     };
   }, []);

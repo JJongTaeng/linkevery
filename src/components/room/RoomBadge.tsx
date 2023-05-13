@@ -4,22 +4,23 @@ import styled from 'styled-components';
 import { useAppSelector } from '../../store/hooks';
 
 interface RoomBadgeProps {
-  roomName: string;
+  name: string;
+  onClick: () => void;
 }
 
-const RoomBadge = ({ roomName }: RoomBadgeProps) => {
+const RoomBadge = ({ name, onClick }: RoomBadgeProps) => {
   const navigate = useNavigate();
   const { currentRoomName } = useAppSelector((state) => ({
     currentRoomName: state.room.room.roomName,
   }));
   return (
     <Badge
-      isCurrent={roomName === currentRoomName}
+      isCurrent={name === currentRoomName}
       shape="square"
-      onClick={() => navigate('/' + roomName)}
+      onClick={() => onClick()}
       size={50}
     >
-      {roomName.split('+')[0]}
+      {name.split('+')[0]}
     </Badge>
   );
 };

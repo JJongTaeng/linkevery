@@ -63,7 +63,13 @@ const LeftMenuContainer = () => {
       </div>
       <div className={'room-list'}>
         {roomList.map((roomName) => (
-          <RoomBadge roomName={roomName} key={roomName} />
+          <RoomBadge
+            onClick={() => {
+              app.navigate('/' + roomName);
+            }}
+            name={roomName}
+            key={roomName}
+          />
         ))}
       </div>
 
