@@ -160,15 +160,17 @@ const Room = () => {
           </VideoContainer>
           <ChatContainer leftSideView={leftSideView}>
             <ChatList ref={chatListElement}>
-              {messageList.map(({ message, userKey, date, username }) => (
-                <ChatBubble
-                  key={nanoid()}
-                  message={message}
-                  date={date}
-                  username={username}
-                  isMyChat={userKey === storage.getItem('userKey')}
-                />
-              ))}
+              {messageList.map(
+                ({ message, userKey, date, username }, index) => (
+                  <ChatBubble
+                    key={nanoid()}
+                    message={message}
+                    date={dayjs(date).format('YYYY-MM-DD HH:mm')}
+                    username={username}
+                    isMyChat={userKey === storage.getItem('userKey')}
+                  />
+                ),
+              )}
               <div
                 style={{ background: 'red', width: '100%' }}
                 ref={chatScrollViewElement}
