@@ -43,27 +43,5 @@ export const chatHandlers: HandlerMap<CHAT_MESSAGE_ID> = {
   [CHAT_MESSAGE_ID.OK]: (protocol, { dispatch, rtcManager }) => {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
-    store.dispatch(
-      chatActions.addChat({
-        messageType,
-        messageKey,
-        message,
-        userKey,
-        date,
-        username,
-      }),
-    );
-
-    store.dispatch(
-      addChatByDB({
-        messageType,
-        messageKey,
-        message,
-        userKey,
-        date,
-        username,
-        roomName: storage.getItem('roomName'),
-      }),
-    );
   },
 };

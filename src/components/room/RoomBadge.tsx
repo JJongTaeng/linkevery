@@ -15,7 +15,7 @@ const RoomBadge = ({ name, onClick }: RoomBadgeProps) => {
   }));
   return (
     <Badge
-      isCurrent={name === currentRoomName}
+      $isCurrent={name === currentRoomName}
       shape="square"
       onClick={() => onClick()}
       size={50}
@@ -25,11 +25,11 @@ const RoomBadge = ({ name, onClick }: RoomBadgeProps) => {
   );
 };
 
-const Badge = styled(Avatar)<{ isCurrent: boolean }>`
+const Badge = styled(Avatar)<{ $isCurrent: boolean }>`
   margin-top: 16px;
   cursor: pointer;
 
-  ${({ isCurrent }) =>
+  ${({ $isCurrent: isCurrent }) =>
     isCurrent && 'box-shadow: 0 0 2px 4px rgba(255, 255, 255, 0.5);'}
 `;
 

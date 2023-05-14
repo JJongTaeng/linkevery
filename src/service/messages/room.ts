@@ -11,17 +11,33 @@ export const roomProtocolMessage = (protocol: CreateProtocolFunctionParam) => {
   return protocolMessage(protocol);
 };
 
-export const requestMemberNameMessage = (data: ProtocolData) => {
+export const memberNameMessage = (data: ProtocolData) => {
   return roomProtocolMessage({
-    messageId: ROOM_MESSAGE_ID.REQUEST_MEMBER_NAME,
+    messageId: ROOM_MESSAGE_ID.MEMBER_NAME,
     messageType: MESSAGE_TYPE.RTC,
     data,
   });
 };
 
-export const responseMemberNameMessage = (data: ProtocolData) => {
+export const memberNameOkMessage = (data: ProtocolData) => {
   return roomProtocolMessage({
-    messageId: ROOM_MESSAGE_ID.RESPONSE_MEMBER_NAME,
+    messageId: ROOM_MESSAGE_ID.MEMBER_NAME_OK,
+    messageType: MESSAGE_TYPE.RTC,
+    data,
+  });
+};
+
+export const syncChatListMessage = (data: ProtocolData) => {
+  return roomProtocolMessage({
+    messageId: ROOM_MESSAGE_ID.SYNC_CHAT_LIST,
+    messageType: MESSAGE_TYPE.RTC,
+    data,
+  });
+};
+
+export const syncChatListOkMessage = (data: ProtocolData) => {
+  return roomProtocolMessage({
+    messageId: ROOM_MESSAGE_ID.SYNC_CHAT_LIST_OK,
     messageType: MESSAGE_TYPE.RTC,
     data,
   });

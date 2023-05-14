@@ -16,8 +16,10 @@ import {
   negotiationOfferMessage,
 } from '../messages/negotiation';
 import {
-  requestMemberNameMessage,
-  responseMemberNameMessage,
+  memberNameMessage,
+  memberNameOkMessage,
+  syncChatListMessage,
+  syncChatListOkMessage,
 } from '../messages/room';
 import {
   screenShareConnectedMessage,
@@ -84,12 +86,20 @@ export class DispatchEvent extends DispatchEventService {
     this.send(disconnectMessage(data));
   }
 
-  sendRequestMemberMessage(data: ProtocolData) {
-    this.send(requestMemberNameMessage(data));
+  sendMemberNameMessage(data: ProtocolData) {
+    this.send(memberNameMessage(data));
   }
 
-  sendResponseMemberMessage(data: ProtocolData) {
-    this.send(responseMemberNameMessage(data));
+  sendMemberNameOkMessage(data: ProtocolData) {
+    this.send(memberNameOkMessage(data));
+  }
+
+  sendSyncChatListMessage(data: ProtocolData) {
+    this.send(syncChatListMessage(data));
+  }
+
+  sendSyncChatListOkMessage(data: ProtocolData) {
+    this.send(syncChatListOkMessage(data));
   }
 
   sendVoiceReadyMessage(data: ProtocolData) {

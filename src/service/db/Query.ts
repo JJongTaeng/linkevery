@@ -1,3 +1,4 @@
+import Dexie from 'dexie';
 import { LinkeveryDB, Member, Message, Room } from './LinkeveryDB';
 
 class Query {
@@ -57,11 +58,31 @@ class Query {
   }
 
   async addMessageList(messageList: Message[]) {
-    await this.db.message.bulkAdd(messageList);
+    await this.db.message
+      .bulkAdd(messageList)
+      .then(function (lastKey) {
+        console.log('[DB] add bulk message'); // Will be 100000.
+      })
+      .catch(Dexie.BulkError, function (e) {
+        console.warn(e);
+      });
   }
 
-  async getMessageList() {
-    return await this.db.message.toArray();
+  async getMessageList(roomName: string, page = 1, offset = 30) {
+    return await this.db.message
+      .where('roomName')
+      .equals(roomName)
+      .offset(offset * (page - 1))
+      .limit(offset)
+      .sortBy('date');
+  }
+
+  async getMessageListByPage(roomName: string) {
+    return await this.db.message
+      .where('roomName')
+      .equals(roomName)
+      .offset(3)
+      .sortBy('date');
   }
 
   async updateMember(roomName: string, member: Member) {

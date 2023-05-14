@@ -101,6 +101,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
   ) => {
     const username = storage.getItem('username');
     const userKey = storage.getItem('userKey');
-    dispatch.sendRequestMemberMessage({ username, to: protocol.from, userKey });
+    dispatch.sendMemberNameMessage({ username, to: protocol.from, userKey });
   },
 };

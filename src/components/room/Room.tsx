@@ -11,7 +11,7 @@ import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { getChatListByDB } from '../../store/thunk/chatThunk';
+import { addChatByDB, getChatListByDB } from '../../store/thunk/chatThunk';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
 import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import ChatBubble from '../chat/ChatBubble';
@@ -65,6 +65,28 @@ const Room = () => {
       messageType: 'text',
       messageKey: username + '+' + date,
     });
+    dispatch(
+      chatActions.addChat({
+        messageType: 'text',
+        messageKey: username + '+' + date,
+        message,
+        userKey: storage.getItem('userKey'),
+        date,
+        username,
+      }),
+    );
+
+    dispatch(
+      addChatByDB({
+        messageType: 'text',
+        messageKey: username + '+' + date,
+        message,
+        userKey: storage.getItem('userKey'),
+        date,
+        username,
+        roomName: storage.getItem('roomName'),
+      }),
+    );
     setMessage('');
   };
 
@@ -89,7 +111,7 @@ const Room = () => {
       dispatch(roomActions.setRoomName(roomName));
       storage.setItem('roomName', roomName);
       dispatch(getRoomByDB(roomName));
-      dispatch(getChatListByDB());
+      dispatch(getChatListByDB({ roomName }));
     } else {
       setUsernameModalVisible(true);
     }
