@@ -11,7 +11,6 @@ export const getRoomByDB = createAsyncThunk(
         roomName,
         member: {},
       };
-      await query.addRoom(emptyRoom);
       return emptyRoom;
     } else {
       return {
