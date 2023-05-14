@@ -9,13 +9,11 @@ interface UserState {
   screenShareStatus: boolean;
   leftSideView: boolean;
   isScrollButtonView: boolean;
-  roomList: string[];
 }
 
 const initialState: UserState = {
   key: storage.getItem('userKey'),
   username: storage.getItem('username'),
-  roomList: [],
   voiceStatus: false,
   screenShareStatus: false,
   leftSideView: false,

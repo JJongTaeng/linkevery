@@ -53,6 +53,10 @@ class Query {
     );
   }
 
+  async deleteRoom(roomName: string) {
+    await this.db.room.where('roomName').equals(roomName).delete();
+  }
+
   async addMessage(message: Message) {
     await this.db.message.add(message);
   }

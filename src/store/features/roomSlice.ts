@@ -1,6 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { storage } from '../../service/storage/StorageService';
-import { addRoomByDB, getRoomByDB, getRoomListByDB } from '../thunk/roomThunk';
+import {
+  addRoomByDB,
+  deleteRoomByDB,
+  getRoomByDB,
+  getRoomListByDB,
+} from '../thunk/roomThunk';
 import { Room } from './../../service/db/LinkeveryDB';
 
 interface RoomState {
@@ -89,7 +94,16 @@ export const roomSlice = createSlice({
       })
       .addCase(getRoomListByDB.fulfilled, (state, { payload }) => {
         state.roomList = payload || [];
-      });
+      })
+      .addCase(
+        deleteRoomByDB.fulfilled,
+        (state, { payload }: { payload: string }) => {
+          const newRoomList = state.roomList.filter(
+            (roomName) => !(roomName === payload),
+          );
+          state.roomList = newRoomList;
+        },
+      );
   },
 });
 

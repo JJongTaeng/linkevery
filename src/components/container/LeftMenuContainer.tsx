@@ -32,14 +32,19 @@ const LeftMenuContainer = () => {
   const [open, setOpen] = useState(false);
   const app = useRef(AppServiceImpl.getInstance()).current;
   const dispatch = useAppDispatch();
-  const { voiceStatus, screenShareStatus, roomName, room, roomList } =
-    useAppSelector((state) => ({
-      room: state.room.room,
-      roomName: state.room.room.roomName,
-      roomList: state.room.roomList,
-      voiceStatus: state.user.voiceStatus,
-      screenShareStatus: state.user.screenShareStatus,
-    }));
+  const {
+    voiceStatus,
+    screenShareStatus,
+    roomName: currentRoomName,
+    room,
+    roomList,
+  } = useAppSelector((state) => ({
+    room: state.room.room,
+    roomName: state.room.room.roomName,
+    roomList: state.room.roomList,
+    voiceStatus: state.user.voiceStatus,
+    screenShareStatus: state.user.screenShareStatus,
+  }));
   const [form] = Form.useForm();
 
   const isOnVoiceMember = () => {
@@ -63,7 +68,7 @@ const LeftMenuContainer = () => {
         {roomList.map((roomName) => (
           <RoomBadge
             onClick={() => {
-              app.disconnect();
+              currentRoomName !== roomName && app.disconnect();
               navigate('/' + roomName);
             }}
             name={roomName}
@@ -74,28 +79,30 @@ const LeftMenuContainer = () => {
 
       <div>
         <ControllerContainer>
-          {roomName && voiceStatus && agentInfo.platform.type === 'desktop' && (
-            <Tooltip defaultOpen={true} placement="right" title="화면공유">
-              <Switch
-                style={{ marginBottom: 8 }}
-                disabled={!isOnVoiceMember()}
-                checked={screenShareStatus}
-                checkedChildren={<SvgScreenShareOn />}
-                unCheckedChildren={<SvgScreenShareOff />}
-                defaultChecked={false}
-                onChange={(value) => {
-                  if (value) {
-                    app.dispatch.sendScreenShareReadyMessage({});
-                  } else {
-                    const id = storage.getItem('clientId');
-                    app.disconnectScreenShare(id);
-                    dispatch(userActions.changeScreenShareStatus(false));
-                  }
-                }}
-              />
-            </Tooltip>
-          )}
-          {roomName && (
+          {currentRoomName &&
+            voiceStatus &&
+            agentInfo.platform.type === 'desktop' && (
+              <Tooltip defaultOpen={true} placement="right" title="화면공유">
+                <Switch
+                  style={{ marginBottom: 8 }}
+                  disabled={!isOnVoiceMember()}
+                  checked={screenShareStatus}
+                  checkedChildren={<SvgScreenShareOn />}
+                  unCheckedChildren={<SvgScreenShareOff />}
+                  defaultChecked={false}
+                  onChange={(value) => {
+                    if (value) {
+                      app.dispatch.sendScreenShareReadyMessage({});
+                    } else {
+                      const id = storage.getItem('clientId');
+                      app.disconnectScreenShare(id);
+                      dispatch(userActions.changeScreenShareStatus(false));
+                    }
+                  }}
+                />
+              </Tooltip>
+            )}
+          {currentRoomName && (
             <Tooltip defaultOpen={true} placement="right" title="음성채팅">
               <Switch
                 checked={voiceStatus}
@@ -128,7 +135,7 @@ const LeftMenuContainer = () => {
             </Tooltip>
           )}
         </ControllerContainer>
-        {!roomName && <Button onClick={() => setOpen(true)}>+</Button>}
+        {!currentRoomName && <Button onClick={() => setOpen(true)}>+</Button>}
       </div>
       <Modal
         title={'방 생성'}
