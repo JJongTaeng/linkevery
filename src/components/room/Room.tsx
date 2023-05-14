@@ -54,8 +54,6 @@ const Room = () => {
   const [message, setMessage] = useState('');
   const [isShift, setIsShift] = useState<boolean>(false);
 
-  console.log('###', messageList);
-
   const handleChat = () => {
     if (!message) return;
     const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
