@@ -68,20 +68,20 @@ class Query {
       });
   }
 
-  async getMessageList(roomName: string, page = 1, offset = 30) {
+  async getMessageList(roomName: string) {
     return await this.db.message
       .where('roomName')
       .equals(roomName)
-      .offset(offset * (page - 1))
-      .limit(offset)
       .sortBy('date');
   }
 
-  async getMessageListByPage(roomName: string) {
+  async getMessageListByPage(roomName: string, page = 1, offset = 30) {
     return await this.db.message
       .where('roomName')
       .equals(roomName)
-      .offset(3)
+      .reverse()
+      .offset(offset * (page - 1))
+      .limit(offset)
       .sortBy('date');
   }
 

@@ -74,7 +74,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
     }
 
     const myMessageList = await query.getMessageList(roomName);
-    dispatch.sendSyncChatListMessage({
+    dispatch.sendSyncChatListOkMessage({
       messageList: myMessageList,
     });
   },

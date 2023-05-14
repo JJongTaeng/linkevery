@@ -96,6 +96,13 @@ const Room = () => {
     }
   };
 
+  const moveToChatScrollBottom = () =>
+    chatScrollViewElement?.current?.scrollIntoView({
+      block: 'end',
+      inline: 'end',
+      behavior: 'smooth',
+    });
+
   useEffect(() => {
     dispatch(getUserByDB());
     window.addEventListener('beforeunload', async () => {
@@ -128,11 +135,7 @@ const Room = () => {
 
   useEffect(() => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
-      chatScrollViewElement?.current?.scrollIntoView({
-        block: 'end',
-        inline: 'end',
-        behavior: 'smooth',
-      });
+      moveToChatScrollBottom();
     } else {
       dispatch(userActions.changeIsScrollBottomView(true));
     }
@@ -201,11 +204,7 @@ const Room = () => {
             {isReadAllChat && (
               <Button
                 onClick={() => {
-                  chatScrollViewElement?.current?.scrollIntoView({
-                    block: 'end',
-                    inline: 'end',
-                    behavior: 'smooth',
-                  });
+                  moveToChatScrollBottom();
                 }}
                 shape="circle"
                 danger
