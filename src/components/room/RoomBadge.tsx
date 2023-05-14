@@ -17,7 +17,10 @@ const RoomBadge = ({ name, onClick }: RoomBadgeProps) => {
   return (
     <BadgeContainer>
       {name !== currentRoomName && (
-        <XButton onClick={() => dispatch(deleteRoomByDB({ roomName: name }))}>
+        <XButton
+          className={'x-button'}
+          onClick={() => dispatch(deleteRoomByDB({ roomName: name }))}
+        >
           <SvgDelete />
         </XButton>
       )}
@@ -35,6 +38,10 @@ const RoomBadge = ({ name, onClick }: RoomBadgeProps) => {
 
 const BadgeContainer = styled.div`
   position: relative;
+
+  &:hover .x-button {
+    display: flex;
+  }
 `;
 
 const XButton = styled.div`
@@ -47,7 +54,7 @@ const XButton = styled.div`
   background: white;
   cursor: pointer;
 
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
 

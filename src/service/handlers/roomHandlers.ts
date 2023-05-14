@@ -18,14 +18,15 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
         userKey: protocol.data.userKey,
       }),
     );
+
+    store.dispatch(
+      updateMemberByDB({ roomName, member: store.getState().room.room.member }),
+    );
     dispatch.sendMemberNameOkMessage({
       username,
       to: protocol.from,
       userKey,
     });
-    store.dispatch(
-      updateMemberByDB({ roomName, member: store.getState().room.room.member }),
-    );
   },
   [ROOM_MESSAGE_ID.MEMBER_NAME_OK]: async (
     protocol,
