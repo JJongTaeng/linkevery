@@ -29,6 +29,7 @@ import {
 } from '../messages/screenShare';
 import {
   answerMessage,
+  connectDataChannelMessage,
   createDataChannelMessage,
   iceMessage,
   offerMessage,
@@ -41,6 +42,7 @@ import {
   voiceReadyOkMessage,
 } from '../messages/voice';
 import { RTCManager } from '../rtc/RTCManager';
+import { memberNamePreMessage } from './../messages/room';
 import { DispatchEventService } from './DispatchEventService';
 
 export class DispatchEvent extends DispatchEventService {
@@ -76,6 +78,10 @@ export class DispatchEvent extends DispatchEventService {
     this.send(createDataChannelMessage(data));
   }
 
+  sendConnectDataChannelMessage(data: ProtocolData) {
+    this.send(connectDataChannelMessage(data));
+  }
+
   sendChatMessage(data: ProtocolData) {
     this.send(chatMessage(data));
   }
@@ -84,6 +90,10 @@ export class DispatchEvent extends DispatchEventService {
   }
   sendDisconnectMessage(data: ProtocolData) {
     this.send(disconnectMessage(data));
+  }
+
+  sendMemberNamePreMessage(data: ProtocolData) {
+    this.send(memberNamePreMessage(data));
   }
 
   sendMemberNameMessage(data: ProtocolData) {

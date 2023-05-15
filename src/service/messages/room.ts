@@ -11,6 +11,14 @@ export const roomProtocolMessage = (protocol: CreateProtocolFunctionParam) => {
   return protocolMessage(protocol);
 };
 
+export const memberNamePreMessage = (data: ProtocolData) => {
+  return roomProtocolMessage({
+    messageId: ROOM_MESSAGE_ID.MEMBER_NAME_PRE,
+    messageType: MESSAGE_TYPE.RTC,
+    data,
+  });
+};
+
 export const memberNameMessage = (data: ProtocolData) => {
   return roomProtocolMessage({
     messageId: ROOM_MESSAGE_ID.MEMBER_NAME,
@@ -21,7 +29,7 @@ export const memberNameMessage = (data: ProtocolData) => {
 
 export const memberNameOkMessage = (data: ProtocolData) => {
   return roomProtocolMessage({
-    messageId: ROOM_MESSAGE_ID.MEMBER_NAME_OK,
+    messageId: ROOM_MESSAGE_ID.MEMBER_NAME_POST,
     messageType: MESSAGE_TYPE.RTC,
     data,
   });

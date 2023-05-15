@@ -48,7 +48,15 @@ export const iceMessage = (data: ProtocolData) => {
 export const createDataChannelMessage = (data: ProtocolData) => {
   return signalingProtocolMessage({
     messageId: SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL,
-    messageType: MESSAGE_TYPE.RTC,
+    messageType: MESSAGE_TYPE.SOCKET,
+    data,
+  });
+};
+
+export const connectDataChannelMessage = (data: ProtocolData) => {
+  return signalingProtocolMessage({
+    messageId: SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL,
+    messageType: MESSAGE_TYPE.SOCKET,
     data,
   });
 };

@@ -8,6 +8,11 @@ import { storage } from '../storage/StorageService';
 import { utils } from '../utils/Utils';
 
 export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
+  [ROOM_MESSAGE_ID.MEMBER_NAME_PRE]: (protocol, { dispatch, rtcManager }) => {
+    const username = storage.getItem('username');
+    const userKey = storage.getItem('userKey');
+    dispatch.sendMemberNameMessage({ username, to: protocol.from, userKey });
+  },
   [ROOM_MESSAGE_ID.MEMBER_NAME]: (protocol, { dispatch, rtcManager }) => {
     const { username, userKey, roomName } = storage.getAll();
 
@@ -28,7 +33,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
       userKey,
     });
   },
-  [ROOM_MESSAGE_ID.MEMBER_NAME_OK]: async (
+  [ROOM_MESSAGE_ID.MEMBER_NAME_POST]: async (
     protocol,
     { dispatch, rtcManager },
   ) => {

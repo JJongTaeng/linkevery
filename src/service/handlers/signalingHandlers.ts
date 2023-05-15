@@ -12,68 +12,75 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     store.dispatch(roomActions.setMemberSize(size));
     rtcManager.createPeer(from);
     const rtcPeer = rtcManager.getPeer(from);
-    rtcPeer.onIceCandidate((ice) => {
-      dispatch.sendIceMessage({
-        to: from,
-        ice,
-      });
-    });
-    rtcPeer.onTrack(from);
-    rtcPeer.onNegotiationNeeded(async (e: any) => {
-      const offer = await rtcPeer.createOffer();
-      rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-      console.debug('[connection state] ', e.currentTarget?.connectionState);
-      if (e.currentTarget?.connectionState === 'new') {
-        dispatch.sendOfferMessage({ offer, to: from, roomName });
-      } else if (e.currentTarget?.connectionState === 'connected') {
-        dispatch.sendNegotiationOfferMessage({ offer, to: from });
-      }
-    });
-    rtcPeer.getPeer()?.addEventListener('connectionstatechange', (e: any) => {
-      console.log(e.currentTarget.connectionState);
-    });
-    rtcPeer.createDataChannel(roomName);
     rtcPeer
-      .onDataChannelOpen((e) => {
-        dispatch.sendCreateDataChannelMessage({ to: from });
+      .onIceCandidate((ice) => {
+        dispatch.sendIceMessage({
+          to: from,
+          ice,
+        });
       })
-      .onDataChannelMessage((e) => {
-        rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(e.data));
+      .onTrack(from)
+      .onNegotiationNeeded(async (e: any) => {
+        const offer = await rtcPeer.createOffer();
+        rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
+        console.debug(
+          '[negotiationneeded connection state] ',
+          e.currentTarget?.connectionState,
+        );
+
+        dispatch.sendNegotiationOfferMessage({ offer, to: from });
+      })
+      .onConnectionStateChange((e: any) => {
+        console.debug(
+          '[connectionstatechange]',
+          e.currentTarget.connectionState,
+        );
+      })
+      .onIceConnectionStateChange((e: any) => {
+        console.debug(
+          '[iceconnectionstate]',
+          e.currentTarget.iceConnectionState,
+        );
       });
+    const offer = await rtcPeer.createOffer();
+    rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
+    dispatch.sendOfferMessage({ offer, to: from, roomName });
   },
   [SIGNALING_MESSAGE_ID.OFFER]: async (protocol, { dispatch, rtcManager }) => {
-    const { offer, size } = protocol.data;
+    const { offer } = protocol.data;
     const { from } = protocol;
-    store.dispatch(roomActions.setMemberSize(size));
+    // store.dispatch(roomActions.setMemberSize(size));
     rtcManager.createPeer(from);
     const rtcPeer = rtcManager.getPeer(from);
-    rtcPeer.onIceCandidate((ice) => {
-      dispatch.sendIceMessage({
-        to: from,
-        ice,
-      });
-    });
-    rtcPeer.onTrack(from);
-    rtcPeer.onNegotiationNeeded(async (e: any) => {
-      const offer = await rtcPeer.createOffer();
-      rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-      console.debug('[connection state] ', e.currentTarget?.connectionState);
-      if (e.currentTarget?.connectionState === 'new') {
-        dispatch.sendOfferMessage({ offer, to: from });
-      } else if (e.currentTarget?.connectionState === 'connected') {
+    rtcPeer
+      .onIceCandidate((ice) => {
+        dispatch.sendIceMessage({
+          to: from,
+          ice,
+        });
+      })
+      .onTrack(from)
+      .onNegotiationNeeded(async (e: any) => {
+        const offer = await rtcPeer.createOffer();
+        rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
+        console.debug(
+          '[negotiationneeded connection state] ',
+          e.currentTarget?.connectionState,
+        );
         dispatch.sendNegotiationOfferMessage({ offer, to: from });
-      }
-    });
-    rtcPeer.getPeer()?.addEventListener('connectionstatechange', (e: any) => {
-      console.log(e.currentTarget.connectionState);
-    });
-    rtcPeer.onDataChannel((e) => {
-      rtcPeer.dataChannel = e.channel;
-      rtcPeer.onDataChannelMessage((e) => {
-        rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(e.data));
+      })
+      .onConnectionStateChange((e: any) => {
+        console.debug(
+          '[connectionstatechange]',
+          e.currentTarget.connectionState,
+        );
+      })
+      .onIceConnectionStateChange((e: any) => {
+        console.debug(
+          '[iceconnectionstate]',
+          e.currentTarget.iceConnectionState,
+        );
       });
-      dispatch.sendCreateDataChannelMessage({ to: from });
-    });
 
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
@@ -87,6 +94,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     const { answer } = protocol.data;
     const rtcPeer = rtcManager.getPeer(protocol.from);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
+    dispatch.sendCreateDataChannelMessage({});
   },
   [SIGNALING_MESSAGE_ID.ICE]: (protocol, { dispatch, rtcManager }) => {
     const { ice } = protocol.data;
@@ -97,8 +105,31 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     protocol,
     { dispatch, rtcManager },
   ) => {
-    const username = storage.getItem('username');
-    const userKey = storage.getItem('userKey');
-    dispatch.sendMemberNameMessage({ username, to: protocol.from, userKey });
+    const { from } = protocol;
+    const rtcPeer = rtcManager.getPeer(from);
+    rtcPeer.onDataChannel((e) => {
+      rtcPeer.dataChannel = e.channel;
+      rtcPeer.onDataChannelMessage((e) => {
+        rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(e.data));
+      });
+      dispatch.sendMemberNamePreMessage({ to: from });
+    });
+    dispatch.sendConnectDataChannelMessage({});
+  },
+  [SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL]: (
+    protocol,
+    { dispatch, rtcManager },
+  ) => {
+    const roomName = storage.getItem('roomName');
+    const { from } = protocol;
+    const rtcPeer = rtcManager.getPeer(from);
+    rtcPeer.createDataChannel(roomName);
+    rtcPeer
+      .onDataChannelOpen((e) => {
+        dispatch.sendMemberNamePreMessage({ to: from });
+      })
+      .onDataChannelMessage((e) => {
+        rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(e.data));
+      });
   },
 };
