@@ -1,8 +1,7 @@
 import { HandlerMap, SIGNALING_MESSAGE_ID } from '../../constants/protocol';
-import { ERROR_TYPE } from '../../error/error';
 import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
-import { RTCManager, config } from '../rtc/RTCManager';
+import { RTCManager } from '../rtc/RTCManager';
 import { SdpType } from '../rtc/RTCPeerService';
 import { storage } from '../storage/StorageService';
 
@@ -13,7 +12,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     store.dispatch(roomActions.setMemberSize(size));
     rtcManager.createPeer(from);
     const rtcPeer = rtcManager.getPeer(from);
-    rtcPeer.createPeerConnection(config);
     rtcPeer.onIceCandidate((ice) => {
       dispatch.sendIceMessage({
         to: from,
@@ -21,7 +19,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       });
     });
     rtcPeer.onTrack(from);
-    rtcPeer.getPeer()!.onnegotiationneeded = async (e: any) => {
+    rtcPeer.onNegotiationNeeded(async (e: any) => {
       const offer = await rtcPeer.createOffer();
       rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
       console.debug('[connection state] ', e.currentTarget?.connectionState);
@@ -30,17 +28,18 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       } else if (e.currentTarget?.connectionState === 'connected') {
         dispatch.sendNegotiationOfferMessage({ offer, to: from });
       }
-    };
+    });
     rtcPeer.getPeer()?.addEventListener('connectionstatechange', (e: any) => {
       console.log(e.currentTarget.connectionState);
     });
-    rtcPeer.createDataChannel(roomName, (datachannel) => {
-      if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
-      datachannel.addEventListener('message', (message) => {
-        rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
+    rtcPeer.createDataChannel(roomName);
+    rtcPeer
+      .onDataChannelOpen((e) => {
+        dispatch.sendCreateDataChannelMessage({ to: from });
+      })
+      .onDataChannelMessage((e) => {
+        rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(e.data));
       });
-      dispatch.sendCreateDataChannelMessage({ to: from });
-    });
   },
   [SIGNALING_MESSAGE_ID.OFFER]: async (protocol, { dispatch, rtcManager }) => {
     const { offer, size } = protocol.data;
@@ -48,7 +47,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     store.dispatch(roomActions.setMemberSize(size));
     rtcManager.createPeer(from);
     const rtcPeer = rtcManager.getPeer(from);
-    rtcPeer.createPeerConnection(config);
     rtcPeer.onIceCandidate((ice) => {
       dispatch.sendIceMessage({
         to: from,
@@ -56,7 +54,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       });
     });
     rtcPeer.onTrack(from);
-    rtcPeer.getPeer()!.onnegotiationneeded = async (e: any) => {
+    rtcPeer.onNegotiationNeeded(async (e: any) => {
       const offer = await rtcPeer.createOffer();
       rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
       console.debug('[connection state] ', e.currentTarget?.connectionState);
@@ -65,14 +63,14 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       } else if (e.currentTarget?.connectionState === 'connected') {
         dispatch.sendNegotiationOfferMessage({ offer, to: from });
       }
-    };
+    });
     rtcPeer.getPeer()?.addEventListener('connectionstatechange', (e: any) => {
       console.log(e.currentTarget.connectionState);
     });
-    rtcPeer.connectDataChannel((datachannel: RTCDataChannel) => {
-      if (!datachannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
-      datachannel.addEventListener('message', (message) => {
-        rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(message.data));
+    rtcPeer.onDataChannel((e) => {
+      rtcPeer.dataChannel = e.channel;
+      rtcPeer.onDataChannelMessage((e) => {
+        rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(e.data));
       });
       dispatch.sendCreateDataChannelMessage({ to: from });
     });
