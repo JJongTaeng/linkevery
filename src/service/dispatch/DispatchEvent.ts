@@ -153,15 +153,10 @@ export class DispatchEvent extends DispatchEventService {
 
   send(protocol: Protocol) {
     if (protocol.messageType === MESSAGE_TYPE.SOCKET) {
-      console.debug('[send] ', protocol);
+      console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
       this.socket.emit(EVENT_NAME, protocol);
     } else if (protocol.messageType === MESSAGE_TYPE.RTC) {
-      // if (!this.rtcManager.isAllConnectedPeer(size)) {
-      // TODO: 모든 RTC 연결이 이루어지지 않을 때 어떤로직을 탈건지?
-      // this.sendSignalingStartMessage({
-      //   roomName,
-      // });
-      // }
+      console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
       const { to } = protocol.data;
       if (to) this.rtcManager.sendTo(protocol);
       else this.rtcManager.sendAll(protocol);

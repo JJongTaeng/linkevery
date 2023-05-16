@@ -40,7 +40,6 @@ export class RTCManager extends RTCManagerService {
     const peer = this.peerMap.get(to);
     const datachannel = peer?.getDataChannel();
     const stringify = JSON.stringify(protocol);
-    console.debug('[send] ', protocol);
     datachannel?.send(stringify);
   }
 
@@ -50,7 +49,6 @@ export class RTCManager extends RTCManagerService {
       if (!datachannel)
         throw new Error(ERROR_TYPE.INVALID_DATACHANNEL + `id = ${key}`);
       const stringify = JSON.stringify(protocol);
-      console.debug('[send] ', protocol);
       datachannel.send(stringify);
     });
   }
