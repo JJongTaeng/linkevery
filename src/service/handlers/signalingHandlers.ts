@@ -21,14 +21,18 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       })
       .onTrack(from)
       .onNegotiationNeeded(async (e: any) => {
-        const offer = await rtcPeer.createOffer();
-        rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-        console.debug(
-          '[negotiationneeded connection state] ',
-          e.currentTarget?.connectionState,
-        );
-
-        dispatch.sendNegotiationOfferMessage({ offer, to: from });
+        if (e.currentTarget.signalingState === 'stable') {
+          const offer = await rtcPeer.createOffer();
+          rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
+          console.debug(
+            '[negotiationneeded connection state] ',
+            e.currentTarget?.connectionState,
+          );
+          dispatch.sendNegotiationOfferMessage({ offer, to: from });
+        }
+      })
+      .onSignalingStateChange((e: any) => {
+        console.debug('[signalingstate]', e.currentTarget.signalingState);
       })
       .onConnectionStateChange((e: any) => {
         console.debug(
@@ -41,6 +45,9 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
           '[iceconnectionstate]',
           e.currentTarget.iceConnectionState,
         );
+        if (e.currentTarget.iceConnectionState === 'failed') {
+          rtcPeer.restartIce();
+        }
       });
     const offer = await rtcPeer.createOffer();
     rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
@@ -61,13 +68,18 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       })
       .onTrack(from)
       .onNegotiationNeeded(async (e: any) => {
-        const offer = await rtcPeer.createOffer();
-        rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-        console.debug(
-          '[negotiationneeded connection state] ',
-          e.currentTarget?.connectionState,
-        );
-        dispatch.sendNegotiationOfferMessage({ offer, to: from });
+        if (e.currentTarget.signalingState === 'stable') {
+          const offer = await rtcPeer.createOffer();
+          rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
+          console.debug(
+            '[negotiationneeded connection state] ',
+            e.currentTarget?.connectionState,
+          );
+          dispatch.sendNegotiationOfferMessage({ offer, to: from });
+        }
+      })
+      .onSignalingStateChange((e: any) => {
+        console.debug('[signalingstate]', e.currentTarget.signalingState);
       })
       .onConnectionStateChange((e: any) => {
         console.debug(
@@ -80,6 +92,9 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
           '[iceconnectionstate]',
           e.currentTarget.iceConnectionState,
         );
+        if (e.currentTarget.iceConnectionState === 'failed') {
+          rtcPeer.restartIce();
+        }
       });
 
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });

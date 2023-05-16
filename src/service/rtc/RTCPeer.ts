@@ -180,6 +180,10 @@ export class RTCPeer extends RTCPeerService {
     this.dataChannel.send(stringify);
   }
 
+  public restartIce() {
+    this.peer.restartIce();
+  }
+
   private isLocalSdp(type: SdpType) {
     return type === SdpType.local;
   }
