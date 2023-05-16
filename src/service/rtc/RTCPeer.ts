@@ -145,6 +145,11 @@ export class RTCPeer extends RTCPeerService {
     return this;
   }
 
+  onIceCandidateError(fn: (e: Event) => void) {
+    this.peer.addEventListener('icecandidateerror', fn);
+    return this;
+  }
+
   onDataChannel(fn: (e: RTCDataChannelEvent) => void) {
     this.peer.addEventListener('datachannel', fn);
     return this;

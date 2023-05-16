@@ -5,7 +5,6 @@ import { updateMemberByDB } from '../../store/thunk/roomThunk';
 import { Message } from '../db/LinkeveryDB';
 import { query } from '../db/Query';
 import { storage } from '../storage/StorageService';
-import { utils } from '../utils/Utils';
 
 export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
   [ROOM_MESSAGE_ID.MEMBER_NAME_PRE]: (protocol, { dispatch, rtcManager }) => {
@@ -55,6 +54,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
 
     dispatch.sendSyncChatListMessage({
       messageList,
+      to: protocol.from,
     });
   },
   [ROOM_MESSAGE_ID.SYNC_CHAT_LIST]: async (
@@ -82,6 +82,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
     const myMessageList = await query.getMessageList(roomName);
     dispatch.sendSyncChatListOkMessage({
       messageList: myMessageList,
+      to: protocol.from,
     });
   },
   [ROOM_MESSAGE_ID.SYNC_CHAT_LIST_OK]: async (
@@ -91,13 +92,6 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
     const roomName = storage.getItem('roomName');
 
     const { messageList } = protocol.data;
-    const myMessageList = await query.getMessageList(roomName);
-
-    const diffMessageList = utils.diffTwoArray(
-      messageList,
-      myMessageList,
-      'messageKey',
-    );
 
     if (messageList.length) {
       await query.addMessageList(

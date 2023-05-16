@@ -104,7 +104,7 @@ const Room = () => {
     });
 
   useEffect(() => {
-    dispatch(getUserByDB());
+    dispatch(getUserByDB()); // get user info [userkey, username
     window.addEventListener('beforeunload', async () => {
       roomName && dispatch(deleteAllMemberByDB({ roomName }));
     });
@@ -113,8 +113,8 @@ const Room = () => {
   useEffect(() => {
     if (username && roomName) {
       setUsernameModalVisible(false);
-      app.dispatch.sendConnectMessage({});
-      app.dispatch.sendJoinRoomMessage({ roomName });
+      app.dispatch.sendConnectMessage({}); // socket join
+      app.dispatch.sendJoinRoomMessage({ roomName }); // join
       dispatch(roomActions.setRoomName(roomName));
       storage.setItem('roomName', roomName);
       dispatch(getRoomByDB(roomName));
