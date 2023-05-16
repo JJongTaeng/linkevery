@@ -41,8 +41,9 @@ const Room = () => {
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { username, messageList, leftSideView, isReadAllChat, room } =
+  const { username, messageList, leftSideView, isReadAllChat, room, ui } =
     useAppSelector((state) => ({
+      ui: state.ui,
       messageList: state.chat.messageList,
       room: state.room.room,
       username: state.user.username,
