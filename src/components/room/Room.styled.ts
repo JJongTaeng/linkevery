@@ -1,57 +1,16 @@
 import styled from 'styled-components';
 import { highlight } from '../../style';
-import { TOP_MENU_HEIGHT } from '../../style/constants';
 
 export const RoomContent = styled.div`
   width: 100%;
-  height: calc(100% - ${TOP_MENU_HEIGHT}px);
+  height: 100%;
   display: flex;
-  ${({ theme }) => theme.media.mobile`
-    flex-direction: column;
-  `}
-`;
-
-export const MemberList = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 240px;
-  ${({ theme }) => theme.media.mobile`
-    width: 100%;
-    height: 66px;
-    overflow: overlay;
-    border-bottom: 1px solid ${theme.color.primary400};
-    padding: 8px;
-  `}
-  padding: 16px;
-
-  background-color: ${({ theme }) => theme.color.primary800};
-
-  .member-item:nth-child(1) {
-    color: ${({ theme }) => theme.color.primary100};
-    font-weight: bold;
-  }
-  .member-item {
-    color: ${({ theme }) => theme.color.grey100};
-    margin-bottom: 16px;
-    path {
-      stroke: #000;
-    }
-    .ant-btn {
-      margin-left: 4px;
-    }
-    .screen-share-button {
-      animation: ${highlight} 1s 1s infinite linear alternate;
-    }
-  }
 `;
 
 export const ContentContainer = styled.div`
   display: flex;
   width: 100%;
   position: relative;
-  ${({ theme }) => theme.media.mobile`
-      height: calc(100% - 66px);
-  `}
 `;
 
 export const VideoContainer = styled.div<{

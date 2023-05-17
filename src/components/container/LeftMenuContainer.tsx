@@ -23,6 +23,7 @@ import SvgMicOn from '../icons/MicOn';
 import SvgMicOff from '../icons/MicOn2';
 import SvgScreenShareOff from '../icons/ScreenShareOff';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
+import MemberListContainer from '../room/MemberListContainer';
 import RoomBadge from '../room/RoomBadge';
 
 const agentInfo = Bowser.parse(window.navigator.userAgent);
@@ -38,15 +39,17 @@ const LeftMenuContainer = () => {
     roomName: currentRoomName,
     room,
     roomList,
+    leftMenuVisible,
   } = useAppSelector((state) => ({
     room: state.room.room,
     roomName: state.room.room.roomName,
     roomList: state.room.roomList,
     voiceStatus: state.user.voiceStatus,
     screenShareStatus: state.user.screenShareStatus,
+    leftMenuVisible: state.ui.leftMenuVisible,
   }));
   const [form] = Form.useForm();
-
+  console.log(leftMenuVisible);
   const isOnVoiceMember = () => {
     for (const key in room.member) {
       if (room.member[key].voiceStatus) {
@@ -60,86 +63,89 @@ const LeftMenuContainer = () => {
   }, []);
 
   return (
-    <Container>
-      <div className={'logo-container'}>
-        <img src="/linkevery/logo512.png" />
-      </div>
-      <div className={'room-list'}>
-        {roomList.map((roomName) => (
-          <RoomBadge
-            onClick={() => {
-              currentRoomName !== roomName && app.disconnect();
-              navigate('/' + roomName);
-            }}
-            name={roomName}
-            key={roomName}
-          />
-        ))}
-      </div>
+    <Container $leftMenuVisible={leftMenuVisible}>
+      <LeftLeftContainer>
+        <div className={'room-list'}>
+          {roomList.map((roomName) => (
+            <RoomBadge
+              onClick={() => {
+                currentRoomName !== roomName && app.disconnect();
+                navigate('/' + roomName);
+              }}
+              name={roomName}
+              key={roomName}
+            />
+          ))}
+        </div>
 
-      <div>
-        <ControllerContainer>
-          {currentRoomName &&
-            voiceStatus &&
-            agentInfo.platform.type === 'desktop' && (
-              <Tooltip defaultOpen={true} placement="right" title="화면공유">
+        <div>
+          <ControllerContainer>
+            {currentRoomName &&
+              voiceStatus &&
+              agentInfo.platform.type === 'desktop' && (
+                <Tooltip defaultOpen={true} placement="right" title="화면공유">
+                  <Switch
+                    style={{ marginBottom: 8 }}
+                    disabled={!isOnVoiceMember()}
+                    checked={screenShareStatus}
+                    checkedChildren={<SvgScreenShareOn />}
+                    unCheckedChildren={<SvgScreenShareOff />}
+                    defaultChecked={false}
+                    onChange={(value) => {
+                      if (value) {
+                        app.dispatch.sendScreenShareReadyMessage({});
+                      } else {
+                        app.closeScreenShare();
+                        dispatch(userActions.changeScreenShareStatus(false));
+                      }
+                    }}
+                  />
+                </Tooltip>
+              )}
+            {currentRoomName && (
+              <Tooltip defaultOpen={true} placement="right" title="음성채팅">
                 <Switch
-                  style={{ marginBottom: 8 }}
-                  disabled={!isOnVoiceMember()}
-                  checked={screenShareStatus}
-                  checkedChildren={<SvgScreenShareOn />}
-                  unCheckedChildren={<SvgScreenShareOff />}
+                  checked={voiceStatus}
+                  checkedChildren={<SvgMicOn />}
+                  unCheckedChildren={<SvgMicOff />}
                   defaultChecked={false}
-                  onChange={(value) => {
+                  onChange={async (value) => {
                     if (value) {
-                      app.dispatch.sendScreenShareReadyMessage({});
+                      if (!(await mdUtils.isAvailableAudioInput())) {
+                        notification.info({
+                          message: `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
+                        });
+                        return;
+                      }
+
+                      dispatch(userActions.changeVoiceStatus(true));
+                      app.dispatch.sendVoiceReadyMessage({});
                     } else {
-                      app.closeScreenShare();
-                      dispatch(userActions.changeScreenShareStatus(false));
+                      app.disconnectVoice();
+                      if (screenShareStatus) {
+                        app.closeScreenShare();
+                        dispatch(userActions.changeScreenShareStatus(false));
+                      } else {
+                        videoManager.clearAllVideo();
+                        app.rtcManager.clearVideoTrack();
+                      }
+                      dispatch(userActions.changeVoiceStatus(false));
+                      dispatch(roomActions.setAllMemberVoiceOff());
+                      dispatch(roomActions.setAllMemberScreenShareOff());
+                      dispatch(userActions.changeLeftSideView(false));
                     }
                   }}
                 />
               </Tooltip>
             )}
-          {currentRoomName && (
-            <Tooltip defaultOpen={true} placement="right" title="음성채팅">
-              <Switch
-                checked={voiceStatus}
-                checkedChildren={<SvgMicOn />}
-                unCheckedChildren={<SvgMicOff />}
-                defaultChecked={false}
-                onChange={async (value) => {
-                  if (value) {
-                    if (!(await mdUtils.isAvailableAudioInput())) {
-                      notification.info({
-                        message: `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
-                      });
-                      return;
-                    }
+          </ControllerContainer>
+          {!currentRoomName && <Button onClick={() => setOpen(true)}>+</Button>}
+        </div>
+      </LeftLeftContainer>
 
-                    dispatch(userActions.changeVoiceStatus(true));
-                    app.dispatch.sendVoiceReadyMessage({});
-                  } else {
-                    app.disconnectVoice();
-                    if (screenShareStatus) {
-                      app.closeScreenShare();
-                      dispatch(userActions.changeScreenShareStatus(false));
-                    } else {
-                      videoManager.clearAllVideo();
-                      app.rtcManager.clearVideoTrack();
-                    }
-                    dispatch(userActions.changeVoiceStatus(false));
-                    dispatch(roomActions.setAllMemberVoiceOff());
-                    dispatch(roomActions.setAllMemberScreenShareOff());
-                    dispatch(userActions.changeLeftSideView(false));
-                  }
-                }}
-              />
-            </Tooltip>
-          )}
-        </ControllerContainer>
-        {!currentRoomName && <Button onClick={() => setOpen(true)}>+</Button>}
-      </div>
+      <LeftRightContainer>
+        <MemberListContainer />
+      </LeftRightContainer>
       <Modal
         title={'방 생성'}
         onOk={() => {
@@ -176,20 +182,16 @@ const LeftMenuContainer = () => {
   );
 };
 
-const Container = styled.section`
-  padding: 16px 0;
+const Container = styled.section<{ $leftMenuVisible: boolean }>`
   height: 100%;
-  width: 70px;
-  background-color: ${({ theme }) => theme.color.primary100};
-  background: linear-gradient(
-    180deg,
-    ${({ theme }) => theme.color.primary100} 40%,
-    ${({ theme }) => theme.color.primary400} 100%
-  );
+
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  width: ${({ $leftMenuVisible }) => ($leftMenuVisible ? '' : '0px')};
+  transform: ${({ $leftMenuVisible }) => ($leftMenuVisible ? '' : 'scaleX(0)')};
+  transform-origin: left;
+  transition: 0.2s;
   svg {
     margin-top: 4px;
   }
@@ -197,29 +199,6 @@ const Container = styled.section`
     fill: white;
   }
 
-  .logo-container {
-    position: relative;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: ${({ theme }) => theme.color.primary800};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    img {
-      width: 60px;
-      height: 60px;
-    }
-  }
-
-  .room-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: overlay;
-    width: 100%;
-    height: 100%;
-  }
   .room-list::-webkit-scrollbar {
     display: none;
   }
@@ -230,6 +209,32 @@ const ControllerContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+const LeftLeftContainer = styled.div`
+  height: 100%;
+  width: 70px;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  background-color: ${({ theme }) => theme.color.primary100};
+  background: linear-gradient(
+    180deg,
+    ${({ theme }) => theme.color.primary100} 40%,
+    ${({ theme }) => theme.color.primary400} 100%
+  );
+  .room-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: overlay;
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const LeftRightContainer = styled.div`
+  height: 100%;
 `;
 
 export default LeftMenuContainer;

@@ -1,18 +1,18 @@
 import { Button, Popover, Slider } from 'antd';
 import { nanoid } from 'nanoid';
+import styled from 'styled-components';
 import { audioManager } from '../../service/media/AudioManager';
-import { useAppSelector } from '../../store/hooks';
+import { videoManager } from '../../service/media/VideoManager';
+import { userActions } from '../../store/features/userSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { highlight } from '../../style';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
 import SvgSpeakerOn from '../icons/SpeakerOn';
-import { MemberList } from './Room.styled';
 
-interface MemberListContainerProps {
-  onClickMemberScreenShare: (userKey: string) => void;
-}
+interface MemberListContainerProps {}
 
-const MemberListContainer = ({
-  onClickMemberScreenShare,
-}: MemberListContainerProps) => {
+const MemberListContainer = ({}: MemberListContainerProps) => {
+  const dispatch = useAppDispatch();
   const { myName, room } = useAppSelector((state) => ({
     myName: state.user.username,
     room: state.room.room,
@@ -35,7 +35,8 @@ const MemberListContainer = ({
               size="small"
               shape="circle"
               onClick={() => {
-                onClickMemberScreenShare(userKey);
+                dispatch(userActions.changeLeftSideView(true));
+                videoManager.appendVideoNode(room.member[userKey].clientId);
               }}
               icon={<SvgScreenShareOn />}
             />
@@ -65,5 +66,35 @@ const MemberListContainer = ({
     </MemberList>
   );
 };
+
+const MemberList = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  height: 100%;
+
+  padding: 16px;
+
+  background-color: ${({ theme }) => theme.color.primary800};
+  box-shadow: 4px 0 4px -2px rgba(0, 0, 0, 0.3);
+
+  .member-item:nth-child(1) {
+    color: ${({ theme }) => theme.color.primary100};
+    font-weight: bold;
+  }
+  .member-item {
+    color: ${({ theme }) => theme.color.grey100};
+    margin-bottom: 16px;
+    path {
+      stroke: #000;
+    }
+    .ant-btn {
+      margin-left: 4px;
+    }
+    .screen-share-button {
+      animation: ${highlight} 1s 1s infinite linear alternate;
+    }
+  }
+`;
 
 export default MemberListContainer;

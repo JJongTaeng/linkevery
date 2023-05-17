@@ -7,7 +7,6 @@ import { roomActions } from '../../store/features/roomSlice';
 import { useAppSelector } from '../../store/hooks';
 import { Text } from '../../style';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
-import TopMenuContainer from '../container/TopMenuContainer';
 
 const NoRoom = () => {
   const { username } = useAppSelector((state) => ({
@@ -22,7 +21,6 @@ const NoRoom = () => {
 
   return (
     <>
-      <TopMenuContainer />
       <NoRoomContent>
         <div>
           <Text bold={true} size={'xxl'} color={'primary100'}>

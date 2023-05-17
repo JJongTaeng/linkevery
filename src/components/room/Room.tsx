@@ -4,7 +4,6 @@ import { nanoid } from 'nanoid';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
-import { videoManager } from '../../service/media/VideoManager';
 import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
@@ -15,13 +14,11 @@ import { addChatByDB, getChatListByDB } from '../../store/thunk/chatThunk';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
 import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import ChatBubble from '../chat/ChatBubble';
-import TopMenuContainer from '../container/TopMenuContainer';
 import SvgArrowDown from '../icons/ArrowDown';
 import SvgCloseButton from '../icons/CloseButton';
 import SvgCloseFullScreen from '../icons/CloseFullScreen';
 import SvgFullScreen from '../icons/FullScreen';
 import SvgSend from '../icons/Send';
-import MemberListContainer from './MemberListContainer';
 import {
   ChatContainer,
   ChatForm,
@@ -158,22 +155,7 @@ const Room = () => {
 
   return (
     <>
-      <TopMenuContainer />
       <RoomContent>
-        <MemberListContainer
-          onClickMemberScreenShare={(userKey: string) => {
-            dispatch(userActions.changeLeftSideView(true));
-            videoManager.appendVideoNode(room.member[userKey].clientId);
-            // if (userKey === selectedUserKey) {
-            //   dispatch(userActions.changeLeftSideView(false));
-            //   setSelectedUserKey('');
-            // } else {
-            //   dispatch(userActions.changeLeftSideView(true));
-            //   setSelectedUserKey(userKey);
-            //   videoManager.appendVideoNode(room.member[userKey].clientId);
-            // }
-          }}
-        />
         <ContentContainer>
           <VideoContainer
             id={'video-container'}
