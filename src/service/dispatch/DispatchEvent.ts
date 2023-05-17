@@ -139,7 +139,7 @@ export class DispatchEvent extends DispatchEventService {
     this.send(screenShareConnectedMessage(data));
   }
 
-  sendScreenShareDisonnectMessage(data: ProtocolData) {
+  sendScreenShareDisconnectMessage(data: ProtocolData) {
     this.send(screenShareDisconnectMessage(data));
   }
 

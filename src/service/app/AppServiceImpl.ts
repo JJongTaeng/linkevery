@@ -48,11 +48,12 @@ export class AppServiceImpl extends AppService {
     this.dispatch.sendVoiceDisconnectMessage({ userKey });
     this.rtcManager.clearAudioTrack();
     audioManager.removeAllAudio();
+    this.rtcManager.clearVideoTrack();
   }
 
-  public disconnectScreenShare(id: string) {
+  public closeScreenShare() {
     const userKey = storage.getItem('userKey');
-    this.dispatch.sendScreenShareDisonnectMessage({
+    this.dispatch.sendScreenShareDisconnectMessage({
       userKey,
     });
     this.rtcManager.clearVideoTrack();

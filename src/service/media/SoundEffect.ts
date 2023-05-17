@@ -1,18 +1,18 @@
-import chat from '../../assets/chat.mp3';
+import voiceOff from '../../assets/voiceOff.mp3';
 import voiceOn from '../../assets/voiceOn.mp3';
 class SoundEffect {
-  private voice = new Audio(voiceOn);
-  private chat = new Audio(chat);
+  private voiceOn = new Audio(voiceOn);
+  private voiceOff = new Audio(voiceOff);
   public startVoice() {
-    this.voice.pause();
-    this.voice.currentTime = 0;
-    this.voice.play();
+    this.voiceOn.pause();
+    this.voiceOn.currentTime = 0;
+    this.voiceOn.play();
   }
-  public receivedChat() {
-    this.chat.pause();
-    this.chat.currentTime = 0;
+  public closeVoice() {
+    this.voiceOff.pause();
+    this.voiceOff.currentTime = 0;
 
-    this.chat.play();
+    this.voiceOff.play();
   }
 }
 

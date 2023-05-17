@@ -89,6 +89,8 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
         store.getState().room.room.member[protocol.data.userKey].username
       }이 보이스채팅에서 나갔습니다.`,
     });
+    soundEffect.closeVoice();
+
     store.dispatch(
       roomActions.setMemberVoiceStatus({
         userKey: protocol.data.userKey,

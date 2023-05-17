@@ -78,6 +78,11 @@ export const roomSlice = createSlice({
         state.room.member[key].voiceStatus = false;
       }
     },
+    setAllMemberScreenShareOff: (state) => {
+      for (const key in state.room.member) {
+        state.room.member[key].screenShareStatus = false;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder

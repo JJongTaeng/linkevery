@@ -124,6 +124,33 @@ export const VideoContainer = styled.div<{
       width: 20px;
       height: 20px;
     }
+    ${({ isVisible }) => (isVisible ? '' : 'width: 0px; height: 0px;')}
+  }
+  &:hover > .close-video {
+    opacity: 1;
+    cursor: pointer;
+  }
+  .close-video:hover {
+    transform: scale(1.1);
+  }
+  .close-video {
+    z-index: 100;
+    opacity: 0;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    background: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    svg {
+      width: 30px;
+      height: 30px;
+    }
+    ${({ isVisible }) => (isVisible ? '' : 'width: 0px; height: 0px;')}
   }
 `;
 

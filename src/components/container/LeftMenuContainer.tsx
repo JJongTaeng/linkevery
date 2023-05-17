@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { mdUtils } from '../../service/media/MediaDeviceUtils';
-import { storage } from '../../service/storage/StorageService';
+import { videoManager } from '../../service/media/VideoManager';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -94,8 +94,7 @@ const LeftMenuContainer = () => {
                     if (value) {
                       app.dispatch.sendScreenShareReadyMessage({});
                     } else {
-                      const id = storage.getItem('clientId');
-                      app.disconnectScreenShare(id);
+                      app.closeScreenShare();
                       dispatch(userActions.changeScreenShareStatus(false));
                     }
                   }}
@@ -123,12 +122,16 @@ const LeftMenuContainer = () => {
                   } else {
                     app.disconnectVoice();
                     if (screenShareStatus) {
-                      const id = storage.getItem('clientId');
-                      app.disconnectScreenShare(id);
+                      app.closeScreenShare();
                       dispatch(userActions.changeScreenShareStatus(false));
+                    } else {
+                      videoManager.clearAllVideo();
+                      app.rtcManager.clearVideoTrack();
                     }
                     dispatch(userActions.changeVoiceStatus(false));
                     dispatch(roomActions.setAllMemberVoiceOff());
+                    dispatch(roomActions.setAllMemberScreenShareOff());
+                    dispatch(userActions.changeLeftSideView(false));
                   }
                 }}
               />

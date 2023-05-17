@@ -17,6 +17,7 @@ import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import ChatBubble from '../chat/ChatBubble';
 import TopMenuContainer from '../container/TopMenuContainer';
 import SvgArrowDown from '../icons/ArrowDown';
+import SvgCloseButton from '../icons/CloseButton';
 import SvgCloseFullScreen from '../icons/CloseFullScreen';
 import SvgFullScreen from '../icons/FullScreen';
 import SvgSend from '../icons/Send';
@@ -161,14 +162,16 @@ const Room = () => {
       <RoomContent>
         <MemberListContainer
           onClickMemberScreenShare={(userKey: string) => {
-            if (userKey === selectedUserKey) {
-              dispatch(userActions.changeLeftSideView(false));
-              setSelectedUserKey('');
-            } else {
-              dispatch(userActions.changeLeftSideView(true));
-              setSelectedUserKey(userKey);
-              videoManager.appendVideoNode(room.member[userKey].clientId);
-            }
+            dispatch(userActions.changeLeftSideView(true));
+            videoManager.appendVideoNode(room.member[userKey].clientId);
+            // if (userKey === selectedUserKey) {
+            //   dispatch(userActions.changeLeftSideView(false));
+            //   setSelectedUserKey('');
+            // } else {
+            //   dispatch(userActions.changeLeftSideView(true));
+            //   setSelectedUserKey(userKey);
+            //   videoManager.appendVideoNode(room.member[userKey].clientId);
+            // }
           }}
         />
         <ContentContainer>
@@ -182,6 +185,15 @@ const Room = () => {
               className="full-screen"
             >
               {isFullScreen ? <SvgCloseFullScreen /> : <SvgFullScreen />}
+            </div>
+            <div
+              onClick={() => {
+                dispatch(userActions.changeLeftSideView(false));
+                setIsFullScreen(false);
+              }}
+              className="close-video"
+            >
+              <SvgCloseButton />
             </div>
           </VideoContainer>
           <ChatContainer leftSideView={leftSideView}>
