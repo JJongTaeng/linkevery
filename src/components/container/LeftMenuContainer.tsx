@@ -102,7 +102,7 @@ const LeftMenuContainer = () => {
                   />
                 </Tooltip>
               )}
-            {currentRoomName && (
+            {currentRoomName ? (
               <Tooltip defaultOpen={true} placement="right" title="음성채팅">
                 <Switch
                   checked={voiceStatus}
@@ -137,15 +137,19 @@ const LeftMenuContainer = () => {
                   }}
                 />
               </Tooltip>
+            ) : (
+              <Button onClick={() => setOpen(true)}>+</Button>
             )}
           </ControllerContainer>
-          {!currentRoomName && <Button onClick={() => setOpen(true)}>+</Button>}
         </div>
       </LeftLeftContainer>
 
-      <LeftRightContainer>
-        <MemberListContainer />
-      </LeftRightContainer>
+      {currentRoomName && (
+        <LeftRightContainer>
+          <MemberListContainer />
+        </LeftRightContainer>
+      )}
+
       <Modal
         title={'방 생성'}
         onOk={() => {

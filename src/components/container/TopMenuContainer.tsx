@@ -1,5 +1,5 @@
 import { Tooltip } from 'antd';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { clipboard } from '../../service/utils/Clipboard';
 import { uiActions } from '../../store/features/uiSlice';
@@ -11,10 +11,10 @@ import SvgLeftIndent from '../icons/LeftIndent';
 import SvgRightIndent from '../icons/RightIndent';
 
 const TopMenuContainer = () => {
-  const { roomName } = useParams();
   const navigate = useNavigate();
-  const { leftMenuVisible } = useAppSelector((state) => ({
+  const { leftMenuVisible, roomName } = useAppSelector((state) => ({
     leftMenuVisible: state.ui.leftMenuVisible,
+    roomName: state.room.room.roomName,
   }));
   const dispatch = useAppDispatch();
 
