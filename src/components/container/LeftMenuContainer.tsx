@@ -1,14 +1,5 @@
-import {
-  Button,
-  Form,
-  Input,
-  Modal,
-  Switch,
-  Tooltip,
-  notification,
-} from 'antd';
+import { Button, Switch, Tooltip, notification } from 'antd';
 import Bowser from 'bowser';
-import { nanoid } from 'nanoid';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -18,11 +9,12 @@ import { videoManager } from '../../service/media/VideoManager';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addRoomByDB, getRoomListByDB } from '../../store/thunk/roomThunk';
+import { getRoomListByDB } from '../../store/thunk/roomThunk';
 import SvgMicOn from '../icons/MicOn';
 import SvgMicOff from '../icons/MicOn2';
 import SvgScreenShareOff from '../icons/ScreenShareOff';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
+import CreateRoomModal from '../room/CreateRoomModal';
 import MemberListContainer from '../room/MemberListContainer';
 import RoomBadge from '../room/RoomBadge';
 
@@ -48,8 +40,7 @@ const LeftMenuContainer = () => {
     screenShareStatus: state.user.screenShareStatus,
     leftMenuVisible: state.ui.leftMenuVisible,
   }));
-  const [form] = Form.useForm();
-  console.log(leftMenuVisible);
+
   const isOnVoiceMember = () => {
     for (const key in room.member) {
       if (room.member[key].voiceStatus) {
@@ -150,38 +141,7 @@ const LeftMenuContainer = () => {
         </LeftRightContainer>
       )}
 
-      <Modal
-        title={'방 생성'}
-        onOk={() => {
-          form.submit();
-        }}
-        onCancel={() => setOpen(false)}
-        open={open}
-      >
-        <Form
-          form={form}
-          name="basic"
-          style={{ maxWidth: 600 }}
-          onFinish={(values) => {
-            const roomName = values.roomName + '+' + nanoid();
-            dispatch(roomActions.setRoomName(roomName));
-            dispatch(addRoomByDB({ roomName, member: {} }));
-
-            form.resetFields();
-            navigate(`/${roomName}`);
-            setOpen(false);
-          }}
-          autoComplete="off"
-        >
-          <Form.Item
-            label="이름"
-            name="roomName"
-            rules={[{ required: true, message: '방 이름을 입력해주세요~!' }]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
+      <CreateRoomModal open={open} setOpen={setOpen} />
     </Container>
   );
 };
@@ -222,6 +182,7 @@ const Container = styled.section<{ $leftMenuVisible: boolean }>`
   width: ${({ $leftMenuVisible }) => ($leftMenuVisible ? '' : '0px')};
   transform: ${({ $leftMenuVisible }) => ($leftMenuVisible ? '' : 'scaleX(0)')};
   ${({ theme, $leftMenuVisible }) => theme.media.mobile`
+    background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     position: fixed;
     width: ${$leftMenuVisible ? '100%' : '0px'};  
