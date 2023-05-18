@@ -6,14 +6,12 @@ import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
 import { audioManager } from '../media/AudioManager';
 import { RTCManager } from '../rtc/RTCManager';
-import { RTCScreenShareManager } from '../rtc/RTCScreenShareManager';
 import { storage } from '../storage/StorageService';
 import { AppService } from './AppService';
 
 export class AppServiceImpl extends AppService {
   readonly socket: Socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
   readonly rtcManager = new RTCManager();
-  readonly rtcScreenShareManager = new RTCScreenShareManager();
   readonly dispatch = new DispatchEvent(this.socket, this.rtcManager);
 
   public static instance: AppServiceImpl;
