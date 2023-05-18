@@ -268,13 +268,6 @@ const RoomContent = styled.div<{ $leftMenuVisible: boolean }>`
   width: 100%;
   height: 100%;
   display: flex;
-
-  ${({ theme, $leftMenuVisible }) => theme.media.mobile`
-    ${$leftMenuVisible ? 'background-color: rgba(0, 0, 0, 0.5)' : ''};
-    .content-container {
-      ${$leftMenuVisible ? 'display: none' : ''};
-    }
-  `};
 `;
 
 const ContentContainer = styled.div`

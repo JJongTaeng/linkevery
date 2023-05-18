@@ -186,35 +186,6 @@ const LeftMenuContainer = () => {
   );
 };
 
-const Container = styled.section<{ $leftMenuVisible: boolean }>`
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: ${({ $leftMenuVisible }) => ($leftMenuVisible ? '' : '0px')};
-  transform: ${({ $leftMenuVisible }) => ($leftMenuVisible ? '' : 'scaleX(0)')};
-  transform-origin: left;
-  transition: 0.2s;
-  svg {
-    margin-top: 4px;
-  }
-  g {
-    fill: white;
-  }
-
-  .room-list::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-const ControllerContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
 const LeftLeftContainer = styled.div`
   height: 100%;
   width: 70px;
@@ -239,6 +210,49 @@ const LeftLeftContainer = styled.div`
 
 const LeftRightContainer = styled.div`
   height: 100%;
+`;
+
+const Container = styled.section<{ $leftMenuVisible: boolean }>`
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: ${({ $leftMenuVisible }) => ($leftMenuVisible ? '' : '0px')};
+  transform: ${({ $leftMenuVisible }) => ($leftMenuVisible ? '' : 'scaleX(0)')};
+  ${({ theme, $leftMenuVisible }) => theme.media.mobile`
+    z-index: 1000;
+    position: fixed;
+    width: ${$leftMenuVisible ? '100%' : '0px'};  
+    transform: ${$leftMenuVisible ? '' : 'scaleX(0)'};
+    height: calc(100% - 50px);
+    ${LeftRightContainer} {
+      width: 100%;
+      .member-list {
+        width: 100%;
+      }
+    }
+  `}
+  transform-origin: left;
+  transition: 0.2s;
+  svg {
+    margin-top: 4px;
+  }
+  g {
+    fill: white;
+  }
+
+  .room-list::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const ControllerContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 export default LeftMenuContainer;

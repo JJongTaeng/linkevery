@@ -23,7 +23,7 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
   };
 
   return (
-    <MemberList>
+    <MemberList className="member-list">
       <div className="member-item">{myName} - me</div>
       {Object.keys(room.member).map((userKey) => (
         <div key={nanoid()} className="member-item">

@@ -21,7 +21,7 @@ const TopMenuContainer = () => {
   return (
     <Container>
       <div
-        className={'logo-container'}
+        className={'menu-button'}
         onClick={() =>
           dispatch(uiActions.changeLeftMenuVisible(!leftMenuVisible))
         }
@@ -77,17 +77,17 @@ const Container = styled.div`
   .exit:hover {
     transform: scale(1.1);
   }
-  .logo-container {
+  .menu-button {
     position: relative;
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     svg {
-      width: 30px;
-      height: 30px;
+      width: 20px;
+      height: 20px;
     }
   }
 `;
