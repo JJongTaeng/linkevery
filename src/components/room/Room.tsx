@@ -280,7 +280,6 @@ const VideoContainer = styled.div<{
   isVisible: boolean;
   isFullScreen: boolean;
 }>`
-  padding: 8px;
   position: relative;
   display: flex;
   justify-content: center;
@@ -290,7 +289,7 @@ const VideoContainer = styled.div<{
   ${({ theme, isVisible }) =>
     isVisible
       ? `
-        padding: 10px;
+        padding: 8px;
         width: 70%;
       `
       : `
@@ -317,8 +316,12 @@ const VideoContainer = styled.div<{
       : ''}
 
   video {
-    box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
+    ${({ isVisible }) =>
+      isVisible &&
+      `
+          box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.3);
+          border-radius: 8px;
+      `};
     width: 100%;
     height: 100%;
   }
