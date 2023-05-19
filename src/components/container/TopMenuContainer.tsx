@@ -1,22 +1,48 @@
-import { Tooltip } from 'antd';
+import { Tooltip, notification } from 'antd';
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { AppServiceImpl } from '../../service/app/AppServiceImpl';
+import { mdUtils } from '../../service/media/MediaDeviceUtils';
+import { videoManager } from '../../service/media/VideoManager';
 import { clipboard } from '../../service/utils/Clipboard';
+import { roomActions } from '../../store/features/roomSlice';
 import { uiActions } from '../../store/features/uiSlice';
+import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
+import Button from '../elements/Button';
+import ToggleButton from '../elements/ToggleButton';
 import SvgExit from '../icons/Exit';
 import SvgInviteMember from '../icons/InviteMember';
 import SvgLeftIndent from '../icons/LeftIndent';
+import SvgMicOn from '../icons/MicOn';
 import SvgRightIndent from '../icons/RightIndent';
+import SvgScreenShareOn from '../icons/ScreenShareOn';
 
 const TopMenuContainer = () => {
   const navigate = useNavigate();
-  const { leftMenuVisible, roomName } = useAppSelector((state) => ({
-    leftMenuVisible: state.ui.leftMenuVisible,
-    roomName: state.room.room.roomName,
-  }));
+  const app = useRef(AppServiceImpl.getInstance()).current;
+
+  const { leftMenuVisible, roomName, voiceStatus, screenShareStatus, room } =
+    useAppSelector((state) => ({
+      leftMenuVisible: state.ui.leftMenuVisible,
+      roomName: state.room.room.roomName,
+      screenShareStatus: state.user.screenShareStatus,
+      voiceStatus: state.user.voiceStatus,
+      room: state.room.room,
+    }));
   const dispatch = useAppDispatch();
+
+  const isOnVoiceMember = () => {
+    for (const key in room.member) {
+      if (room.member[key].voiceStatus) {
+        return true;
+      }
+    }
+  };
+
+  console.log(isOnVoiceMember());
 
   return (
     <Container>
@@ -45,13 +71,65 @@ const TopMenuContainer = () => {
           )}
         </div>
       </RoomName>
+
       {roomName && (
-        <SvgExit
-          className={'exit'}
-          onClick={() => {
-            navigate('/');
-          }}
-        />
+        <ControllerWrapper>
+          {voiceStatus && (
+            <ToggleButton
+              onChange={(value) => {
+                if (value) {
+                  app.dispatch.sendScreenShareReadyMessage({});
+                } else {
+                  app.closeScreenShare();
+                  dispatch(userActions.changeScreenShareStatus(false));
+                }
+              }}
+              disabled={!isOnVoiceMember()}
+              checked={screenShareStatus}
+            >
+              <SvgScreenShareOn />
+            </ToggleButton>
+          )}
+          <ToggleButton
+            checked={voiceStatus}
+            onChange={async (value) => {
+              if (value) {
+                if (!(await mdUtils.isAvailableAudioInput())) {
+                  notification.info({
+                    message: `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
+                  });
+                  return;
+                }
+
+                dispatch(userActions.changeVoiceStatus(true));
+                app.dispatch.sendVoiceReadyMessage({});
+              } else {
+                app.disconnectVoice();
+                if (screenShareStatus) {
+                  app.closeScreenShare();
+                  dispatch(userActions.changeScreenShareStatus(false));
+                } else {
+                  videoManager.clearAllVideo();
+                  app.rtcManager.clearVideoTrack();
+                }
+                dispatch(userActions.changeVoiceStatus(false));
+                dispatch(roomActions.setAllMemberVoiceOff());
+                dispatch(roomActions.setAllMemberScreenShareOff());
+                dispatch(userActions.changeLeftSideView(false));
+              }
+            }}
+          >
+            <SvgMicOn />
+          </ToggleButton>
+          <Button>
+            <SvgExit
+              className={'exit'}
+              onClick={() => {
+                navigate('/');
+              }}
+            />
+          </Button>
+        </ControllerWrapper>
       )}
     </Container>
   );
@@ -77,8 +155,10 @@ const Container = styled.div`
   }
   .menu-button {
     position: relative;
-    width: 20px;
-    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    width: 30px;
+    height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -104,6 +184,11 @@ const RoomName = styled.div`
     height: 16px;
     cursor: pointer;
   }
+`;
+
+const ControllerWrapper = styled.div`
+  display: flex;
+  gap: 8px;
 `;
 
 export default TopMenuContainer;

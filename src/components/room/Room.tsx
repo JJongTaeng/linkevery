@@ -192,6 +192,7 @@ const Room = () => {
             </ChatList>
             {isReadAllChat && (
               <Button
+                style={{ marginBottom: 8 }}
                 onClick={() => {
                   moveToChatScrollBottom();
                 }}
@@ -405,6 +406,14 @@ const ChatContainer = styled.div<{ leftSideView: boolean }>`
 `;
 
 const ChatList = styled.div`
+  &::-webkit-scrollbar {
+    background-color: white;
+    width: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: ${({ theme }) => theme.color.primary200};
+  }
   display: flex;
   box-sizing: border-box;
   flex-direction: column;
