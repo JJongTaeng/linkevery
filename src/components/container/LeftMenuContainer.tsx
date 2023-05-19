@@ -170,6 +170,7 @@ const LeftLeftContainer = styled.div`
 
 const LeftRightContainer = styled.div`
   height: 100%;
+  padding: 8px;
 `;
 
 const Container = styled.section<{ $leftMenuVisible: boolean }>`

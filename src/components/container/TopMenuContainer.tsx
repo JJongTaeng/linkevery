@@ -66,8 +66,6 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  box-shadow: 0 4px 4px -4px black;
-  border-bottom: 1px solid ${({ theme }) => theme.color.primary800};
   .exit {
     cursor: pointer;
     width: 20px;

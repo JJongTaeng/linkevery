@@ -280,6 +280,7 @@ const VideoContainer = styled.div<{
   isVisible: boolean;
   isFullScreen: boolean;
 }>`
+  padding: 8px;
   position: relative;
   display: flex;
   justify-content: center;
@@ -291,8 +292,6 @@ const VideoContainer = styled.div<{
       ? `
         padding: 10px;
         width: 70%;
-        border-left: 1px solid ${theme.color.primary400};
-        border-right: 1px solid ${theme.color.primary400};
       `
       : `
         padding: 0;
@@ -304,7 +303,7 @@ const VideoContainer = styled.div<{
   `};
   height: 100%;
   transition: 0.3s;
-  background-color: ${({ theme }) => theme.color.primary800};
+  background-color: ${({ theme }) => theme.color.white};
 
   ${({ isFullScreen }) =>
     isFullScreen
@@ -318,6 +317,8 @@ const VideoContainer = styled.div<{
       : ''}
 
   video {
+    box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
     width: 100%;
     height: 100%;
   }
@@ -379,6 +380,8 @@ const VideoContainer = styled.div<{
 const ChatContainer = styled.div<{ leftSideView: boolean }>`
   width: 100%;
   min-width: 30%;
+  padding: 8px;
+
   position: relative;
   ${({ theme, leftSideView }) => theme.media.tablet`
       ${leftSideView ? 'display: none' : ''}
@@ -406,6 +409,8 @@ const ChatList = styled.div`
   height: calc(100% - 100px);
   overflow: overlay;
   padding: 20px 40px 0 40px;
+  box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
   .chat-bubble {
     max-width: 100%;
   }
@@ -439,9 +444,9 @@ const ChatForm = styled.form`
   display: flex;
   flex-direction: column;
   position: absolute;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
 
   height: 80px;
 
