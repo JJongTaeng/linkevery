@@ -21,6 +21,10 @@ export class RTCPeer extends RTCPeerService {
     this.dataChannel = this.peer.createDataChannel(label);
   }
 
+  closeDataChannel() {
+    this.dataChannel?.close();
+  }
+
   public async createAnswer(option?: RTCOfferOptions | RTCAnswerOptions) {
     if (!this.peer) {
       throw new Error(ERROR_TYPE.INVALID_PEER);

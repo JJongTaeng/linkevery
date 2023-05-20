@@ -19,14 +19,14 @@ export const chatHandlers: HandlerMap<CHAT_MESSAGE_ID> = {
       }),
     );
 
-    dispatch.sendChatOkMessage({
-      messageType,
-      messageKey,
-      message,
-      userKey,
-      date,
-      username,
-    });
+    // dispatch.sendChatOkMessage({
+    //   messageType,
+    //   messageKey,
+    //   message,
+    //   userKey,
+    //   date,
+    //   username,
+    // });
 
     store.dispatch(
       addChatByDB({

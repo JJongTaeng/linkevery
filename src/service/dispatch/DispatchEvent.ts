@@ -158,8 +158,19 @@ export class DispatchEvent extends DispatchEventService {
     } else if (protocol.messageType === MESSAGE_TYPE.RTC) {
       console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
       const { to } = protocol.data;
-      if (to) this.rtcManager.sendTo(protocol);
-      else this.rtcManager.sendAll(protocol);
+      if (to) {
+        try {
+          this.rtcManager.sendTo(protocol);
+        } catch (e) {
+          this.send({ ...protocol, messageType: MESSAGE_TYPE.SOCKET });
+        }
+      } else {
+        try {
+          this.rtcManager.sendAll(protocol);
+        } catch (e) {
+          this.send({ ...protocol, messageType: MESSAGE_TYPE.SOCKET });
+        }
+      }
     }
   }
 }
