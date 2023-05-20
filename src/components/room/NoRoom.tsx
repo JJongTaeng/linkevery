@@ -29,8 +29,6 @@ const NoRoom = () => {
     }
   }, [username, ui.getUserLoading]);
 
-  console.log(username);
-
   useEffect(() => {
     dispatch(getUserByDB()); // get user info [userkey, username
   }, []);
