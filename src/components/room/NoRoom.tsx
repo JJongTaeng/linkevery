@@ -12,9 +12,8 @@ import CreateRoomModal from './CreateRoomModal';
 import UsernameModal from './UsernameModal';
 
 const NoRoom = () => {
-  const { username, ui } = useAppSelector((state) => ({
+  const { username } = useAppSelector((state) => ({
     username: state.user.username,
-    ui: state.ui,
   }));
   const dispatch = useAppDispatch();
   const [usernameModalVisible, setUsernameModalVisible] = useState(false);
@@ -24,10 +23,12 @@ const NoRoom = () => {
     storage.setItem('roomName', '');
     dispatch(roomActions.setRoomName(''));
 
-    if (!username && !ui.getUserLoading) {
+    if (!username) {
       setUsernameModalVisible(true);
+    } else {
+      setUsernameModalVisible(false);
     }
-  }, [username, ui.getUserLoading]);
+  }, [username]);
 
   useEffect(() => {
     dispatch(getUserByDB()); // get user info [userkey, username
@@ -36,12 +37,14 @@ const NoRoom = () => {
   return (
     <>
       <NoRoomContent>
-        <div>
-          <Text bold={true} size={'xxl'} color={'primary100'}>
-            <p>{username && username}님</p>
-            <p>안녕하세요</p>
-          </Text>
-        </div>
+        {username && (
+          <div>
+            <Text bold={true} size={'xxl'} color={'primary100'}>
+              <p>{username && username}님</p>
+              <p>안녕하세요</p>
+            </Text>
+          </div>
+        )}
         <div>
           <span className={'no-room-description'}>
             <p>
