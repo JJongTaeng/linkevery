@@ -76,7 +76,7 @@ const MemberList = styled.div`
   padding: 16px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.primary800};
-  box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: ${({ theme }) => theme.boxShadow};
 
   .member-item:nth-child(1) {
     color: ${({ theme }) => theme.color.primary100};

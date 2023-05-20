@@ -317,10 +317,10 @@ const VideoContainer = styled.div<{
       : ''}
 
   video {
-    ${({ isVisible }) =>
+    ${({ isVisible, theme }) =>
       isVisible &&
       `
-          box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.3);
+          box-shadow: ${theme.boxShadow};
           border-radius: 8px;
       `};
     width: 100%;
@@ -421,7 +421,8 @@ const ChatList = styled.div`
   height: calc(100% - 100px);
   overflow: overlay;
   padding: 20px 40px 0 40px;
-  box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: ${({ theme }) => theme.boxShadow};
+
   border-radius: 8px;
   .chat-bubble {
     max-width: 100%;
@@ -465,7 +466,7 @@ const ChatForm = styled.form`
   border: 1px solid ${({ theme }) => theme.color.primary400};
   border-radius: 8px;
 
-  box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: ${({ theme }) => theme.boxShadow};
 
   textarea {
     width: 100%;

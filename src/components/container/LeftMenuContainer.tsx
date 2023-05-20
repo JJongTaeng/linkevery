@@ -1,19 +1,11 @@
-import { Button, Switch, Tooltip, notification } from 'antd';
+import { Button } from 'antd';
 import Bowser from 'bowser';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
-import { mdUtils } from '../../service/media/MediaDeviceUtils';
-import { videoManager } from '../../service/media/VideoManager';
-import { roomActions } from '../../store/features/roomSlice';
-import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { getRoomListByDB } from '../../store/thunk/roomThunk';
-import SvgMicOn from '../icons/MicOn';
-import SvgMicOff from '../icons/MicOn2';
-import SvgScreenShareOff from '../icons/ScreenShareOff';
-import SvgScreenShareOn from '../icons/ScreenShareOn';
 import CreateRoomModal from '../room/CreateRoomModal';
 import MemberListContainer from '../room/MemberListContainer';
 import RoomBadge from '../room/RoomBadge';
@@ -71,64 +63,7 @@ const LeftMenuContainer = () => {
 
         <div>
           <ControllerContainer>
-            {currentRoomName &&
-              voiceStatus &&
-              agentInfo.platform.type === 'desktop' && (
-                <Tooltip defaultOpen={true} placement="right" title="화면공유">
-                  <Switch
-                    style={{ marginBottom: 8 }}
-                    disabled={!isOnVoiceMember()}
-                    checked={screenShareStatus}
-                    checkedChildren={<SvgScreenShareOn />}
-                    unCheckedChildren={<SvgScreenShareOff />}
-                    defaultChecked={false}
-                    onChange={(value) => {
-                      if (value) {
-                        app.dispatch.sendScreenShareReadyMessage({});
-                      } else {
-                        app.closeScreenShare();
-                        dispatch(userActions.changeScreenShareStatus(false));
-                      }
-                    }}
-                  />
-                </Tooltip>
-              )}
-            {currentRoomName ? (
-              <Tooltip defaultOpen={true} placement="right" title="음성채팅">
-                <Switch
-                  checked={voiceStatus}
-                  checkedChildren={<SvgMicOn />}
-                  unCheckedChildren={<SvgMicOff />}
-                  defaultChecked={false}
-                  onChange={async (value) => {
-                    if (value) {
-                      if (!(await mdUtils.isAvailableAudioInput())) {
-                        notification.info({
-                          message: `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
-                        });
-                        return;
-                      }
-
-                      dispatch(userActions.changeVoiceStatus(true));
-                      app.dispatch.sendVoiceReadyMessage({});
-                    } else {
-                      app.disconnectVoice();
-                      if (screenShareStatus) {
-                        app.closeScreenShare();
-                        dispatch(userActions.changeScreenShareStatus(false));
-                      } else {
-                        videoManager.clearAllVideo();
-                        app.rtcManager.clearVideoTrack();
-                      }
-                      dispatch(userActions.changeVoiceStatus(false));
-                      dispatch(roomActions.setAllMemberVoiceOff());
-                      dispatch(roomActions.setAllMemberScreenShareOff());
-                      dispatch(userActions.changeLeftSideView(false));
-                    }
-                  }}
-                />
-              </Tooltip>
-            ) : (
+            {!currentRoomName && (
               <Button onClick={() => setOpen(true)}>+</Button>
             )}
           </ControllerContainer>

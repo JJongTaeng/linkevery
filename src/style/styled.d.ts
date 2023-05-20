@@ -6,5 +6,6 @@ declare module 'styled-components' {
     color: ColorsTypes;
     size: SizeTypes;
     media: MediaTypes;
+    boxShadow: string;
   }
 }
