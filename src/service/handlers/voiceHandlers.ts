@@ -1,4 +1,3 @@
-import { notification } from 'antd';
 import { HandlerMap, VOICE_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
@@ -31,12 +30,6 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       peer.addTrack(track, mediaStream);
     });
 
-    notification.info({
-      message: `${
-        store.getState().room.room.member[protocol.data.userKey].username
-      }이 보이스채팅에 연결되었습니다.`,
-    });
-
     soundEffect.startVoice();
 
     store.dispatch(
@@ -62,11 +55,6 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       peer.addTrack(track, mediaStream);
     });
 
-    notification.info({
-      message: `${
-        store.getState().room.room.member[protocol.data.userKey].username
-      }이 보이스채팅에 연결되었습니다.`,
-    });
     soundEffect.startVoice();
 
     store.dispatch(
@@ -84,11 +72,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     const peer = rtcManager.getPeer(from);
     peer.removeAudioTrack();
     audioManager.removeAudio(from);
-    notification.info({
-      message: `${
-        store.getState().room.room.member[protocol.data.userKey].username
-      }이 보이스채팅에서 나갔습니다.`,
-    });
+
     soundEffect.closeVoice();
 
     store.dispatch(

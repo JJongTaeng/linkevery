@@ -1,4 +1,4 @@
-import { notification } from 'antd';
+import { message } from 'antd';
 import { HandlerMap, SCREEN_SHARE_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
@@ -44,9 +44,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       }
     } catch (error: any) {
       if (error?.name === 'NotAllowedError') {
-        notification.info({
-          message: `화면공유 권한 설정을 확인해주세요.`,
-        });
+        message.info(`화면공유 권한 설정을 확인해주세요.`);
         store.dispatch(userActions.changeScreenShareStatus(false));
       }
     }
@@ -58,12 +56,6 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
         screenShareStatus: true,
       }),
     );
-
-    notification.info({
-      message: `${
-        store.getState().room.room.member[protocol.data.userKey].username
-      }이 화면공유를 시작했습니다.`,
-    });
   },
   [SCREEN_SHARE_MESSAGE_ID.DISCONNECT]: (
     protocol,

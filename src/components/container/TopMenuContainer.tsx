@@ -1,4 +1,4 @@
-import { Tooltip, notification } from 'antd';
+import { Tooltip, message } from 'antd';
 import Bowser from 'bowser';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -98,9 +98,10 @@ const TopMenuContainer = () => {
             onChange={async (value) => {
               if (value) {
                 if (!(await mdUtils.isAvailableAudioInput())) {
-                  notification.info({
-                    message: `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
-                  });
+                  message.info(
+                    `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
+                  );
+
                   return;
                 }
 
