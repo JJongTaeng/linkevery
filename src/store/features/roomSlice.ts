@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { query } from '../../service/db/Query';
 import { storage } from '../../service/storage/StorageService';
 import {
   addRoomByDB,
@@ -87,6 +88,9 @@ export const roomSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getRoomByDB.fulfilled, (state, { payload }) => {
+        if (!Object.keys(payload.member).length) {
+          query.addRoom(payload);
+        }
         state.room = payload;
         if (!state.roomList.includes(payload.roomName)) {
           state.roomList.push(payload.roomName);
