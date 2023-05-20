@@ -206,6 +206,7 @@ const Room = () => {
               onSubmit={(e: any) => {
                 e.preventDefault();
                 handleChat();
+                e.target.message.focus();
               }}
             >
               <div className="form-header">
