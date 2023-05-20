@@ -16,25 +16,13 @@ const LeftMenuContainer = () => {
   const dispatch = useAppDispatch();
   const {
     roomName: currentRoomName,
-    room,
     roomList,
     leftMenuVisible,
   } = useAppSelector((state) => ({
-    room: state.room.room,
     roomName: state.room.room.roomName,
     roomList: state.room.roomList,
-    voiceStatus: state.user.voiceStatus,
-    screenShareStatus: state.user.screenShareStatus,
     leftMenuVisible: state.ui.leftMenuVisible,
   }));
-
-  const isOnVoiceMember = () => {
-    for (const key in room.member) {
-      if (room.member[key].voiceStatus) {
-        return true;
-      }
-    }
-  };
 
   useEffect(() => {
     dispatch(getRoomListByDB());

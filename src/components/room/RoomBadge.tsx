@@ -72,7 +72,8 @@ const Badge = styled(Avatar)<{ $isCurrent: boolean }>`
   margin-top: 16px;
   cursor: pointer;
 
-  ${({ $isCurrent, theme }) => $isCurrent && `box-shadow: ${theme.boxShadow}};`}
+  ${({ $isCurrent: isCurrent }) =>
+    isCurrent && 'box-shadow: 0 0 2px 4px rgba(255, 255, 255, 0.5);'}
 `;
 
 export default RoomBadge;
