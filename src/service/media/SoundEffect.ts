@@ -6,13 +6,13 @@ class SoundEffect {
   public startVoice() {
     this.voiceOn.pause();
     this.voiceOn.currentTime = 0;
-    this.voiceOff.volume = 0.3;
+    this.voiceOff.volume = 0.5;
     this.voiceOn.play();
   }
   public closeVoice() {
     this.voiceOff.pause();
     this.voiceOff.currentTime = 0;
-    this.voiceOff.volume = 0.3;
+    this.voiceOff.volume = 0.5;
     this.voiceOff.play();
   }
 }
