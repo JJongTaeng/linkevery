@@ -1,5 +1,4 @@
 import { Button } from 'antd';
-import Bowser from 'bowser';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -9,8 +8,6 @@ import { getRoomListByDB } from '../../store/thunk/roomThunk';
 import CreateRoomModal from '../room/CreateRoomModal';
 import MemberListContainer from '../room/MemberListContainer';
 import RoomBadge from '../room/RoomBadge';
-
-const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
