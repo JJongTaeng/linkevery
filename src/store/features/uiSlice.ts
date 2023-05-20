@@ -10,7 +10,7 @@ interface UiState {
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const initialState: UiState = {
-  getUserLoading: false,
+  getUserLoading: true,
   firstGetChatList: false,
   leftMenuVisible: agentInfo.platform.type === 'desktop',
 };

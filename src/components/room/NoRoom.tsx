@@ -12,8 +12,9 @@ import CreateRoomModal from './CreateRoomModal';
 import UsernameModal from './UsernameModal';
 
 const NoRoom = () => {
-  const { username } = useAppSelector((state) => ({
+  const { username, ui } = useAppSelector((state) => ({
     username: state.user.username,
+    ui: state.ui,
   }));
   const dispatch = useAppDispatch();
   const [usernameModalVisible, setUsernameModalVisible] = useState(false);
@@ -23,10 +24,12 @@ const NoRoom = () => {
     storage.setItem('roomName', '');
     dispatch(roomActions.setRoomName(''));
 
-    if (!username) {
+    if (!username && !ui.getUserLoading) {
       setUsernameModalVisible(true);
     }
-  }, [username]);
+  }, [username, ui.getUserLoading]);
+
+  console.log(username);
 
   useEffect(() => {
     dispatch(getUserByDB()); // get user info [userkey, username
