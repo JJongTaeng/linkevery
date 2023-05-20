@@ -65,7 +65,7 @@ class Query {
     await this.db.message
       .bulkAdd(messageList)
       .then(function (lastKey) {
-        console.log('[DB] add bulk message'); // Will be 100000.
+        console.log('[DB] add bulk message');
       })
       .catch(Dexie.BulkError, function (e) {
         console.warn(e);

@@ -45,8 +45,6 @@ const TopMenuContainer = () => {
     }
   };
 
-  console.log(isOnVoiceMember());
-
   return (
     <Container>
       <div
