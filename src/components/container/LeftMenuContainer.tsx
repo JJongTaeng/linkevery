@@ -18,8 +18,6 @@ const LeftMenuContainer = () => {
   const app = useRef(AppServiceImpl.getInstance()).current;
   const dispatch = useAppDispatch();
   const {
-    voiceStatus,
-    screenShareStatus,
     roomName: currentRoomName,
     room,
     roomList,

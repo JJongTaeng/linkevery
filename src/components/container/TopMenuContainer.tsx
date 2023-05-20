@@ -1,4 +1,5 @@
 import { Tooltip, notification } from 'antd';
+import Bowser from 'bowser';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -19,6 +20,8 @@ import SvgLeftIndent from '../icons/LeftIndent';
 import SvgMicOn from '../icons/MicOn';
 import SvgRightIndent from '../icons/RightIndent';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
+
+const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const TopMenuContainer = () => {
   const navigate = useNavigate();
@@ -74,7 +77,7 @@ const TopMenuContainer = () => {
 
       {roomName && (
         <ControllerWrapper>
-          {voiceStatus && (
+          {voiceStatus && agentInfo.platform.type === 'desktop' && (
             <ToggleButton
               onChange={(value) => {
                 if (value) {
