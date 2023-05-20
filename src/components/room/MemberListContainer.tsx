@@ -1,4 +1,4 @@
-import { Button, Popover, Slider } from 'antd';
+import { Button, Card, Popover, Slider } from 'antd';
 import { nanoid } from 'nanoid';
 import styled from 'styled-components';
 import { audioManager } from '../../service/media/AudioManager';
@@ -24,43 +24,46 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
 
   return (
     <MemberList className="member-list">
-      <div className="member-item">{myName} - me</div>
+      <Card size="small">
+        <div className="member-item">{myName} - me</div>
+      </Card>
       {Object.keys(room.member).map((userKey) => (
         <div key={nanoid()} className="member-item">
-          <span>{room.member[userKey].username}</span>
-
-          {room.member[userKey].screenShareStatus && (
-            <Button
-              className={'screen-share-button'}
-              size="small"
-              shape="circle"
-              onClick={() => {
-                dispatch(userActions.changeLeftSideView(true));
-                videoManager.appendVideoNode(room.member[userKey].clientId);
-              }}
-              icon={<SvgScreenShareOn />}
-            />
-          )}
-          {room.member[userKey].voiceStatus && (
-            <Popover
-              placement="right"
-              content={
-                <Slider
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  style={{ width: 80 }}
-                  onChange={(value) => {
-                    onChangeVolume(room.member[userKey].clientId, value);
-                  }}
-                  defaultValue={0.5}
-                />
-              }
-              trigger="click"
-            >
-              <Button size="small" shape="circle" icon={<SvgSpeakerOn />} />
-            </Popover>
-          )}
+          <Card size="small">
+            <span>{room.member[userKey].username}</span>
+            {room.member[userKey].screenShareStatus && (
+              <Button
+                className={'screen-share-button'}
+                size="small"
+                shape="circle"
+                onClick={() => {
+                  dispatch(userActions.changeLeftSideView(true));
+                  videoManager.appendVideoNode(room.member[userKey].clientId);
+                }}
+                icon={<SvgScreenShareOn />}
+              />
+            )}
+            {room.member[userKey].voiceStatus && (
+              <Popover
+                placement="right"
+                content={
+                  <Slider
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    style={{ width: 80 }}
+                    onChange={(value) => {
+                      onChangeVolume(room.member[userKey].clientId, value);
+                    }}
+                    defaultValue={0.5}
+                  />
+                }
+                trigger="click"
+              >
+                <Button size="small" shape="circle" icon={<SvgSpeakerOn />} />
+              </Popover>
+            )}
+          </Card>
         </div>
       ))}
     </MemberList>
@@ -84,7 +87,6 @@ const MemberList = styled.div`
   }
   .member-item {
     color: ${({ theme }) => theme.color.grey100};
-    margin-bottom: 16px;
     path {
       stroke: #000;
     }
