@@ -24,7 +24,6 @@ import SvgSend from '../icons/Send';
 import UsernameModal from './UsernameModal';
 
 const Room = () => {
-  const chatScrollViewElement = useRef<HTMLDivElement>(null);
   const chatListElement = useRef<HTMLDivElement>(null);
   const [usernameModalVisible, setUsernameModalVisible] = useState(false);
   const [selectedUserKey, setSelectedUserKey] = useState('');
@@ -89,18 +88,38 @@ const Room = () => {
     }
   };
 
-  const moveToChatScrollBottom = () =>
-    chatScrollViewElement?.current?.scrollIntoView({
-      block: 'end',
-      inline: 'end',
-      behavior: 'smooth',
-    });
+  const moveToChatScrollBottom = () => {
+    if (chatListElement.current)
+      chatListElement.current.scrollTop =
+        chatListElement?.current?.scrollHeight;
+  };
+
+  const handleViewportResize = (e: any) => {
+    window.scrollTo(0, 0);
+    document.body.style.height = `${e.target.height}px`;
+    document.documentElement.style.height = `${e.target.height}px`;
+    // @ts-ignore
+    chatListElement.current.style.height = `${e.target.height - 160}px`;
+    moveToChatScrollBottom();
+  };
 
   useEffect(() => {
     dispatch(getUserByDB()); // get user info [userkey, username
     window.addEventListener('beforeunload', async () => {
       roomName && dispatch(deleteAllMemberByDB({ roomName }));
     });
+    window.visualViewport?.addEventListener('resize', handleViewportResize);
+    window.visualViewport?.addEventListener('scroll', handleViewportResize);
+    return () => {
+      window.visualViewport?.removeEventListener(
+        'resize',
+        handleViewportResize,
+      );
+      window.visualViewport?.removeEventListener(
+        'scroll',
+        handleViewportResize,
+      );
+    };
   }, []);
 
   useEffect(() => {
@@ -185,10 +204,6 @@ const Room = () => {
                   />
                 ),
               )}
-              <div
-                style={{ background: 'red', width: '100%' }}
-                ref={chatScrollViewElement}
-              ></div>
             </ChatList>
             {isReadAllChat && (
               <Button
