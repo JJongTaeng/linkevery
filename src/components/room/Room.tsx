@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { debounce } from 'throttle-debounce';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
@@ -87,7 +88,13 @@ const Room = () => {
       dispatch(userActions.changeIsScrollBottomView(false));
     }
   };
-
+  const handleViewportResize = debounce(
+    50,
+    (e: any) => {
+      window.scrollTo(0, document.body.scrollHeight - e.target.height);
+    },
+    {},
+  );
   const moveToChatScrollBottom = () => {
     if (chatListElement.current)
       chatListElement.current.scrollTop =
@@ -127,12 +134,24 @@ const Room = () => {
     window.addEventListener('beforeunload', async () => {
       roomName && dispatch(deleteAllMemberByDB({ roomName }));
     });
+
+    window.visualViewport?.addEventListener('resize', handleViewportResize);
+    window.visualViewport?.addEventListener('scroll', handleViewportResize);
+
     return () => {
       chatListElement.current?.removeEventListener(
         'scroll',
         handleScrollChatList,
       );
       roomName && dispatch(deleteAllMemberByDB({ roomName }));
+      window.visualViewport?.removeEventListener(
+        'resize',
+        handleViewportResize,
+      );
+      window.visualViewport?.removeEventListener(
+        'scroll',
+        handleViewportResize,
+      );
     };
   }, []);
 
