@@ -16,6 +16,7 @@ import { addChatByDB, getChatListPageByDB } from '../../store/thunk/chatThunk';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
 import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import { highlight } from '../../style';
+import { PAGE_OFFSET } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
 import SvgArrowDown from '../icons/ArrowDown';
 import SvgCloseButton from '../icons/CloseButton';
@@ -104,7 +105,7 @@ const Room = () => {
   };
 
   const intersectionHandler = (entries: IntersectionObserverEntry[]) => {
-    if (entries[0].intersectionRatio > 0) {
+    if (entries[0].intersectionRatio > 0 && !status.isMaxPageMessageList) {
       setPage((page) => page + 1);
     }
   };
@@ -115,12 +116,14 @@ const Room = () => {
         root: chatListElement.current,
         rootMargin: '0px',
       }),
-    [],
+    [status.isMaxPageMessageList],
   );
 
   useEffect(() => {
     if (page) {
-      dispatch(getChatListPageByDB({ roomName: roomName!, page, offset: 5 }));
+      dispatch(
+        getChatListPageByDB({ roomName: roomName!, page, offset: PAGE_OFFSET }),
+      );
     }
   }, [page, roomName]);
 
@@ -143,17 +146,25 @@ const Room = () => {
   }, [username, roomName]);
 
   useEffect(() => {
+    if (page === 1) {
+      moveToChatScrollBottom();
+    }
     if (utils.isBottomScrollElement(chatListElement.current!)) {
       moveToChatScrollBottom();
     } else {
       dispatch(userActions.changeIsScrollBottomView(true));
     }
-  }, [messageList.length]);
+  }, [messageList.length, page]);
 
   useEffect(() => {
     if (!chatLoadingTriggerElement.current) return;
     io.observe(chatLoadingTriggerElement.current);
+    return () => {
+      io.disconnect();
+    };
+  }, [status.isMaxPageMessageList]);
 
+  useEffect(() => {
     chatListElement?.current?.addEventListener('scroll', handleScrollChatList);
     window.addEventListener('beforeunload', async () => {
       roomName && dispatch(deleteAllMemberByDB({ roomName }));
@@ -163,7 +174,6 @@ const Room = () => {
     window.visualViewport?.addEventListener('scroll', handleViewportResize);
 
     return () => {
-      io.disconnect();
       chatListElement.current?.removeEventListener(
         'scroll',
         handleScrollChatList,
@@ -206,7 +216,7 @@ const Room = () => {
             </div>
           </VideoContainer>
           <ChatContainer leftSideView={leftSideView}>
-            <ChatList ref={chatListElement}>
+            <ChatList id={'chat-list'} ref={chatListElement}>
               <div id="chat-loading-trigger" ref={chatLoadingTriggerElement} />
               {messageList.map(
                 ({ message, userKey, date, username }, index) => (

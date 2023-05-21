@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Bowser from 'bowser';
+import { PAGE_OFFSET } from '../../style/constants';
 import { getChatListPageByDB } from '../thunk/chatThunk';
 import { getUserByDB } from '../thunk/userThunk';
 
@@ -8,6 +9,7 @@ interface StatusState {
   firstGotChatList: boolean;
   leftMenuVisible: boolean;
   getMessageListLoading: boolean;
+  isMaxPageMessageList: boolean;
 }
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
@@ -16,6 +18,7 @@ const initialState: StatusState = {
   firstGotChatList: false,
   leftMenuVisible: agentInfo.platform.type === 'desktop',
   getMessageListLoading: false,
+  isMaxPageMessageList: false,
 };
 
 export const statusSlice = createSlice({
@@ -38,6 +41,9 @@ export const statusSlice = createSlice({
         state.getMessageListLoading = true;
       })
       .addCase(getChatListPageByDB.fulfilled, (state, { payload }) => {
+        if (payload.length < PAGE_OFFSET) {
+          state.isMaxPageMessageList = true;
+        }
         state.getMessageListLoading = false;
       });
   },
