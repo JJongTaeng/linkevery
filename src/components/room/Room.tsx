@@ -10,6 +10,7 @@ import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
+import { statusActions } from '../../store/features/statusSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addChatByDB, getChatListPageByDB } from '../../store/thunk/chatThunk';
@@ -142,6 +143,8 @@ const Room = () => {
     return () => {
       app.disconnect();
       dispatch(chatActions.resetChatList());
+      dispatch(statusActions.resetAllStatusState());
+      setPage(0);
     };
   }, [username, roomName]);
 

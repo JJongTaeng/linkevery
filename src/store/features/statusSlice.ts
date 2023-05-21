@@ -28,6 +28,9 @@ export const statusSlice = createSlice({
     changeLeftMenuVisible: (state, { payload }: { payload: boolean }) => {
       state.leftMenuVisible = payload;
     },
+    resetAllStatusState: () => {
+      return initialState;
+    },
   },
   extraReducers: (builder) => {
     builder
