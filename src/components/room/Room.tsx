@@ -27,7 +27,6 @@ const Room = () => {
   const chatListElement = useRef<HTMLDivElement>(null);
   const focusInput = useRef<HTMLInputElement>(null);
   const [usernameModalVisible, setUsernameModalVisible] = useState(false);
-  const [selectedUserKey, setSelectedUserKey] = useState('');
   const [isFullScreen, setIsFullScreen] = useState(false);
   const app = useRef(AppServiceImpl.getInstance()).current;
   const { roomName } = useParams<{
@@ -112,11 +111,6 @@ const Room = () => {
       dispatch(chatActions.resetChatList());
     };
   }, [username, roomName]);
-
-  // useEffect(() => {
-  //   if (!room.member[selectedUserKey])
-  //     dispatch(userActions.changeLeftSideView(false));
-  // }, [room.member]);
 
   useEffect(() => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {

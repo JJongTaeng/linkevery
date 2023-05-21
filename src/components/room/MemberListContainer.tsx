@@ -1,5 +1,6 @@
 import { Button, Card, Popover, Slider } from 'antd';
 import { nanoid } from 'nanoid';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { audioManager } from '../../service/media/AudioManager';
 import { videoManager } from '../../service/media/VideoManager';
@@ -13,6 +14,7 @@ interface MemberListContainerProps {}
 
 const MemberListContainer = ({}: MemberListContainerProps) => {
   const dispatch = useAppDispatch();
+  const [selectedUserKey, setSelectedUserKey] = useState('');
   const { myName, room } = useAppSelector((state) => ({
     myName: state.user.username,
     room: state.room.room,
@@ -22,6 +24,10 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
     audioManager.changeVolume(id, volume);
   };
 
+  useEffect(() => {
+    if (!room.member[selectedUserKey])
+      dispatch(userActions.changeLeftSideView(false));
+  }, [room.member]);
   return (
     <MemberList className="member-list">
       <Card size="small">
@@ -38,6 +44,7 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
                 shape="circle"
                 onClick={() => {
                   dispatch(userActions.changeLeftSideView(true));
+                  setSelectedUserKey(userKey);
                   videoManager.appendVideoNode(room.member[userKey].clientId);
                 }}
                 icon={<SvgScreenShareOn />}
