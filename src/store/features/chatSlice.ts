@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Message } from '../../service/db/LinkeveryDB';
-import { getChatListByDB } from '../thunk/chatThunk';
+import { getChatListPageByDB } from '../thunk/chatThunk';
 
 interface ChatState {
   messageList: Omit<Message, 'id' | 'roomName'>[];
@@ -34,8 +34,8 @@ export const chatSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getChatListByDB.fulfilled, (state, { payload }) => {
-      state.messageList = payload;
+    builder.addCase(getChatListPageByDB.fulfilled, (state, { payload }) => {
+      state.messageList.unshift(...payload);
     });
   },
 });

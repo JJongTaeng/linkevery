@@ -1,23 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Bowser from 'bowser';
-import { getChatListByDB } from '../thunk/chatThunk';
+import { getChatListPageByDB } from '../thunk/chatThunk';
 import { getUserByDB } from '../thunk/userThunk';
 
-interface UiState {
+interface StatusState {
   getUserLoading: boolean;
-  firstGetChatList: boolean;
+  firstGotChatList: boolean;
   leftMenuVisible: boolean;
+  getMessageListLoading: boolean;
 }
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
-const initialState: UiState = {
+const initialState: StatusState = {
   getUserLoading: true,
-  firstGetChatList: false,
+  firstGotChatList: false,
   leftMenuVisible: agentInfo.platform.type === 'desktop',
+  getMessageListLoading: false,
 };
 
-export const uiSlice = createSlice({
-  name: 'loadingSlice',
+export const statusSlice = createSlice({
+  name: 'statusSlice',
   initialState,
   reducers: {
     changeLeftMenuVisible: (state, { payload }: { payload: boolean }) => {
@@ -32,13 +34,16 @@ export const uiSlice = createSlice({
       .addCase(getUserByDB.fulfilled, (state, { payload }) => {
         state.getUserLoading = false;
       })
-      .addCase(getChatListByDB.fulfilled, (state, { payload }) => {
-        state.firstGetChatList = true;
+      .addCase(getChatListPageByDB.pending, (state, { payload }) => {
+        state.getMessageListLoading = true;
+      })
+      .addCase(getChatListPageByDB.fulfilled, (state, { payload }) => {
+        state.getMessageListLoading = false;
       });
   },
 });
 
 // Action creators are generated for each case reducer function
-export const uiActions = uiSlice.actions;
+export const statusActions = statusSlice.actions;
 
-export default uiSlice.reducer;
+export default statusSlice.reducer;

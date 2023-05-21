@@ -10,6 +10,23 @@ export const getChatListByDB = createAsyncThunk(
   },
 );
 
+export const getChatListPageByDB = createAsyncThunk(
+  'db/getChatListPage',
+  async ({
+    roomName,
+    page,
+    offset,
+  }: {
+    roomName: string;
+    page: number;
+    offset?: number;
+  }) => {
+    const messageList =
+      (await query.getMessageListByPage(roomName, page, offset)) || [];
+    return messageList;
+  },
+);
+
 export const addChatByDB = createAsyncThunk(
   'db/addChat',
   async (message: Message) => {

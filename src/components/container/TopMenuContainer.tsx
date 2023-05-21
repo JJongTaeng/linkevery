@@ -8,7 +8,7 @@ import { mdUtils } from '../../service/media/MediaDeviceUtils';
 import { videoManager } from '../../service/media/VideoManager';
 import { clipboard } from '../../service/utils/Clipboard';
 import { roomActions } from '../../store/features/roomSlice';
-import { uiActions } from '../../store/features/uiSlice';
+import { statusActions } from '../../store/features/statusSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
@@ -29,7 +29,7 @@ const TopMenuContainer = () => {
 
   const { leftMenuVisible, roomName, voiceStatus, screenShareStatus, room } =
     useAppSelector((state) => ({
-      leftMenuVisible: state.ui.leftMenuVisible,
+      leftMenuVisible: state.status.leftMenuVisible,
       roomName: state.room.room.roomName,
       screenShareStatus: state.user.screenShareStatus,
       voiceStatus: state.user.voiceStatus,
@@ -50,7 +50,7 @@ const TopMenuContainer = () => {
       <div
         className={'menu-button'}
         onClick={() =>
-          dispatch(uiActions.changeLeftMenuVisible(!leftMenuVisible))
+          dispatch(statusActions.changeLeftMenuVisible(!leftMenuVisible))
         }
       >
         {leftMenuVisible ? <SvgLeftIndent /> : <SvgRightIndent />}

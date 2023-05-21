@@ -81,12 +81,15 @@ class Query {
 
   async getMessageListByPage(roomName: string, page = 1, offset = 30) {
     return await this.db.message
-      .where('roomName')
-      .equals(roomName)
-      .reverse()
+      .orderBy('date')
       .offset(offset * (page - 1))
       .limit(offset)
-      .sortBy('date');
+      .reverse()
+      .toArray((messageList) => {
+        return messageList
+          .filter((message) => message.roomName === roomName)
+          .reverse();
+      });
   }
 
   async updateMember(roomName: string, member: Member) {
@@ -117,6 +120,3 @@ class Query {
 }
 
 export const query = new Query();
-
-// @ts-ignore
-window.query = query;

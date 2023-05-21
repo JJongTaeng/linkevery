@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import chatReducer from './features/chatSlice';
 import roomReducer from './features/roomSlice';
-import uiReducer from './features/uiSlice';
+import statusReducer from './features/statusSlice';
 import userReducer from './features/userSlice';
 
 export const store = configureStore({
@@ -9,7 +9,7 @@ export const store = configureStore({
     room: roomReducer,
     chat: chatReducer,
     user: userReducer,
-    ui: uiReducer,
+    status: statusReducer,
   },
 });
 // Infer the `RootState` and `AppDispatch` types from the store itself

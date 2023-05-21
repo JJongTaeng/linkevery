@@ -1,7 +1,7 @@
 import { Button } from 'antd';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { debounce } from 'throttle-debounce';
@@ -12,7 +12,7 @@ import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addChatByDB, getChatListByDB } from '../../store/thunk/chatThunk';
+import { addChatByDB, getChatListPageByDB } from '../../store/thunk/chatThunk';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
 import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import { highlight } from '../../style';
@@ -25,17 +25,19 @@ import SvgSend from '../icons/Send';
 import UsernameModal from './UsernameModal';
 
 const Room = () => {
+  const app = useRef(AppServiceImpl.getInstance()).current;
   const chatListElement = useRef<HTMLDivElement>(null);
+  const chatLoadingTriggerElement = useRef<HTMLDivElement>(null);
   const focusInput = useRef<HTMLInputElement>(null);
   const [usernameModalVisible, setUsernameModalVisible] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const app = useRef(AppServiceImpl.getInstance()).current;
+  const [page, setPage] = useState(0);
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { username, messageList, leftSideView, isReadAllChat, room, ui } =
+  const { username, messageList, leftSideView, isReadAllChat, room, status } =
     useAppSelector((state) => ({
-      ui: state.ui,
+      status: state.status,
       messageList: state.chat.messageList,
       room: state.room.room,
       username: state.user.username,
@@ -101,15 +103,36 @@ const Room = () => {
         chatListElement?.current?.scrollHeight;
   };
 
+  const intersectionHandler = (entries: IntersectionObserverEntry[]) => {
+    if (entries[0].intersectionRatio > 0) {
+      setPage((page) => page + 1);
+    }
+  };
+
+  const io = useMemo(
+    () =>
+      new IntersectionObserver(intersectionHandler, {
+        root: chatListElement.current,
+        rootMargin: '0px',
+      }),
+    [],
+  );
+
+  useEffect(() => {
+    if (page) {
+      dispatch(getChatListPageByDB({ roomName: roomName!, page, offset: 5 }));
+    }
+  }, [page, roomName]);
+
   useEffect(() => {
     if (username && roomName) {
+      storage.setItem('roomName', roomName);
+
       setUsernameModalVisible(false);
       app.dispatch.sendConnectMessage({}); // socket join
       app.dispatch.sendJoinRoomMessage({ roomName }); // join
       dispatch(roomActions.setRoomName(roomName));
-      storage.setItem('roomName', roomName);
       dispatch(getRoomByDB(roomName));
-      dispatch(getChatListByDB({ roomName }));
     } else {
       setUsernameModalVisible(true);
     }
@@ -128,13 +151,10 @@ const Room = () => {
   }, [messageList.length]);
 
   useEffect(() => {
-    // message(chat) list 불러오고 나서 스크롤 가장 바텀으로 이동
-    if (ui.firstGetChatList) moveToChatScrollBottom();
-  }, [ui.firstGetChatList]);
+    if (!chatLoadingTriggerElement.current) return;
+    io.observe(chatLoadingTriggerElement.current);
 
-  useEffect(() => {
     chatListElement?.current?.addEventListener('scroll', handleScrollChatList);
-    dispatch(getUserByDB());
     window.addEventListener('beforeunload', async () => {
       roomName && dispatch(deleteAllMemberByDB({ roomName }));
     });
@@ -143,6 +163,7 @@ const Room = () => {
     window.visualViewport?.addEventListener('scroll', handleViewportResize);
 
     return () => {
+      io.disconnect();
       chatListElement.current?.removeEventListener(
         'scroll',
         handleScrollChatList,
@@ -161,7 +182,7 @@ const Room = () => {
 
   return (
     <>
-      <RoomContent $leftMenuVisible={ui.leftMenuVisible}>
+      <RoomContent $leftMenuVisible={status.leftMenuVisible}>
         <ContentContainer className="content-container">
           <VideoContainer
             id={'video-container'}
@@ -186,6 +207,7 @@ const Room = () => {
           </VideoContainer>
           <ChatContainer leftSideView={leftSideView}>
             <ChatList ref={chatListElement}>
+              <div id="chat-loading-trigger" ref={chatLoadingTriggerElement} />
               {messageList.map(
                 ({ message, userKey, date, username }, index) => (
                   <ChatBubble
