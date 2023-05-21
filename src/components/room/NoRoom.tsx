@@ -89,6 +89,9 @@ const NoRoomContent = styled.div`
     .ant-btn-default:not(:disabled) {
       cursor: auto;
     }
+    p {
+      text-align: center;
+    }
   }
 `;
 
@@ -102,6 +105,7 @@ const Text = styled.span<{
   font-weight: ${({ bold }) => (bold ? 'bold' : 400)};
   p {
     margin-bottom: 8px;
+    text-align: center;
   }
 `;
 

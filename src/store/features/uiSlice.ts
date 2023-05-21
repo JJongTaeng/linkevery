@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Bowser from 'bowser';
+import { getChatListByDB } from '../thunk/chatThunk';
 import { getUserByDB } from '../thunk/userThunk';
 
 interface UiState {
@@ -30,6 +31,9 @@ export const uiSlice = createSlice({
       })
       .addCase(getUserByDB.fulfilled, (state, { payload }) => {
         state.getUserLoading = false;
+      })
+      .addCase(getChatListByDB.fulfilled, (state, { payload }) => {
+        state.firstGetChatList = true;
       });
   },
 });

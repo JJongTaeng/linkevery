@@ -128,9 +128,13 @@ const Room = () => {
   }, [messageList.length]);
 
   useEffect(() => {
-    if (!chatListElement.current) return;
-    chatListElement.current.addEventListener('scroll', handleScrollChatList);
-    dispatch(getUserByDB()); // get user info [userkey, username
+    // message(chat) list 불러오고 나서 스크롤 가장 바텀으로 이동
+    if (ui.firstGetChatList) moveToChatScrollBottom();
+  }, [ui.firstGetChatList]);
+
+  useEffect(() => {
+    chatListElement?.current?.addEventListener('scroll', handleScrollChatList);
+    dispatch(getUserByDB());
     window.addEventListener('beforeunload', async () => {
       roomName && dispatch(deleteAllMemberByDB({ roomName }));
     });
@@ -201,7 +205,6 @@ const Room = () => {
                   moveToChatScrollBottom();
                 }}
                 shape="circle"
-                danger
               >
                 <SvgArrowDown />
               </Button>
@@ -410,17 +413,13 @@ const ChatContainer = styled.div<{ leftSideView: boolean }>`
   ${({ theme, leftSideView }) => theme.media.tablet`
       ${leftSideView ? 'display: none' : ''}
   `};
-  .ant-btn-dangerous {
+  .ant-btn {
     position: absolute;
     left: calc(50% - 16px);
     bottom: 110px;
     display: flex;
     justify-content: center;
     align-items: center;
-    path {
-      stroke: #ff7875;
-      fill: #ff7875;
-    }
     animation: ${highlight} 2s 1s infinite linear alternate;
   }
 `;
