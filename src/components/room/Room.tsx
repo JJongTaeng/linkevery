@@ -25,6 +25,7 @@ import UsernameModal from './UsernameModal';
 
 const Room = () => {
   const chatListElement = useRef<HTMLDivElement>(null);
+  const focusInput = useRef<HTMLInputElement>(null);
   const [usernameModalVisible, setUsernameModalVisible] = useState(false);
   const [selectedUserKey, setSelectedUserKey] = useState('');
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -94,34 +95,6 @@ const Room = () => {
         chatListElement?.current?.scrollHeight;
   };
 
-  const handleViewportResize = (e: any) => {
-    window.scrollTo(0, 0);
-    document.body.style.height = `${e.target.height}px`;
-    document.documentElement.style.height = `${e.target.height}px`;
-    // @ts-ignore
-    chatListElement.current.style.height = `${e.target.height - 160}px`;
-    moveToChatScrollBottom();
-  };
-
-  useEffect(() => {
-    dispatch(getUserByDB()); // get user info [userkey, username
-    window.addEventListener('beforeunload', async () => {
-      roomName && dispatch(deleteAllMemberByDB({ roomName }));
-    });
-    window.visualViewport?.addEventListener('resize', handleViewportResize);
-    window.visualViewport?.addEventListener('scroll', handleViewportResize);
-    return () => {
-      window.visualViewport?.removeEventListener(
-        'resize',
-        handleViewportResize,
-      );
-      window.visualViewport?.removeEventListener(
-        'scroll',
-        handleViewportResize,
-      );
-    };
-  }, []);
-
   useEffect(() => {
     if (username && roomName) {
       setUsernameModalVisible(false);
@@ -140,10 +113,10 @@ const Room = () => {
     };
   }, [username, roomName]);
 
-  useEffect(() => {
-    if (!room.member[selectedUserKey])
-      dispatch(userActions.changeLeftSideView(false));
-  }, [room.member]);
+  // useEffect(() => {
+  //   if (!room.member[selectedUserKey])
+  //     dispatch(userActions.changeLeftSideView(false));
+  // }, [room.member]);
 
   useEffect(() => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
@@ -156,7 +129,10 @@ const Room = () => {
   useEffect(() => {
     if (!chatListElement.current) return;
     chatListElement.current.addEventListener('scroll', handleScrollChatList);
-
+    dispatch(getUserByDB()); // get user info [userkey, username
+    window.addEventListener('beforeunload', async () => {
+      roomName && dispatch(deleteAllMemberByDB({ roomName }));
+    });
     return () => {
       chatListElement.current?.removeEventListener(
         'scroll',
@@ -218,9 +194,11 @@ const Room = () => {
               </Button>
             )}
             <ChatForm
+              autoComplete="off"
               onSubmit={(e: any) => {
                 e.preventDefault();
                 handleChat();
+                focusInput?.current?.focus();
                 e.target.message.focus();
               }}
             >
@@ -237,6 +215,9 @@ const Room = () => {
                         }
                         if (e.nativeEvent.isComposing) return;
                         handleChat();
+                        e.target.value = '';
+                        focusInput?.current?.focus();
+                        e.target.focus();
                         break;
                       case 'Shift':
                         setIsShift(true);
@@ -254,6 +235,16 @@ const Room = () => {
                   name="message"
                   style={{ height: 40 }}
                   placeholder={roomName?.split('+')[0] + ' 에 메시지 보내기'}
+                />
+                <input
+                  type="text"
+                  ref={focusInput}
+                  style={{
+                    position: 'fixed',
+                    left: -10000,
+                    width: 10,
+                    height: 10,
+                  }}
                 />
               </div>
 
@@ -436,7 +427,7 @@ const ChatList = styled.div`
   width: 100%;
   height: calc(100% - 100px);
   overflow: overlay;
-  padding: 20px 40px 0 40px;
+  padding: 20px 20px 0 20px;
   box-shadow: ${({ theme }) => theme.boxShadow};
 
   border-radius: 8px;
