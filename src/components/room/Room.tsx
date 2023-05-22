@@ -37,14 +37,13 @@ const Room = () => {
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { username, messageList, leftSideView, isReadAllChat, room, status } =
+  const { username, messageList, leftSideView, isVisibleScrollButton, status } =
     useAppSelector((state) => ({
       status: state.status,
       messageList: state.chat.messageList,
-      room: state.room.room,
       username: state.user.username,
       leftSideView: state.status.isLeftSideView,
-      isReadAllChat: state.status.isScrollButtonView,
+      isVisibleScrollButton: state.status.isVisibleScrollButton,
     }));
   const dispatch = useAppDispatch();
 
@@ -96,7 +95,7 @@ const Room = () => {
 
   const handleScrollChatList = () => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
-      dispatch(statusActions.changeIsScrollBottomView(false));
+      dispatch(statusActions.changeIsVisibleScrollButton(false));
     }
   };
   const handleViewportResize = debounce(
@@ -153,9 +152,9 @@ const Room = () => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
       moveToChatScrollBottom();
     } else {
-      dispatch(statusActions.changeIsScrollBottomView(true));
+      dispatch(statusActions.changeIsVisibleScrollButton(true));
     }
-  }, [messageList.length, page]);
+  }, [page]);
 
   useEffect(() => {
     chatListElement?.current?.addEventListener('scroll', handleScrollChatList);
@@ -223,7 +222,7 @@ const Room = () => {
                 ),
               )}
             </ChatList>
-            {isReadAllChat && (
+            {isVisibleScrollButton && (
               <Button
                 style={{ marginBottom: 8 }}
                 onClick={() => {
