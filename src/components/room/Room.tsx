@@ -134,7 +134,6 @@ const Room = () => {
   useEffect(() => {
     if (username && roomName) {
       storage.setItem('roomName', roomName);
-
       setUsernameModalVisible(false);
       app.dispatch.sendConnectMessage({}); // socket join
       app.dispatch.sendJoinRoomMessage({ roomName }); // join
@@ -161,6 +160,7 @@ const Room = () => {
   }, [messageList.length, page]);
 
   useEffect(() => {
+    dispatch(getUserByDB());
     chatListElement?.current?.addEventListener(
       'scroll',
       onScrollIsVisibleScrollButton,
