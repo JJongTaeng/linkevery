@@ -98,9 +98,11 @@ const Room = () => {
     setMessage('');
   };
 
-  const handleScrollChatList = () => {
+  const onScrollIsVisibleScrollButton = () => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
       dispatch(statusActions.changeIsVisibleScrollButton(false));
+    } else {
+      dispatch(statusActions.changeIsVisibleScrollButton(true));
     }
   };
   const handleViewportResize = debounce(
@@ -156,13 +158,14 @@ const Room = () => {
     }
     if (utils.isBottomScrollElement(chatListElement.current!)) {
       moveToChatScrollBottom();
-    } else {
-      dispatch(statusActions.changeIsVisibleScrollButton(true));
     }
-  }, [page]);
+  }, [messageList.length, page]);
 
   useEffect(() => {
-    chatListElement?.current?.addEventListener('scroll', handleScrollChatList);
+    chatListElement?.current?.addEventListener(
+      'scroll',
+      onScrollIsVisibleScrollButton,
+    );
     window.addEventListener('beforeunload', async () => {
       roomName && dispatch(deleteAllMemberByDB({ roomName }));
     });
@@ -173,7 +176,7 @@ const Room = () => {
     return () => {
       chatListElement.current?.removeEventListener(
         'scroll',
-        handleScrollChatList,
+        onScrollIsVisibleScrollButton,
       );
       roomName && dispatch(deleteAllMemberByDB({ roomName }));
       window.visualViewport?.removeEventListener(
