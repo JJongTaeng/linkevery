@@ -37,14 +37,19 @@ const Room = () => {
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { username, messageList, leftSideView, isVisibleScrollButton, status } =
-    useAppSelector((state) => ({
-      status: state.status,
-      messageList: state.chat.messageList,
-      username: state.user.username,
-      leftSideView: state.status.isLeftSideView,
-      isVisibleScrollButton: state.status.isVisibleScrollButton,
-    }));
+  const {
+    username,
+    messageList,
+    isVisiblePlayView,
+    isVisibleScrollButton,
+    status,
+  } = useAppSelector((state) => ({
+    status: state.status,
+    messageList: state.chat.messageList,
+    username: state.user.username,
+    isVisiblePlayView: state.status.isVisiblePlayView,
+    isVisibleScrollButton: state.status.isVisibleScrollButton,
+  }));
   const dispatch = useAppDispatch();
 
   const [isIntersecting] = useIntersectionObserver<HTMLDivElement>(
@@ -188,7 +193,7 @@ const Room = () => {
         <ContentContainer className="content-container">
           <VideoContainer
             id={'video-container'}
-            isVisible={leftSideView}
+            isVisible={isVisiblePlayView}
             isFullScreen={isFullScreen}
           >
             <div
@@ -199,7 +204,7 @@ const Room = () => {
             </div>
             <div
               onClick={() => {
-                dispatch(statusActions.changeLeftSideView(false));
+                dispatch(statusActions.changeIsVisiblePlayView(false));
                 setIsFullScreen(false);
               }}
               className="close-video"
@@ -207,7 +212,7 @@ const Room = () => {
               <SvgCloseButton />
             </div>
           </VideoContainer>
-          <ChatContainer leftSideView={leftSideView}>
+          <ChatContainer leftSideView={isVisiblePlayView}>
             <ChatList id={'chat-list'} ref={chatListElement}>
               <div id="chat-loading-trigger" ref={chatLoadingTriggerElement} />
               {messageList.map(

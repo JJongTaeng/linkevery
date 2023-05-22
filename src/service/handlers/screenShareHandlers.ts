@@ -71,6 +71,6 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       }),
     );
     videoManager.clearVideo(from);
-    store.dispatch(statusActions.changeLeftSideView(false));
+    store.dispatch(statusActions.changeIsVisiblePlayView(false));
   },
 };

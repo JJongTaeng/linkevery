@@ -6,7 +6,7 @@ import { getChatListPageByDB } from '../thunk/chatThunk';
 interface StatusState {
   leftMenuVisible: boolean;
   isMaxPageMessageList: boolean;
-  isLeftSideView: boolean;
+  isVisiblePlayView: boolean;
   isVisibleScrollButton: boolean;
 }
 const agentInfo = Bowser.parse(window.navigator.userAgent);
@@ -14,7 +14,7 @@ const agentInfo = Bowser.parse(window.navigator.userAgent);
 const initialState: StatusState = {
   leftMenuVisible: agentInfo.platform.type === 'desktop',
   isMaxPageMessageList: false,
-  isLeftSideView: false,
+  isVisiblePlayView: false,
   isVisibleScrollButton: false,
 };
 
@@ -25,8 +25,8 @@ export const statusSlice = createSlice({
     changeLeftMenuVisible: (state, { payload }: { payload: boolean }) => {
       state.leftMenuVisible = payload;
     },
-    changeLeftSideView: (state, { payload }) => {
-      state.isLeftSideView = payload;
+    changeIsVisiblePlayView: (state, { payload }) => {
+      state.isVisiblePlayView = payload;
     },
     changeIsVisibleScrollButton: (state, { payload }) => {
       state.isVisibleScrollButton = payload;

@@ -117,7 +117,7 @@ const TopMenuContainer = () => {
                 dispatch(userActions.changeVoiceStatus(false));
                 dispatch(roomActions.setAllMemberVoiceOff());
                 dispatch(roomActions.setAllMemberScreenShareOff());
-                dispatch(statusActions.changeLeftSideView(false));
+                dispatch(statusActions.changeIsVisiblePlayView(false));
               }
             }}
           >
