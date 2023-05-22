@@ -1,16 +1,23 @@
 import { Badge, Card } from 'antd';
 import color from 'color';
+import { HTMLAttributes } from 'react';
 import stc from 'string-to-color';
 import styled from 'styled-components';
 
-interface ChatBubbleProps {
+interface ChatBubbleProps extends HTMLAttributes<HTMLDivElement> {
   date: string;
   username: string;
   isMyChat: boolean;
   message: string;
 }
 
-const ChatBubble = ({ message, date, username, isMyChat }: ChatBubbleProps) => {
+const ChatBubble = ({
+  message,
+  date,
+  username,
+  isMyChat,
+  ...props
+}: ChatBubbleProps) => {
   const padding = isMyChat ? '10px 80px 10px 20px' : '10px 20px 10px 80px';
   const sum = (arr: number[]) =>
     arr.reduce((prev, curr) => {
@@ -21,6 +28,7 @@ const ChatBubble = ({ message, date, username, isMyChat }: ChatBubbleProps) => {
     sum(getColorObj(stc(username)).color as number[]) / 765 > 0.6;
   return (
     <ChatBubbleContainer
+      {...props}
       $isBlack={isBlack()}
       className={isMyChat ? 'chat-bubble  my-chat' : 'chat-bubble peer-chat'}
     >
