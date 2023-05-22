@@ -12,7 +12,6 @@ import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
 import { statusActions } from '../../store/features/statusSlice';
-import { userActions } from '../../store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addChatByDB, getChatListPageByDB } from '../../store/thunk/chatThunk';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
@@ -44,8 +43,8 @@ const Room = () => {
       messageList: state.chat.messageList,
       room: state.room.room,
       username: state.user.username,
-      leftSideView: state.user.leftSideView,
-      isReadAllChat: state.user.isScrollButtonView,
+      leftSideView: state.status.isLeftSideView,
+      isReadAllChat: state.status.isScrollButtonView,
     }));
   const dispatch = useAppDispatch();
 
@@ -97,7 +96,7 @@ const Room = () => {
 
   const handleScrollChatList = () => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
-      dispatch(userActions.changeIsScrollBottomView(false));
+      dispatch(statusActions.changeIsScrollBottomView(false));
     }
   };
   const handleViewportResize = debounce(
@@ -154,7 +153,7 @@ const Room = () => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
       moveToChatScrollBottom();
     } else {
-      dispatch(userActions.changeIsScrollBottomView(true));
+      dispatch(statusActions.changeIsScrollBottomView(true));
     }
   }, [messageList.length, page]);
 
@@ -201,7 +200,7 @@ const Room = () => {
             </div>
             <div
               onClick={() => {
-                dispatch(userActions.changeLeftSideView(false));
+                dispatch(statusActions.changeLeftSideView(false));
                 setIsFullScreen(false);
               }}
               className="close-video"

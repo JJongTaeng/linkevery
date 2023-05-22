@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { audioManager } from '../../service/media/AudioManager';
 import { videoManager } from '../../service/media/VideoManager';
-import { userActions } from '../../store/features/userSlice';
+import { statusActions } from '../../store/features/statusSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { highlight } from '../../style';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
@@ -26,7 +26,7 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
 
   useEffect(() => {
     if (!room.member[selectedUserKey])
-      dispatch(userActions.changeLeftSideView(false));
+      dispatch(statusActions.changeLeftSideView(false));
   }, [room.member]);
   return (
     <MemberList className="member-list">
@@ -43,7 +43,7 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
                 size="small"
                 shape="circle"
                 onClick={() => {
-                  dispatch(userActions.changeLeftSideView(true));
+                  dispatch(statusActions.changeLeftSideView(true));
                   setSelectedUserKey(userKey);
                   videoManager.appendVideoNode(room.member[userKey].clientId);
                 }}

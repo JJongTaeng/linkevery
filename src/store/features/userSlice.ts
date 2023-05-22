@@ -7,8 +7,6 @@ interface UserState {
   username: string;
   voiceStatus: boolean;
   screenShareStatus: boolean;
-  leftSideView: boolean;
-  isScrollButtonView: boolean;
 }
 
 const initialState: UserState = {
@@ -16,8 +14,6 @@ const initialState: UserState = {
   username: storage.getItem('username'),
   voiceStatus: false,
   screenShareStatus: false,
-  leftSideView: false,
-  isScrollButtonView: false,
 };
 
 export const userSlice = createSlice({
@@ -32,12 +28,6 @@ export const userSlice = createSlice({
     },
     changeScreenShareStatus: (state, { payload }) => {
       state.screenShareStatus = payload;
-    },
-    changeLeftSideView: (state, { payload }) => {
-      state.leftSideView = payload;
-    },
-    changeIsScrollBottomView: (state, { payload }) => {
-      state.isScrollButtonView = payload;
     },
   },
   extraReducers: (builder) => {

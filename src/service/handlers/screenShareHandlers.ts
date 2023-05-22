@@ -1,6 +1,7 @@
 import { message } from 'antd';
 import { HandlerMap, SCREEN_SHARE_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
+import { statusActions } from '../../store/features/statusSlice';
 import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
 import { videoManager } from '../media/VideoManager';
@@ -70,6 +71,6 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       }),
     );
     videoManager.clearVideo(from);
-    store.dispatch(userActions.changeLeftSideView(false));
+    store.dispatch(statusActions.changeLeftSideView(false));
   },
 };
