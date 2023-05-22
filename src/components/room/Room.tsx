@@ -1,10 +1,11 @@
 import { Button } from 'antd';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { debounce } from 'throttle-debounce';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { AppServiceImpl } from '../../service/app/AppServiceImpl';
 import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
@@ -47,6 +48,13 @@ const Room = () => {
       isReadAllChat: state.user.isScrollButtonView,
     }));
   const dispatch = useAppDispatch();
+
+  const [isIntersecting] = useIntersectionObserver<HTMLDivElement>(
+    chatLoadingTriggerElement,
+    {
+      root: chatListElement.current,
+    },
+  );
 
   const [message, setMessage] = useState('');
   const [isShift, setIsShift] = useState<boolean>(false);
@@ -105,20 +113,11 @@ const Room = () => {
         chatListElement?.current?.scrollHeight;
   };
 
-  const intersectionHandler = (entries: IntersectionObserverEntry[]) => {
-    if (entries[0].intersectionRatio > 0 && !status.isMaxPageMessageList) {
+  useEffect(() => {
+    if (isIntersecting && !status.isMaxPageMessageList) {
       setPage((page) => page + 1);
     }
-  };
-
-  const io = useMemo(
-    () =>
-      new IntersectionObserver(intersectionHandler, {
-        root: chatListElement.current,
-        rootMargin: '0px',
-      }),
-    [status.isMaxPageMessageList],
-  );
+  }, [isIntersecting, status.isMaxPageMessageList]);
 
   useEffect(() => {
     if (page) {
@@ -158,14 +157,6 @@ const Room = () => {
       dispatch(userActions.changeIsScrollBottomView(true));
     }
   }, [messageList.length, page]);
-
-  useEffect(() => {
-    if (!chatLoadingTriggerElement.current) return;
-    io.observe(chatLoadingTriggerElement.current);
-    return () => {
-      io.disconnect();
-    };
-  }, [status.isMaxPageMessageList]);
 
   useEffect(() => {
     chatListElement?.current?.addEventListener('scroll', handleScrollChatList);
