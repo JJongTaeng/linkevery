@@ -4,7 +4,7 @@ export function useIntersectionObserver<T extends HTMLElement>(
   ref: React.RefObject<T>,
   option?: IntersectionObserverInit,
 ) {
-  const [intersected, setIntersected] = useState(false);
+  const [isIntersecting, setIntersected] = useState(false);
   const io = new IntersectionObserver(([entry]) => {
     setIntersected(entry.isIntersecting);
   }, option);
@@ -16,5 +16,5 @@ export function useIntersectionObserver<T extends HTMLElement>(
     };
   }, [ref.current]);
 
-  return [intersected];
+  return [isIntersecting];
 }
