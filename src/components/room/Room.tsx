@@ -16,7 +16,6 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addChatByDB, getChatListPageByDB } from '../../store/thunk/chatThunk';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
 import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
-import { highlight } from '../../style';
 import { PAGE_OFFSET } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
 import SvgArrowDown from '../icons/ArrowDown';
@@ -452,7 +451,6 @@ const ChatContainer = styled.div<{ leftSideView: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: ${highlight} 2s 1s infinite linear alternate;
   }
 `;
 
