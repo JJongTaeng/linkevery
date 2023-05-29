@@ -1,5 +1,4 @@
-import * as React from "react";
-import { SVGProps } from "react";
+import { SVGProps } from 'react';
 const SvgCloseButton = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width="1em"

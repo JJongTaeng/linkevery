@@ -3,7 +3,7 @@ import Bowser from 'bowser';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { AppServiceImpl } from '../../service/app/AppServiceImpl';
+import { App } from '../../service/app/AppServiceImpl';
 import { mdUtils } from '../../service/media/MediaDeviceUtils';
 import { videoManager } from '../../service/media/VideoManager';
 import { clipboard } from '../../service/utils/Clipboard';
@@ -25,7 +25,7 @@ const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const TopMenuContainer = () => {
   const navigate = useNavigate();
-  const app = useRef(AppServiceImpl.getInstance()).current;
+  const app = useRef(App.getInstance()).current;
 
   const { leftMenuVisible, roomName, voiceStatus, screenShareStatus, room } =
     useAppSelector((state) => ({

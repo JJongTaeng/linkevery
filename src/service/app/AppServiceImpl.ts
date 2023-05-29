@@ -9,14 +9,13 @@ import { RTCManager } from '../rtc/RTCManager';
 import { storage } from '../storage/StorageService';
 import { AppService } from './AppService';
 
-export class AppServiceImpl extends AppService {
+export class App implements AppService {
   readonly socket: Socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
   readonly rtcManager = new RTCManager();
   readonly dispatch = new DispatchEvent(this.socket, this.rtcManager);
 
-  public static instance: AppServiceImpl;
+  public static instance: App;
   private constructor() {
-    super();
     new HandlerManager(this.socket, this.rtcManager, this.dispatch);
 
     window.debug = {
@@ -26,7 +25,7 @@ export class AppServiceImpl extends AppService {
 
   public static getInstance() {
     if (!this.instance) {
-      this.instance = new AppServiceImpl();
+      this.instance = new App();
     }
 
     return this.instance;

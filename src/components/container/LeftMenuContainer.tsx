@@ -2,7 +2,7 @@ import { Button } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { AppServiceImpl } from '../../service/app/AppServiceImpl';
+import { App } from '../../service/app/AppServiceImpl';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { getRoomListByDB } from '../../store/thunk/roomThunk';
 import CreateRoomModal from '../room/CreateRoomModal';
@@ -12,7 +12,7 @@ import RoomBadge from '../room/RoomBadge';
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const app = useRef(AppServiceImpl.getInstance()).current;
+  const app = useRef(App.getInstance()).current;
   const dispatch = useAppDispatch();
   const {
     roomName: currentRoomName,

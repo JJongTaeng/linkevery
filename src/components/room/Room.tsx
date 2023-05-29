@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { debounce } from 'throttle-debounce';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
-import { AppServiceImpl } from '../../service/app/AppServiceImpl';
+import { App } from '../../service/app/AppServiceImpl';
 import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
@@ -26,7 +26,7 @@ import SvgSend from '../icons/Send';
 import UsernameModal from './UsernameModal';
 
 const Room = () => {
-  const app = useRef(AppServiceImpl.getInstance()).current;
+  const app = useRef(App.getInstance()).current;
   const chatListElement = useRef<HTMLDivElement>(null);
   const chatLoadingTriggerElement = useRef<HTMLDivElement>(null);
   const focusInput = useRef<HTMLInputElement>(null);
