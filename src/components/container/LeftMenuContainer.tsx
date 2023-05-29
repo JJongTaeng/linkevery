@@ -2,7 +2,7 @@ import { Button } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { App } from '../../service/app/AppServiceImpl';
+import { App } from '../../service/app/App';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { getRoomListByDB } from '../../store/thunk/roomThunk';
 import CreateRoomModal from '../room/CreateRoomModal';

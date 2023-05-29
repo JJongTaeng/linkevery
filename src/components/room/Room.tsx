@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { debounce } from 'throttle-debounce';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
-import { App } from '../../service/app/AppServiceImpl';
+import { App } from '../../service/app/App';
 import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
