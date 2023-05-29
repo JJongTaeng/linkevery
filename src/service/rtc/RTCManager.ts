@@ -51,3 +51,5 @@ export class RTCManager extends RTCManagerService {
     });
   }
 }
+
+export const rtcManager = new RTCManager();

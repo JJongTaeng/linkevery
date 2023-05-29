@@ -30,7 +30,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
     store.dispatch(
       updateMemberByDB({ roomName, member: store.getState().room.room.member }),
     );
-    dispatch.sendRoomMemberNameOkMessage({
+    dispatch.sendRoomMemberNamePostMessage({
       username,
       to: protocol.from,
       userKey,

@@ -38,17 +38,25 @@ export class HandlerManager {
   subscribeHandlers() {
     this.socket.on(EVENT_NAME, (protocol: Protocol) => {
       console.debug('%c[receive] ', 'color:blue;font-weight:bold;', protocol);
-      this.handlers[protocol.category][protocol.messageId](protocol, {
-        dispatch: this.dispatch,
-        rtcManager: this.rtcManager,
-      });
+      try {
+        this.handlers[protocol.category][protocol.messageId](protocol, {
+          dispatch: this.dispatch,
+          rtcManager: this.rtcManager,
+        });
+      } catch (e) {
+        console.debug('%c[Error] ', 'color:blue;font-weight:bold;', protocol);
+      }
     });
     this.rtcManager.on(RTCManager.RTC_EVENT.DATA, (protocol: Protocol) => {
       console.debug('%c[receive] ', 'color:blue;font-weight:bold;', protocol);
-      this.handlers[protocol.category][protocol.messageId](protocol, {
-        dispatch: this.dispatch,
-        rtcManager: this.rtcManager,
-      });
+      try {
+        this.handlers[protocol.category][protocol.messageId](protocol, {
+          dispatch: this.dispatch,
+          rtcManager: this.rtcManager,
+        });
+      } catch (e) {
+        console.debug('%c[Error] ', 'color:blue;font-weight:bold;', protocol);
+      }
     });
   }
 }

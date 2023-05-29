@@ -1,18 +1,19 @@
-import { io, Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
 import { audioManager } from '../media/AudioManager';
-import { RTCManager } from '../rtc/RTCManager';
+import { rtcManager } from '../rtc/RTCManager';
+import { socketManager } from '../socket/SocketManager';
 import { storage } from '../storage/StorageService';
 import { AppService } from './AppService';
 
 export class App implements AppService {
-  readonly socket: Socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
-  readonly rtcManager = new RTCManager();
-  readonly dispatch = new DispatchEvent(this.socket, this.rtcManager);
+  readonly socket: Socket = socketManager.socket;
+  readonly rtcManager = rtcManager;
+  readonly dispatch = new DispatchEvent();
 
   public static instance: App;
   private constructor() {

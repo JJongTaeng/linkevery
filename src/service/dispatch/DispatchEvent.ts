@@ -1,177 +1,136 @@
-import { Socket } from 'socket.io-client';
-import {
-  EVENT_NAME,
-  MESSAGE_TYPE,
-  Protocol,
-  ProtocolData,
-} from '../../constants/protocol';
-import { chatMessage, okMessage } from '../messages/chat';
-import {
-  connectMessage,
-  disconnectMessage,
-  joinRoomMessage,
-} from '../messages/connection';
-import {
-  negotiationAnswerMessage,
-  negotiationOfferMessage,
-} from '../messages/negotiation';
-import {
-  memberNameMessage,
-  memberNameOkMessage,
-  syncChatListMessage,
-  syncChatListOkMessage,
-} from '../messages/room';
-import {
-  screenShareConnectedMessage,
-  screenShareDisconnectMessage,
-  screenShareReadyMessage,
-  screenShareReadyOkMessage,
-} from '../messages/screenShare';
-import {
-  answerMessage,
-  connectDataChannelMessage,
-  createDataChannelMessage,
-  iceMessage,
-  offerMessage,
-  signalingStartMessage,
-} from '../messages/signaling';
-import {
-  voiceConnectedMessage,
-  voiceDisconnectMessage,
-  voiceReadyMessage,
-  voiceReadyOkMessage,
-} from '../messages/voice';
-import { RTCManager } from '../rtc/RTCManager';
-import { memberNamePreMessage } from './../messages/room';
+import { Protocol, ProtocolData } from '../../constants/protocol';
+import { Sender } from '../messages/Sender';
+import { rtcManager } from '../rtc/RTCManager';
+import { socketManager } from './../socket/SocketManager';
 import { DispatchEventService } from './DispatchEventService';
 
+@MessageSender
 export class DispatchEvent extends DispatchEventService {
-  constructor(private socket: Socket, private rtcManager: RTCManager) {
+  constructor() {
     super();
   }
 
-  sendConnectionConnectMessage(data: ProtocolData) {
-    this.send(connectMessage(data));
-  }
+  @SocketMessage()
+  sendConnectionConnectMessage(data: ProtocolData) {}
 
-  sendConnectionJoinRoomMessage(data: ProtocolData) {
-    this.send(joinRoomMessage(data));
-  }
+  @SocketMessage()
+  sendConnectionJoinRoomMessage(data: ProtocolData) {}
 
-  sendConnectionDisconnectMessage(data: ProtocolData) {
-    this.send(disconnectMessage(data));
-  }
+  @SocketMessage()
+  sendConnectionDisconnectMessage(data: ProtocolData) {}
 
-  sendSignalingStartMessage(data: ProtocolData) {
-    this.send(signalingStartMessage(data));
-  }
+  @SocketMessage()
+  sendSignalingStartMessage(data: ProtocolData) {}
 
-  sendSignalingOfferMessage(data: ProtocolData) {
-    this.send(offerMessage(data));
-  }
+  @SocketMessage()
+  sendSignalingOfferMessage(data: ProtocolData) {}
 
-  sendSignalingAnswerMessage(data: ProtocolData) {
-    this.send(answerMessage(data));
-  }
+  @SocketMessage()
+  sendSignalingAnswerMessage(data: ProtocolData) {}
 
-  sendSignalingIceMessage(data: ProtocolData) {
-    this.send(iceMessage(data));
-  }
+  @SocketMessage()
+  sendSignalingIceMessage(data: ProtocolData) {}
 
-  sendSignalingCreateDataChannelMessage(data: ProtocolData) {
-    this.send(createDataChannelMessage(data));
-  }
+  @SocketMessage()
+  sendSignalingCreateDataChannelMessage(data: ProtocolData) {}
 
-  sendSignalingConnectDataChannelMessage(data: ProtocolData) {
-    this.send(connectDataChannelMessage(data));
-  }
+  @SocketMessage()
+  sendSignalingConnectDataChannelMessage(data: ProtocolData) {}
 
-  sendChatSendMessage(data: ProtocolData) {
-    this.send(chatMessage(data));
-  }
-  sendChatOkMessage(data: ProtocolData) {
-    this.send(okMessage(data));
-  }
+  @RTCMessage()
+  sendChatSendMessage(data: ProtocolData) {}
 
-  sendRoomMemberNamePreMessage(data: ProtocolData) {
-    this.send(memberNamePreMessage(data));
-  }
+  @RTCMessage()
+  sendChatOkMessage(data: ProtocolData) {}
 
-  sendRoomMemberNameMessage(data: ProtocolData) {
-    this.send(memberNameMessage(data));
-  }
+  @SocketMessage()
+  sendRoomMemberNamePreMessage(data: ProtocolData) {}
 
-  sendRoomMemberNameOkMessage(data: ProtocolData) {
-    this.send(memberNameOkMessage(data));
-  }
+  @SocketMessage()
+  sendRoomMemberNameMessage(data: ProtocolData) {}
 
-  sendRoomSyncChatListMessage(data: ProtocolData) {
-    this.send(syncChatListMessage(data));
-  }
+  @SocketMessage()
+  sendRoomMemberNamePostMessage(data: ProtocolData) {}
 
-  sendRoomSyncChatListOkMessage(data: ProtocolData) {
-    this.send(syncChatListOkMessage(data));
-  }
+  @RTCMessage()
+  sendRoomSyncChatListMessage(data: ProtocolData) {}
 
-  sendVoiceReadyMessage(data: ProtocolData) {
-    this.send(voiceReadyMessage(data));
-  }
+  @RTCMessage()
+  sendRoomSyncChatListOkMessage(data: ProtocolData) {}
 
-  sendVoiceReadyOkMessage(data: ProtocolData) {
-    this.send(voiceReadyOkMessage(data));
-  }
+  @RTCMessage()
+  sendVoiceReadyMessage(data: ProtocolData) {}
 
-  sendVoiceConnectedMessage(data: ProtocolData) {
-    this.send(voiceConnectedMessage(data));
-  }
+  @RTCMessage()
+  sendVoiceReadyOkMessage(data: ProtocolData) {}
 
-  sendVoiceDisconnectMessage(data: ProtocolData) {
-    this.send(voiceDisconnectMessage(data));
-  }
+  @RTCMessage()
+  sendVoiceConnectedMessage(data: ProtocolData) {}
 
-  sendScreenShareReadyMessage(data: ProtocolData) {
-    this.send(screenShareReadyMessage(data));
-  }
+  @RTCMessage()
+  sendVoiceDisconnectMessage(data: ProtocolData) {}
 
-  sendScreenShareReadyOkMessage(data: ProtocolData) {
-    this.send(screenShareReadyOkMessage(data));
-  }
-  sendScreenShareConnectedMessage(data: ProtocolData) {
-    this.send(screenShareConnectedMessage(data));
-  }
+  @RTCMessage()
+  sendScreenShareReadyMessage(data: ProtocolData) {}
 
-  sendScreenShareDisconnectMessage(data: ProtocolData) {
-    this.send(screenShareDisconnectMessage(data));
-  }
+  @RTCMessage()
+  sendScreenShareReadyOkMessage(data: ProtocolData) {}
 
-  sendNegotiationOfferMessage(data: ProtocolData) {
-    this.send(negotiationOfferMessage(data));
-  }
+  @RTCMessage()
+  sendScreenShareConnectedMessage(data: ProtocolData) {}
 
-  sendNegotiationAnswerMessage(data: ProtocolData) {
-    this.send(negotiationAnswerMessage(data));
-  }
+  @RTCMessage()
+  sendScreenShareDisconnectMessage(data: ProtocolData) {}
 
-  send(protocol: Protocol) {
-    if (protocol.messageType === MESSAGE_TYPE.SOCKET) {
-      console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
-      this.socket.emit(EVENT_NAME, protocol);
-    } else if (protocol.messageType === MESSAGE_TYPE.RTC) {
-      console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
-      const { to } = protocol.data;
-      if (to) {
-        try {
-          this.rtcManager.sendTo(protocol);
-        } catch (e) {
-          this.send({ ...protocol, messageType: MESSAGE_TYPE.SOCKET });
-        }
-      } else {
-        try {
-          this.rtcManager.sendAll(protocol);
-        } catch (e) {
-          this.send({ ...protocol, messageType: MESSAGE_TYPE.SOCKET });
-        }
-      }
-    }
-  }
+  @SocketMessage()
+  sendNegotiationOfferMessage(data: ProtocolData) {}
+
+  @SocketMessage()
+  sendNegotiationAnswerMessage(data: ProtocolData) {}
+}
+
+function splitCamelCase(sentence: string) {
+  // Use regular expression to split the camel case sentence
+  var words = sentence.split(/(?=[A-Z])/);
+
+  return words;
+}
+
+function RTCMessage() {
+  return function (target: any, key: string, desc: PropertyDescriptor): void {
+    const method = desc.value;
+
+    let [_, category, ...rest] = splitCamelCase(key);
+    rest.pop();
+
+    category = category.toUpperCase();
+    const messageId = rest.join('_').toUpperCase();
+
+    desc.value = function (data: any) {
+      target.send({ category, messageId, data, messageType: 'RTC' });
+    };
+  };
+}
+
+function SocketMessage() {
+  return function (target: any, key: string, desc: PropertyDescriptor): void {
+    const method = desc.value;
+
+    let [_, category, ...rest] = splitCamelCase(key);
+    rest.pop();
+
+    category = category.toUpperCase();
+    const messageId = rest.join('_').toUpperCase();
+
+    desc.value = function (data: any) {
+      target.send({ category, messageId, data, messageType: 'SOCKET' });
+    };
+  };
+}
+
+function MessageSender<T extends { new (...args: any[]): {} }>(constructor: T) {
+  constructor.prototype.send = (protocol: Protocol) => {
+    const sender = new Sender(socketManager, rtcManager);
+    sender.send(protocol);
+  };
 }
