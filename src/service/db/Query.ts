@@ -1,7 +1,8 @@
 import Dexie from 'dexie';
 import { LinkeveryDB, Member, Message, Room } from './LinkeveryDB';
+import { QueryService } from './QueryService';
 
-class Query {
+class Query implements QueryService {
   db = new LinkeveryDB();
 
   constructor() {}
