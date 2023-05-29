@@ -50,65 +50,66 @@ export class DispatchEvent extends DispatchEventService {
     super();
   }
 
-  sendConnectMessage(data: ProtocolData) {
+  sendConnectionConnectMessage(data: ProtocolData) {
     this.send(connectMessage(data));
   }
 
-  sendJoinRoomMessage(data: ProtocolData) {
+  sendConnectionJoinRoomMessage(data: ProtocolData) {
     this.send(joinRoomMessage(data));
+  }
+
+  sendConnectionDisconnectMessage(data: ProtocolData) {
+    this.send(disconnectMessage(data));
   }
 
   sendSignalingStartMessage(data: ProtocolData) {
     this.send(signalingStartMessage(data));
   }
 
-  sendOfferMessage(data: ProtocolData) {
+  sendSignalingOfferMessage(data: ProtocolData) {
     this.send(offerMessage(data));
   }
 
-  sendAnswerMessage(data: ProtocolData) {
+  sendSignalingAnswerMessage(data: ProtocolData) {
     this.send(answerMessage(data));
   }
 
-  sendIceMessage(data: ProtocolData) {
+  sendSignalingIceMessage(data: ProtocolData) {
     this.send(iceMessage(data));
   }
 
-  sendCreateDataChannelMessage(data: ProtocolData) {
+  sendSignalingCreateDataChannelMessage(data: ProtocolData) {
     this.send(createDataChannelMessage(data));
   }
 
-  sendConnectDataChannelMessage(data: ProtocolData) {
+  sendSignalingConnectDataChannelMessage(data: ProtocolData) {
     this.send(connectDataChannelMessage(data));
   }
 
-  sendChatMessage(data: ProtocolData) {
+  sendChatSendMessage(data: ProtocolData) {
     this.send(chatMessage(data));
   }
   sendChatOkMessage(data: ProtocolData) {
     this.send(okMessage(data));
   }
-  sendDisconnectMessage(data: ProtocolData) {
-    this.send(disconnectMessage(data));
-  }
 
-  sendMemberNamePreMessage(data: ProtocolData) {
+  sendRoomMemberNamePreMessage(data: ProtocolData) {
     this.send(memberNamePreMessage(data));
   }
 
-  sendMemberNameMessage(data: ProtocolData) {
+  sendRoomMemberNameMessage(data: ProtocolData) {
     this.send(memberNameMessage(data));
   }
 
-  sendMemberNameOkMessage(data: ProtocolData) {
+  sendRoomMemberNameOkMessage(data: ProtocolData) {
     this.send(memberNameOkMessage(data));
   }
 
-  sendSyncChatListMessage(data: ProtocolData) {
+  sendRoomSyncChatListMessage(data: ProtocolData) {
     this.send(syncChatListMessage(data));
   }
 
-  sendSyncChatListOkMessage(data: ProtocolData) {
+  sendRoomSyncChatListOkMessage(data: ProtocolData) {
     this.send(syncChatListOkMessage(data));
   }
 

@@ -10,7 +10,11 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
   [ROOM_MESSAGE_ID.MEMBER_NAME_PRE]: (protocol, { dispatch, rtcManager }) => {
     const username = storage.getItem('username');
     const userKey = storage.getItem('userKey');
-    dispatch.sendMemberNameMessage({ username, to: protocol.from, userKey });
+    dispatch.sendRoomMemberNameMessage({
+      username,
+      to: protocol.from,
+      userKey,
+    });
   },
   [ROOM_MESSAGE_ID.MEMBER_NAME]: (protocol, { dispatch, rtcManager }) => {
     const { username, userKey, roomName } = storage.getAll();
@@ -26,7 +30,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
     store.dispatch(
       updateMemberByDB({ roomName, member: store.getState().room.room.member }),
     );
-    dispatch.sendMemberNameOkMessage({
+    dispatch.sendRoomMemberNameOkMessage({
       username,
       to: protocol.from,
       userKey,
@@ -52,7 +56,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
 
     const messageList = await query.getMessageList(roomName);
 
-    dispatch.sendSyncChatListMessage({
+    dispatch.sendRoomSyncChatListMessage({
       messageList,
       to: protocol.from,
     });
@@ -80,7 +84,7 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
     }
 
     const myMessageList = await query.getMessageList(roomName);
-    dispatch.sendSyncChatListOkMessage({
+    dispatch.sendRoomSyncChatListOkMessage({
       messageList: myMessageList,
       to: protocol.from,
     });

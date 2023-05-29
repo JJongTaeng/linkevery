@@ -64,7 +64,7 @@ const Room = () => {
   const handleChat = () => {
     if (!message) return;
     const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
-    app.dispatch.sendChatMessage({
+    app.dispatch.sendChatSendMessage({
       message,
       date,
       username,
@@ -135,8 +135,8 @@ const Room = () => {
     if (username && roomName) {
       storage.setItem('roomName', roomName);
       setUsernameModalVisible(false);
-      app.dispatch.sendConnectMessage({}); // socket join
-      app.dispatch.sendJoinRoomMessage({ roomName }); // join
+      app.dispatch.sendConnectionConnectMessage({}); // socket join
+      app.dispatch.sendConnectionJoinRoomMessage({ roomName }); // join
       dispatch(roomActions.setRoomName(roomName));
       dispatch(getRoomByDB(roomName));
     } else {

@@ -36,7 +36,7 @@ export class AppServiceImpl extends AppService {
     const roomName = storage.getItem('roomName');
     store.dispatch(roomActions.leaveRoom());
     store.dispatch(userActions.changeVoiceStatus(false));
-    this.dispatch.sendDisconnectMessage({ roomName });
+    this.dispatch.sendConnectionDisconnectMessage({ roomName });
     this.rtcManager.clearPeerMap();
   }
 

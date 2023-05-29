@@ -14,7 +14,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     const rtcPeer = rtcManager.getPeer(from);
     rtcPeer
       .onIceCandidate((ice) => {
-        dispatch.sendIceMessage({
+        dispatch.sendSignalingIceMessage({
           to: from,
           ice,
         });
@@ -54,7 +54,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       });
     const offer = await rtcPeer.createOffer();
     rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-    dispatch.sendOfferMessage({ offer, to: from, roomName });
+    dispatch.sendSignalingOfferMessage({ offer, to: from, roomName });
   },
   [SIGNALING_MESSAGE_ID.OFFER]: async (protocol, { dispatch, rtcManager }) => {
     const { offer } = protocol.data;
@@ -64,7 +64,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     const rtcPeer = rtcManager.getPeer(from);
     rtcPeer
       .onIceCandidate((ice) => {
-        dispatch.sendIceMessage({
+        dispatch.sendSignalingIceMessage({
           to: from,
           ice,
         });
@@ -106,7 +106,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
-    dispatch.sendAnswerMessage({
+    dispatch.sendSignalingAnswerMessage({
       answer,
       to: from,
     });
@@ -116,7 +116,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     const { from } = protocol;
     const rtcPeer = rtcManager.getPeer(from);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
-    dispatch.sendCreateDataChannelMessage({ to: from });
+    dispatch.sendSignalingCreateDataChannelMessage({ to: from });
   },
   [SIGNALING_MESSAGE_ID.ICE]: (protocol, { dispatch, rtcManager }) => {
     const { ice } = protocol.data;
@@ -136,7 +136,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(e.data));
       });
     });
-    dispatch.sendConnectDataChannelMessage({ to: from });
+    dispatch.sendSignalingConnectDataChannelMessage({ to: from });
   },
   [SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL]: (
     protocol,
@@ -148,7 +148,7 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcPeer.createDataChannel(roomName);
     rtcPeer
       .onDataChannelOpen((e) => {
-        dispatch.sendMemberNamePreMessage({ to: from });
+        dispatch.sendRoomMemberNamePreMessage({ to: from });
         console.debug('[open datachannel]', from);
       })
       .onDataChannelMessage((e) => {
