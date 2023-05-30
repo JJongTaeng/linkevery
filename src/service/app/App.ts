@@ -51,7 +51,7 @@ export class App implements AppService {
 
   public closeScreenShare() {
     const userKey = storage.getItem('userKey');
-    this.dispatch.sendScreenShareDisconnectMessage({
+    this.dispatch.sendScreenDisconnectMessage({
       userKey,
     });
     this.rtcManager.clearVideoTrack();

@@ -9,7 +9,7 @@ import { CreateProtocolFunctionParam, createProtocolMessage } from './index';
 export const screenShareProtocolMessage = (
   protocol: CreateProtocolFunctionParam,
 ) => {
-  const protocolMessage = createProtocolMessage(CATEGORY.SCREEN_SHARE);
+  const protocolMessage = createProtocolMessage(CATEGORY.SCREEN);
   return protocolMessage(protocol);
 };
 

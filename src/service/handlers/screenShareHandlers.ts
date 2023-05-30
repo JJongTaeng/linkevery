@@ -16,7 +16,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       return;
     }
 
-    dispatch.sendScreenShareReadyOkMessage({ to: protocol.from });
+    dispatch.sendScreenReadyOkMessage({ to: protocol.from });
   },
   [SCREEN_SHARE_MESSAGE_ID.READY_OK]: async (
     protocol,
@@ -41,7 +41,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
           const peer = rtcManager.getPeer(clientId);
           peer.addTrack(track, mediaStream);
         });
-        dispatch.sendScreenShareConnectedMessage({ to: clientId, userKey });
+        dispatch.sendScreenConnectedMessage({ to: clientId, userKey });
       }
     } catch (error: any) {
       if (error?.name === 'NotAllowedError') {

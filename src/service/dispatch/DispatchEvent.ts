@@ -1,6 +1,7 @@
 import { Protocol, ProtocolData } from '../../constants/protocol';
 import { Sender } from '../messages/Sender';
 import { rtcManager } from '../rtc/RTCManager';
+import { storage } from '../storage/StorageService';
 import { socketManager } from './../socket/SocketManager';
 import { DispatchEventService } from './DispatchEventService';
 
@@ -71,16 +72,16 @@ export class DispatchEvent extends DispatchEventService {
   sendVoiceDisconnectMessage(data: ProtocolData) {}
 
   @RTCMessage()
-  sendScreenShareReadyMessage(data: ProtocolData) {}
+  sendScreenReadyMessage(data: ProtocolData) {}
 
   @RTCMessage()
-  sendScreenShareReadyOkMessage(data: ProtocolData) {}
+  sendScreenReadyOkMessage(data: ProtocolData) {}
 
   @RTCMessage()
-  sendScreenShareConnectedMessage(data: ProtocolData) {}
+  sendScreenConnectedMessage(data: ProtocolData) {}
 
   @RTCMessage()
-  sendScreenShareDisconnectMessage(data: ProtocolData) {}
+  sendScreenDisconnectMessage(data: ProtocolData) {}
 
   @SocketMessage()
   sendNegotiationOfferMessage(data: ProtocolData) {}
@@ -107,7 +108,14 @@ function RTCMessage() {
     const messageId = rest.join('_').toUpperCase();
 
     desc.value = function (data: any) {
-      target.send({ category, messageId, data, messageType: 'RTC' });
+      const clientId = storage.getItem('clientId');
+      target.send({
+        category,
+        messageId,
+        data,
+        messageType: 'RTC',
+        from: clientId,
+      });
     };
   };
 }
@@ -123,7 +131,14 @@ function SocketMessage() {
     const messageId = rest.join('_').toUpperCase();
 
     desc.value = function (data: any) {
-      target.send({ category, messageId, data, messageType: 'SOCKET' });
+      const clientId = storage.getItem('clientId');
+      target.send({
+        category,
+        messageId,
+        data,
+        messageType: 'SOCKET',
+        from: clientId,
+      });
     };
   };
 }

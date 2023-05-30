@@ -79,7 +79,7 @@ const TopMenuContainer = () => {
             <ToggleButton
               onChange={(value) => {
                 if (value) {
-                  app.dispatch.sendScreenShareReadyMessage({});
+                  app.dispatch.sendScreenReadyMessage({});
                 } else {
                   app.closeScreenShare();
                   dispatch(userActions.changeScreenShareStatus(false));

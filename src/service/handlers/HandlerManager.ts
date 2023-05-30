@@ -25,7 +25,7 @@ export class HandlerManager {
     [CATEGORY.ROOM]: roomHandlers,
     [CATEGORY.VOICE]: voiceHandlers,
     [CATEGORY.NEGOTIATION]: negotiationHandlers,
-    [CATEGORY.SCREEN_SHARE]: screenShareHandlers,
+    [CATEGORY.SCREEN]: screenShareHandlers,
   };
   constructor(
     private socket: Socket,
@@ -44,7 +44,7 @@ export class HandlerManager {
           rtcManager: this.rtcManager,
         });
       } catch (e) {
-        console.debug('%c[Error] ', 'color:blue;font-weight:bold;', protocol);
+        console.debug('%c[Error] ', 'color:red;font-weight:bold;', protocol);
       }
     });
     this.rtcManager.on(RTCManager.RTC_EVENT.DATA, (protocol: Protocol) => {
@@ -55,7 +55,7 @@ export class HandlerManager {
           rtcManager: this.rtcManager,
         });
       } catch (e) {
-        console.debug('%c[Error] ', 'color:blue;font-weight:bold;', protocol);
+        console.debug('%c[Error] ', 'color:red;font-weight:bold;', protocol);
       }
     });
   }
