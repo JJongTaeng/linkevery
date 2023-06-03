@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { debounce } from 'throttle-debounce';
+import { useRoom } from '../../hooks/room/useRoom';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { App } from '../../service/app/App';
 import { storage } from '../../service/storage/StorageService';
@@ -26,29 +27,28 @@ import SvgSend from '../icons/Send';
 import UsernameModal from './UsernameModal';
 
 const Room = () => {
+  const {
+    state,
+    setIsFullScreen,
+    setIsVisibleScrollButton,
+    setPage,
+    setUsernameModalVisible,
+  } = useRoom();
   const app = useRef(App.getInstance()).current;
   const chatListElement = useRef<HTMLDivElement>(null);
   const chatLoadingTriggerElement = useRef<HTMLDivElement>(null);
   const focusInput = useRef<HTMLInputElement>(null);
-  const [usernameModalVisible, setUsernameModalVisible] = useState(false);
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const [page, setPage] = useState(0);
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const {
-    username,
-    messageList,
-    isVisiblePlayView,
-    isVisibleScrollButton,
-    status,
-  } = useAppSelector((state) => ({
-    status: state.status,
-    messageList: state.chat.messageList,
-    username: state.user.username,
-    isVisiblePlayView: state.status.isVisiblePlayView,
-    isVisibleScrollButton: state.status.isVisibleScrollButton,
-  }));
+  const { username, messageList, isVisiblePlayView, status } = useAppSelector(
+    (state) => ({
+      status: state.status,
+      messageList: state.chat.messageList,
+      username: state.user.username,
+      isVisiblePlayView: state.status.isVisiblePlayView,
+    }),
+  );
   const dispatch = useAppDispatch();
 
   const [isIntersecting] = useIntersectionObserver<HTMLDivElement>(
@@ -89,9 +89,9 @@ const Room = () => {
 
   const onScrollIsVisibleScrollButton = () => {
     if (utils.isBottomScrollElement(chatListElement.current!)) {
-      dispatch(statusActions.changeIsVisibleScrollButton(false));
+      setIsVisibleScrollButton(false);
     } else {
-      dispatch(statusActions.changeIsVisibleScrollButton(true));
+      setIsVisibleScrollButton(true);
     }
   };
   const handleViewportResize = debounce(
@@ -109,17 +109,21 @@ const Room = () => {
 
   useEffect(() => {
     if (isIntersecting && !status.isMaxPageMessageList) {
-      setPage((page) => page + 1);
+      setPage(state.page + 1);
     }
   }, [isIntersecting, status.isMaxPageMessageList]);
 
   useEffect(() => {
-    if (page) {
+    if (state.page) {
       dispatch(
-        getChatListPageByDB({ roomName: roomName!, page, offset: PAGE_OFFSET }),
+        getChatListPageByDB({
+          roomName: roomName!,
+          page: state.page,
+          offset: PAGE_OFFSET,
+        }),
       );
     }
-  }, [page, roomName]);
+  }, [state.page, roomName]);
 
   useEffect(() => {
     if (username && roomName) {
@@ -141,13 +145,13 @@ const Room = () => {
   }, [username, roomName]);
 
   useEffect(() => {
-    if (page === 1) {
+    if (state.page === 1) {
       moveToChatScrollBottom();
     }
     if (utils.isBottomScrollElement(chatListElement.current!)) {
       moveToChatScrollBottom();
     }
-  }, [messageList.length, page]);
+  }, [messageList.length, state.page]);
 
   useEffect(() => {
     dispatch(getUserByDB());
@@ -186,13 +190,13 @@ const Room = () => {
           <VideoContainer
             id={'video-container'}
             isVisible={isVisiblePlayView}
-            isFullScreen={isFullScreen}
+            isFullScreen={state.isFullScreen}
           >
             <div
-              onClick={() => setIsFullScreen((value) => !value)}
+              onClick={() => setIsFullScreen(!state.isFullScreen)}
               className="full-screen"
             >
-              {isFullScreen ? <SvgCloseFullScreen /> : <SvgFullScreen />}
+              {state.isFullScreen ? <SvgCloseFullScreen /> : <SvgFullScreen />}
             </div>
             <div
               onClick={() => {
@@ -219,7 +223,7 @@ const Room = () => {
                 ),
               )}
             </ChatList>
-            {isVisibleScrollButton && (
+            {state.isVisibleScrollButton && (
               <Button
                 style={{ marginBottom: 8 }}
                 onClick={() => {
@@ -294,7 +298,7 @@ const Room = () => {
           </ChatContainer>
         </ContentContainer>
         <UsernameModal
-          open={usernameModalVisible}
+          open={state.usernameModalVisible}
           onSubmit={(username) => {
             const key = nanoid();
             dispatch(addUserByDB({ username, key }));

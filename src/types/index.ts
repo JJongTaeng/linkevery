@@ -6,3 +6,8 @@ export interface ChatType {
 }
 
 export type SendChatType = Omit<ChatType, 'username'>;
+
+export interface ReducerActionType<T, S> {
+  type: T;
+  payload: Partial<S>;
+}
