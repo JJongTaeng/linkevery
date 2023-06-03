@@ -7,7 +7,6 @@ interface StatusState {
   leftMenuVisible: boolean;
   isMaxPageMessageList: boolean;
   isVisiblePlayView: boolean;
-  isVisibleScrollButton: boolean;
 }
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
@@ -15,7 +14,6 @@ const initialState: StatusState = {
   leftMenuVisible: agentInfo.platform.type === 'desktop',
   isMaxPageMessageList: false,
   isVisiblePlayView: false,
-  isVisibleScrollButton: false,
 };
 
 export const statusSlice = createSlice({
@@ -27,9 +25,6 @@ export const statusSlice = createSlice({
     },
     changeIsVisiblePlayView: (state, { payload }) => {
       state.isVisiblePlayView = payload;
-    },
-    changeIsVisibleScrollButton: (state, { payload }) => {
-      state.isVisibleScrollButton = payload;
     },
     resetAllStatusState: () => {
       return initialState;
