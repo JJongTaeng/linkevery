@@ -33,11 +33,10 @@ const Room = () => {
     setIsVisibleScrollButton,
     setPage,
     setUsernameModalVisible,
+    elements: { chatListElement, chatLoadingTriggerElement, focusInput },
   } = useRoom();
   const app = useRef(App.getInstance()).current;
-  const chatListElement = useRef<HTMLDivElement>(null);
-  const chatLoadingTriggerElement = useRef<HTMLDivElement>(null);
-  const focusInput = useRef<HTMLInputElement>(null);
+
   const { roomName } = useParams<{
     roomName: string;
   }>();

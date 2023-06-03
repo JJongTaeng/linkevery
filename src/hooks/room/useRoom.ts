@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useReducer, useRef } from 'react';
 import { ReducerActionType } from '../../types';
 
 type RoomState = typeof initialState;
@@ -72,6 +72,10 @@ const reducer = (
 export function useRoom() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const chatListElement = useRef<HTMLDivElement>(null);
+  const chatLoadingTriggerElement = useRef<HTMLDivElement>(null);
+  const focusInput = useRef<HTMLInputElement>(null);
+
   return {
     state,
     setIsFullScreen: (isFull: boolean) => {
@@ -89,6 +93,11 @@ export function useRoom() {
       dispatch(
         setUsernameModalVisibleAction({ usernameModalVisible: visible }),
       );
+    },
+    elements: {
+      chatListElement,
+      chatLoadingTriggerElement,
+      focusInput,
     },
   };
 }
