@@ -64,36 +64,26 @@ const Room = () => {
   const handleChat = () => {
     if (!message) return;
     const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
-    app.dispatch.sendChatSendMessage({
-      message,
-      date,
-      username,
-      userKey: storage.getItem('userKey'),
+    const messageProtocol = {
       messageType: 'text',
       messageKey: username + '+' + date,
-    });
-    dispatch(
-      chatActions.addChat({
-        messageType: 'text',
-        messageKey: username + '+' + date,
-        message,
-        userKey: storage.getItem('userKey'),
-        date,
-        username,
-      }),
-    );
+      message,
+      userKey: storage.getItem('userKey'),
+      date,
+      username,
+    };
 
+    app.dispatch.sendChatSendMessage(messageProtocol); // send
+    dispatch(chatActions.addChat(messageProtocol)); // store add
+
+    // db add
     dispatch(
       addChatByDB({
-        messageType: 'text',
-        messageKey: username + '+' + date,
-        message,
-        userKey: storage.getItem('userKey'),
-        date,
-        username,
+        ...messageProtocol,
         roomName: storage.getItem('roomName'),
       }),
     );
+
     setMessage('');
   };
 
