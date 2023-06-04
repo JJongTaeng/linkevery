@@ -1,36 +1,11 @@
-import { useReducer, useRef } from 'react';
-import { ReducerActionType } from '../../types';
+import { useRef } from 'react';
+import { useSlice } from '../useSlice';
 
 type RoomState = typeof initialState;
-
-enum ROOM_ACTIONS {
-  SET_USER_NAME_MODAL_VISIBLE = 'ROOM/SET_USER_NAME_MODAL_VISIBLE',
-  SET_IS_FULL_SCREEN = 'ROOM/SET_IS_FULL_SCREEN',
-  SET_PAGE = 'ROOM/SET_PAGE',
-  SET_IS_VISIBLE_SCROLL_BUTTON = 'ROOM/SET_IS_VISIBLE_SCROLL_BUTTON',
-}
-
-function actionCreator<T, S>(type: T) {
-  return (payload: Partial<S>) => {
-    return {
-      type,
-      payload,
-    };
-  };
-}
-
-const setIsFullScreenAction = actionCreator<ROOM_ACTIONS, RoomState>(
-  ROOM_ACTIONS.SET_IS_FULL_SCREEN,
-);
-const setUsernameModalVisibleAction = actionCreator<ROOM_ACTIONS, RoomState>(
-  ROOM_ACTIONS.SET_USER_NAME_MODAL_VISIBLE,
-);
-const setPageAction = actionCreator<ROOM_ACTIONS, RoomState>(
-  ROOM_ACTIONS.SET_PAGE,
-);
-const setIsVisibleScrollButtonAction = actionCreator<ROOM_ACTIONS, RoomState>(
-  ROOM_ACTIONS.SET_IS_VISIBLE_SCROLL_BUTTON,
-);
+type RoomAction = {
+  type: string;
+  payload: Partial<RoomState>;
+};
 
 const initialState = {
   usernameModalVisible: false,
@@ -39,38 +14,30 @@ const initialState = {
   isVisibleScrollButton: false,
 };
 
-const reducer = (
-  state: RoomState,
-  action: ReducerActionType<ROOM_ACTIONS, RoomState>,
-): RoomState => {
-  switch (action.type) {
-    case ROOM_ACTIONS.SET_IS_FULL_SCREEN:
-      return {
-        ...state,
-        isFullScreen: action.payload.isFullScreen ?? false,
-      };
-    case ROOM_ACTIONS.SET_IS_VISIBLE_SCROLL_BUTTON:
-      return {
-        ...state,
-        isVisibleScrollButton: action.payload.isVisibleScrollButton ?? false,
-      };
-    case ROOM_ACTIONS.SET_USER_NAME_MODAL_VISIBLE:
-      return {
-        ...state,
-        usernameModalVisible: action.payload.usernameModalVisible ?? false,
-      };
-    case ROOM_ACTIONS.SET_PAGE:
-      return {
-        ...state,
-        page: action.payload.page ?? 0,
-      };
-    default:
-      return initialState;
-  }
+const actions = {
+  setIsFullScreen: (state: RoomState, action: RoomAction) => ({
+    ...state,
+    isFullScreen: action.payload.isFullScreen ?? false,
+  }),
+  setIsVisibleScrollButton: (state: RoomState, action: RoomAction) => ({
+    ...state,
+    isVisibleScrollButton: action.payload.isVisibleScrollButton ?? false,
+  }),
+  setPage: (state: RoomState, action: RoomAction) => ({
+    ...state,
+    page: action.payload.page ?? 0,
+  }),
+  setUsernameModalVisible: (state: RoomState, action: RoomAction) => ({
+    ...state,
+    usernameModalVisible: action.payload.usernameModalVisible ?? false,
+  }),
 };
 
 export function useRoom() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useSlice<RoomState, keyof typeof actions>(
+    actions,
+    initialState,
+  );
 
   const chatListElement = useRef<HTMLDivElement>(null);
   const chatLoadingTriggerElement = useRef<HTMLDivElement>(null);
@@ -79,20 +46,16 @@ export function useRoom() {
   return {
     state,
     setIsFullScreen: (isFull: boolean) => {
-      dispatch(setIsFullScreenAction({ isFullScreen: isFull }));
+      dispatch.setIsFullScreen({ isFullScreen: isFull });
     },
     setIsVisibleScrollButton: (visible: boolean) => {
-      dispatch(
-        setIsVisibleScrollButtonAction({ isVisibleScrollButton: visible }),
-      );
+      dispatch.setIsVisibleScrollButton({ isVisibleScrollButton: visible });
     },
     setPage: (page: number) => {
-      dispatch(setPageAction({ page }));
+      dispatch.setPage({ page });
     },
     setUsernameModalVisible: (visible: boolean) => {
-      dispatch(
-        setUsernameModalVisibleAction({ usernameModalVisible: visible }),
-      );
+      dispatch.setUsernameModalVisible({ usernameModalVisible: visible });
     },
     elements: {
       chatListElement,

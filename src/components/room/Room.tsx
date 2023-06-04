@@ -35,6 +35,7 @@ const Room = () => {
     setUsernameModalVisible,
     elements: { chatListElement, chatLoadingTriggerElement, focusInput },
   } = useRoom();
+
   const app = useRef(App.getInstance()).current;
 
   const { roomName } = useParams<{
