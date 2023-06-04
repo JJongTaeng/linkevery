@@ -6,8 +6,8 @@ import stc from 'string-to-color';
 import styled from 'styled-components';
 
 interface ChatBubbleProps extends HTMLAttributes<HTMLDivElement> {
-  date: string;
-  username: string;
+  date?: string;
+  username?: string;
   isMyChat: boolean;
   message: string;
 }
@@ -32,16 +32,24 @@ const ChatBubble = ({
       $isBlack={isBlack()}
       className={isMyChat ? 'chat-bubble  my-chat' : 'chat-bubble peer-chat'}
     >
-      <div className="chat-header">
-        <Tag color={stc(username)} style={isMyChat ? { display: 'none' } : {}}>
-          <span>{username}</span>
-        </Tag>
-        <span className="chat-date">{dayjs(date).format('HH:mm')}</span>
+      {username && (
+        <div className="chat-header">
+          <Tag
+            color={stc(username)}
+            style={isMyChat ? { display: 'none' } : {}}
+          >
+            <span>{username}</span>
+          </Tag>
+        </div>
+      )}
+      <div className="chat-content">
+        <StyledCard size="small">
+          <p>{message}</p>
+        </StyledCard>
+        {date && (
+          <span className="chat-time">{dayjs(date).format('HH:mm')}</span>
+        )}
       </div>
-
-      <StyledCard size="small">
-        <p>{message}</p>
-      </StyledCard>
     </ChatBubbleContainer>
   );
 };
@@ -53,11 +61,17 @@ const ChatBubbleContainer = styled.div<{ $isBlack: boolean }>`
   .chat-header {
     display: flex;
     align-items: center;
+    margin-bottom: 3px;
+    margin-top: 8px;
   }
-  .chat-date {
+  .chat-time {
     font-size: 12px;
-    width: 100%;
     color: ${({ theme }) => theme.color.grey100};
+    align-self: flex-end;
+    margin: 3px;
+  }
+  .chat-content {
+    display: flex;
   }
 `;
 
@@ -67,6 +81,7 @@ const StyledCard = styled(Card)`
     white-space: pre-wrap;
     margin: 0;
   }
+  min-width: 60px;
 `;
 
 export default ChatBubble;

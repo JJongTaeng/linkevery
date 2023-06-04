@@ -1,7 +1,7 @@
-import { Button } from 'antd';
+import { Button, Divider } from 'antd';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useRoom } from '../../hooks/room/useRoom';
@@ -135,6 +135,12 @@ const Room = () => {
     };
   }, []);
 
+  const isSameTime = (before: string, after: string) =>
+    dayjs(before).isSame(after, 'minute');
+
+  const isSameDay = (before: string, after: string) =>
+    dayjs(before).isSame(after, 'day');
+
   return (
     <>
       <RoomContent $leftMenuVisible={status.leftMenuVisible}>
@@ -164,15 +170,52 @@ const Room = () => {
             <ChatList id={'chat-list'} ref={chatListElement}>
               <div id="chat-loading-trigger" ref={chatLoadingTriggerElement} />
               {messageList.map(
-                ({ message, userKey, date, username }, index) => (
-                  <ChatBubble
-                    key={nanoid()}
-                    message={message}
-                    date={dayjs(date).format('YYYY-MM-DD HH:mm')}
-                    username={username}
-                    isMyChat={userKey === storage.getItem('userKey')}
-                  />
-                ),
+                ({ message, userKey, date, username }, index) => {
+                  const prevMessage = messageList[index - 1];
+                  const currentMessage = messageList[index];
+                  const nextMessage = messageList[index + 1];
+
+                  const isSameUserPrev =
+                    prevMessage?.userKey === currentMessage.userKey;
+                  const isSameUser =
+                    nextMessage?.userKey === currentMessage.userKey;
+
+                  const isSameUserAndSameTimeForTime =
+                    isSameUser &&
+                    isSameTime(currentMessage?.date, nextMessage?.date);
+                  const isSameUserAndSameTimeForUsername =
+                    isSameTime(prevMessage?.date, currentMessage?.date) &&
+                    isSameUserPrev;
+                  return (
+                    <React.Fragment key={nanoid()}>
+                      {isSameDay(
+                        prevMessage?.date,
+                        nextMessage?.date,
+                      ) ? null : (
+                        <Divider className="chat-date" plain>
+                          {dayjs(currentMessage.date).format(
+                            'YYYY년 MM월 DD일',
+                          )}
+                        </Divider>
+                      )}
+                      <ChatBubble
+                        key={nanoid()}
+                        message={message}
+                        date={
+                          isSameUserAndSameTimeForTime
+                            ? undefined
+                            : dayjs(date).format('YYYY-MM-DD HH:mm')
+                        }
+                        username={
+                          isSameUserAndSameTimeForUsername
+                            ? undefined
+                            : username
+                        }
+                        isMyChat={userKey === storage.getItem('userKey')}
+                      />
+                    </React.Fragment>
+                  );
+                },
               )}
             </ChatList>
             {state.isVisibleScrollButton && (
@@ -382,26 +425,31 @@ const ChatList = styled.div`
   border-radius: 8px;
   .chat-bubble {
     max-width: 100%;
+    margin-bottom: 4px;
   }
   .peer-chat {
-    margin-bottom: 8px;
     align-self: flex-start;
   }
   .my-chat {
-    margin-bottom: 8px;
-
     align-self: flex-end;
-    .chat-date {
+    .ant-card {
+      order: 2;
+    }
+    .chat-time {
       display: flex;
       justify-content: flex-end;
+      order: 1;
     }
   }
   .chat-name,
-  .chat-date {
+  .chat-time {
     span {
       color: ${({ theme }) => theme.color.primary200};
       font-size: 12px;
     }
+  }
+  .chat-date {
+    color: ${({ theme }) => theme.color.grey100};
   }
 `;
 
