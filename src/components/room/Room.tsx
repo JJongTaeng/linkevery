@@ -386,10 +386,6 @@ const ChatList = styled.div`
   .peer-chat {
     margin-bottom: 8px;
     align-self: flex-start;
-    .chat-date {
-      display: flex;
-      justify-content: flex-start;
-    }
   }
   .my-chat {
     margin-bottom: 8px;

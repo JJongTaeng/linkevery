@@ -1,5 +1,6 @@
-import { Badge, Card } from 'antd';
+import { Card, Tag } from 'antd';
 import color from 'color';
+import dayjs from 'dayjs';
 import { HTMLAttributes } from 'react';
 import stc from 'string-to-color';
 import styled from 'styled-components';
@@ -18,7 +19,6 @@ const ChatBubble = ({
   isMyChat,
   ...props
 }: ChatBubbleProps) => {
-  const padding = isMyChat ? '10px 80px 10px 20px' : '10px 20px 10px 80px';
   const sum = (arr: number[]) =>
     arr.reduce((prev, curr) => {
       return prev + curr;
@@ -32,26 +32,32 @@ const ChatBubble = ({
       $isBlack={isBlack()}
       className={isMyChat ? 'chat-bubble  my-chat' : 'chat-bubble peer-chat'}
     >
-      <Badge.Ribbon
-        style={isMyChat ? { display: 'none' } : {}}
-        color={stc(username)}
-        placement={isMyChat ? 'end' : 'start'}
-        text={username}
-      >
-        <StyledCard bodyStyle={{ padding }}>
-          <p>{message}</p>
-        </StyledCard>
-      </Badge.Ribbon>
-      <div className={'chat-date'}>
-        <span>{date}</span>
+      <div className="chat-header">
+        <Tag color={stc(username)} style={isMyChat ? { display: 'none' } : {}}>
+          <span>{username}</span>
+        </Tag>
+        <span className="chat-date">{dayjs(date).format('HH:mm')}</span>
       </div>
+
+      <StyledCard size="small">
+        <p>{message}</p>
+      </StyledCard>
     </ChatBubbleContainer>
   );
 };
 
 const ChatBubbleContainer = styled.div<{ $isBlack: boolean }>`
-  .ant-ribbon-text {
+  .ant-tag-has-color {
     color: ${({ $isBlack }) => ($isBlack ? '#333' : '#eee')};
+  }
+  .chat-header {
+    display: flex;
+    align-items: center;
+  }
+  .chat-date {
+    font-size: 12px;
+    width: 100%;
+    color: ${({ theme }) => theme.color.grey100};
   }
 `;
 
