@@ -1,7 +1,7 @@
 import { Button } from 'antd';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { debounce } from 'throttle-debounce';
@@ -33,6 +33,8 @@ const Room = () => {
     setIsVisibleScrollButton,
     setPage,
     setUsernameModalVisible,
+    setChatMessage,
+    setIsShiftKeyDowned,
     elements: { chatListElement, chatLoadingTriggerElement, focusInput },
   } = useRoom();
 
@@ -58,16 +60,13 @@ const Room = () => {
     },
   );
 
-  const [message, setMessage] = useState('');
-  const [isShift, setIsShift] = useState<boolean>(false);
-
   const handleChat = () => {
-    if (!message) return;
+    if (!state.chatMessage) return;
     const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
     const messageProtocol = {
       messageType: 'text',
       messageKey: username + '+' + date,
-      message,
+      message: state.chatMessage,
       userKey: storage.getItem('userKey'),
       date,
       username,
@@ -84,7 +83,7 @@ const Room = () => {
       }),
     );
 
-    setMessage('');
+    setChatMessage('');
   };
 
   const onScrollIsVisibleScrollButton = () => {
@@ -245,13 +244,13 @@ const Room = () => {
             >
               <div className="form-header">
                 <textarea
-                  value={message}
+                  value={state.chatMessage}
                   onKeyDown={(e: any) => {
                     switch (e.key) {
                       case 'Enter':
                         e.preventDefault();
-                        if (isShift) {
-                          setMessage((message) => message + '\n');
+                        if (state.isShiftKeyDowned) {
+                          setChatMessage(state.chatMessage + '\n');
                           return;
                         }
                         if (e.nativeEvent.isComposing) return;
@@ -261,18 +260,18 @@ const Room = () => {
                         e.target.focus();
                         break;
                       case 'Shift':
-                        setIsShift(true);
+                        setIsShiftKeyDowned(true);
                         break;
                     }
                   }}
                   onKeyUp={(e) => {
                     switch (e.key) {
                       case 'Shift':
-                        setIsShift(false);
+                        setIsShiftKeyDowned(false);
                         break;
                     }
                   }}
-                  onChange={(e) => setMessage(e.target.value)}
+                  onChange={(e) => setChatMessage(e.target.value)}
                   name="message"
                   style={{ height: 40 }}
                   placeholder={roomName?.split('+')[0] + ' 에 메시지 보내기'}
