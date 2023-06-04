@@ -4,7 +4,7 @@ class Utils {
   isBottomScrollElement(element: HTMLElement) {
     return (
       element.scrollHeight - element.getBoundingClientRect().height <
-      element.scrollTop + 200
+      element.scrollTop + 1
     );
   }
   getUserKeyByClientId(clientId: string) {

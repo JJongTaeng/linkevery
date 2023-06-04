@@ -1,4 +1,14 @@
+import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 import { useRef } from 'react';
+import { debounce } from 'throttle-debounce';
+import { App } from '../../service/app/App';
+import { storage } from '../../service/storage/StorageService';
+import { utils } from '../../service/utils/Utils';
+import { chatActions } from '../../store/features/chatSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { addChatByDB } from '../../store/thunk/chatThunk';
+import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import { useSlice } from '../useSlice';
 
 type RoomState = typeof initialState;
@@ -58,13 +68,107 @@ export function useRoom() {
   const chatLoadingTriggerElement = useRef<HTMLDivElement>(null);
   const focusInput = useRef<HTMLInputElement>(null);
 
+  const app = useRef(App.getInstance()).current;
+
+  const { username } = useAppSelector((state) => ({
+    username: state.user.username,
+  }));
+  const storeDispatch = useAppDispatch();
+  const sendChatMessage = () => {
+    if (!state.chatMessage) return;
+    const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
+    const messageProtocol = {
+      messageType: 'text',
+      messageKey: username + '+' + date,
+      message: state.chatMessage,
+      userKey: storage.getItem('userKey'),
+      date,
+      username,
+    };
+
+    app.dispatch.sendChatSendMessage(messageProtocol); // send
+    storeDispatch(chatActions.addChat(messageProtocol)); // store add
+
+    // db add
+    storeDispatch(
+      addChatByDB({
+        ...messageProtocol,
+        roomName: storage.getItem('roomName'),
+      }),
+    );
+
+    dispatch.setChatMessage({ chatMessage: '' });
+  };
+
+  const handleVisibleScrollButton = debounce(200, () => {
+    if (utils.isBottomScrollElement(chatListElement.current!)) {
+      dispatch.setIsVisibleScrollButton({ isVisibleScrollButton: false });
+    } else {
+      dispatch.setIsVisibleScrollButton({ isVisibleScrollButton: true });
+    }
+  });
+
+  const handleViewportResize = debounce(
+    50,
+    (e: any) => {
+      window.scrollTo(0, document.body.scrollHeight - e.target.height);
+    },
+    {},
+  );
+
+  const moveToChatScrollBottom = () => {
+    if (chatListElement.current)
+      chatListElement.current.scrollTop =
+        chatListElement?.current?.scrollHeight;
+  };
+
+  const handleChatKeydown = (e: any) => {
+    switch (e.key) {
+      case 'Enter':
+        e.preventDefault();
+        if (state.isShiftKeyDowned) {
+          dispatch.setChatMessage({ chatMessage: state.chatMessage + '\n' });
+          return;
+        }
+        if (e.nativeEvent.isComposing) return;
+        sendChatMessage();
+        e.target.value = '';
+        focusInput?.current?.focus();
+        e.target.focus();
+        break;
+      case 'Shift':
+        dispatch.setIsShiftKeyDowned({ isShiftKeyDowned: true });
+        break;
+    }
+  };
+
+  const handleChatKeyup = (e: any) => {
+    switch (e.key) {
+      case 'Shift':
+        dispatch.setIsShiftKeyDowned({ isShiftKeyDowned: false });
+        break;
+    }
+  };
+
+  const handleUsernameSubmit = (username: string) => {
+    const key = nanoid();
+    storeDispatch(addUserByDB({ username, key }));
+    storeDispatch(getUserByDB());
+    storage.setItem('userKey', key);
+    storage.setItem('username', username);
+    dispatch.setUsernameModalVisible({ usernameModalVisible: false });
+  };
+  const handleChatSubmit = (e: any) => {
+    e.preventDefault();
+    sendChatMessage();
+    focusInput?.current?.focus();
+    e.target.message.focus();
+  };
+
   return {
     state,
     setIsFullScreen: (isFull: boolean) => {
       dispatch.setIsFullScreen({ isFullScreen: isFull });
-    },
-    setIsVisibleScrollButton: (visible: boolean) => {
-      dispatch.setIsVisibleScrollButton({ isVisibleScrollButton: visible });
     },
     setPage: (page: number) => {
       dispatch.setPage({ page });
@@ -78,6 +182,13 @@ export function useRoom() {
     setIsShiftKeyDowned: (isKeyDowned: boolean) => {
       dispatch.setIsShiftKeyDowned({ isShiftKeyDowned: isKeyDowned });
     },
+    handleVisibleScrollButton,
+    handleViewportResize,
+    handleChatKeydown,
+    handleChatSubmit,
+    handleUsernameSubmit,
+    handleChatKeyup,
+    moveToChatScrollBottom,
     elements: {
       chatListElement,
       chatLoadingTriggerElement,

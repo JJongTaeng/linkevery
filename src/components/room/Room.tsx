@@ -4,7 +4,6 @@ import { nanoid } from 'nanoid';
 import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { debounce } from 'throttle-debounce';
 import { useRoom } from '../../hooks/room/useRoom';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { App } from '../../service/app/App';
@@ -14,9 +13,9 @@ import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
 import { statusActions } from '../../store/features/statusSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addChatByDB, getChatListPageByDB } from '../../store/thunk/chatThunk';
+import { getChatListPageByDB } from '../../store/thunk/chatThunk';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
-import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
+import { getUserByDB } from '../../store/thunk/userThunk';
 import { PAGE_OFFSET } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
 import SvgArrowDown from '../icons/ArrowDown';
@@ -30,11 +29,16 @@ const Room = () => {
   const {
     state,
     setIsFullScreen,
-    setIsVisibleScrollButton,
     setPage,
     setUsernameModalVisible,
     setChatMessage,
-    setIsShiftKeyDowned,
+    handleVisibleScrollButton,
+    handleViewportResize,
+    handleChatKeydown,
+    handleChatSubmit,
+    handleUsernameSubmit,
+    handleChatKeyup,
+    moveToChatScrollBottom,
     elements: { chatListElement, chatLoadingTriggerElement, focusInput },
   } = useRoom();
 
@@ -51,7 +55,7 @@ const Room = () => {
       isVisiblePlayView: state.status.isVisiblePlayView,
     }),
   );
-  const dispatch = useAppDispatch();
+  const storeDispatch = useAppDispatch();
 
   const [isIntersecting] = useIntersectionObserver<HTMLDivElement>(
     chatLoadingTriggerElement,
@@ -60,69 +64,18 @@ const Room = () => {
     },
   );
 
-  const handleChat = () => {
-    if (!state.chatMessage) return;
-    const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
-    const messageProtocol = {
-      messageType: 'text',
-      messageKey: username + '+' + date,
-      message: state.chatMessage,
-      userKey: storage.getItem('userKey'),
-      date,
-      username,
-    };
-
-    app.dispatch.sendChatSendMessage(messageProtocol); // send
-    dispatch(chatActions.addChat(messageProtocol)); // store add
-
-    // db add
-    dispatch(
-      addChatByDB({
-        ...messageProtocol,
-        roomName: storage.getItem('roomName'),
-      }),
-    );
-
-    setChatMessage('');
-  };
-
-  const onScrollIsVisibleScrollButton = () => {
-    if (utils.isBottomScrollElement(chatListElement.current!)) {
-      setIsVisibleScrollButton(false);
-    } else {
-      setIsVisibleScrollButton(true);
-    }
-  };
-  const handleViewportResize = debounce(
-    50,
-    (e: any) => {
-      window.scrollTo(0, document.body.scrollHeight - e.target.height);
-    },
-    {},
-  );
-  const moveToChatScrollBottom = () => {
-    if (chatListElement.current)
-      chatListElement.current.scrollTop =
-        chatListElement?.current?.scrollHeight;
-  };
-
   useEffect(() => {
     if (isIntersecting && !status.isMaxPageMessageList) {
-      setPage(state.page + 1);
-    }
-  }, [isIntersecting, status.isMaxPageMessageList]);
-
-  useEffect(() => {
-    if (state.page) {
-      dispatch(
+      storeDispatch(
         getChatListPageByDB({
           roomName: roomName!,
-          page: state.page,
+          page: state.page + 1,
           offset: PAGE_OFFSET,
         }),
       );
+      setPage(state.page + 1);
     }
-  }, [state.page, roomName]);
+  }, [isIntersecting, status.isMaxPageMessageList]);
 
   useEffect(() => {
     if (username && roomName) {
@@ -130,15 +83,15 @@ const Room = () => {
       setUsernameModalVisible(false);
       app.dispatch.sendConnectionConnectMessage({}); // socket join
       app.dispatch.sendConnectionJoinRoomMessage({ roomName }); // join
-      dispatch(roomActions.setRoomName(roomName));
-      dispatch(getRoomByDB(roomName));
+      storeDispatch(roomActions.setRoomName(roomName));
+      storeDispatch(getRoomByDB(roomName));
     } else {
       setUsernameModalVisible(true);
     }
     return () => {
       app.disconnect();
-      dispatch(chatActions.resetChatList());
-      dispatch(statusActions.resetAllStatusState());
+      storeDispatch(chatActions.resetChatList());
+      storeDispatch(statusActions.resetAllStatusState());
       setPage(0);
     };
   }, [username, roomName]);
@@ -153,13 +106,13 @@ const Room = () => {
   }, [messageList.length, state.page]);
 
   useEffect(() => {
-    dispatch(getUserByDB());
+    storeDispatch(getUserByDB());
     chatListElement?.current?.addEventListener(
       'scroll',
-      onScrollIsVisibleScrollButton,
+      handleVisibleScrollButton,
     );
     window.addEventListener('beforeunload', async () => {
-      roomName && dispatch(deleteAllMemberByDB({ roomName }));
+      roomName && storeDispatch(deleteAllMemberByDB({ roomName }));
     });
 
     window.visualViewport?.addEventListener('resize', handleViewportResize);
@@ -168,9 +121,9 @@ const Room = () => {
     return () => {
       chatListElement.current?.removeEventListener(
         'scroll',
-        onScrollIsVisibleScrollButton,
+        handleVisibleScrollButton,
       );
-      roomName && dispatch(deleteAllMemberByDB({ roomName }));
+      roomName && storeDispatch(deleteAllMemberByDB({ roomName }));
       window.visualViewport?.removeEventListener(
         'resize',
         handleViewportResize,
@@ -199,7 +152,7 @@ const Room = () => {
             </div>
             <div
               onClick={() => {
-                dispatch(statusActions.changeIsVisiblePlayView(false));
+                storeDispatch(statusActions.changeIsVisiblePlayView(false));
                 setIsFullScreen(false);
               }}
               className="close-video"
@@ -233,44 +186,12 @@ const Room = () => {
                 <SvgArrowDown />
               </Button>
             )}
-            <ChatForm
-              autoComplete="off"
-              onSubmit={(e: any) => {
-                e.preventDefault();
-                handleChat();
-                focusInput?.current?.focus();
-                e.target.message.focus();
-              }}
-            >
+            <ChatForm autoComplete="off" onSubmit={handleChatSubmit}>
               <div className="form-header">
                 <textarea
                   value={state.chatMessage}
-                  onKeyDown={(e: any) => {
-                    switch (e.key) {
-                      case 'Enter':
-                        e.preventDefault();
-                        if (state.isShiftKeyDowned) {
-                          setChatMessage(state.chatMessage + '\n');
-                          return;
-                        }
-                        if (e.nativeEvent.isComposing) return;
-                        handleChat();
-                        e.target.value = '';
-                        focusInput?.current?.focus();
-                        e.target.focus();
-                        break;
-                      case 'Shift':
-                        setIsShiftKeyDowned(true);
-                        break;
-                    }
-                  }}
-                  onKeyUp={(e) => {
-                    switch (e.key) {
-                      case 'Shift':
-                        setIsShiftKeyDowned(false);
-                        break;
-                    }
-                  }}
+                  onKeyDown={handleChatKeydown}
+                  onKeyUp={handleChatKeyup}
                   onChange={(e) => setChatMessage(e.target.value)}
                   name="message"
                   style={{ height: 40 }}
@@ -298,14 +219,7 @@ const Room = () => {
         </ContentContainer>
         <UsernameModal
           open={state.usernameModalVisible}
-          onSubmit={(username) => {
-            const key = nanoid();
-            dispatch(addUserByDB({ username, key }));
-            dispatch(getUserByDB());
-            storage.setItem('userKey', key);
-            storage.setItem('username', username);
-            setUsernameModalVisible(false);
-          }}
+          onSubmit={handleUsernameSubmit}
         />
       </RoomContent>
     </>
