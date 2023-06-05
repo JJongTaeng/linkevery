@@ -190,7 +190,7 @@ const Room = () => {
                     <React.Fragment key={nanoid()}>
                       {isSameDay(
                         prevMessage?.date,
-                        nextMessage?.date,
+                        currentMessage?.date,
                       ) ? null : (
                         <Divider className="chat-date" plain>
                           {dayjs(currentMessage.date).format(
