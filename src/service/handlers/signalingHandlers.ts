@@ -148,11 +148,28 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcPeer.createDataChannel(roomName);
     rtcPeer
       .onDataChannelOpen((e) => {
-        dispatch.sendRoomMemberNamePreMessage({ to: from });
+        dispatch.sendSignalingEndMessage({});
         console.debug('[open datachannel]', from);
       })
       .onDataChannelMessage((e) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(e.data));
       });
+  },
+  [SIGNALING_MESSAGE_ID.END]: (protocol, { dispatch, rtcManager }) => {
+    const { from } = protocol;
+
+    dispatch.sendRoomMemberNamePreMessage({ to: from });
+    if (store.getState().user.voiceStatus) {
+      dispatch.sendVoiceReadyMessage({});
+    }
+
+    dispatch.sendSignalingEndOkMessage({});
+
+    console.log('end signaling !!');
+  },
+  [SIGNALING_MESSAGE_ID.END_OK]: (protocol, { dispatch, rtcManager }) => {
+    const { from } = protocol;
+
+    console.log('end signaling !!');
   },
 };

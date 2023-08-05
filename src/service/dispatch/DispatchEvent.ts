@@ -38,6 +38,12 @@ export class DispatchEvent extends DispatchEventService {
   @SocketMessage()
   sendSignalingConnectDataChannelMessage(data: ProtocolData) {}
 
+  @SocketMessage()
+  sendSignalingEndMessage(data: ProtocolData) {}
+
+  @SocketMessage()
+  sendSignalingEndOkMessage(data: ProtocolData) {}
+
   @RTCMessage()
   sendChatSendMessage(data: ProtocolData) {}
 
