@@ -26,6 +26,14 @@ const ChatBubble = ({
   const getColorObj = (colorCode: string) => color(colorCode) as any;
   const isBlack = () =>
     sum(getColorObj(stc(username)).color as number[]) / 765 > 0.6;
+
+  const urlRegex = /(http[s]?:\/\/)?([^\/\s]+\/)([^\s]*)/g;
+
+  const isURL = (message: string) => !!message.match(urlRegex);
+  const getURL = (message: string) => message.match(urlRegex)?.[0];
+
+  console.log(message.match(urlRegex));
+
   return (
     <ChatBubbleContainer
       {...props}
@@ -44,7 +52,20 @@ const ChatBubble = ({
       )}
       <div className="chat-content">
         <StyledCard size="small">
-          <p>{message}</p>
+          {isURL(message) ? (
+            <>
+              <a
+                href={getURL(message)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {getURL(message)}
+              </a>
+              <span>{message.replace(getURL(message) || '', '')}</span>
+            </>
+          ) : (
+            <p>{message}</p>
+          )}
         </StyledCard>
         {date && (
           <span className="chat-time">{dayjs(date).format('HH:mm')}</span>

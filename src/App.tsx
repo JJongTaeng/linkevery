@@ -63,6 +63,8 @@ const Container = styled.div`
 const ContentSection = styled.section`
   width: 100%;
   height: 100%;
+
+  overflow: auto;
 `;
 
 export default App;
