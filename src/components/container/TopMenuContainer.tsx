@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { App } from '../../service/app/App';
 import { mdUtils } from '../../service/media/MediaDeviceUtils';
 import { videoManager } from '../../service/media/VideoManager';
+import { storage } from '../../service/storage/StorageService';
 import { clipboard } from '../../service/utils/Clipboard';
 import { roomActions } from '../../store/features/roomSlice';
 import { statusActions } from '../../store/features/statusSlice';
@@ -103,9 +104,11 @@ const TopMenuContainer = () => {
                   return;
                 }
 
+                storage.setItem('voiceStatus', true);
                 dispatch(userActions.changeVoiceStatus(true));
                 app.dispatch.sendVoiceReadyMessage({});
               } else {
+                storage.setItem('voiceStatus', false);
                 app.disconnectVoice();
                 if (screenShareStatus) {
                   app.closeScreenShare();

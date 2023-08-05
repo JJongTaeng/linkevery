@@ -12,7 +12,7 @@ interface UserState {
 const initialState: UserState = {
   key: storage.getItem('userKey'),
   username: storage.getItem('username'),
-  voiceStatus: false,
+  voiceStatus: storage.getItem('voiceStatus'),
   screenShareStatus: false,
 };
 
