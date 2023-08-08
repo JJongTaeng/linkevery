@@ -131,6 +131,8 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     const rtcPeer = rtcManager.getPeer(from);
     rtcPeer.onDataChannel((e) => {
       console.debug('[open datachannel]', from);
+      dispatch.sendSignalingEndMessage({});
+
       rtcPeer.dataChannel = e.channel;
       rtcPeer.onDataChannelMessage((e) => {
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(e.data));
@@ -148,7 +150,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
     rtcPeer.createDataChannel(roomName);
     rtcPeer
       .onDataChannelOpen((e) => {
-        dispatch.sendSignalingEndMessage({});
         console.debug('[open datachannel]', from);
       })
       .onDataChannelMessage((e) => {

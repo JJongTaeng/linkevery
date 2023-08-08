@@ -32,8 +32,6 @@ const ChatBubble = ({
   const isURL = (message: string) => !!message.match(urlRegex);
   const getURL = (message: string) => message.match(urlRegex)?.[0];
 
-  console.log(message.match(urlRegex));
-
   return (
     <ChatBubbleContainer
       {...props}
