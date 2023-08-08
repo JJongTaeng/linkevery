@@ -159,11 +159,11 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
   [SIGNALING_MESSAGE_ID.END]: (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
 
-    dispatch.sendRoomMemberNamePreMessage({ to: from });
     if (store.getState().user.voiceStatus) {
       dispatch.sendVoiceReadyMessage({});
     }
 
+    dispatch.sendRoomMemberNamePreMessage({ to: from });
     dispatch.sendSignalingEndOkMessage({});
 
     console.log('end signaling !!');
