@@ -27,7 +27,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     store.dispatch(userActions.changeScreenShareStatus(true));
 
     const voiceMember = [];
-    const member = store.getState().room.room.member;
+    const member = store.getState().room.current.member;
     for (const key in member) {
       if (member[key].voiceStatus) voiceMember.push(member[key].clientId);
     }

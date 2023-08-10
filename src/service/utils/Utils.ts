@@ -8,7 +8,7 @@ class Utils {
     );
   }
   getUserKeyByClientId(clientId: string) {
-    const member = store.getState().room.room.member;
+    const member = store.getState().room.current.member;
 
     for (const key in member) {
       if (member[key].clientId === clientId) {

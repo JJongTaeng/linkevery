@@ -17,7 +17,7 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
   const [selectedUserKey, setSelectedUserKey] = useState('');
   const { myName, room } = useAppSelector((state) => ({
     myName: state.user.username,
-    room: state.room.room,
+    room: state.room.current,
   }));
 
   const onChangeVolume = (id: string, volume: number) => {

@@ -12,7 +12,7 @@ interface RoomBadgeProps {
 const RoomBadge = ({ name, onClick }: RoomBadgeProps) => {
   const dispatch = useAppDispatch();
   const { currentRoomName } = useAppSelector((state) => ({
-    currentRoomName: state.room.room.roomName,
+    currentRoomName: state.room.current.roomName,
   }));
   return (
     <BadgeContainer>

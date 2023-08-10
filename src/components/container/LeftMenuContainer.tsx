@@ -19,7 +19,7 @@ const LeftMenuContainer = () => {
     roomList,
     leftMenuVisible,
   } = useAppSelector((state) => ({
-    roomName: state.room.room.roomName,
+    roomName: state.room.current.roomName,
     roomList: state.room.roomList,
     leftMenuVisible: state.status.leftMenuVisible,
   }));

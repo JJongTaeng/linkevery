@@ -31,10 +31,10 @@ const TopMenuContainer = () => {
   const { leftMenuVisible, roomName, voiceStatus, screenShareStatus, room } =
     useAppSelector((state) => ({
       leftMenuVisible: state.status.leftMenuVisible,
-      roomName: state.room.room.roomName,
+      roomName: state.room.current.roomName,
       screenShareStatus: state.user.screenShareStatus,
       voiceStatus: state.user.voiceStatus,
-      room: state.room.room,
+      room: state.room.current,
     }));
   const dispatch = useAppDispatch();
 

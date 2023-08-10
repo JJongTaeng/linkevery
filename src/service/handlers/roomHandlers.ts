@@ -28,7 +28,10 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
     );
 
     store.dispatch(
-      updateMemberByDB({ roomName, member: store.getState().room.room.member }),
+      updateMemberByDB({
+        roomName,
+        member: store.getState().room.current.member,
+      }),
     );
     dispatch.sendRoomMemberNamePostMessage({
       username,
@@ -51,7 +54,10 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
     );
 
     store.dispatch(
-      updateMemberByDB({ roomName, member: store.getState().room.room.member }),
+      updateMemberByDB({
+        roomName,
+        member: store.getState().room.current.member,
+      }),
     );
 
     const messageList = await query.getMessageList(roomName);
