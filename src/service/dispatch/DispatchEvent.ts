@@ -1,4 +1,16 @@
-import { Protocol, ProtocolData } from '../../constants/protocol';
+import {
+  CATEGORY,
+  CHAT_MESSAGE_ID,
+  CONNECTION_MESSAGE_ID,
+  MessageId,
+  NEGOTIATION_MESSAGE_ID,
+  Protocol,
+  ProtocolData,
+  ROOM_MESSAGE_ID,
+  SCREEN_SHARE_MESSAGE_ID,
+  SIGNALING_MESSAGE_ID,
+  VOICE_MESSAGE_ID,
+} from '../../constants/protocol';
 import { Sender } from '../messages/Sender';
 import { rtcManager } from '../rtc/RTCManager';
 import { storage } from '../storage/StorageService';
@@ -11,108 +23,183 @@ export class DispatchEvent extends DispatchEventService {
     super();
   }
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.CONNECTION,
+    messageId: CONNECTION_MESSAGE_ID.CONNECT,
+  })
   sendConnectionConnectMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.CONNECTION,
+    messageId: CONNECTION_MESSAGE_ID.JOIN_ROOM,
+  })
   sendConnectionJoinRoomMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.CONNECTION,
+    messageId: CONNECTION_MESSAGE_ID.DISCONNECT,
+  })
   sendConnectionDisconnectMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.SIGNALING,
+    messageId: SIGNALING_MESSAGE_ID.START,
+  })
   sendSignalingStartMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.SIGNALING,
+    messageId: SIGNALING_MESSAGE_ID.OFFER,
+  })
   sendSignalingOfferMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.SIGNALING,
+    messageId: SIGNALING_MESSAGE_ID.ANSWER,
+  })
   sendSignalingAnswerMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.SIGNALING,
+    messageId: SIGNALING_MESSAGE_ID.ICE,
+  })
   sendSignalingIceMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.SIGNALING,
+    messageId: SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL,
+  })
   sendSignalingCreateDataChannelMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.SIGNALING,
+    messageId: SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL,
+  })
   sendSignalingConnectDataChannelMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.SIGNALING,
+    messageId: SIGNALING_MESSAGE_ID.END,
+  })
   sendSignalingEndMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.SIGNALING,
+    messageId: SIGNALING_MESSAGE_ID.END_OK,
+  })
   sendSignalingEndOkMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.CHAT,
+    messageId: CHAT_MESSAGE_ID.SEND,
+  })
   sendChatSendMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.CHAT,
+    messageId: CHAT_MESSAGE_ID.OK,
+  })
   sendChatOkMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.ROOM,
+    messageId: ROOM_MESSAGE_ID.MEMBER_NAME_PRE,
+  })
   sendRoomMemberNamePreMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.ROOM,
+    messageId: ROOM_MESSAGE_ID.MEMBER_NAME,
+  })
   sendRoomMemberNameMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.ROOM,
+    messageId: ROOM_MESSAGE_ID.MEMBER_NAME_POST,
+  })
   sendRoomMemberNamePostMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.ROOM,
+    messageId: ROOM_MESSAGE_ID.SYNC_CHAT_LIST,
+  })
   sendRoomSyncChatListMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.ROOM,
+    messageId: ROOM_MESSAGE_ID.SYNC_CHAT_LIST_OK,
+  })
   sendRoomSyncChatListOkMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.VOICE,
+    messageId: VOICE_MESSAGE_ID.READY,
+  })
   sendVoiceReadyMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.VOICE,
+    messageId: VOICE_MESSAGE_ID.READY_OK,
+  })
   sendVoiceReadyOkMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.VOICE,
+    messageId: VOICE_MESSAGE_ID.CONNECTED,
+  })
   sendVoiceConnectedMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.VOICE,
+    messageId: VOICE_MESSAGE_ID.DISCONNECT,
+  })
   sendVoiceDisconnectMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.SCREEN,
+    messageId: SCREEN_SHARE_MESSAGE_ID.READY,
+  })
   sendScreenReadyMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.SCREEN,
+    messageId: SCREEN_SHARE_MESSAGE_ID.READY_OK,
+  })
   sendScreenReadyOkMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.SCREEN,
+    messageId: SCREEN_SHARE_MESSAGE_ID.CONNECTED,
+  })
   sendScreenConnectedMessage(data: ProtocolData) {}
 
-  @RTCMessage()
+  @RTCMessage({
+    category: CATEGORY.SCREEN,
+    messageId: SCREEN_SHARE_MESSAGE_ID.DISCONNECT,
+  })
   sendScreenDisconnectMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.NEGOTIATION,
+    messageId: NEGOTIATION_MESSAGE_ID.OFFER,
+  })
   sendNegotiationOfferMessage(data: ProtocolData) {}
 
-  @SocketMessage()
+  @SocketMessage({
+    category: CATEGORY.NEGOTIATION,
+    messageId: NEGOTIATION_MESSAGE_ID.ANSWER,
+  })
   sendNegotiationAnswerMessage(data: ProtocolData) {}
 }
 
-function splitCamelCase(sentence: string) {
-  // Use regular expression to split the camel case sentence
-  var words = sentence.split(/(?=[A-Z])/);
-
-  return words;
-}
-
-function RTCMessage() {
+function RTCMessage({
+  category,
+  messageId,
+}: {
+  category: CATEGORY;
+  messageId: MessageId;
+}) {
   return function (target: any, key: string, desc: PropertyDescriptor): void {
-    const method = desc.value;
-
-    let [_, category, ...rest] = splitCamelCase(key);
-    rest.pop();
-
-    category = category.toUpperCase();
-    const messageId = rest.join('_').toUpperCase();
-
     desc.value = function (data: any) {
       const clientId = storage.getItem('clientId');
       target.send({
@@ -126,16 +213,14 @@ function RTCMessage() {
   };
 }
 
-function SocketMessage() {
+function SocketMessage({
+  category,
+  messageId,
+}: {
+  category: CATEGORY;
+  messageId: MessageId;
+}) {
   return function (target: any, key: string, desc: PropertyDescriptor): void {
-    const method = desc.value;
-
-    let [_, category, ...rest] = splitCamelCase(key);
-    rest.pop();
-
-    category = category.toUpperCase();
-    const messageId = rest.join('_').toUpperCase();
-
     desc.value = function (data: any) {
       const clientId = storage.getItem('clientId');
       target.send({
