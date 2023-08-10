@@ -19,9 +19,6 @@ import { getUserByDB } from '../../store/thunk/userThunk';
 import { PAGE_OFFSET } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
 import SvgArrowDown from '../icons/ArrowDown';
-import SvgCloseButton from '../icons/CloseButton';
-import SvgCloseFullScreen from '../icons/CloseFullScreen';
-import SvgFullScreen from '../icons/FullScreen';
 import SvgSend from '../icons/Send';
 import UsernameModal from './UsernameModal';
 
@@ -47,14 +44,11 @@ const Room = () => {
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { username, messageList, isVisiblePlayView, status } = useAppSelector(
-    (state) => ({
-      status: state.status,
-      messageList: state.chat.messageList,
-      username: state.user.username,
-      isVisiblePlayView: state.status.isVisiblePlayView,
-    }),
-  );
+  const { username, messageList, status } = useAppSelector((state) => ({
+    status: state.status,
+    messageList: state.chat.messageList,
+    username: state.user.username,
+  }));
   const storeDispatch = useAppDispatch();
 
   const [isIntersecting] = useIntersectionObserver<HTMLDivElement>(
@@ -145,28 +139,7 @@ const Room = () => {
     <>
       <RoomContent $leftMenuVisible={status.leftMenuVisible}>
         <ContentContainer className="content-container">
-          <VideoContainer
-            id={'video-container'}
-            isVisible={isVisiblePlayView}
-            isFullScreen={state.isFullScreen}
-          >
-            <div
-              onClick={() => setIsFullScreen(!state.isFullScreen)}
-              className="full-screen"
-            >
-              {state.isFullScreen ? <SvgCloseFullScreen /> : <SvgFullScreen />}
-            </div>
-            <div
-              onClick={() => {
-                storeDispatch(statusActions.changeIsVisiblePlayView(false));
-                setIsFullScreen(false);
-              }}
-              className="close-video"
-            >
-              <SvgCloseButton />
-            </div>
-          </VideoContainer>
-          <ChatContainer leftSideView={isVisiblePlayView}>
+          <ChatContainer>
             <ChatList id={'chat-list'} ref={chatListElement}>
               <div id="chat-loading-trigger" ref={chatLoadingTriggerElement} />
               {messageList.map(
@@ -281,119 +254,13 @@ const ContentContainer = styled.div`
   position: relative;
 `;
 
-const VideoContainer = styled.div<{
-  isVisible: boolean;
-  isFullScreen: boolean;
-}>`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-
-  ${({ theme, isVisible }) =>
-    isVisible
-      ? `
-        padding: 8px;
-        width: 70%;
-      `
-      : `
-        padding: 0;
-        width: 0px;
-        border: 0;
-  `};
-  ${({ theme, isVisible }) => theme.media.tablet`
-    ${isVisible ? 'width: 100%' : 'width: 0px'}
-  `};
-  height: 100%;
-  transition: 0.3s;
-  background-color: ${({ theme }) => theme.color.white};
-
-  ${({ isFullScreen }) =>
-    isFullScreen
-      ? `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-  `
-      : ''}
-
-  video {
-    ${({ isVisible, theme }) =>
-      isVisible &&
-      `
-          box-shadow: ${theme.boxShadow};
-          border-radius: 8px;
-      `};
-    width: 100%;
-    height: 100%;
-  }
-
-  &:hover > .full-screen {
-    opacity: 1;
-    cursor: pointer;
-  }
-  .full-screen:hover {
-    transform: scale(1.1);
-  }
-  .full-screen {
-    z-index: 100;
-    opacity: 0;
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    background: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    svg {
-      width: 20px;
-      height: 20px;
-    }
-    ${({ isVisible }) => (isVisible ? '' : 'width: 0px; height: 0px;')}
-  }
-  &:hover > .close-video {
-    opacity: 1;
-    cursor: pointer;
-  }
-  .close-video:hover {
-    transform: scale(1.1);
-  }
-  .close-video {
-    z-index: 100;
-    opacity: 0;
-    position: absolute;
-    left: 20px;
-    top: 20px;
-    background: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    svg {
-      width: 30px;
-      height: 30px;
-    }
-    ${({ isVisible }) => (isVisible ? '' : 'width: 0px; height: 0px;')}
-  }
-`;
-
-const ChatContainer = styled.div<{ leftSideView: boolean }>`
+const ChatContainer = styled.div`
   width: 100%;
   min-width: 30%;
   padding: 8px;
 
   position: relative;
-  ${({ theme, leftSideView }) => theme.media.tablet`
-      ${leftSideView ? 'display: none' : ''}
-  `};
+
   .ant-btn {
     position: absolute;
     left: calc(50% - 16px);

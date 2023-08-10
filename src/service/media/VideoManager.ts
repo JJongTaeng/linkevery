@@ -12,14 +12,15 @@ class VideoManager {
     this.videoElementMap[id] = video;
   }
 
-  appendVideoNode(clientId: string) {
-    this.removeAllVideoNode();
-    const container = document.querySelector('#video-container');
-    if (!container) {
-      throw new Error('video container not defined');
-    }
-    container.appendChild(this.videoElementMap[clientId]);
-    this.videoElementMap[clientId].play();
+  openVideoPopup(clientId: string) {
+    let popUpWindow = window.open('', '_blank', 'x=y');
+    const videoElem = document.createElement('video');
+    videoElem.autoplay = true;
+    videoElem.muted = true;
+    videoElem.style.width = '100%';
+    videoElem.style.height = '100%';
+    let remoteVideo = popUpWindow?.document.body.appendChild(videoElem);
+    remoteVideo!.srcObject = this.videoElementMap[clientId].srcObject;
   }
 
   removeVideoNode(id: string) {

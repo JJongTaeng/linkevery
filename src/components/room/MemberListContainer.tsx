@@ -1,10 +1,9 @@
 import { Button, Card, Popover, Slider } from 'antd';
 import { nanoid } from 'nanoid';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { audioManager } from '../../service/media/AudioManager';
 import { videoManager } from '../../service/media/VideoManager';
-import { statusActions } from '../../store/features/statusSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { highlight } from '../../style';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
@@ -24,10 +23,6 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
     audioManager.changeVolume(id, volume);
   };
 
-  useEffect(() => {
-    if (!room.member[selectedUserKey])
-      dispatch(statusActions.changeIsVisiblePlayView(false));
-  }, [room.member]);
   return (
     <MemberList className="member-list">
       <Card size="small">
@@ -43,9 +38,8 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
                 size="small"
                 shape="circle"
                 onClick={() => {
-                  dispatch(statusActions.changeIsVisiblePlayView(true));
                   setSelectedUserKey(userKey);
-                  videoManager.appendVideoNode(room.member[userKey].clientId);
+                  videoManager.openVideoPopup(room.member[userKey].clientId);
                 }}
                 icon={<SvgScreenShareOn />}
               />

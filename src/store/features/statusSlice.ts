@@ -6,14 +6,12 @@ import { getChatListPageByDB } from '../thunk/chatThunk';
 interface StatusState {
   leftMenuVisible: boolean;
   isMaxPageMessageList: boolean;
-  isVisiblePlayView: boolean;
 }
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const initialState: StatusState = {
   leftMenuVisible: agentInfo.platform.type === 'desktop',
   isMaxPageMessageList: false,
-  isVisiblePlayView: false,
 };
 
 export const statusSlice = createSlice({
@@ -22,9 +20,6 @@ export const statusSlice = createSlice({
   reducers: {
     changeLeftMenuVisible: (state, { payload }: { payload: boolean }) => {
       state.leftMenuVisible = payload;
-    },
-    changeIsVisiblePlayView: (state, { payload }) => {
-      state.isVisiblePlayView = payload;
     },
     resetAllStatusState: () => {
       return initialState;
