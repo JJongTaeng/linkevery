@@ -91,6 +91,10 @@ const ChatBubbleContainer = styled.div<{ $isBlack: boolean }>`
   }
   .chat-content {
     display: flex;
+
+    a {
+      word-wrap: break-word;
+    }
   }
 `;
 
