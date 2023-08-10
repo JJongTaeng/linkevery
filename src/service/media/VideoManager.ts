@@ -1,6 +1,7 @@
 class VideoManager {
   constructor() {}
   private videoElementMap: { [key: string]: HTMLVideoElement } = {};
+  private windowPopupMap: { [key: string]: Window } = {};
 
   addVideo(id: string, mediaStream: MediaStream) {
     const video = document.createElement('video');
@@ -13,7 +14,8 @@ class VideoManager {
   }
 
   openVideoPopup(clientId: string) {
-    let popUpWindow = window.open('', '_blank', 'x=y');
+    const popUpWindow = window.open('', '_blank', 'x=y')!;
+    this.windowPopupMap[clientId] = popUpWindow!;
     const videoElem = document.createElement('video');
     videoElem.autoplay = true;
     videoElem.muted = true;
@@ -23,21 +25,7 @@ class VideoManager {
     remoteVideo!.srcObject = this.videoElementMap[clientId].srcObject;
   }
 
-  removeVideoNode(id: string) {
-    const video = document.getElementById(id + '_video') as HTMLVideoElement;
-    if (!video) return;
-    video.parentNode?.removeChild(video);
-  }
-
-  removeAllVideoNode() {
-    const videoNodeList = document.querySelectorAll('.screen-share-video');
-    videoNodeList.forEach((node) => {
-      node.parentNode?.removeChild(node);
-    });
-  }
-
   clearAllVideo() {
-    this.removeAllVideoNode();
     for (const key in this.videoElementMap) {
       this.clearVideo(key);
     }
@@ -45,6 +33,9 @@ class VideoManager {
 
   clearVideo(id: string) {
     const video = this.videoElementMap[id];
+    const popup = this.windowPopupMap[id];
+    popup.close();
+    delete this.windowPopupMap[id];
     if (!video) {
       return;
     }
@@ -55,7 +46,6 @@ class VideoManager {
       track.stop();
     });
     delete this.videoElementMap[id];
-    this.removeVideoNode(id);
   }
 }
 
