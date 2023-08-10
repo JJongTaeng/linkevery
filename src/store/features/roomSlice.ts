@@ -39,6 +39,7 @@ export const roomSlice = createSlice({
     ) => {
       const { clientId, userKey, username } = payload;
       state.current.member[userKey] = {
+        ...state.current.member[userKey],
         clientId,
         username,
       };
