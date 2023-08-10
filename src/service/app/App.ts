@@ -14,6 +14,7 @@ export class App implements AppService {
   readonly socket: Socket = socketManager.socket;
   readonly rtcManager = rtcManager;
   readonly dispatch = new DispatchEvent();
+  screenMediaStream?: MediaStream;
 
   public static instance: App;
   private constructor() {

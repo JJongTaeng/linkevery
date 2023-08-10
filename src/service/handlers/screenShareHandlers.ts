@@ -3,6 +3,7 @@ import { HandlerMap, SCREEN_SHARE_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
+import { App } from '../app/App';
 import { videoManager } from '../media/VideoManager';
 import { storage } from '../storage/StorageService';
 
@@ -22,7 +23,6 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     { dispatch, rtcManager },
   ) => {
     const { userKey } = storage.getAll();
-    if (store.getState().user.screenShareStatus) return;
     store.dispatch(userActions.changeScreenShareStatus(true));
 
     const voiceMember = [];
@@ -31,14 +31,19 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       if (member[key].voiceStatus) voiceMember.push(member[key].clientId);
     }
     try {
-      const mediaStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: { echoCancellation: true, noiseSuppression: true },
-      });
+      let mediaStream = App.getInstance().screenMediaStream;
+      if (!mediaStream) {
+        mediaStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: false,
+        });
+        App.getInstance().screenMediaStream = mediaStream;
+      }
+
       for (const clientId of voiceMember) {
         mediaStream?.getTracks().forEach((track) => {
           const peer = rtcManager.getPeer(clientId);
-          peer.addTrack(track, mediaStream);
+          peer.addTrack(track, mediaStream!);
         });
         dispatch.sendScreenConnectedMessage({ to: clientId, userKey });
       }

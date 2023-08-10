@@ -113,7 +113,14 @@ export class RTCPeer extends RTCPeerService {
   public addTrack(track: MediaStreamTrack, stream: MediaStream) {
     if (stream.getVideoTracks()[0]) {
       this.videoStream = stream;
-      this.videoSender = this.peer?.addTrack(track, stream);
+      try {
+        if (this.videoSender) {
+          this.peer?.removeTrack(this.videoSender);
+        }
+        this.videoSender = this.peer?.addTrack(track, stream);
+      } catch (e) {
+        console.log(e);
+      }
     } else {
       this.audioStream = stream;
       this.audioSender = this.peer?.addTrack(track, stream);

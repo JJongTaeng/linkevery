@@ -63,6 +63,9 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
         voiceStatus: true,
       }),
     );
+    if (store.getState().user.screenShareStatus) {
+      dispatch.sendScreenReadyMessage({});
+    }
   },
   [VOICE_MESSAGE_ID.DISCONNECT]: async (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;

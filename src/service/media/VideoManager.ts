@@ -34,7 +34,7 @@ class VideoManager {
   clearVideo(id: string) {
     const video = this.videoElementMap[id];
     const popup = this.windowPopupMap[id];
-    popup.close();
+    popup?.close();
     delete this.windowPopupMap[id];
     if (!video) {
       return;
