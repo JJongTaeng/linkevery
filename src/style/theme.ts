@@ -16,7 +16,7 @@ const color = {
   grey800: '#dddae6',
 };
 
-const mediaSize = {
+export const mediaSize = {
   mobile: 580,
   tablet: 768,
   desktop: 1284,

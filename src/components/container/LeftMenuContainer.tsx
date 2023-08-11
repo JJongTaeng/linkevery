@@ -2,16 +2,19 @@ import { Button } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { throttle } from 'throttle-debounce';
 import { App } from '../../service/app/App';
+import { statusActions } from '../../store/features/statusSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { getRoomListByDB } from '../../store/thunk/roomThunk';
+import { mediaSize } from '../../style/theme';
 import CreateRoomModal from '../room/CreateRoomModal';
 import MemberListContainer from '../room/MemberListContainer';
 import RoomBadge from '../room/RoomBadge';
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const [roomCreateModalVisible, setRoomCreateModalVisible] = useState(false);
   const app = useRef(App.getInstance()).current;
   const dispatch = useAppDispatch();
   const {
@@ -24,8 +27,18 @@ const LeftMenuContainer = () => {
     leftMenuVisible: state.status.leftMenuVisible,
   }));
 
+  const changeLeftMenu = throttle(100, () => {
+    if (window.innerWidth < mediaSize.tablet) {
+      dispatch(statusActions.changeLeftMenuVisible(false));
+    } else {
+      dispatch(statusActions.changeLeftMenuVisible(true));
+    }
+  });
+
   useEffect(() => {
     dispatch(getRoomListByDB());
+    window.addEventListener('load', changeLeftMenu);
+    window.addEventListener('resize', changeLeftMenu);
   }, []);
 
   return (
@@ -47,7 +60,7 @@ const LeftMenuContainer = () => {
         <div>
           <ControllerContainer>
             {!currentRoomName && (
-              <Button onClick={() => setOpen(true)}>+</Button>
+              <Button onClick={() => setRoomCreateModalVisible(true)}>+</Button>
             )}
           </ControllerContainer>
         </div>
@@ -59,7 +72,10 @@ const LeftMenuContainer = () => {
         </LeftRightContainer>
       )}
 
-      <CreateRoomModal open={open} setOpen={setOpen} />
+      <CreateRoomModal
+        open={roomCreateModalVisible}
+        setOpen={setRoomCreateModalVisible}
+      />
     </Container>
   );
 };
