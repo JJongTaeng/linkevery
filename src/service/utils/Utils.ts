@@ -38,6 +38,13 @@ class Utils {
       return !duplicate;
     });
   }
+
+  arrayBufferToString(buffer: ArrayBuffer) {
+    return new TextDecoder('utf-8').decode(buffer);
+  }
+  stringToArrayBuffer(str: string) {
+    return new TextEncoder().encode(str).buffer;
+  }
 }
 
 export const utils = new Utils();

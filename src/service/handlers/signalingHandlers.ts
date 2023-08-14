@@ -135,7 +135,11 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
 
       rtcPeer.dataChannel = e.channel;
       rtcPeer.onDataChannelMessage((e) => {
-        rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(e.data));
+        const parsedMessage = {
+          ...JSON.parse(e.data),
+          data: JSON.parse(JSON.parse(e.data).data),
+        };
+        rtcManager.emit(RTCManager.RTC_EVENT.DATA, parsedMessage);
       });
     });
     dispatch.sendSignalingConnectDataChannelMessage({ to: from });
@@ -153,7 +157,11 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
         console.debug('[open datachannel]', from);
       })
       .onDataChannelMessage((e) => {
-        rtcManager.emit(RTCManager.RTC_EVENT.DATA, JSON.parse(e.data));
+        const parsedMessage = {
+          ...JSON.parse(e.data),
+          data: JSON.parse(JSON.parse(e.data).data),
+        };
+        rtcManager.emit(RTCManager.RTC_EVENT.DATA, parsedMessage);
       });
   },
   [SIGNALING_MESSAGE_ID.END]: (protocol, { dispatch, rtcManager }) => {

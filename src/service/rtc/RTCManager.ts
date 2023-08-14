@@ -39,14 +39,22 @@ export class RTCManager extends RTCManagerService {
       );
     const peer = this.peerMap.get(to);
     const datachannel = peer?.getDataChannel();
-    const stringify = JSON.stringify(protocol);
+    const newProtocol = {
+      ...protocol,
+      data: JSON.stringify(protocol.data),
+    };
+    const stringify = JSON.stringify(newProtocol);
     datachannel?.send(stringify);
   }
 
   sendAll(protocol: Protocol) {
     this.peerMap.forEach((peer, key) => {
       const datachannel = peer.getDataChannel();
-      const stringify = JSON.stringify(protocol);
+      const newProtocol = {
+        ...protocol,
+        data: JSON.stringify(protocol.data),
+      };
+      const stringify = JSON.stringify(newProtocol);
       datachannel?.send(stringify);
     });
   }
