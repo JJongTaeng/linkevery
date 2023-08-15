@@ -45,6 +45,14 @@ class Utils {
   stringToArrayBuffer(str: string) {
     return new TextEncoder().encode(str).buffer;
   }
+
+  sliceString(str: string, length: number) {
+    let arr = [];
+    for (let i = 0; i < str.length; i += length) {
+      arr.push(str.slice(i, i + length));
+    }
+    return arr;
+  }
 }
 
 export const utils = new Utils();

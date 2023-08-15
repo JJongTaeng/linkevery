@@ -137,7 +137,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       rtcPeer.onDataChannelMessage((e) => {
         const parsedMessage = {
           ...JSON.parse(e.data),
-          data: JSON.parse(JSON.parse(e.data).data),
         };
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, parsedMessage);
       });
@@ -159,7 +158,6 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
       .onDataChannelMessage((e) => {
         const parsedMessage = {
           ...JSON.parse(e.data),
-          data: JSON.parse(JSON.parse(e.data).data),
         };
         rtcManager.emit(RTCManager.RTC_EVENT.DATA, parsedMessage);
       });
@@ -173,12 +171,8 @@ export const signalingHandlers: HandlerMap<SIGNALING_MESSAGE_ID> = {
 
     dispatch.sendRoomMemberNamePreMessage({ to: from });
     dispatch.sendSignalingEndOkMessage({});
-
-    console.log('end signaling !!');
   },
   [SIGNALING_MESSAGE_ID.END_OK]: (protocol, { dispatch, rtcManager }) => {
     const { from } = protocol;
-
-    console.log('end signaling !!');
   },
 };

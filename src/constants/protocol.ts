@@ -80,12 +80,24 @@ export interface ProtocolData {
   [key: string]: any;
 }
 
+export interface StringifyProtocol {
+  messageType: MESSAGE_TYPE;
+  category: CATEGORY;
+  messageId: MessageId;
+  from: string;
+  data: string;
+  index: number;
+  endIndex: number;
+}
+
 export interface Protocol {
   messageType: MESSAGE_TYPE;
   category: CATEGORY;
   messageId: MessageId;
   from: string;
   data: ProtocolData;
+  index: number;
+  endIndex: number;
 }
 
 export type HandlerMap<T extends string | number | symbol> = {
