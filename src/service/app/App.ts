@@ -56,5 +56,6 @@ export class App implements AppService {
       userKey,
     });
     this.rtcManager.clearVideoTrack();
+    this.screenMediaStream = undefined;
   }
 }
