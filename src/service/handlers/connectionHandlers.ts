@@ -27,6 +27,8 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     store.dispatch(deleteMemberByDB({ userKey, roomName }));
     audioManager.removeAudio(from);
     videoManager.clearVideo(from);
-    rtcManager.removePeer(from);
+    try {
+      rtcManager.removePeer(from);
+    } catch (e) {}
   },
 };

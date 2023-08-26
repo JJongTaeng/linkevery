@@ -20,6 +20,8 @@ const UsernameModal = ({ open, onSubmit }: UsernameModalProps) => {
       title={'사용자 이름 등록'}
       open={open}
     >
+      <p>안녕하세요! 사용할 이름을 등록해주세요.</p>
+      <p>변경이 힘드니 신중하게 정해주세요.</p>
       <Form
         form={form}
         onFinish={({ username }) => {

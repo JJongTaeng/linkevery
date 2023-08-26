@@ -1,207 +1,97 @@
-import {
-  Button,
-  Form,
-  Input,
-  Modal,
-  Switch,
-  Tooltip,
-  notification,
-} from 'antd';
-import Bowser from 'bowser';
-import { nanoid } from 'nanoid';
+import { Button } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { AppServiceImpl } from '../../service/app/AppServiceImpl';
-import { mdUtils } from '../../service/media/MediaDeviceUtils';
-import { storage } from '../../service/storage/StorageService';
-import { roomActions } from '../../store/features/roomSlice';
-import { userActions } from '../../store/features/userSlice';
+import { throttle } from 'throttle-debounce';
+import { App } from '../../service/app/App';
+import { statusActions } from '../../store/features/statusSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addRoomByDB, getRoomListByDB } from '../../store/thunk/roomThunk';
-import SvgMicOn from '../icons/MicOn';
-import SvgMicOff from '../icons/MicOn2';
-import SvgScreenShareOff from '../icons/ScreenShareOff';
-import SvgScreenShareOn from '../icons/ScreenShareOn';
+import { getRoomListByDB } from '../../store/thunk/roomThunk';
+import { mediaSize } from '../../style/theme';
+import CreateRoomModal from '../room/CreateRoomModal';
+import MemberListContainer from '../room/MemberListContainer';
 import RoomBadge from '../room/RoomBadge';
-
-const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const app = useRef(AppServiceImpl.getInstance()).current;
+  const [roomCreateModalVisible, setRoomCreateModalVisible] = useState(false);
+  const app = useRef(App.getInstance()).current;
   const dispatch = useAppDispatch();
-  const { voiceStatus, screenShareStatus, roomName, room, roomList } =
-    useAppSelector((state) => ({
-      room: state.room.room,
-      roomName: state.room.room.roomName,
-      roomList: state.room.roomList,
-      voiceStatus: state.user.voiceStatus,
-      screenShareStatus: state.user.screenShareStatus,
-    }));
-  const [form] = Form.useForm();
+  const {
+    roomName: currentRoomName,
+    roomList,
+    leftMenuVisible,
+  } = useAppSelector((state) => ({
+    roomName: state.room.current.roomName,
+    roomList: state.room.roomList,
+    leftMenuVisible: state.status.leftMenuVisible,
+  }));
 
-  const isOnVoiceMember = () => {
-    for (const key in room.member) {
-      if (room.member[key].voiceStatus) {
-        return true;
-      }
+  const changeLeftMenu = throttle(100, () => {
+    if (window.innerWidth < mediaSize.tablet) {
+      dispatch(statusActions.changeLeftMenuVisible(false));
+    } else {
+      dispatch(statusActions.changeLeftMenuVisible(true));
     }
-  };
+  });
 
   useEffect(() => {
     dispatch(getRoomListByDB());
+    window.addEventListener('load', changeLeftMenu);
+    window.addEventListener('resize', changeLeftMenu);
   }, []);
 
   return (
-    <Container>
-      <div className={'logo-container'}>
-        <img src="/linkevery/logo512.png" />
-      </div>
-      <div className={'room-list'}>
-        {roomList.map((roomName) => (
-          <RoomBadge
-            onClick={() => {
-              app.disconnect();
-              navigate('/' + roomName);
-            }}
-            name={roomName}
-            key={roomName}
-          />
-        ))}
-      </div>
+    <Container $leftMenuVisible={leftMenuVisible}>
+      <LeftLeftContainer>
+        <div className={'room-list'}>
+          {roomList.map((roomName) => (
+            <RoomBadge
+              onClick={() => {
+                currentRoomName !== roomName && app.disconnect();
+                navigate('/' + roomName);
+              }}
+              name={roomName}
+              key={roomName}
+            />
+          ))}
+        </div>
 
-      <div>
-        <ControllerContainer>
-          {roomName && voiceStatus && agentInfo.platform.type === 'desktop' && (
-            <Tooltip defaultOpen={true} placement="right" title="화면공유">
-              <Switch
-                style={{ marginBottom: 8 }}
-                disabled={!isOnVoiceMember()}
-                checked={screenShareStatus}
-                checkedChildren={<SvgScreenShareOn />}
-                unCheckedChildren={<SvgScreenShareOff />}
-                defaultChecked={false}
-                onChange={(value) => {
-                  if (value) {
-                    app.dispatch.sendScreenShareReadyMessage({});
-                  } else {
-                    const id = storage.getItem('clientId');
-                    app.disconnectScreenShare(id);
-                    dispatch(userActions.changeScreenShareStatus(false));
-                  }
-                }}
-              />
-            </Tooltip>
-          )}
-          {roomName && (
-            <Tooltip defaultOpen={true} placement="right" title="음성채팅">
-              <Switch
-                checked={voiceStatus}
-                checkedChildren={<SvgMicOn />}
-                unCheckedChildren={<SvgMicOff />}
-                defaultChecked={false}
-                onChange={async (value) => {
-                  if (value) {
-                    if (!(await mdUtils.isAvailableAudioInput())) {
-                      notification.info({
-                        message: `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
-                      });
-                      return;
-                    }
+        <div>
+          <ControllerContainer>
+            {!currentRoomName && (
+              <Button onClick={() => setRoomCreateModalVisible(true)}>+</Button>
+            )}
+          </ControllerContainer>
+        </div>
+      </LeftLeftContainer>
 
-                    dispatch(userActions.changeVoiceStatus(true));
-                    app.dispatch.sendVoiceReadyMessage({});
-                  } else {
-                    app.disconnectVoice();
-                    if (screenShareStatus) {
-                      const id = storage.getItem('clientId');
-                      app.disconnectScreenShare(id);
-                      dispatch(userActions.changeScreenShareStatus(false));
-                    }
-                    dispatch(userActions.changeVoiceStatus(false));
-                    dispatch(roomActions.setAllMemberVoiceOff());
-                  }
-                }}
-              />
-            </Tooltip>
-          )}
-        </ControllerContainer>
-        {!roomName && <Button onClick={() => setOpen(true)}>+</Button>}
-      </div>
-      <Modal
-        title={'방 생성'}
-        onOk={() => {
-          form.submit();
-        }}
-        onCancel={() => setOpen(false)}
-        open={open}
-      >
-        <Form
-          form={form}
-          name="basic"
-          style={{ maxWidth: 600 }}
-          onFinish={(values) => {
-            const roomName = values.roomName + '+' + nanoid();
-            dispatch(roomActions.setRoomName(roomName));
-            dispatch(addRoomByDB({ roomName, member: {} }));
+      {currentRoomName && (
+        <LeftRightContainer>
+          <MemberListContainer />
+        </LeftRightContainer>
+      )}
 
-            form.resetFields();
-            navigate(`/${roomName}`);
-            setOpen(false);
-          }}
-          autoComplete="off"
-        >
-          <Form.Item
-            label="이름"
-            name="roomName"
-            rules={[{ required: true, message: '방 이름을 입력해주세요~!' }]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
+      <CreateRoomModal
+        open={roomCreateModalVisible}
+        setOpen={setRoomCreateModalVisible}
+      />
     </Container>
   );
 };
 
-const Container = styled.section`
-  padding: 16px 0;
+const LeftLeftContainer = styled.div`
   height: 100%;
   width: 70px;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
   background-color: ${({ theme }) => theme.color.primary100};
   background: linear-gradient(
     180deg,
     ${({ theme }) => theme.color.primary100} 40%,
     ${({ theme }) => theme.color.primary400} 100%
   );
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  svg {
-    margin-top: 4px;
-  }
-  g {
-    fill: white;
-  }
-
-  .logo-container {
-    position: relative;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: ${({ theme }) => theme.color.primary800};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    img {
-      width: 60px;
-      height: 60px;
-    }
-  }
-
   .room-list {
     display: flex;
     flex-direction: column;
@@ -210,6 +100,45 @@ const Container = styled.section`
     width: 100%;
     height: 100%;
   }
+`;
+
+const LeftRightContainer = styled.div`
+  height: 100%;
+  padding: 8px;
+`;
+
+const Container = styled.section<{ $leftMenuVisible: boolean }>`
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: ${({ $leftMenuVisible }) => ($leftMenuVisible ? '' : '0px')};
+  transform: ${({ $leftMenuVisible }) => ($leftMenuVisible ? '' : 'scaleX(0)')};
+  ${({ theme, $leftMenuVisible }) => theme.media.mobile`
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    position: fixed;
+    width: ${$leftMenuVisible ? '100%' : '0px'};  
+    transform: ${$leftMenuVisible ? '' : 'scaleX(0)'};
+    height: calc(100% - 50px);
+    ${LeftRightContainer} {
+      width: 100%;
+      .member-list {
+        width: 100%;
+      }
+    }
+  `}
+  transform-origin: left;
+  transition: 0.2s;
+  svg {
+    margin-top: 4px;
+  }
+  g {
+    fill: white;
+  }
+
   .room-list::-webkit-scrollbar {
     display: none;
   }

@@ -25,6 +25,17 @@ export abstract class RTCManagerService extends EventEmitter {
     this.peerMap.delete(id);
   }
 
+  closeDataChannel(id: string): void {
+    const peer = this.getPeer(id);
+    peer.dataChannel?.close();
+  }
+
+  closeAllDataChannel() {
+    this.peerMap.forEach((peer, key) => {
+      peer.dataChannel?.close();
+    });
+  }
+
   clearPeerMap(): void {
     this.peerMap.forEach((peer, key) => {
       peer.closePeer();

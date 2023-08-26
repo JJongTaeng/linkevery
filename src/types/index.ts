@@ -1,8 +1,13 @@
 export interface ChatType {
   message: string;
-  clientId: string;
+  userKey: string;
   date: string;
   username: string;
 }
 
 export type SendChatType = Omit<ChatType, 'username'>;
+
+export interface ReducerActionType<T, S> {
+  type: T;
+  payload: Partial<S>;
+}

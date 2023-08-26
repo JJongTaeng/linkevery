@@ -1,16 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { query } from '../../service/db/Query';
 import { storage } from '../../service/storage/StorageService';
-import { addRoomByDB, getRoomByDB, getRoomListByDB } from '../thunk/roomThunk';
+import {
+  addRoomByDB,
+  deleteRoomByDB,
+  getRoomByDB,
+  getRoomListByDB,
+} from '../thunk/roomThunk';
 import { Room } from './../../service/db/LinkeveryDB';
 
 interface RoomState {
-  room: Omit<Room, 'id'>;
+  current: Omit<Room, 'id'>;
   roomList: string[];
   size: number;
 }
 
 const initialState: RoomState = {
-  room: {
+  current: {
     member: {},
     roomName: '',
   },
@@ -23,7 +29,7 @@ export const roomSlice = createSlice({
   initialState,
   reducers: {
     setRoomName: (state, { payload }) => {
-      state.room.roomName = payload;
+      state.current.roomName = payload;
     },
     updateMember: (
       state,
@@ -32,7 +38,8 @@ export const roomSlice = createSlice({
       }: { payload: { userKey: string; username: string; clientId: string } },
     ) => {
       const { clientId, userKey, username } = payload;
-      state.room.member[userKey] = {
+      state.current.member[userKey] = {
+        ...state.current.member[userKey],
         clientId,
         username,
       };
@@ -42,8 +49,8 @@ export const roomSlice = createSlice({
       { payload }: { payload: { voiceStatus: boolean; userKey: string } },
     ) => {
       const { userKey, voiceStatus } = payload;
-      state.room.member[userKey] = {
-        ...state.room.member[userKey],
+      state.current.member[userKey] = {
+        ...state.current.member[userKey],
         voiceStatus,
       };
     },
@@ -52,32 +59,40 @@ export const roomSlice = createSlice({
       { payload }: { payload: { screenShareStatus: boolean; userKey: string } },
     ) => {
       const { userKey, screenShareStatus } = payload;
-      state.room.member[userKey] = {
-        ...state.room.member[userKey],
+      state.current.member[userKey] = {
+        ...state.current.member[userKey],
         screenShareStatus,
       };
     },
     deleteMember: (state, { payload }) => {
       const { userKey } = payload;
-      delete state.room.member[userKey];
+      delete state.current.member[userKey];
     },
     leaveRoom: (state) => {
       storage.setItem('roomName', '');
-      state.room.roomName = '';
+      state.current.roomName = '';
     },
     setMemberSize: (state, { payload }) => {
       state.size = payload;
     },
     setAllMemberVoiceOff: (state) => {
-      for (const key in state.room.member) {
-        state.room.member[key].voiceStatus = false;
+      for (const key in state.current.member) {
+        state.current.member[key].voiceStatus = false;
+      }
+    },
+    setAllMemberScreenShareOff: (state) => {
+      for (const key in state.current.member) {
+        state.current.member[key].screenShareStatus = false;
       }
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getRoomByDB.fulfilled, (state, { payload }) => {
-        state.room = payload;
+        if (!Object.keys(payload.member).length) {
+          query.addRoom(payload);
+        }
+        state.current = payload;
         if (!state.roomList.includes(payload.roomName)) {
           state.roomList.push(payload.roomName);
         }
@@ -89,7 +104,16 @@ export const roomSlice = createSlice({
       })
       .addCase(getRoomListByDB.fulfilled, (state, { payload }) => {
         state.roomList = payload || [];
-      });
+      })
+      .addCase(
+        deleteRoomByDB.fulfilled,
+        (state, { payload }: { payload: string }) => {
+          const newRoomList = state.roomList.filter(
+            (roomName) => !(roomName === payload),
+          );
+          state.roomList = newRoomList;
+        },
+      );
   },
 });
 

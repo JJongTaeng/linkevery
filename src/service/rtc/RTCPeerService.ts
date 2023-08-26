@@ -1,25 +1,25 @@
-import { Protocol } from "../../constants/protocol";
+import { Protocol } from '../../constants/protocol';
 
 export enum SdpType {
-  "local" = "local",
-  "remote" = "remote",
+  'local' = 'local',
+  'remote' = 'remote',
 }
 
 export enum PeerConnectionState {
-  failed = "failed",
-  connecting = "connecting",
-  disconnected = "disconnected",
-  connected = "connected",
-  newState = "newState",
+  failed = 'failed',
+  connecting = 'connecting',
+  disconnected = 'disconnected',
+  connected = 'connected',
+  newState = 'newState',
 }
 
 export enum PeerSignalingState {
-  stable = "stable",
-  closed = "closed",
-  haveLocalOffer = "haveLocalOffer",
-  haveRemoteOffer = "haveRemoteOffer",
-  haveLocalPranswer = "haveLocalPranswer",
-  haveRemotePranswer = "haveRemotePranswer",
+  stable = 'stable',
+  closed = 'closed',
+  haveLocalOffer = 'haveLocalOffer',
+  haveRemoteOffer = 'haveRemoteOffer',
+  haveLocalPranswer = 'haveLocalPranswer',
+  haveRemotePranswer = 'haveRemotePranswer',
 }
 
 export type PeerConnectionStateHandlers = {
@@ -31,22 +31,12 @@ export type PeerSignalingStateHandlers = {
 };
 
 export abstract class RTCPeerService {
-  public abstract createPeerConnection(config: RTCConfiguration): void;
-
-  public abstract createDataChannel(
-    id: string,
-    fn: (datachannel: RTCDataChannel) => void
-  ): void;
-  public abstract connectDataChannel(
-    fn: (datachannel: RTCDataChannel) => void
-  ): void;
-
   public abstract createAnswer(
-    option: RTCAnswerOptions
+    option: RTCAnswerOptions,
   ): Promise<RTCSessionDescriptionInit>;
 
   public abstract createOffer(
-    option: RTCOfferOptions
+    option: RTCOfferOptions,
   ): Promise<RTCSessionDescriptionInit>;
 
   public abstract getSdp(type: SdpType): RTCSessionDescription | null;
@@ -64,14 +54,6 @@ export abstract class RTCPeerService {
   public abstract getDataChannel(): RTCDataChannel | undefined;
 
   public abstract closePeer(): void;
-
-  public abstract onChangeConnectionState(
-    handlerMap: PeerConnectionStateHandlers
-  ): void;
-
-  public abstract onChangeSignalingState(
-    handlerMap: PeerSignalingStateHandlers
-  ): void;
 
   public abstract sendMessage(protocol: Protocol): void;
 }

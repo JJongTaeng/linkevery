@@ -1,35 +1,102 @@
-import { Badge, Card } from 'antd';
+import { Card, Tag } from 'antd';
+import color from 'color';
+import dayjs from 'dayjs';
+import { HTMLAttributes } from 'react';
+import stc from 'string-to-color';
 import styled from 'styled-components';
-import { theme } from '../../style/theme';
 
-interface ChatBubbleProps {
-  date: string;
-  username: string;
+interface ChatBubbleProps extends HTMLAttributes<HTMLDivElement> {
+  date?: string;
+  username?: string;
   isMyChat: boolean;
   message: string;
 }
 
-const ChatBubble = ({ message, date, username, isMyChat }: ChatBubbleProps) => {
-  const padding = isMyChat ? '10px 80px 10px 20px' : '10px 20px 10px 80px';
+const ChatBubble = ({
+  message,
+  date,
+  username,
+  isMyChat,
+  ...props
+}: ChatBubbleProps) => {
+  const sum = (arr: number[]) =>
+    arr.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
+  const getColorObj = (colorCode: string) => color(colorCode) as any;
+  const isBlack = () =>
+    sum(getColorObj(stc(username)).color as number[]) / 765 > 0.6;
+
+  const urlRegex = /(http[s]?:\/\/)?([^\/\s]+\/)([^\s]*)/g;
+
+  const isURL = (message: string) => !!message.match(urlRegex);
+  const getURL = (message: string) => message.match(urlRegex)?.[0];
+
   return (
-    <div
+    <ChatBubbleContainer
+      {...props}
+      $isBlack={isBlack()}
       className={isMyChat ? 'chat-bubble  my-chat' : 'chat-bubble peer-chat'}
     >
-      <Badge.Ribbon
-        color={isMyChat ? theme.color.primary200 : theme.color.primary400}
-        placement={isMyChat ? 'end' : 'start'}
-        text={username}
-      >
-        <StyledCard bodyStyle={{ padding }}>
-          <p>{message}</p>
+      {username && (
+        <div className="chat-header">
+          <Tag
+            color={stc(username)}
+            style={isMyChat ? { display: 'none' } : {}}
+          >
+            <span>{username}</span>
+          </Tag>
+        </div>
+      )}
+      <div className="chat-content">
+        <StyledCard size="small">
+          {isURL(message) ? (
+            <>
+              <a
+                href={getURL(message)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {getURL(message)}
+              </a>
+              <span>{message.replace(getURL(message) || '', '')}</span>
+            </>
+          ) : (
+            <p>{message}</p>
+          )}
         </StyledCard>
-      </Badge.Ribbon>
-      <div className={'chat-date'}>
-        <span>{date}</span>
+        {date && (
+          <span className="chat-time">{dayjs(date).format('HH:mm')}</span>
+        )}
       </div>
-    </div>
+    </ChatBubbleContainer>
   );
 };
+
+const ChatBubbleContainer = styled.div<{ $isBlack: boolean }>`
+  .ant-tag-has-color {
+    color: ${({ $isBlack }) => ($isBlack ? '#333' : '#eee')};
+  }
+  .chat-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
+    margin-top: 8px;
+  }
+  .chat-time {
+    font-size: 12px;
+    color: ${({ theme }) => theme.color.grey100};
+    align-self: flex-end;
+    margin: 3px;
+  }
+  .chat-content {
+    display: flex;
+
+    a {
+      word-wrap: break-word;
+    }
+  }
+`;
 
 const StyledCard = styled(Card)`
   p {
@@ -37,6 +104,7 @@ const StyledCard = styled(Card)`
     white-space: pre-wrap;
     margin: 0;
   }
+  min-width: 60px;
 `;
 
 export default ChatBubble;

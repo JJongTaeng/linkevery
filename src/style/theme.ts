@@ -16,7 +16,7 @@ const color = {
   grey800: '#dddae6',
 };
 
-const mediaSize = {
+export const mediaSize = {
   mobile: 580,
   tablet: 768,
   desktop: 1284,
@@ -48,12 +48,13 @@ const size = {
   sm: 12,
 };
 
-const t = {};
+const boxShadow = '0 0 8px 4px rgba(0, 0, 0, 0.1)';
 
 export const theme: DefaultTheme = {
   color,
   size,
   media,
+  boxShadow,
 };
 
 export type ColorsTypes = typeof color;

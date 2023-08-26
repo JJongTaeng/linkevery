@@ -3,6 +3,7 @@ interface StorageData {
   username: string;
   roomName: string;
   userKey: string;
+  voiceStatus: boolean;
 }
 
 type Key = keyof StorageData;
@@ -15,13 +16,14 @@ export class StorageService {
     roomName: '',
     username: '',
     userKey: '',
+    voiceStatus: false,
   };
 
   constructor() {
     this.load();
   }
 
-  public getItem(key: Key) {
+  public getItem<T extends Key>(key: T): StorageData[T] {
     this.load();
     return this.storage[key];
   }
@@ -31,7 +33,7 @@ export class StorageService {
     return this.storage;
   }
 
-  public setItem(key: Key, value: StorageData[Key]) {
+  public setItem<T extends Key>(key: T, value: StorageData[T]) {
     this.storage[key] = value;
     this.save();
   }

@@ -1,227 +1,227 @@
-import { Button } from 'antd';
+import { Button, Divider } from 'antd';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { AppServiceImpl } from '../../service/app/AppServiceImpl';
-import { videoManager } from '../../service/media/VideoManager';
+import styled from 'styled-components';
+import { useRoom } from '../../hooks/room/useRoom';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
+import { App } from '../../service/app/App';
 import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
 import { roomActions } from '../../store/features/roomSlice';
-import { userActions } from '../../store/features/userSlice';
+import { statusActions } from '../../store/features/statusSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { getChatListPageByDB } from '../../store/thunk/chatThunk';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
-import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
+import { getUserByDB } from '../../store/thunk/userThunk';
+import { PAGE_OFFSET } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
-import TopMenuContainer from '../container/TopMenuContainer';
 import SvgArrowDown from '../icons/ArrowDown';
-import SvgCloseFullScreen from '../icons/CloseFullScreen';
-import SvgFullScreen from '../icons/FullScreen';
 import SvgSend from '../icons/Send';
-import MemberListContainer from './MemberListContainer';
-import {
-  ChatContainer,
-  ChatForm,
-  ChatList,
-  ContentContainer,
-  RoomContent,
-  VideoContainer,
-} from './Room.styled';
 import UsernameModal from './UsernameModal';
 
 const Room = () => {
-  const chatScrollViewElement = useRef<HTMLDivElement>(null);
-  const chatListElement = useRef<HTMLDivElement>(null);
-  const [usernameModalVisible, setUsernameModalVisible] = useState(false);
-  const [selectedUserKey, setSelectedUserKey] = useState('');
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const app = useRef(AppServiceImpl.getInstance()).current;
+  const {
+    state,
+    setIsFullScreen,
+    setPage,
+    setUsernameModalVisible,
+    setChatMessage,
+    handleVisibleScrollButton,
+    handleViewportResize,
+    handleChatKeydown,
+    handleChatSubmit,
+    handleUsernameSubmit,
+    handleChatKeyup,
+    moveToChatScrollBottom,
+    elements: { chatListElement, chatLoadingTriggerElement, focusInput },
+  } = useRoom();
+
+  const app = useRef(App.getInstance()).current;
+
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { username, messageList, leftSideView, isReadAllChat, room } =
-    useAppSelector((state) => ({
-      messageList: state.chat.messageList,
-      room: state.room.room,
-      username: state.user.username,
-      leftSideView: state.user.leftSideView,
-      isReadAllChat: state.user.isScrollButtonView,
-    }));
-  const dispatch = useAppDispatch();
+  const { username, messageList, status } = useAppSelector((state) => ({
+    status: state.status,
+    messageList: state.chat.messageList,
+    username: state.user.username,
+  }));
+  const storeDispatch = useAppDispatch();
 
-  const [message, setMessage] = useState('');
-  const [isShift, setIsShift] = useState<boolean>(false);
-
-  const handleChat = () => {
-    if (!message) return;
-    dispatch(
-      chatActions.sendChat({
-        message,
-        clientId: storage.getItem('clientId'),
-        date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-        username: username,
-      }),
-    );
-    setMessage('');
-  };
-
-  const handleScrollChatList = () => {
-    if (utils.isBottomScrollElement(chatListElement.current!)) {
-      dispatch(userActions.changeIsScrollBottomView(false));
-    }
-  };
+  const [isIntersecting] = useIntersectionObserver<HTMLDivElement>(
+    chatLoadingTriggerElement,
+    {
+      root: chatListElement.current,
+    },
+  );
 
   useEffect(() => {
-    dispatch(getUserByDB());
-    window.addEventListener('beforeunload', async () => {
-      roomName && dispatch(deleteAllMemberByDB({ roomName }));
-    });
-  }, []);
+    if (isIntersecting && !status.isMaxPageMessageList) {
+      storeDispatch(
+        getChatListPageByDB({
+          roomName: roomName!,
+          page: state.page + 1,
+          offset: PAGE_OFFSET,
+        }),
+      );
+      setPage(state.page + 1);
+    }
+  }, [isIntersecting, status.isMaxPageMessageList]);
 
   useEffect(() => {
     if (username && roomName) {
-      setUsernameModalVisible(false);
-      app.dispatch.sendConnectMessage({});
-      app.dispatch.sendJoinRoomMessage({ roomName });
-      dispatch(roomActions.setRoomName(roomName));
       storage.setItem('roomName', roomName);
-      dispatch(getRoomByDB(roomName));
+      setUsernameModalVisible(false);
+      app.dispatch.sendConnectionConnectMessage({}); // socket join
+      app.dispatch.sendConnectionJoinRoomMessage({ roomName }); // join
+      storeDispatch(roomActions.setRoomName(roomName));
+      storeDispatch(getRoomByDB(roomName));
     } else {
       setUsernameModalVisible(true);
     }
     return () => {
       app.disconnect();
+      storeDispatch(chatActions.resetChatList());
+      storeDispatch(statusActions.resetAllStatusState());
+      setPage(0);
     };
   }, [username, roomName]);
 
   useEffect(() => {
-    if (!room.member[selectedUserKey])
-      dispatch(userActions.changeLeftSideView(false));
-  }, [room.member]);
-
-  useEffect(() => {
-    if (utils.isBottomScrollElement(chatListElement.current!)) {
-      chatScrollViewElement?.current?.scrollIntoView({
-        block: 'end',
-        inline: 'end',
-        behavior: 'smooth',
-      });
-    } else {
-      dispatch(userActions.changeIsScrollBottomView(true));
+    if (state.page === 1) {
+      moveToChatScrollBottom();
     }
-  }, [messageList.length]);
+    if (utils.isBottomScrollElement(chatListElement.current!)) {
+      moveToChatScrollBottom();
+    }
+  }, [messageList.length, state.page]);
 
   useEffect(() => {
-    if (!chatListElement.current) return;
-    chatListElement.current.addEventListener('scroll', handleScrollChatList);
+    storeDispatch(getUserByDB());
+    chatListElement?.current?.addEventListener(
+      'scroll',
+      handleVisibleScrollButton,
+    );
+    window.addEventListener('beforeunload', async () => {
+      roomName && storeDispatch(deleteAllMemberByDB({ roomName }));
+    });
+
+    window.visualViewport?.addEventListener('resize', handleViewportResize);
+    window.visualViewport?.addEventListener('scroll', handleViewportResize);
 
     return () => {
       chatListElement.current?.removeEventListener(
         'scroll',
-        handleScrollChatList,
+        handleVisibleScrollButton,
       );
-      dispatch(chatActions.resetChatList());
-      roomName && dispatch(deleteAllMemberByDB({ roomName }));
+      roomName && storeDispatch(deleteAllMemberByDB({ roomName }));
+      window.visualViewport?.removeEventListener(
+        'resize',
+        handleViewportResize,
+      );
+      window.visualViewport?.removeEventListener(
+        'scroll',
+        handleViewportResize,
+      );
     };
   }, []);
 
+  const isSameTime = (before: string, after: string) =>
+    dayjs(before).isSame(after, 'minute');
+
+  const isSameDay = (before: string, after: string) =>
+    dayjs(before).isSame(after, 'day');
+
   return (
     <>
-      <TopMenuContainer />
-      <RoomContent>
-        <MemberListContainer
-          onClickMemberScreenShare={(userKey: string) => {
-            if (userKey === selectedUserKey) {
-              dispatch(userActions.changeLeftSideView(false));
-              setSelectedUserKey('');
-            } else {
-              dispatch(userActions.changeLeftSideView(true));
-              setSelectedUserKey(userKey);
-              videoManager.appendVideoNode(room.member[userKey].clientId);
-            }
-          }}
-        />
-        <ContentContainer>
-          <VideoContainer
-            id={'video-container'}
-            isVisible={leftSideView}
-            isFullScreen={isFullScreen}
-          >
-            <div
-              onClick={() => setIsFullScreen((value) => !value)}
-              className="full-screen"
-            >
-              {isFullScreen ? <SvgCloseFullScreen /> : <SvgFullScreen />}
-            </div>
-          </VideoContainer>
-          <ChatContainer leftSideView={leftSideView}>
-            <ChatList ref={chatListElement}>
-              {messageList.map(({ message, clientId, date, username }) => (
-                <ChatBubble
-                  key={nanoid()}
-                  message={message}
-                  date={date}
-                  username={username}
-                  isMyChat={clientId === storage.getItem('clientId')}
-                />
-              ))}
-              <div
-                style={{ background: 'red', width: '100%' }}
-                ref={chatScrollViewElement}
-              ></div>
+      <RoomContent $leftMenuVisible={status.leftMenuVisible}>
+        <ContentContainer className="content-container">
+          <ChatContainer>
+            <ChatList id={'chat-list'} ref={chatListElement}>
+              <div id="chat-loading-trigger" ref={chatLoadingTriggerElement} />
+              {messageList.map(
+                ({ message, userKey, date, username }, index) => {
+                  const prevMessage = messageList[index - 1];
+                  const currentMessage = messageList[index];
+                  const nextMessage = messageList[index + 1];
+
+                  const isSameUserPrev =
+                    prevMessage?.userKey === currentMessage.userKey;
+                  const isSameUser =
+                    nextMessage?.userKey === currentMessage.userKey;
+
+                  const isSameUserAndSameTimeForTime =
+                    isSameUser &&
+                    isSameTime(currentMessage?.date, nextMessage?.date);
+                  const isSameUserAndSameTimeForUsername =
+                    isSameTime(prevMessage?.date, currentMessage?.date) &&
+                    isSameUserPrev;
+                  return (
+                    <React.Fragment key={nanoid()}>
+                      {isSameDay(
+                        prevMessage?.date,
+                        currentMessage?.date,
+                      ) ? null : (
+                        <Divider className="chat-date" plain>
+                          {dayjs(currentMessage.date).format(
+                            'YYYY년 MM월 DD일',
+                          )}
+                        </Divider>
+                      )}
+                      <ChatBubble
+                        key={nanoid()}
+                        message={message}
+                        date={
+                          isSameUserAndSameTimeForTime
+                            ? undefined
+                            : dayjs(date).format('YYYY-MM-DD HH:mm')
+                        }
+                        username={
+                          isSameUserAndSameTimeForUsername
+                            ? undefined
+                            : username
+                        }
+                        isMyChat={userKey === storage.getItem('userKey')}
+                      />
+                    </React.Fragment>
+                  );
+                },
+              )}
             </ChatList>
-            {isReadAllChat && (
+            {state.isVisibleScrollButton && (
               <Button
+                style={{ marginBottom: 8 }}
                 onClick={() => {
-                  chatScrollViewElement?.current?.scrollIntoView({
-                    block: 'end',
-                    inline: 'end',
-                    behavior: 'smooth',
-                  });
+                  moveToChatScrollBottom();
                 }}
                 shape="circle"
-                danger
               >
                 <SvgArrowDown />
               </Button>
             )}
-            <ChatForm
-              onSubmit={(e: any) => {
-                e.preventDefault();
-                handleChat();
-              }}
-            >
+            <ChatForm autoComplete="off" onSubmit={handleChatSubmit}>
               <div className="form-header">
                 <textarea
-                  value={message}
-                  onKeyDown={(e: any) => {
-                    switch (e.key) {
-                      case 'Enter':
-                        e.preventDefault();
-                        if (isShift) {
-                          setMessage((message) => message + '\n');
-                          return;
-                        }
-                        if (e.nativeEvent.isComposing) return;
-                        handleChat();
-                        break;
-                      case 'Shift':
-                        setIsShift(true);
-                        break;
-                    }
-                  }}
-                  onKeyUp={(e) => {
-                    switch (e.key) {
-                      case 'Shift':
-                        setIsShift(false);
-                        break;
-                    }
-                  }}
-                  onChange={(e) => setMessage(e.target.value)}
+                  value={state.chatMessage}
+                  onKeyDown={handleChatKeydown}
+                  onKeyUp={handleChatKeyup}
+                  onChange={(e) => setChatMessage(e.target.value)}
                   name="message"
                   style={{ height: 40 }}
                   placeholder={roomName?.split('+')[0] + ' 에 메시지 보내기'}
+                />
+                <input
+                  type="text"
+                  ref={focusInput}
+                  style={{
+                    position: 'fixed',
+                    left: -10000,
+                    width: 10,
+                    height: 10,
+                  }}
                 />
               </div>
 
@@ -234,19 +234,160 @@ const Room = () => {
           </ChatContainer>
         </ContentContainer>
         <UsernameModal
-          open={usernameModalVisible}
-          onSubmit={(username) => {
-            const key = nanoid();
-            dispatch(addUserByDB({ username, key }));
-            dispatch(getUserByDB());
-            storage.setItem('userKey', key);
-            storage.setItem('username', username);
-            setUsernameModalVisible(false);
-          }}
+          open={state.usernameModalVisible}
+          onSubmit={handleUsernameSubmit}
         />
       </RoomContent>
     </>
   );
 };
+
+const RoomContent = styled.div<{ $leftMenuVisible: boolean }>`
+  width: 100%;
+  height: 100%;
+  display: flex;
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  width: 100%;
+  position: relative;
+`;
+
+const ChatContainer = styled.div`
+  width: 100%;
+  min-width: 30%;
+  padding: 8px;
+
+  position: relative;
+
+  .ant-btn {
+    position: absolute;
+    left: calc(50% - 16px);
+    bottom: 110px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+const ChatList = styled.div`
+  &::-webkit-scrollbar {
+    background-color: white;
+    width: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: ${({ theme }) => theme.color.primary200};
+  }
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  width: 100%;
+  height: calc(100% - 100px);
+  overflow: overlay;
+  padding: 20px 20px 0 20px;
+  box-shadow: ${({ theme }) => theme.boxShadow};
+
+  border-radius: 8px;
+  .chat-bubble {
+    max-width: 100%;
+    margin-bottom: 4px;
+  }
+  .peer-chat {
+    align-self: flex-start;
+  }
+  .my-chat {
+    align-self: flex-end;
+    .ant-card {
+      order: 2;
+    }
+    .chat-time {
+      display: flex;
+      justify-content: flex-end;
+      order: 1;
+    }
+  }
+  .chat-name,
+  .chat-time {
+    span {
+      color: ${({ theme }) => theme.color.primary200};
+      font-size: 12px;
+    }
+  }
+  .chat-date {
+    color: ${({ theme }) => theme.color.grey100};
+  }
+`;
+
+const ChatForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+
+  height: 80px;
+
+  border: 1px solid ${({ theme }) => theme.color.primary400};
+  border-radius: 8px;
+
+  box-shadow: ${({ theme }) => theme.boxShadow};
+
+  textarea {
+    width: 100%;
+    height: 100%;
+
+    border: 0;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+
+    padding: 8px;
+
+    resize: none;
+    box-sizing: border-box;
+    border-bottom: 1px solid ${({ theme }) => theme.color.primary400};
+  }
+  textarea::placeholder {
+  }
+
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 0;
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  button:disabled {
+    cursor: default;
+    svg {
+      path {
+        stroke: ${({ theme }) => theme.color.primary400};
+      }
+    }
+  }
+
+  .form-header {
+    height: 40px;
+  }
+
+  .form-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+    background-color: ${({ theme }) => theme.color.grey800};
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    button {
+      background-color: ${({ theme }) => theme.color.grey800};
+    }
+  }
+`;
 
 export default Room;

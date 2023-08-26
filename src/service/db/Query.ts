@@ -1,6 +1,8 @@
+import Dexie from 'dexie';
 import { LinkeveryDB, Member, Message, Room } from './LinkeveryDB';
+import { QueryService } from './QueryService';
 
-class Query {
+class Query implements QueryService {
   db = new LinkeveryDB();
 
   constructor() {}
@@ -52,12 +54,43 @@ class Query {
     );
   }
 
+  async deleteRoom(roomName: string) {
+    await this.db.room.where('roomName').equals(roomName).delete();
+  }
+
   async addMessage(message: Message) {
     await this.db.message.add(message);
   }
 
   async addMessageList(messageList: Message[]) {
-    await this.db.message.bulkAdd(messageList);
+    await this.db.message
+      .bulkAdd(messageList)
+      .then(function (lastKey) {
+        console.log('[DB] add bulk message');
+      })
+      .catch(Dexie.BulkError, function (e) {
+        console.warn(e);
+      });
+  }
+
+  async getMessageList(roomName: string) {
+    return await this.db.message
+      .where('roomName')
+      .equals(roomName)
+      .sortBy('date');
+  }
+
+  async getMessageListByPage(roomName: string, page = 1, offset = 30) {
+    return await this.db.message
+      .orderBy('date')
+      .offset(offset * (page - 1))
+      .limit(offset)
+      .reverse()
+      .toArray((messageList) => {
+        return messageList
+          .filter((message) => message.roomName === roomName)
+          .reverse();
+      });
   }
 
   async updateMember(roomName: string, member: Member) {
@@ -88,6 +121,3 @@ class Query {
 }
 
 export const query = new Query();
-
-// @ts-ignore
-window.query = query;

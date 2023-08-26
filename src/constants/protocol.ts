@@ -14,7 +14,7 @@ export enum CATEGORY {
   CHAT = 'CHAT',
   ROOM = 'ROOM',
   VOICE = 'VOICE',
-  SCREEN_SHARE = 'SCREEN_SHARE',
+  SCREEN = 'SCREEN',
   NEGOTIATION = 'NEGOTIATION',
 }
 
@@ -30,15 +30,22 @@ export enum SIGNALING_MESSAGE_ID {
   ANSWER = 'ANSWER',
   ICE = 'ICE',
   CREATE_DATA_CHANNEL = 'CREATE_DATA_CHANNEL',
+  CONNECT_DATA_CHANNEL = 'CONNECT_DATA_CHANNEL',
+  END = 'END',
+  END_OK = 'END_OK',
 }
 
 export enum ROOM_MESSAGE_ID {
-  REQUEST_MEMBER_NAME = 'REQUEST_MEMBER_NAME',
-  RESPONSE_MEMBER_NAME = 'RESPONSE_MEMBER_NAME',
+  MEMBER_NAME_PRE = 'MEMBER_NAME_PRE',
+  MEMBER_NAME = 'MEMBER_NAME',
+  MEMBER_NAME_POST = 'MEMBER_NAME_POST',
+  SYNC_CHAT_LIST = 'SYNC_CHAT_LIST',
+  SYNC_CHAT_LIST_OK = 'SYNC_CHAT_LIST_OK',
 }
 
 export enum CHAT_MESSAGE_ID {
   SEND = 'SEND',
+  OK = 'OK',
 }
 
 export enum VOICE_MESSAGE_ID {
@@ -73,12 +80,24 @@ export interface ProtocolData {
   [key: string]: any;
 }
 
+export interface StringifyProtocol {
+  messageType: MESSAGE_TYPE;
+  category: CATEGORY;
+  messageId: MessageId;
+  from: string;
+  data: string;
+  index: number;
+  endIndex: number;
+}
+
 export interface Protocol {
   messageType: MESSAGE_TYPE;
   category: CATEGORY;
   messageId: MessageId;
   from: string;
   data: ProtocolData;
+  index: number;
+  endIndex: number;
 }
 
 export type HandlerMap<T extends string | number | symbol> = {

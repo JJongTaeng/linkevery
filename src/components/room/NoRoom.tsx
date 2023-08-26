@@ -1,40 +1,71 @@
 import { Button } from 'antd';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { nanoid } from 'nanoid';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { storage } from '../../service/storage/StorageService';
 import { roomActions } from '../../store/features/roomSlice';
-import { useAppSelector } from '../../store/hooks';
-import { Text } from '../../style';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import { TOP_MENU_HEIGHT } from '../../style/constants';
-import TopMenuContainer from '../container/TopMenuContainer';
+import { ColorsTypes, SizeTypes, theme } from '../../style/theme';
+import CreateRoomModal from './CreateRoomModal';
+import UsernameModal from './UsernameModal';
 
 const NoRoom = () => {
   const { username } = useAppSelector((state) => ({
     username: state.user.username,
   }));
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const [usernameModalVisible, setUsernameModalVisible] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     storage.setItem('roomName', '');
     dispatch(roomActions.setRoomName(''));
+
+    if (!username) {
+      setUsernameModalVisible(true);
+    } else {
+      setUsernameModalVisible(false);
+    }
   }, [username]);
+
+  useEffect(() => {
+    dispatch(getUserByDB()); // get user info [userkey, username
+  }, []);
 
   return (
     <>
-      <TopMenuContainer />
       <NoRoomContent>
-        <div>
-          <Text bold={true} size={'xxl'} color={'primary100'}>
-            {username && username + '님 안녕하세요.'}
-          </Text>
-        </div>
+        {username && (
+          <div>
+            <Text bold={true} size={'xxl'} color={'primary100'}>
+              <p>{username && username}님</p>
+              <p>안녕하세요</p>
+            </Text>
+          </div>
+        )}
         <div>
           <span className={'no-room-description'}>
-            좌측 하단 <Button>+</Button> 버튼으로 방을 생성하거나 다른 친구로
-            부터 받은 링크로 접속해주세요.
+            <p>
+              <Button onClick={() => setOpen(true)}>+</Button> 으로 방을
+              생성하거나
+            </p>
+            <p>친구로 초대받은 링크로 접속해주세요!</p>
           </span>
         </div>
+        <UsernameModal
+          open={usernameModalVisible}
+          onSubmit={(username) => {
+            const key = nanoid();
+            dispatch(addUserByDB({ username, key }));
+            dispatch(getUserByDB());
+            storage.setItem('userKey', key);
+            storage.setItem('username', username);
+            setUsernameModalVisible(false);
+          }}
+        />
+        <CreateRoomModal open={open} setOpen={setOpen} />
       </NoRoomContent>
     </>
   );
@@ -58,11 +89,23 @@ const NoRoomContent = styled.div`
     .ant-btn-default:not(:disabled) {
       cursor: auto;
     }
-    .ant-btn-default:not(:disabled):hover {
-      color: rgba(0, 0, 0, 0.88);
-      background-color: #ffffff;
-      border-color: #d9d9d9;
+    p {
+      text-align: center;
     }
+  }
+`;
+
+const Text = styled.span<{
+  size: keyof SizeTypes;
+  color: keyof ColorsTypes;
+  bold: boolean;
+}>`
+  font-size: ${({ size }) => theme.size[size]}px;
+  color: ${({ color }) => theme.color[color]};
+  font-weight: ${({ bold }) => (bold ? 'bold' : 400)};
+  p {
+    margin-bottom: 8px;
+    text-align: center;
   }
 `;
 

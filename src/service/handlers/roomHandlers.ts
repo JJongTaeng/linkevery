@@ -2,13 +2,21 @@ import { HandlerMap, ROOM_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { updateMemberByDB } from '../../store/thunk/roomThunk';
+import { Message } from '../db/LinkeveryDB';
+import { query } from '../db/Query';
 import { storage } from '../storage/StorageService';
 
 export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
-  [ROOM_MESSAGE_ID.REQUEST_MEMBER_NAME]: (
-    protocol,
-    { dispatch, rtcManager },
-  ) => {
+  [ROOM_MESSAGE_ID.MEMBER_NAME_PRE]: (protocol, { dispatch, rtcManager }) => {
+    const username = storage.getItem('username');
+    const userKey = storage.getItem('userKey');
+    dispatch.sendRoomMemberNameMessage({
+      username,
+      to: protocol.from,
+      userKey,
+    });
+  },
+  [ROOM_MESSAGE_ID.MEMBER_NAME]: (protocol, { dispatch, rtcManager }) => {
     const { username, userKey, roomName } = storage.getAll();
 
     store.dispatch(
@@ -18,16 +26,20 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
         userKey: protocol.data.userKey,
       }),
     );
-    dispatch.sendResponseMemberMessage({
+
+    store.dispatch(
+      updateMemberByDB({
+        roomName,
+        member: store.getState().room.current.member,
+      }),
+    );
+    dispatch.sendRoomMemberNamePostMessage({
       username,
       to: protocol.from,
       userKey,
     });
-    store.dispatch(
-      updateMemberByDB({ roomName, member: store.getState().room.room.member }),
-    );
   },
-  [ROOM_MESSAGE_ID.RESPONSE_MEMBER_NAME]: (
+  [ROOM_MESSAGE_ID.MEMBER_NAME_POST]: async (
     protocol,
     { dispatch, rtcManager },
   ) => {
@@ -42,7 +54,67 @@ export const roomHandlers: HandlerMap<ROOM_MESSAGE_ID> = {
     );
 
     store.dispatch(
-      updateMemberByDB({ roomName, member: store.getState().room.room.member }),
+      updateMemberByDB({
+        roomName,
+        member: store.getState().room.current.member,
+      }),
     );
+
+    const messageList = await query.getMessageList(roomName);
+
+    dispatch.sendRoomSyncChatListMessage({
+      messageList,
+      to: protocol.from,
+    });
+  },
+  [ROOM_MESSAGE_ID.SYNC_CHAT_LIST]: async (
+    protocol,
+    { dispatch, rtcManager },
+  ) => {
+    const roomName = storage.getItem('roomName');
+
+    const { messageList } = protocol.data;
+
+    if (messageList.length) {
+      await query.addMessageList(
+        messageList.map((message: Message) => ({
+          message: message.message,
+          date: message.date,
+          messageKey: message.messageKey,
+          userKey: message.userKey,
+          username: message.username,
+          roomName: message.roomName,
+          messageType: message.messageType,
+        })),
+      );
+    }
+
+    const myMessageList = await query.getMessageList(roomName);
+    dispatch.sendRoomSyncChatListOkMessage({
+      messageList: myMessageList,
+      to: protocol.from,
+    });
+  },
+  [ROOM_MESSAGE_ID.SYNC_CHAT_LIST_OK]: async (
+    protocol,
+    { dispatch, rtcManager },
+  ) => {
+    const roomName = storage.getItem('roomName');
+
+    const { messageList } = protocol.data;
+
+    if (messageList.length) {
+      await query.addMessageList(
+        messageList.map((message: Message) => ({
+          message: message.message,
+          date: message.date,
+          messageKey: message.messageKey,
+          userKey: message.userKey,
+          username: message.username,
+          roomName: message.roomName,
+          messageType: message.messageType,
+        })),
+      );
+    }
   },
 };

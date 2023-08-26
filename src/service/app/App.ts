@@ -1,24 +1,23 @@
-import { io, Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
 import { audioManager } from '../media/AudioManager';
-import { RTCManager } from '../rtc/RTCManager';
-import { RTCScreenShareManager } from '../rtc/RTCScreenShareManager';
+import { rtcManager } from '../rtc/RTCManager';
+import { socketManager } from '../socket/SocketManager';
 import { storage } from '../storage/StorageService';
 import { AppService } from './AppService';
 
-export class AppServiceImpl extends AppService {
-  readonly socket: Socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
-  readonly rtcManager = new RTCManager();
-  readonly rtcScreenShareManager = new RTCScreenShareManager();
-  readonly dispatch = new DispatchEvent(this.socket, this.rtcManager);
+export class App implements AppService {
+  readonly socket: Socket = socketManager.socket;
+  readonly rtcManager = rtcManager;
+  readonly dispatch = new DispatchEvent();
+  screenMediaStream?: MediaStream;
 
-  public static instance: AppServiceImpl;
+  public static instance: App;
   private constructor() {
-    super();
     new HandlerManager(this.socket, this.rtcManager, this.dispatch);
 
     window.debug = {
@@ -28,7 +27,7 @@ export class AppServiceImpl extends AppService {
 
   public static getInstance() {
     if (!this.instance) {
-      this.instance = new AppServiceImpl();
+      this.instance = new App();
     }
 
     return this.instance;
@@ -38,7 +37,7 @@ export class AppServiceImpl extends AppService {
     const roomName = storage.getItem('roomName');
     store.dispatch(roomActions.leaveRoom());
     store.dispatch(userActions.changeVoiceStatus(false));
-    this.dispatch.sendDisconnectMessage({ roomName });
+    this.dispatch.sendConnectionDisconnectMessage({ roomName });
     this.rtcManager.clearPeerMap();
   }
 
@@ -48,13 +47,15 @@ export class AppServiceImpl extends AppService {
     this.dispatch.sendVoiceDisconnectMessage({ userKey });
     this.rtcManager.clearAudioTrack();
     audioManager.removeAllAudio();
+    this.rtcManager.clearVideoTrack();
   }
 
-  public disconnectScreenShare(id: string) {
+  public closeScreenShare() {
     const userKey = storage.getItem('userKey');
-    this.dispatch.sendScreenShareDisonnectMessage({
+    this.dispatch.sendScreenDisconnectMessage({
       userKey,
     });
     this.rtcManager.clearVideoTrack();
+    this.screenMediaStream = undefined;
   }
 }

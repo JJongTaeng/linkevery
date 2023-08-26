@@ -11,7 +11,6 @@ export const getRoomByDB = createAsyncThunk(
         roomName,
         member: {},
       };
-      await query.addRoom(emptyRoom);
       return emptyRoom;
     } else {
       return {
@@ -31,6 +30,14 @@ export const addRoomByDB = createAsyncThunk(
   async (room: Room) => {
     await query.addRoom(room);
     return room;
+  },
+);
+
+export const deleteRoomByDB = createAsyncThunk(
+  'db/deleteRoom',
+  async ({ roomName }: { roomName: string }) => {
+    await query.deleteRoom(roomName);
+    return roomName;
   },
 );
 

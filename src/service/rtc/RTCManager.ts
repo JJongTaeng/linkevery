@@ -1,5 +1,6 @@
 import { Protocol } from '../../constants/protocol';
 import { ERROR_TYPE } from '../../error/error';
+import { utils } from '../utils/Utils';
 import { RTCManagerService } from './RTCManagerService';
 
 export const config = {
@@ -23,6 +24,7 @@ export const config = {
 };
 
 export class RTCManager extends RTCManagerService {
+  static SLICE_LENGTH = 4096;
   public static RTC_EVENT = {
     DATA: 'RTC_DATA',
   };
@@ -39,19 +41,43 @@ export class RTCManager extends RTCManagerService {
       );
     const peer = this.peerMap.get(to);
     const datachannel = peer?.getDataChannel();
-    const stringify = JSON.stringify(protocol);
-    console.debug('[send] ', protocol);
-    datachannel?.send(stringify);
+    const dataString = JSON.stringify(protocol.data);
+    const slicedDataList = utils.sliceString(
+      dataString,
+      RTCManager.SLICE_LENGTH,
+    );
+    slicedDataList.forEach((slicedData, index) => {
+      const newProtocol = {
+        ...protocol,
+        data: slicedData,
+        index,
+        endIndex: slicedDataList.length - 1,
+      };
+      const stringify = JSON.stringify(newProtocol);
+      datachannel?.send(stringify);
+    });
   }
 
   sendAll(protocol: Protocol) {
     this.peerMap.forEach((peer, key) => {
       const datachannel = peer.getDataChannel();
-      if (!datachannel)
-        throw new Error(ERROR_TYPE.INVALID_DATACHANNEL + `id = ${key}`);
-      const stringify = JSON.stringify(protocol);
-      console.debug('[send] ', protocol);
-      datachannel.send(stringify);
+      const dataString = JSON.stringify(protocol.data);
+      const slicedDataList = utils.sliceString(
+        dataString,
+        RTCManager.SLICE_LENGTH,
+      );
+      slicedDataList.forEach((slicedData, index) => {
+        const newProtocol = {
+          ...protocol,
+          data: slicedData,
+          index,
+          endIndex: slicedDataList.length - 1,
+        };
+        const stringify = JSON.stringify(newProtocol);
+        datachannel?.send(stringify);
+      });
     });
   }
 }
+
+export const rtcManager = new RTCManager();

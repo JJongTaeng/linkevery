@@ -4,8 +4,10 @@ import { storage } from './../../service/storage/StorageService';
 
 export const getUserByDB = createAsyncThunk('db/getUser', async () => {
   const user = await query.getUser();
-  storage.setItem('userKey', user?.key || '');
-  storage.setItem('username', user?.username || '');
+  if (user) {
+    storage.setItem('userKey', user?.key || '');
+    storage.setItem('username', user?.username || '');
+  }
   return user;
 });
 
