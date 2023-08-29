@@ -14,7 +14,4 @@ export class MessageAssemble implements MessageAssembleService {
   getJoinedMessage() {
     return this.stack.join('');
   }
-  getStack(): any[] {
-    return this.stack;
-  }
 }

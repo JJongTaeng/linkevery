@@ -3,6 +3,4 @@ export interface MessageAssembleService {
   push(data: any): void;
   pop(data: any): any;
   clear(): void;
-
-  getStack(): any[];
 }
