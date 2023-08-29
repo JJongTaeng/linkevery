@@ -1,6 +1,6 @@
-import { StackService } from './StackService';
+import { MessageAssembleService } from './MessageAssembleService';
 
-export class Stack implements StackService {
+export class MessageAssemble implements MessageAssembleService {
   stack: any[] = [];
   push(data: any): void {
     this.stack.push(data);
@@ -10,6 +10,9 @@ export class Stack implements StackService {
   }
   clear(): void {
     this.stack = [];
+  }
+  getJoinedMessage() {
+    return this.stack.join('');
   }
   getStack(): any[] {
     return this.stack;
