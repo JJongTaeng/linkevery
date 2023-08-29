@@ -6,8 +6,8 @@ import {
   Protocol,
   StringifyProtocol,
 } from '../../constants/protocol';
-import { MessageAssemble } from '../dataStructure/MessageAssemble';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
+import { MessageAssemble } from '../messages/MessageAssemble';
 import { RTCManager } from '../rtc/RTCManager';
 import { chatHandlers } from './chatHandlers';
 import { connectionHandlers } from './connectionHandlers';
