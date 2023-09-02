@@ -53,6 +53,11 @@ class Utils {
     }
     return arr;
   }
+  sum(arr: number[]) {
+    return arr.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
+  }
 }
 
 export const utils = new Utils();

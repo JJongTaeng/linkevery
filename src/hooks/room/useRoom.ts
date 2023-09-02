@@ -28,6 +28,7 @@ const initialState = {
   page: 0,
   isVisibleScrollButton: false,
   chatMessage: '',
+  chatImage: '',
   isShiftKeyDowned: false,
 };
 
@@ -52,6 +53,10 @@ const actions: Actions = {
     ...state,
     chatMessage: action.payload.chatMessage ?? '',
   }),
+  setChatImage: (state, action) => ({
+    ...state,
+    chatImage: action.payload.chatImage ?? '',
+  }),
   setIsShiftKeyDowned: (state, action) => ({
     ...state,
     isShiftKeyDowned: action.payload.isShiftKeyDowned ?? false,
@@ -74,11 +79,11 @@ export function useRoom() {
     username: state.user.username,
   }));
   const storeDispatch = useAppDispatch();
-  const sendChatMessage = () => {
+  const sendChatMessage = (type = 'text') => {
     if (!state.chatMessage) return;
     const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
     const messageProtocol = {
-      messageType: 'text',
+      messageType: type,
       messageKey: username + '+' + date,
       message: state.chatMessage,
       userKey: storage.getItem('userKey'),
@@ -158,11 +163,11 @@ export function useRoom() {
     storage.setItem('username', username);
     dispatch.setUsernameModalVisible({ usernameModalVisible: false });
   };
-  const handleChatSubmit = (e: any) => {
-    e.preventDefault();
-    sendChatMessage();
+  const handleChatSubmit = (e?: any, type = 'text') => {
+    e?.preventDefault();
+    sendChatMessage(type);
     focusInput?.current?.focus();
-    e.target.message.focus();
+    e && e.target.message.focus();
   };
 
   return {

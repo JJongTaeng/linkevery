@@ -17,6 +17,7 @@ import { getChatListPageByDB } from '../../store/thunk/chatThunk';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
 import { getUserByDB } from '../../store/thunk/userThunk';
 import { PAGE_OFFSET } from '../../style/constants';
+import { Event } from '../../types';
 import ChatBubble from '../chat/ChatBubble';
 import SvgArrowDown from '../icons/ArrowDown';
 import SvgSend from '../icons/Send';
@@ -202,7 +203,7 @@ const Room = () => {
                 <SvgArrowDown />
               </Button>
             )}
-            <ChatForm autoComplete="off" onSubmit={handleChatSubmit}>
+            <ChatForm autoComplete="off" onSubmit={(e) => handleChatSubmit(e)}>
               <div className="form-header">
                 <textarea
                   value={state.chatMessage}
@@ -226,9 +227,28 @@ const Room = () => {
               </div>
 
               <div className="form-footer">
-                <button type="submit">
-                  <SvgSend />
-                </button>
+                <div>
+                  <input
+                    type="file"
+                    onChange={(e: Event<HTMLInputElement>) => {
+                      const file = e.target.files?.[0];
+
+                      // Encode the file using the FileReader API
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setChatMessage(reader.result as string);
+                        // app.dispatch.sendChatSendMessage;
+                        // reader.result
+                      };
+                      reader.readAsDataURL(file!);
+                    }}
+                  />
+                </div>
+                <div>
+                  <button type="submit">
+                    <SvgSend />
+                  </button>
+                </div>
               </div>
             </ChatForm>
           </ChatContainer>
