@@ -1,3 +1,4 @@
+import { SendOutlined } from '@ant-design/icons';
 import { Button, Divider } from 'antd';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
@@ -17,19 +18,18 @@ import { getChatListPageByDB } from '../../store/thunk/chatThunk';
 import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
 import { getUserByDB } from '../../store/thunk/userThunk';
 import { PAGE_OFFSET } from '../../style/constants';
-import { Event } from '../../types';
 import ChatBubble from '../chat/ChatBubble';
+import FileUpload from '../chat/FileUpload';
 import SvgArrowDown from '../icons/ArrowDown';
-import SvgSend from '../icons/Send';
 import UsernameModal from './UsernameModal';
 
 const Room = () => {
   const {
     state,
-    setIsFullScreen,
     setPage,
     setUsernameModalVisible,
     setChatMessage,
+    sendChatMessage,
     handleVisibleScrollButton,
     handleViewportResize,
     handleChatKeydown,
@@ -194,6 +194,7 @@ const Room = () => {
             </ChatList>
             {state.isVisibleScrollButton && (
               <Button
+                className={'scroll-down-button'}
                 style={{ marginBottom: 8 }}
                 onClick={() => {
                   moveToChatScrollBottom();
@@ -227,27 +228,24 @@ const Room = () => {
               </div>
 
               <div className="form-footer">
-                <div>
-                  <input
-                    type="file"
-                    onChange={(e: Event<HTMLInputElement>) => {
-                      const file = e.target.files?.[0];
-
-                      // Encode the file using the FileReader API
+                <FormControllerWrapper>
+                  <FileUpload
+                    onFileChange={(file) => {
+                      console.log(file);
                       const reader = new FileReader();
                       reader.onloadend = () => {
-                        setChatMessage(reader.result as string);
-                        // app.dispatch.sendChatSendMessage;
-                        // reader.result
+                        sendChatMessage('image', reader.result as string);
                       };
-                      reader.readAsDataURL(file!);
+                      reader.readAsDataURL(file as any);
                     }}
                   />
-                </div>
+                </FormControllerWrapper>
                 <div>
-                  <button type="submit">
-                    <SvgSend />
-                  </button>
+                  <Button
+                    shape="circle"
+                    icon={<SendOutlined rev={undefined} />}
+                    htmlType="submit"
+                  ></Button>
                 </div>
               </div>
             </ChatForm>
@@ -281,7 +279,7 @@ const ChatContainer = styled.div`
 
   position: relative;
 
-  .ant-btn {
+  .scroll-down-button {
     position: absolute;
     left: calc(50% - 16px);
     bottom: 110px;
@@ -340,6 +338,10 @@ const ChatList = styled.div`
   }
 `;
 
+const FormControllerWrapper = styled.div`
+  display: flex;
+`;
+
 const ChatForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -372,41 +374,19 @@ const ChatForm = styled.form`
   textarea::placeholder {
   }
 
-  button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    border: 0;
-    svg {
-      width: 24px;
-      height: 24px;
-    }
-  }
-  button:disabled {
-    cursor: default;
-    svg {
-      path {
-        stroke: ${({ theme }) => theme.color.primary400};
-      }
-    }
-  }
-
   .form-header {
     height: 40px;
   }
 
   .form-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     height: 100%;
     background-color: ${({ theme }) => theme.color.grey800};
     border-bottom-right-radius: 8px;
     border-bottom-left-radius: 8px;
-    button {
-      background-color: ${({ theme }) => theme.color.grey800};
-    }
+    padding: 0 8px;
   }
 `;
 

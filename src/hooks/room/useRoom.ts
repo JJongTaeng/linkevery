@@ -28,7 +28,6 @@ const initialState = {
   page: 0,
   isVisibleScrollButton: false,
   chatMessage: '',
-  chatImage: '',
   isShiftKeyDowned: false,
 };
 
@@ -53,10 +52,6 @@ const actions: Actions = {
     ...state,
     chatMessage: action.payload.chatMessage ?? '',
   }),
-  setChatImage: (state, action) => ({
-    ...state,
-    chatImage: action.payload.chatImage ?? '',
-  }),
   setIsShiftKeyDowned: (state, action) => ({
     ...state,
     isShiftKeyDowned: action.payload.isShiftKeyDowned ?? false,
@@ -79,13 +74,17 @@ export function useRoom() {
     username: state.user.username,
   }));
   const storeDispatch = useAppDispatch();
-  const sendChatMessage = (type = 'text') => {
-    if (!state.chatMessage) return;
+  const sendChatMessage = (type = 'text', image?: string) => {
+    if (type === 'text' && !state.chatMessage) return;
     const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
+    const message: any = {
+      image: image,
+      text: state.chatMessage,
+    };
     const messageProtocol = {
       messageType: type,
       messageKey: username + '+' + date,
-      message: state.chatMessage,
+      message: message[type],
       userKey: storage.getItem('userKey'),
       date,
       username,
@@ -166,12 +165,14 @@ export function useRoom() {
   const handleChatSubmit = (e?: any, type = 'text') => {
     e?.preventDefault();
     sendChatMessage(type);
+
     focusInput?.current?.focus();
     e && e.target.message.focus();
   };
 
   return {
     state,
+    sendChatMessage,
     setIsFullScreen: (isFull: boolean) => {
       dispatch.setIsFullScreen({ isFullScreen: isFull });
     },
