@@ -121,9 +121,11 @@ export function useRoom() {
   );
 
   const moveToChatScrollBottom = () => {
-    if (chatListElement.current)
-      chatListElement.current.scrollTop =
-        chatListElement?.current?.scrollHeight;
+    setTimeout(() => {
+      if (chatListElement.current)
+        chatListElement.current.scrollTop =
+          chatListElement?.current?.scrollHeight;
+    }, 0);
   };
 
   const handleChatKeydown = (e: any) => {
