@@ -9,7 +9,7 @@ interface FileUploadProps {
 const FileUpload = ({ onFileChange, onRemove }: FileUploadProps) => {
   const props: UploadProps = {
     beforeUpload: (file) => {
-      onFileChange(file);
+      if(file.type.includes('image')) onFileChange(file);
       return false;
     },
     onRemove: (file) => {
@@ -19,7 +19,7 @@ const FileUpload = ({ onFileChange, onRemove }: FileUploadProps) => {
   };
   return (
     <>
-      <Upload fileList={[]} {...props}>
+      <Upload accept="image/png, image/jpeg" fileList={[]} {...props}>
         <Button
           shape="circle"
           icon={<UploadOutlined rev={undefined} />}
