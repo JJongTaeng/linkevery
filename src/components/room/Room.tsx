@@ -22,6 +22,7 @@ import ChatBubble from '../chat/ChatBubble';
 import FileUpload from '../chat/FileUpload';
 import SvgArrowDown from '../icons/ArrowDown';
 import UsernameModal from './UsernameModal';
+import { container } from 'tsyringe';
 
 const Room = () => {
   const {
@@ -40,7 +41,7 @@ const Room = () => {
     elements: { chatListElement, chatLoadingTriggerElement, focusInput },
   } = useRoom();
 
-  const app = useRef(App.getInstance()).current;
+  const app = container.resolve(App);
 
   const { roomName } = useParams<{
     roomName: string;

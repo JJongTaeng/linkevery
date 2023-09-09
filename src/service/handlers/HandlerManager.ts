@@ -16,9 +16,12 @@ import { roomHandlers } from './roomHandlers';
 import { screenShareHandlers } from './screenShareHandlers';
 import { signalingHandlers } from './signalingHandlers';
 import { voiceHandlers } from './voiceHandlers';
+import { inject, singleton } from 'tsyringe';
+import { SocketManager } from '../socket/SocketManager';
 
 type CategoryHandlers = { [key in CATEGORY]: HandlerMap<any> };
 
+@singleton()
 export class HandlerManager {
   private messageAssembleMap: Map<string, MessageAssemble> = new Map();
   private handlers: CategoryHandlers = {
@@ -31,15 +34,15 @@ export class HandlerManager {
     [CATEGORY.SCREEN]: screenShareHandlers,
   };
   constructor(
-    private socket: Socket,
-    private rtcManager: RTCManager,
-    private dispatch: DispatchEvent,
+    @inject(SocketManager) private socketManager: SocketManager,
+    @inject(RTCManager) private rtcManager: RTCManager,
+    @inject(DispatchEvent) private dispatch: DispatchEvent,
   ) {
     this.subscribeHandlers();
   }
 
   subscribeHandlers() {
-    this.socket.on(EVENT_NAME, (protocol: Protocol) => {
+    this.socketManager.socket.on(EVENT_NAME, (protocol: Protocol) => {
       console.debug('%c[receive] ', 'color:blue;font-weight:bold;', protocol);
       try {
         this.handlers[protocol.category][protocol.messageId](protocol, {

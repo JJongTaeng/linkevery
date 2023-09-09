@@ -1,7 +1,9 @@
 import { message } from 'antd';
 import { io } from 'socket.io-client';
+import { singleton } from 'tsyringe';
 
-class SocketManager {
+@singleton()
+export class SocketManager {
   socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
 
   constructor() {
@@ -10,5 +12,3 @@ class SocketManager {
     });
   }
 }
-
-export const socketManager = new SocketManager();

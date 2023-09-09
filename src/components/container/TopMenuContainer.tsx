@@ -21,12 +21,13 @@ import SvgLeftIndent from '../icons/LeftIndent';
 import SvgMicOn from '../icons/MicOn';
 import SvgRightIndent from '../icons/RightIndent';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
+import { container } from 'tsyringe';
 
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const TopMenuContainer = () => {
   const navigate = useNavigate();
-  const app = useRef(App.getInstance()).current;
+  const app = container.resolve(App);
 
   const { leftMenuVisible, roomName, voiceStatus, screenShareStatus, room } =
     useAppSelector((state) => ({

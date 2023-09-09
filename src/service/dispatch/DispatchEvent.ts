@@ -5,23 +5,21 @@ import {
   MessageId,
   NEGOTIATION_MESSAGE_ID,
   Protocol,
-  ProtocolData,
   ROOM_MESSAGE_ID,
   SCREEN_SHARE_MESSAGE_ID,
   SIGNALING_MESSAGE_ID,
   VOICE_MESSAGE_ID,
 } from '../../constants/protocol';
+import type { ProtocolData } from '../../constants/protocol';
 import { Sender } from '../messages/Sender';
 import { rtcManager } from '../rtc/RTCManager';
 import { storage } from '../storage/StorageService';
-import { socketManager } from './../socket/SocketManager';
-import { DispatchEventService } from './DispatchEventService';
+import { inject, injectable } from 'tsyringe';
 
-@MessageSender
-export class DispatchEvent extends DispatchEventService {
-  constructor() {
-    super();
-  }
+// @MessageSender
+@injectable()
+export class DispatchEvent {
+  constructor(@inject(Sender) private sender: Sender) {}
 
   @SocketMessage({
     category: CATEGORY.CONNECTION,
@@ -190,6 +188,10 @@ export class DispatchEvent extends DispatchEventService {
     messageId: NEGOTIATION_MESSAGE_ID.ANSWER,
   })
   sendNegotiationAnswerMessage(data: ProtocolData) {}
+
+  send(protocol: Protocol) {
+    this.sender.send(protocol);
+  }
 }
 
 function RTCMessage({
@@ -234,9 +236,6 @@ function SocketMessage({
   };
 }
 
-function MessageSender<T extends { new (...args: any[]): {} }>(constructor: T) {
-  constructor.prototype.send = (protocol: Protocol) => {
-    const sender = new Sender(socketManager, rtcManager);
-    sender.send(protocol);
-  };
-}
+function MessageSender<T extends { new (...args: any[]): {} }>(
+  constructor: T,
+) {}

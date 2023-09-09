@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addChatByDB } from '../../store/thunk/chatThunk';
 import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import { useSlice } from '../useSlice';
+import { container } from 'tsyringe';
 
 type RoomState = typeof initialState;
 type RoomAction = {
@@ -63,12 +64,11 @@ export function useRoom() {
     actions,
     initialState,
   );
+  const app = container.resolve(App);
 
   const chatListElement = useRef<HTMLDivElement>(null);
   const chatLoadingTriggerElement = useRef<HTMLDivElement>(null);
   const focusInput = useRef<HTMLInputElement>(null);
-
-  const app = useRef(App.getInstance()).current;
 
   const { username } = useAppSelector((state) => ({
     username: state.user.username,

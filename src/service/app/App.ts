@@ -1,50 +1,45 @@
-import { Socket } from 'socket.io-client';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { HandlerManager } from '../handlers/HandlerManager';
 import { audioManager } from '../media/AudioManager';
-import { rtcManager } from '../rtc/RTCManager';
-import { socketManager } from '../socket/SocketManager';
+import { RTCManager } from '../rtc/RTCManager';
 import { storage } from '../storage/StorageService';
-import { AppService } from './AppService';
+import { container, inject, singleton } from 'tsyringe';
+import { SocketManager } from '../socket/SocketManager';
 
-export class App implements AppService {
-  readonly socket: Socket = socketManager.socket;
-  readonly rtcManager = rtcManager;
-  readonly dispatch = new DispatchEvent();
+@singleton()
+export class App {
   screenMediaStream?: MediaStream;
 
-  public static instance: App;
-  private constructor() {
-    new HandlerManager(this.socket, this.rtcManager, this.dispatch);
-
-    window.debug = {
-      rtcManager: this.rtcManager,
-    };
+  constructor(
+    @inject(DispatchEvent) private _dispatch: DispatchEvent,
+    @inject(RTCManager) private _rtcManager: RTCManager,
+  ) {
+    container.resolve(HandlerManager);
   }
 
-  public static getInstance() {
-    if (!this.instance) {
-      this.instance = new App();
-    }
+  get dispatch() {
+    return this._dispatch;
+  }
 
-    return this.instance;
+  get rtcManager() {
+    return this._rtcManager;
   }
 
   public disconnect() {
     const roomName = storage.getItem('roomName');
     store.dispatch(roomActions.leaveRoom());
     store.dispatch(userActions.changeVoiceStatus(false));
-    this.dispatch.sendConnectionDisconnectMessage({ roomName });
+    this._dispatch.sendConnectionDisconnectMessage({ roomName });
     this.rtcManager.clearPeerMap();
   }
 
   public disconnectVoice() {
     const userKey = storage.getItem('userKey');
 
-    this.dispatch.sendVoiceDisconnectMessage({ userKey });
+    this._dispatch.sendVoiceDisconnectMessage({ userKey });
     this.rtcManager.clearAudioTrack();
     audioManager.removeAllAudio();
     this.rtcManager.clearVideoTrack();
@@ -52,10 +47,12 @@ export class App implements AppService {
 
   public closeScreenShare() {
     const userKey = storage.getItem('userKey');
-    this.dispatch.sendScreenDisconnectMessage({
+    this._dispatch.sendScreenDisconnectMessage({
       userKey,
     });
     this.rtcManager.clearVideoTrack();
     this.screenMediaStream = undefined;
   }
 }
+
+export const app = container.resolve(App);

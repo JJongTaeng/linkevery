@@ -1,14 +1,17 @@
+import 'reflect-metadata';
 import { ConfigProvider } from 'antd';
 import 'antd/dist/reset.css';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import App from './App';
+import AppComponent from './App';
 import './index.css';
+import { App } from './service/app/App';
 import reportWebVitals from './reportWebVitals';
 import { store } from './store/store';
 import { theme } from './style/theme';
+import { container } from 'tsyringe';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -26,7 +29,7 @@ root.render(
             },
           }}
         >
-          <App />
+          <AppComponent />
         </ConfigProvider>
       </ThemeProvider>
     </HashRouter>
