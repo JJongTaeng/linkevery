@@ -24,6 +24,8 @@ import SvgArrowDown from '../icons/ArrowDown';
 import UsernameModal from './UsernameModal';
 import { container } from 'tsyringe';
 
+const app = container.resolve(App);
+
 const Room = () => {
   const {
     state,
@@ -40,8 +42,6 @@ const Room = () => {
     moveToChatScrollBottom,
     elements: { chatListElement, chatLoadingTriggerElement, focusInput },
   } = useRoom();
-
-  const app = container.resolve(App);
 
   const { roomName } = useParams<{
     roomName: string;

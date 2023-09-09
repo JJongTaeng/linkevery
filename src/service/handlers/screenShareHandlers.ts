@@ -33,6 +33,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
     }
     try {
       const app = container.resolve(App);
+
       let mediaStream = app.screenMediaStream;
       if (!mediaStream) {
         mediaStream = await navigator.mediaDevices.getDisplayMedia({
@@ -43,7 +44,7 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       }
 
       for (const clientId of voiceMember) {
-        mediaStream?.getTracks().forEach((track) => {
+        mediaStream?.getTracks().forEach((track: any) => {
           const peer = rtcManager.getPeer(clientId);
           peer.addTrack(track, mediaStream!);
         });

@@ -6,8 +6,7 @@ import { HandlerManager } from '../handlers/HandlerManager';
 import { audioManager } from '../media/AudioManager';
 import { RTCManager } from '../rtc/RTCManager';
 import { storage } from '../storage/StorageService';
-import { container, inject, singleton } from 'tsyringe';
-import { SocketManager } from '../socket/SocketManager';
+import { container, inject, injectable, singleton } from 'tsyringe';
 
 @singleton()
 export class App {
@@ -23,6 +22,8 @@ export class App {
   get dispatch() {
     return this._dispatch;
   }
+
+  static getInstance(): any {}
 
   get rtcManager() {
     return this._rtcManager;
@@ -54,5 +55,3 @@ export class App {
     this.screenMediaStream = undefined;
   }
 }
-
-export const app = container.resolve(App);

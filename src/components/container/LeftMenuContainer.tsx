@@ -13,9 +13,11 @@ import MemberListContainer from '../room/MemberListContainer';
 import RoomBadge from '../room/RoomBadge';
 import { container } from 'tsyringe';
 
+const app = container.resolve(App);
+
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
-  const app = container.resolve(App);
+
   const [roomCreateModalVisible, setRoomCreateModalVisible] = useState(false);
   const dispatch = useAppDispatch();
   const {

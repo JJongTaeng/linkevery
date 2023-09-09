@@ -7,11 +7,13 @@ import { HashRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import AppComponent from './App';
 import './index.css';
-import { App } from './service/app/App';
 import reportWebVitals from './reportWebVitals';
 import { store } from './store/store';
 import { theme } from './style/theme';
-import { container } from 'tsyringe';
+import { container, inject, injectable, singleton } from 'tsyringe';
+import { App } from './service/app/App';
+
+container.resolve(App);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

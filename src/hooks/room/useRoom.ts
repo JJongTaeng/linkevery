@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { useRef } from 'react';
 import { debounce } from 'throttle-debounce';
-import { App } from '../../service/app/App';
+// import { App } from '../../service/app/App';
 import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
@@ -11,6 +11,9 @@ import { addChatByDB } from '../../store/thunk/chatThunk';
 import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import { useSlice } from '../useSlice';
 import { container } from 'tsyringe';
+import { App } from '../../service/app/App';
+
+const app = container.resolve(App);
 
 type RoomState = typeof initialState;
 type RoomAction = {
@@ -64,7 +67,6 @@ export function useRoom() {
     actions,
     initialState,
   );
-  const app = container.resolve(App);
 
   const chatListElement = useRef<HTMLDivElement>(null);
   const chatLoadingTriggerElement = useRef<HTMLDivElement>(null);
