@@ -1,9 +1,7 @@
 import { Tooltip, message } from 'antd';
 import Bowser from 'bowser';
-import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { App } from '../../service/app/App';
 import { mdUtils } from '../../service/media/MediaDeviceUtils';
 import { videoManager } from '../../service/media/VideoManager';
 import { storage } from '../../service/storage/StorageService';

@@ -10,10 +10,9 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { store } from './store/store';
 import { theme } from './style/theme';
-import { container, inject, injectable, singleton } from 'tsyringe';
-import { App } from './service/app/App';
+import { initContainer } from './container';
 
-container.resolve(App);
+initContainer();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
