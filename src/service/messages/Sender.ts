@@ -4,12 +4,8 @@ import { SocketManagerService } from '../socket/SocketManagerService';
 import { SocketManager } from '../socket/SocketManager';
 import { inject, injectable } from 'tsyringe';
 
-interface SenderService {
-  send(protocol: Protocol): void;
-}
-
 @injectable()
-export class Sender implements SenderService {
+export class Sender {
   constructor(
     @inject(SocketManager) private socketManager: SocketManager,
     @inject(RTCManager) private rtcManager: RTCManager,

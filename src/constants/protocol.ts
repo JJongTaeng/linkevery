@@ -96,8 +96,8 @@ export interface Protocol {
   messageId: MessageId;
   from: string;
   data: ProtocolData;
-  index: number;
-  endIndex: number;
+  index?: number;
+  endIndex?: number;
 }
 
 export type HandlerMap<T extends string | number | symbol> = {
