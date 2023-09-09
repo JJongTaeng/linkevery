@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^7.1.0",
     "@reduxjs/toolkit": "^1.9.3",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
@@ -33,9 +34,9 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "GENERATE_SOURCEMAP=false craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
     "predeploy": "yarn build",
     "deploy": "rimraf ./node_modules/.cache/gh-pages && gh-pages --branch gh-pages -d build",
@@ -60,12 +61,14 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.22.15",
     "@types/clone-deep": "^4.0.1",
     "@types/color": "^3.0.3",
     "@types/color-string": "^1.5.2",
     "@types/styled-components": "^5.1.26",
     "@types/throttle-debounce": "^5.0.0",
     "autoprefixer": "^10.4.13",
+    "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "gh-pages": "^4.0.0",
     "prettier": "^2.8.1",
     "rimraf": "^3.0.2"
