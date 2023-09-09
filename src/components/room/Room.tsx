@@ -22,11 +22,10 @@ import ChatBubble from '../chat/ChatBubble';
 import FileUpload from '../chat/FileUpload';
 import SvgArrowDown from '../icons/ArrowDown';
 import UsernameModal from './UsernameModal';
-import { container } from 'tsyringe';
-
-const app = container.resolve(App);
+import { useApp } from '../../hooks/useApp';
 
 const Room = () => {
+  const [app] = useApp();
   const {
     state,
     setPage,

@@ -23,8 +23,6 @@ export class App {
     return this._dispatch;
   }
 
-  static getInstance(): any {}
-
   get rtcManager() {
     return this._rtcManager;
   }

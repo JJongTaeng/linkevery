@@ -17,9 +17,7 @@ import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class DispatchEvent {
-  constructor(@inject(Sender) private sender: Sender) {
-    console.log(this.sender);
-  }
+  constructor(@inject(Sender) private sender: Sender) {}
 
   sendConnectionConnectMessage(data: ProtocolData) {
     this.send({
