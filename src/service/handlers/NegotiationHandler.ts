@@ -10,13 +10,13 @@ import { SdpType } from '../rtc/RTCPeerService';
 import { messageId } from '../../decorators/messageId';
 import { category } from '../../decorators/category';
 
-interface NegotiationHandlerService {
+interface NegotiationHandlerInterface {
   offer: HandlerFunction;
   answer: HandlerFunction;
 }
 
 @category(CATEGORY.NEGOTIATION)
-export class NegotiationHandler implements NegotiationHandlerService {
+export class NegotiationHandler implements NegotiationHandlerInterface {
   @messageId(NEGOTIATION_MESSAGE_ID.OFFER)
   async offer(
     protocol: Protocol,

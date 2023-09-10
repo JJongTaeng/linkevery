@@ -15,13 +15,12 @@ import { roomHandlers } from './roomHandlers';
 import { screenShareHandlers } from './screenShareHandlers';
 import { signalingHandlers } from './signalingHandlers';
 import { voiceHandlers } from './voiceHandlers';
-import { inject, singleton } from 'tsyringe';
-import { SocketManager } from '../socket/SocketManager';
+import { HandlerManagerInterface } from './HandlerManagerInterface';
+import { Socket } from 'socket.io-client';
 
 type CategoryHandlers = { [key in CATEGORY]: HandlerMap<any> };
 
-@singleton()
-export class HandlerManager {
+export class HandlerManager implements HandlerManagerInterface {
   private messageAssembleMap: Map<string, MessageAssemble> = new Map();
   private handlers: CategoryHandlers = {
     [CATEGORY.CONNECTION]: connectionHandlers,
@@ -33,15 +32,17 @@ export class HandlerManager {
     [CATEGORY.SCREEN]: screenShareHandlers,
   };
   constructor(
-    @inject(SocketManager) private socketManager: SocketManager,
-    @inject(RTCManager) private rtcManager: RTCManager,
-    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    private socket: Socket,
+    private rtcManager: RTCManager,
+    private dispatch: DispatchEvent,
   ) {
-    // this.subscribeHandlers();
+    this.subscribe();
   }
 
-  subscribeHandlers() {
-    this.socketManager.socket.on(EVENT_NAME, (protocol: Protocol) => {
+  setHandlers() {}
+
+  subscribe() {
+    this.socket.on(EVENT_NAME, (protocol: Protocol) => {
       console.debug('%c[receive] ', 'color:blue;font-weight:bold;', protocol);
       try {
         this.handlers[protocol.category][protocol.messageId](protocol, {

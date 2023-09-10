@@ -12,12 +12,12 @@ import { RTCManager } from '../rtc/RTCManager';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { MessageAssemble } from '../messages/MessageAssemble';
 import { ERROR_TYPE } from '../../error/error';
-import { category } from '../../decorators/category';
+import { HandlerManagerInterface } from './HandlerManagerInterface';
 
 type CategoryHandlers = { [key in CATEGORY]?: HandlerMap<any> };
 
 @injectable()
-export class HandlerManager2 {
+export class HandlerManagerV2 implements HandlerManagerInterface {
   private messageAssembleMap: Map<string, MessageAssemble> = new Map();
   private handlerMap: CategoryHandlers = {};
   constructor(

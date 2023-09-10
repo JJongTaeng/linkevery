@@ -15,7 +15,7 @@ import { protocol } from 'socket.io-client';
 import { RTCManager, rtcManager } from '../rtc/RTCManager';
 import { storage } from '../storage/StorageService';
 
-interface SignalingHandlerService {
+interface SignalingHandlerInterface {
   start: HandlerFunction;
   offer: HandlerFunction;
   answer: HandlerFunction;
@@ -27,7 +27,7 @@ interface SignalingHandlerService {
 }
 
 @category(CATEGORY.SIGNALING)
-export class SignalingHandler implements SignalingHandlerService {
+export class SignalingHandler implements SignalingHandlerInterface {
   @messageId(SIGNALING_MESSAGE_ID.START)
   async start(
     protocol: Protocol,

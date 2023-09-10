@@ -13,13 +13,13 @@ import { chatActions } from '../../store/features/chatSlice';
 import { addChatByDB } from '../../store/thunk/chatThunk';
 import { storage } from '../storage/StorageService';
 
-interface ChatHandlerService {
+interface ChatHandlerInterface {
   send: HandlerFunction;
   ok: HandlerFunction;
 }
 
 @category(CATEGORY.CHAT)
-export class ChatHandler implements ChatHandlerService {
+export class ChatHandler implements ChatHandlerInterface {
   @messageId(CHAT_MESSAGE_ID.SEND)
   send(
     protocol: Protocol,

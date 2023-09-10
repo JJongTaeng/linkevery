@@ -15,7 +15,7 @@ import { updateMemberByDB } from '../../store/thunk/roomThunk';
 import { query } from '../db/Query';
 import { Message } from '../db/LinkeveryDB';
 
-interface RoomHandlerService {
+interface RoomHandlerInterface {
   memberNamePre: HandlerFunction;
   memberName: HandlerFunction;
   memberNamePost: HandlerFunction;
@@ -24,7 +24,7 @@ interface RoomHandlerService {
 }
 
 @category(CATEGORY.ROOM)
-export class RoomHandler implements RoomHandlerService {
+export class RoomHandler implements RoomHandlerInterface {
   @messageId(ROOM_MESSAGE_ID.MEMBER_NAME_PRE)
   memberNamePre(
     protocol: Protocol,

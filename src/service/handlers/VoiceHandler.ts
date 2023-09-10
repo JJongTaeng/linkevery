@@ -14,7 +14,7 @@ import { audioManager } from '../media/AudioManager';
 import { messageId } from '../../decorators/messageId';
 import { category } from '../../decorators/category';
 
-interface VoiceHandlerService {
+interface VoiceHandlerInterface {
   ready: HandlerFunction;
   readyOk: HandlerFunction;
   connected: HandlerFunction;
@@ -22,7 +22,7 @@ interface VoiceHandlerService {
 }
 
 @category(CATEGORY.VOICE)
-export class VoiceHandler implements VoiceHandlerService {
+export class VoiceHandler implements VoiceHandlerInterface {
   @messageId(VOICE_MESSAGE_ID.READY)
   ready(
     protocol: Protocol,

@@ -17,7 +17,7 @@ import { message } from 'antd';
 import { roomActions } from '../../store/features/roomSlice';
 import { videoManager } from '../media/VideoManager';
 
-interface ScreenShareHandlerService {
+interface ScreenShareHandlerInterface {
   ready: HandlerFunction;
   readyOk: HandlerFunction;
   connected: HandlerFunction;
@@ -25,7 +25,7 @@ interface ScreenShareHandlerService {
 }
 
 @category(CATEGORY.SCREEN)
-export class ScreenShareHandler implements ScreenShareHandlerService {
+export class ScreenShareHandler implements ScreenShareHandlerInterface {
   @messageId(SCREEN_SHARE_MESSAGE_ID.READY)
   ready(
     protocol: Protocol,

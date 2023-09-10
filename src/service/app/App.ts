@@ -6,6 +6,7 @@ import { audioManager } from '../media/AudioManager';
 import { RTCManager } from '../rtc/RTCManager';
 import { storage } from '../storage/StorageService';
 import { inject, singleton } from 'tsyringe';
+import { RTCManagerService } from '../rtc/RTCManagerService';
 
 @singleton()
 export class App {
@@ -13,7 +14,7 @@ export class App {
 
   constructor(
     @inject(DispatchEvent) private _dispatch: DispatchEvent,
-    @inject(RTCManager) private _rtcManager: RTCManager,
+    @inject(RTCManager) private _rtcManager: RTCManagerService,
   ) {}
 
   get dispatch() {

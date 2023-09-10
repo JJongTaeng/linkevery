@@ -12,14 +12,14 @@ import { deleteMemberByDB } from '../../store/thunk/roomThunk';
 import { audioManager } from '../media/AudioManager';
 import { videoManager } from '../media/VideoManager';
 
-interface ConnectionHandlerService {
+interface ConnectionHandlerInterface {
   connect: HandlerFunction;
   joinRoom: HandlerFunction;
   disconnect: HandlerFunction;
 }
 
 @category(CATEGORY.CONNECTION)
-export class ConnectionHandler implements ConnectionHandlerService {
+export class ConnectionHandler implements ConnectionHandlerInterface {
   @messageId(CONNECTION_MESSAGE_ID.CONNECT)
   connect(
     protocol: Protocol,
