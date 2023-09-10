@@ -2,11 +2,11 @@ import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { audioManager } from '../media/AudioManager';
 import { RTCManager } from '../rtc/RTCManager';
 import { storage } from '../storage/StorageService';
 import { inject, singleton } from 'tsyringe';
 import { RTCManagerService } from '../rtc/RTCManagerService';
+import { AudioManager } from '../media/AudioManager';
 
 @singleton()
 export class App {
@@ -15,6 +15,7 @@ export class App {
   constructor(
     @inject(DispatchEvent) private _dispatch: DispatchEvent,
     @inject(RTCManager) private _rtcManager: RTCManagerService,
+    @inject('AudioManager') private audioManager: AudioManager,
   ) {}
 
   get dispatch() {
@@ -38,7 +39,7 @@ export class App {
 
     this._dispatch.sendVoiceDisconnectMessage({ userKey });
     this.rtcManager.clearAudioTrack();
-    audioManager.removeAllAudio();
+    this.audioManager.removeAllAudio();
     this.rtcManager.clearVideoTrack();
   }
 

@@ -9,8 +9,9 @@ import { utils } from '../utils/Utils';
 import { store } from '../../store/store';
 import { roomActions } from '../../store/features/roomSlice';
 import { deleteMemberByDB } from '../../store/thunk/roomThunk';
-import { audioManager } from '../media/AudioManager';
 import { videoManager } from '../media/VideoManager';
+import { inject, injectable } from 'tsyringe';
+import { AudioManager } from '../media/AudioManager';
 
 interface ConnectionHandlerInterface {
   connect: HandlerFunction;
@@ -19,7 +20,9 @@ interface ConnectionHandlerInterface {
 }
 
 @category(CATEGORY.CONNECTION)
+@injectable()
 export class ConnectionHandler implements ConnectionHandlerInterface {
+  constructor(@inject('AudioManager') private audioManager: AudioManager) {}
   @messageId(CONNECTION_MESSAGE_ID.CONNECT)
   connect(
     protocol: Protocol,
@@ -66,7 +69,7 @@ export class ConnectionHandler implements ConnectionHandlerInterface {
     const userKey = utils.getUserKeyByClientId(from) || '';
     store.dispatch(roomActions.deleteMember({ userKey }));
     store.dispatch(deleteMemberByDB({ userKey, roomName }));
-    audioManager.removeAudio(from);
+    this.audioManager.removeAudio(from);
     videoManager.clearVideo(from);
     try {
       rtcManager.removePeer(from);

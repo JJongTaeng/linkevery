@@ -10,9 +10,10 @@ import { storage } from '../storage/StorageService';
 import { store } from '../../store/store';
 import { soundEffect } from '../media/SoundEffect';
 import { roomActions } from '../../store/features/roomSlice';
-import { audioManager } from '../media/AudioManager';
 import { messageId } from '../../decorators/messageId';
 import { category } from '../../decorators/category';
+import { inject, injectable } from 'tsyringe';
+import { AudioManager } from '../media/AudioManager';
 
 interface VoiceHandlerInterface {
   ready: HandlerFunction;
@@ -22,7 +23,9 @@ interface VoiceHandlerInterface {
 }
 
 @category(CATEGORY.VOICE)
+@injectable()
 export class VoiceHandler implements VoiceHandlerInterface {
+  constructor(@inject('AudioManager') private audioManager: AudioManager) {}
   @messageId(VOICE_MESSAGE_ID.READY)
   ready(
     protocol: Protocol,
@@ -131,7 +134,7 @@ export class VoiceHandler implements VoiceHandlerInterface {
     }
     const peer = rtcManager.getPeer(from);
     peer.removeAudioTrack();
-    audioManager.removeAudio(from);
+    this.audioManager.removeAudio(from);
 
     soundEffect.closeVoice();
 

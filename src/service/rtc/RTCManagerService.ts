@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { ERROR_TYPE } from '../../error/error';
 import { RTCPeer } from './RTCPeer';
+import { container } from 'tsyringe';
 
 export abstract class RTCManagerService extends EventEmitter {
   constructor() {
@@ -10,7 +11,7 @@ export abstract class RTCManagerService extends EventEmitter {
 
   createPeer(id: string): void {
     if (this.peerMap.has(id)) return;
-    const peer = new RTCPeer();
+    const peer = container.resolve(RTCPeer);
     this.peerMap.set(id, peer);
   }
   getPeer(id: string): RTCPeer {

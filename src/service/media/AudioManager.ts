@@ -1,4 +1,4 @@
-class AudioManager {
+export class AudioManager {
   private audioMap: { [key: string]: HTMLAudioElement } = {};
   constructor() {}
 
@@ -36,4 +36,3 @@ class AudioManager {
     audio.volume = volume;
   }
 }
-export const audioManager = new AudioManager();

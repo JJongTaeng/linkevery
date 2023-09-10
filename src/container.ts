@@ -1,4 +1,4 @@
-import { container } from 'tsyringe';
+import { container, Lifecycle } from 'tsyringe';
 import { App } from './service/app/App';
 import { ConnectionHandler } from './service/handlers/ConnectionHandler';
 import { SignalingHandler } from './service/handlers/SignalingHandler';
@@ -8,8 +8,15 @@ import { VoiceHandler } from './service/handlers/VoiceHandler';
 import { HandlerManagerV2 } from './service/handlers/HandlerManagerV2';
 import { ChatHandler } from './service/handlers/ChatHandler';
 import { ScreenShareHandler } from './service/handlers/ScreenShareHandler';
+import { AudioManager } from './service/media/AudioManager';
 
 export const initContainer = () => {
+  container.register(
+    'AudioManager',
+    { useClass: AudioManager },
+    { lifecycle: Lifecycle.Singleton },
+  );
+
   container.register('Handler', { useClass: ConnectionHandler });
   container.register('Handler', { useClass: SignalingHandler });
   container.register('Handler', { useClass: NegotiationHandler });

@@ -1,7 +1,7 @@
 import { HandlerMap, VOICE_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
-import { audioManager } from '../media/AudioManager';
+// import { audioManager } from '../media/AudioManager';
 import { soundEffect } from '../media/SoundEffect';
 import { storage } from '../storage/StorageService';
 
@@ -74,7 +74,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     }
     const peer = rtcManager.getPeer(from);
     peer.removeAudioTrack();
-    audioManager.removeAudio(from);
+    // audioManager.removeAudio(from);
 
     soundEffect.closeVoice();
 

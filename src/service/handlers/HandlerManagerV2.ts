@@ -60,8 +60,6 @@ export class HandlerManagerV2 implements HandlerManagerInterface {
         this.handlerMap[category]![messageId] = method;
       }
     }
-
-    console.log(this.handlerMap);
   }
 
   subscribe() {
