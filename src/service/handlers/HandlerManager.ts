@@ -1,4 +1,3 @@
-import { Socket } from 'socket.io-client';
 import {
   CATEGORY,
   EVENT_NAME,
@@ -38,7 +37,7 @@ export class HandlerManager {
     @inject(RTCManager) private rtcManager: RTCManager,
     @inject(DispatchEvent) private dispatch: DispatchEvent,
   ) {
-    this.subscribeHandlers();
+    // this.subscribeHandlers();
   }
 
   subscribeHandlers() {

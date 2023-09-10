@@ -6,4 +6,5 @@ export enum ERROR_TYPE {
   NOT_DEFINED = 'not defined',
   UNKNOWN_ERROR = 'invalid error',
   INVALID_USER_NAME = 'invalid username',
+  NOT_DEFINED_HANDLER = 'not defined category message handler',
 }

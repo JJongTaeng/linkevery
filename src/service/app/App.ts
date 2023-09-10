@@ -2,11 +2,10 @@ import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { HandlerManager } from '../handlers/HandlerManager';
 import { audioManager } from '../media/AudioManager';
 import { RTCManager } from '../rtc/RTCManager';
 import { storage } from '../storage/StorageService';
-import { container, inject, injectable, singleton } from 'tsyringe';
+import { inject, singleton } from 'tsyringe';
 
 @singleton()
 export class App {
@@ -15,9 +14,7 @@ export class App {
   constructor(
     @inject(DispatchEvent) private _dispatch: DispatchEvent,
     @inject(RTCManager) private _rtcManager: RTCManager,
-  ) {
-    container.resolve(HandlerManager);
-  }
+  ) {}
 
   get dispatch() {
     return this._dispatch;
