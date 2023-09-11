@@ -26,7 +26,7 @@ export const config = {
 
 @singleton()
 export class RTCManager extends RTCManagerService {
-  static SLICE_LENGTH = 4096;
+  static SLICE_LENGTH = 16000;
   public static RTC_EVENT = {
     DATA: 'RTC_DATA',
   };
