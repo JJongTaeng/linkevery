@@ -3,7 +3,7 @@ import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 import { deleteMemberByDB } from '../../store/thunk/roomThunk';
 // import { audioManager } from '../media/AudioManager';
-import { videoManager } from '../media/VideoManager';
+// import { videoManager } from '../media/VideoManager';
 import { storage } from '../storage/StorageService';
 import { utils } from '../utils/Utils';
 
@@ -26,7 +26,7 @@ export const connectionHandlers: HandlerMap<CONNECTION_MESSAGE_ID> = {
     store.dispatch(roomActions.deleteMember({ userKey }));
     store.dispatch(deleteMemberByDB({ userKey, roomName }));
     // audioManager.removeAudio(from);
-    videoManager.clearVideo(from);
+    // videoManager.clearVideo(from);
     try {
       rtcManager.removePeer(from);
     } catch (e) {}

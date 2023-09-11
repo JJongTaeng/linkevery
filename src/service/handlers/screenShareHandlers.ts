@@ -4,7 +4,7 @@ import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
 import { App } from '../app/App';
-import { videoManager } from '../media/VideoManager';
+// import { videoManager } from '../media/VideoManager';
 import { storage } from '../storage/StorageService';
 import { container } from 'tsyringe';
 
@@ -77,6 +77,6 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
         screenShareStatus: false,
       }),
     );
-    videoManager.clearVideo(from);
+    // videoManager.clearVideo(from);
   },
 };

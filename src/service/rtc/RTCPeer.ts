@@ -1,6 +1,6 @@
 import { Protocol } from '../../constants/protocol';
 import { ERROR_TYPE } from '../../error/error';
-import { videoManager } from '../media/VideoManager';
+import { VideoManager } from '../media/VideoManager';
 import { config } from './RTCManager';
 import { RTCPeerService, SdpType } from './RTCPeerService';
 import { inject, injectable } from 'tsyringe';
@@ -15,7 +15,10 @@ export class RTCPeer extends RTCPeerService {
   private videoSender?: RTCRtpSender;
   private audioSender?: RTCRtpSender;
 
-  constructor(@inject('AudioManager') private audioManager: AudioManager) {
+  constructor(
+    @inject('AudioManager') private audioManager: AudioManager,
+    @inject('VideoManager') private videoManager: VideoManager,
+  ) {
     super();
   }
 
@@ -103,7 +106,7 @@ export class RTCPeer extends RTCPeerService {
     this.peer?.addEventListener('track', (e) => {
       const videoTrack = e.streams[0].getVideoTracks()[0];
       if (videoTrack) {
-        videoManager.addVideo(id, e.streams[0]);
+        this.videoManager.addVideo(id, e.streams[0]);
       } else {
         this.audioManager.addAudio(id, e.streams[0]);
       }

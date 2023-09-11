@@ -11,11 +11,11 @@ import { messageId } from '../../decorators/messageId';
 import { store } from '../../store/store';
 import { storage } from '../storage/StorageService';
 import { userActions } from '../../store/features/userSlice';
-import { container } from 'tsyringe';
+import { container, inject, injectable } from 'tsyringe';
 import { App } from '../app/App';
 import { message } from 'antd';
 import { roomActions } from '../../store/features/roomSlice';
-import { videoManager } from '../media/VideoManager';
+import { VideoManager } from '../media/VideoManager';
 
 interface ScreenShareHandlerInterface {
   ready: HandlerFunction;
@@ -25,7 +25,9 @@ interface ScreenShareHandlerInterface {
 }
 
 @category(CATEGORY.SCREEN)
+@injectable()
 export class ScreenShareHandler implements ScreenShareHandlerInterface {
+  constructor(@inject('VideoManager') private videoManager: VideoManager) {}
   @messageId(SCREEN_SHARE_MESSAGE_ID.READY)
   ready(
     protocol: Protocol,
@@ -125,6 +127,6 @@ export class ScreenShareHandler implements ScreenShareHandlerInterface {
         screenShareStatus: false,
       }),
     );
-    videoManager.clearVideo(from);
+    this.videoManager.clearVideo(from);
   }
 }

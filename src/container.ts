@@ -9,11 +9,17 @@ import { HandlerManagerV2 } from './service/handlers/HandlerManagerV2';
 import { ChatHandler } from './service/handlers/ChatHandler';
 import { ScreenShareHandler } from './service/handlers/ScreenShareHandler';
 import { AudioManager } from './service/media/AudioManager';
+import { VideoManager } from './service/media/VideoManager';
 
 export const initContainer = () => {
   container.register(
     'AudioManager',
     { useClass: AudioManager },
+    { lifecycle: Lifecycle.Singleton },
+  );
+  container.register(
+    'VideoManager',
+    { useClass: VideoManager },
     { lifecycle: Lifecycle.Singleton },
   );
 

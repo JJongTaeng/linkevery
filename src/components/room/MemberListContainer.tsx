@@ -2,13 +2,13 @@ import { Button, Card, Popover, Slider } from 'antd';
 import { nanoid } from 'nanoid';
 import { useRef } from 'react';
 import styled from 'styled-components';
-import { videoManager } from '../../service/media/VideoManager';
 import { useAppSelector } from '../../store/hooks';
 import { highlight } from '../../style';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
 import SvgSpeakerOn from '../icons/SpeakerOn';
 import { container } from 'tsyringe';
 import { AudioManager } from '../../service/media/AudioManager';
+import { VideoManager } from '../../service/media/VideoManager';
 
 interface MemberListContainerProps {}
 
@@ -19,6 +19,8 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
   }));
   const audioManager = useRef(container.resolve('AudioManager'))
     .current as AudioManager;
+  const videoManager = useRef(container.resolve('VideoManager'))
+    .current as VideoManager;
 
   const onChangeVolume = (id: string, volume: number) => {
     audioManager.changeVolume(id, volume);

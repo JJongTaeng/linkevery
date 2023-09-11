@@ -1,4 +1,4 @@
-class VideoManager {
+export class VideoManager {
   constructor() {}
   private videoElementMap: { [key: string]: HTMLVideoElement } = {};
   private windowPopupMap: { [key: string]: Window } = {};
@@ -48,5 +48,3 @@ class VideoManager {
     delete this.videoElementMap[id];
   }
 }
-
-export const videoManager = new VideoManager();
