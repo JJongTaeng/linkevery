@@ -1,13 +1,11 @@
-import { SendOutlined } from '@ant-design/icons';
 import { Button, Divider } from 'antd';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useRoom } from '../../hooks/room/useRoom';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
-import { App } from '../../service/app/App';
 import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
@@ -19,10 +17,10 @@ import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
 import { getUserByDB } from '../../store/thunk/userThunk';
 import { PAGE_OFFSET } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
-import FileUpload from '../chat/FileUpload';
 import SvgArrowDown from '../icons/ArrowDown';
 import UsernameModal from './UsernameModal';
 import { useApp } from '../../hooks/useApp';
+import ChatForm from './ChatForm';
 
 const Room = () => {
   const [app] = useApp();
@@ -30,16 +28,11 @@ const Room = () => {
     state,
     setPage,
     setUsernameModalVisible,
-    setChatMessage,
-    sendChatMessage,
     handleVisibleScrollButton,
     handleViewportResize,
-    handleChatKeydown,
-    handleChatSubmit,
     handleUsernameSubmit,
-    handleChatKeyup,
     moveToChatScrollBottom,
-    elements: { chatListElement, chatLoadingTriggerElement, focusInput },
+    elements: { chatListElement, chatLoadingTriggerElement },
   } = useRoom();
 
   const { roomName } = useParams<{
@@ -204,51 +197,7 @@ const Room = () => {
                 <SvgArrowDown />
               </Button>
             )}
-            <ChatForm autoComplete="off" onSubmit={(e) => handleChatSubmit(e)}>
-              <div className="form-header">
-                <textarea
-                  value={state.chatMessage}
-                  onKeyDown={handleChatKeydown}
-                  onKeyUp={handleChatKeyup}
-                  onChange={(e) => setChatMessage(e.target.value)}
-                  name="message"
-                  style={{ height: 40 }}
-                  placeholder={roomName?.split('+')[0] + ' 에 메시지 보내기'}
-                />
-                <input
-                  type="text"
-                  ref={focusInput}
-                  style={{
-                    position: 'fixed',
-                    left: -10000,
-                    width: 10,
-                    height: 10,
-                  }}
-                />
-              </div>
-
-              <div className="form-footer">
-                <FormControllerWrapper>
-                  <FileUpload
-                    onFileChange={(file) => {
-                      console.log(file);
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        sendChatMessage('image', reader.result as string);
-                      };
-                      reader.readAsDataURL(file as any);
-                    }}
-                  />
-                </FormControllerWrapper>
-                <div>
-                  <Button
-                    shape="circle"
-                    icon={<SendOutlined rev={undefined} />}
-                    htmlType="submit"
-                  ></Button>
-                </div>
-              </div>
-            </ChatForm>
+            <ChatForm />
           </ChatContainer>
         </ContentContainer>
         <UsernameModal
@@ -337,57 +286,4 @@ const ChatList = styled.div`
     color: ${({ theme }) => theme.color.grey100};
   }
 `;
-
-const FormControllerWrapper = styled.div`
-  display: flex;
-`;
-
-const ChatForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-
-  height: 80px;
-
-  border: 1px solid ${({ theme }) => theme.color.primary400};
-  border-radius: 8px;
-
-  box-shadow: ${({ theme }) => theme.boxShadow};
-
-  textarea {
-    width: 100%;
-    height: 100%;
-
-    border: 0;
-    border-top-right-radius: 8px;
-    border-top-left-radius: 8px;
-
-    padding: 8px;
-
-    resize: none;
-    box-sizing: border-box;
-    border-bottom: 1px solid ${({ theme }) => theme.color.primary400};
-  }
-  textarea::placeholder {
-  }
-
-  .form-header {
-    height: 40px;
-  }
-
-  .form-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-    background-color: ${({ theme }) => theme.color.grey800};
-    border-bottom-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    padding: 0 8px;
-  }
-`;
-
 export default Room;
