@@ -2,7 +2,7 @@ import { HandlerMap, VOICE_MESSAGE_ID } from '../../constants/protocol';
 import { roomActions } from '../../store/features/roomSlice';
 import { store } from '../../store/store';
 // import { audioManager } from '../media/AudioManager';
-import { soundEffect } from '../media/SoundEffect';
+// import { soundEffect } from '../media/SoundEffect';
 import { storage } from '../storage/StorageService';
 
 export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
@@ -30,7 +30,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       peer.addTrack(track, mediaStream);
     });
 
-    soundEffect.startVoice();
+    // soundEffect.startVoice();
 
     store.dispatch(
       roomActions.setMemberVoiceStatus({
@@ -55,7 +55,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       peer.addTrack(track, mediaStream);
     });
 
-    soundEffect.startVoice();
+    // soundEffect.startVoice();
 
     store.dispatch(
       roomActions.setMemberVoiceStatus({
@@ -76,7 +76,7 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     peer.removeAudioTrack();
     // audioManager.removeAudio(from);
 
-    soundEffect.closeVoice();
+    // soundEffect.closeVoice();
 
     store.dispatch(
       roomActions.setMemberVoiceStatus({

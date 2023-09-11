@@ -8,12 +8,12 @@ import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { RTCManagerService } from '../rtc/RTCManagerService';
 import { storage } from '../storage/StorageService';
 import { store } from '../../store/store';
-import { soundEffect } from '../media/SoundEffect';
 import { roomActions } from '../../store/features/roomSlice';
 import { messageId } from '../../decorators/messageId';
 import { category } from '../../decorators/category';
 import { inject, injectable } from 'tsyringe';
 import { AudioManager } from '../media/AudioManager';
+import { SoundEffect } from '../media/SoundEffect';
 
 interface VoiceHandlerInterface {
   ready: HandlerFunction;
@@ -25,7 +25,10 @@ interface VoiceHandlerInterface {
 @category(CATEGORY.VOICE)
 @injectable()
 export class VoiceHandler implements VoiceHandlerInterface {
-  constructor(@inject('AudioManager') private audioManager: AudioManager) {}
+  constructor(
+    @inject('AudioManager') private audioManager: AudioManager,
+    @inject(SoundEffect) private soundEffect: SoundEffect,
+  ) {}
   @messageId(VOICE_MESSAGE_ID.READY)
   ready(
     protocol: Protocol,
@@ -68,7 +71,7 @@ export class VoiceHandler implements VoiceHandlerInterface {
       peer.addTrack(track, mediaStream);
     });
 
-    soundEffect.startVoice();
+    this.soundEffect.startVoice();
 
     store.dispatch(
       roomActions.setMemberVoiceStatus({
@@ -104,7 +107,7 @@ export class VoiceHandler implements VoiceHandlerInterface {
       peer.addTrack(track, mediaStream);
     });
 
-    soundEffect.startVoice();
+    this.soundEffect.startVoice();
 
     store.dispatch(
       roomActions.setMemberVoiceStatus({
@@ -136,7 +139,7 @@ export class VoiceHandler implements VoiceHandlerInterface {
     peer.removeAudioTrack();
     this.audioManager.removeAudio(from);
 
-    soundEffect.closeVoice();
+    this.soundEffect.closeVoice();
 
     store.dispatch(
       roomActions.setMemberVoiceStatus({

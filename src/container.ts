@@ -10,6 +10,7 @@ import { ChatHandler } from './service/handlers/ChatHandler';
 import { ScreenShareHandler } from './service/handlers/ScreenShareHandler';
 import { AudioManager } from './service/media/AudioManager';
 import { VideoManager } from './service/media/VideoManager';
+import { SoundEffect } from './service/media/SoundEffect';
 
 export const initContainer = () => {
   container.register(
@@ -22,6 +23,7 @@ export const initContainer = () => {
     { useClass: VideoManager },
     { lifecycle: Lifecycle.Singleton },
   );
+  container.register(SoundEffect, { useClass: SoundEffect });
 
   container.register('Handler', { useClass: ConnectionHandler });
   container.register('Handler', { useClass: SignalingHandler });

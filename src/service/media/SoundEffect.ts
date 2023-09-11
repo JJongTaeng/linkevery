@@ -1,6 +1,7 @@
 import voiceOff from '../../assets/voiceOff.mp3';
 import voiceOn from '../../assets/voiceOn.mp3';
-class SoundEffect {
+
+export class SoundEffect {
   private voiceOn = new Audio(voiceOn);
   private voiceOff = new Audio(voiceOff);
   public startVoice() {
@@ -16,5 +17,3 @@ class SoundEffect {
     this.voiceOff.play();
   }
 }
-
-export const soundEffect = new SoundEffect();
