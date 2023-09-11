@@ -49,11 +49,8 @@ export class HandlerManagerV2 implements HandlerManagerInterface {
           instance.constructor,
           'messageId',
         ) as MessageId;
-        const method = Reflect.getMetadata(
-          methodName,
-          instance.constructor,
-          'method',
-        );
+
+        const method = instance[methodName].bind(instance);
         if (!this.handlerMap[category]) {
           this.handlerMap[category] = {};
         }
@@ -117,10 +114,11 @@ export class HandlerManagerV2 implements HandlerManagerInterface {
               newProtocol,
             );
           } catch (e) {
+            console.error(e);
             console.debug(
               '%c[Error] ',
               'color:red;font-weight:bold;',
-              protocol,
+              newProtocol,
             );
           }
         }
