@@ -1,5 +1,9 @@
 import { category } from '../../decorators/category';
-import type { HandlerFunction, Protocol } from '../../constants/protocol';
+import type {
+  HandlerFunction,
+  Protocol,
+  HandlerParameter,
+} from '../../constants/protocol';
 import { CATEGORY, CONNECTION_MESSAGE_ID } from '../../constants/protocol';
 import { messageId } from '../../decorators/messageId';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
@@ -29,10 +33,7 @@ export class ConnectionHandler implements ConnectionHandlerInterface {
   @messageId(CONNECTION_MESSAGE_ID.CONNECT)
   connect(
     protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: { dispatch: DispatchEvent; rtcManager: RTCManagerService },
+    { dispatch, rtcManager }: HandlerParameter,
   ): void {
     const { clientId } = protocol.data;
     storage.setItem('clientId', clientId);
@@ -41,13 +42,7 @@ export class ConnectionHandler implements ConnectionHandlerInterface {
   @messageId(CONNECTION_MESSAGE_ID.JOIN_ROOM)
   joinRoom(
     protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
+    { dispatch, rtcManager }: HandlerParameter,
   ): void {
     const { roomName } = protocol.data;
     dispatch.sendSignalingStartMessage({
@@ -59,13 +54,7 @@ export class ConnectionHandler implements ConnectionHandlerInterface {
   @messageId(CONNECTION_MESSAGE_ID.DISCONNECT)
   disconnect(
     protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
+    { dispatch, rtcManager }: HandlerParameter,
   ): void {
     const { from } = protocol;
     const { roomName } = storage.getAll();

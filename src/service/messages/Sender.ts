@@ -1,6 +1,5 @@
 import { EVENT_NAME, MESSAGE_TYPE, Protocol } from '../../constants/protocol';
 import { RTCManager } from '../rtc/RTCManager';
-import { SocketManagerService } from '../socket/SocketManagerService';
 import { SocketManager } from '../socket/SocketManager';
 import { inject, injectable } from 'tsyringe';
 

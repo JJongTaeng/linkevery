@@ -1,5 +1,5 @@
 import { category } from '../../decorators/category';
-import type { Protocol } from '../../constants/protocol';
+import type { HandlerParameter, Protocol } from '../../constants/protocol';
 import {
   CATEGORY,
   HandlerFunction,
@@ -29,16 +29,7 @@ interface SignalingHandlerInterface {
 @category(CATEGORY.SIGNALING)
 export class SignalingHandler implements SignalingHandlerInterface {
   @messageId(SIGNALING_MESSAGE_ID.START)
-  async start(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
-  ) {
+  async start(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     const { roomName, size } = protocol.data;
     const { from } = protocol;
     store.dispatch(roomActions.setMemberSize(size));
@@ -90,16 +81,7 @@ export class SignalingHandler implements SignalingHandlerInterface {
   }
 
   @messageId(SIGNALING_MESSAGE_ID.OFFER)
-  async offer(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
-  ) {
+  async offer(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     const { offer } = protocol.data;
     const { from } = protocol;
     // store.dispatch(roomActions.setMemberSize(size));
@@ -156,16 +138,7 @@ export class SignalingHandler implements SignalingHandlerInterface {
   }
 
   @messageId(SIGNALING_MESSAGE_ID.ANSWER)
-  answer(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
-  ) {
+  answer(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     const { answer } = protocol.data;
     const { from } = protocol;
     const rtcPeer = rtcManager.getPeer(from);
@@ -174,16 +147,7 @@ export class SignalingHandler implements SignalingHandlerInterface {
   }
 
   @messageId(SIGNALING_MESSAGE_ID.ICE)
-  ice(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
-  ) {
+  ice(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     const { ice } = protocol.data;
     const rtcPeer = rtcManager.getPeer(protocol.from);
     rtcPeer.setIcecandidate(ice);
@@ -192,13 +156,7 @@ export class SignalingHandler implements SignalingHandlerInterface {
   @messageId(SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL)
   createDataChannel(
     protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
+    { dispatch, rtcManager }: HandlerParameter,
   ) {
     const { from } = protocol;
     const rtcPeer = rtcManager.getPeer(from);
@@ -220,13 +178,7 @@ export class SignalingHandler implements SignalingHandlerInterface {
   @messageId(SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL)
   connectDataChannel(
     protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
+    { dispatch, rtcManager }: HandlerParameter,
   ): void {
     const roomName = storage.getItem('roomName');
     const { from } = protocol;

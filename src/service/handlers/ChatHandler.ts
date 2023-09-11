@@ -1,4 +1,4 @@
-import type { Protocol } from '../../constants/protocol';
+import type { Protocol, HandlerParameter } from '../../constants/protocol';
 import {
   CATEGORY,
   CHAT_MESSAGE_ID,
@@ -21,43 +21,23 @@ interface ChatHandlerInterface {
 @category(CATEGORY.CHAT)
 export class ChatHandler implements ChatHandlerInterface {
   @messageId(CHAT_MESSAGE_ID.SEND)
-  send(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: { dispatch: DispatchEvent; rtcManager: RTCManagerService },
-  ) {
+  send(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
-    store.dispatch(
-      chatActions.addChat({
-        messageType,
-        messageKey,
-        message,
-        userKey,
-        date,
-        username,
-      }),
-    );
-
-    dispatch.sendChatOkMessage({
+    const chatInfo = {
       messageType,
       messageKey,
       message,
       userKey,
       date,
       username,
-    });
+    };
 
+    store.dispatch(chatActions.addChat(chatInfo));
+    dispatch.sendChatOkMessage(chatInfo);
     store.dispatch(
       addChatByDB({
-        messageType,
-        messageKey,
-        message,
-        userKey,
-        date,
-        username,
+        ...chatInfo,
         roomName: storage.getItem('roomName'),
       }),
     );

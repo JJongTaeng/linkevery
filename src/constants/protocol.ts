@@ -113,13 +113,12 @@ export type HandlerMap<T extends string | number | symbol> = {
   ) => void;
 };
 
+export type HandlerParameter = {
+  dispatch: DispatchEvent;
+  rtcManager: RTCManagerService;
+};
+
 export type HandlerFunction = (
   protocol: Protocol,
-  {
-    dispatch,
-    rtcManager,
-  }: {
-    dispatch: DispatchEvent;
-    rtcManager: RTCManagerService;
-  },
+  { dispatch, rtcManager }: HandlerParameter,
 ) => any;

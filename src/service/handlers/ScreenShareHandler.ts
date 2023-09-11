@@ -1,4 +1,4 @@
-import type { Protocol } from '../../constants/protocol';
+import type { HandlerParameter, Protocol } from '../../constants/protocol';
 import {
   CATEGORY,
   HandlerFunction,
@@ -29,13 +29,7 @@ interface ScreenShareHandlerInterface {
 export class ScreenShareHandler implements ScreenShareHandlerInterface {
   constructor(@inject('VideoManager') private videoManager: VideoManager) {}
   @messageId(SCREEN_SHARE_MESSAGE_ID.READY)
-  ready(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: { dispatch: DispatchEvent; rtcManager: RTCManagerService },
-  ) {
+  ready(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     if (!store.getState().user.voiceStatus) {
       return;
     }
@@ -90,16 +84,7 @@ export class ScreenShareHandler implements ScreenShareHandlerInterface {
   }
 
   @messageId(SCREEN_SHARE_MESSAGE_ID.CONNECTED)
-  connected(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
-  ) {
+  connected(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     store.dispatch(
       roomActions.setMemberScreenShareStatus({
         userKey: protocol.data.userKey,
@@ -109,16 +94,7 @@ export class ScreenShareHandler implements ScreenShareHandlerInterface {
   }
 
   @messageId(SCREEN_SHARE_MESSAGE_ID.DISCONNECT)
-  disconnect(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
-  ) {
+  disconnect(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     const { from } = protocol;
 
     store.dispatch(

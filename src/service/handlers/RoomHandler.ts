@@ -1,11 +1,9 @@
-import type { Protocol } from '../../constants/protocol';
+import type { Protocol, HandlerParameter } from '../../constants/protocol';
 import {
   CATEGORY,
   HandlerFunction,
   ROOM_MESSAGE_ID,
 } from '../../constants/protocol';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { RTCManagerService } from '../rtc/RTCManagerService';
 import { category } from '../../decorators/category';
 import { messageId } from '../../decorators/messageId';
 import { storage } from '../storage/StorageService';
@@ -28,13 +26,7 @@ export class RoomHandler implements RoomHandlerInterface {
   @messageId(ROOM_MESSAGE_ID.MEMBER_NAME_PRE)
   memberNamePre(
     protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
+    { dispatch, rtcManager }: HandlerParameter,
   ) {
     const username = storage.getItem('username');
     const userKey = storage.getItem('userKey');
@@ -46,16 +38,7 @@ export class RoomHandler implements RoomHandlerInterface {
   }
 
   @messageId(ROOM_MESSAGE_ID.MEMBER_NAME)
-  memberName(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
-  ) {
+  memberName(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     const { username, userKey, roomName } = storage.getAll();
 
     store.dispatch(
@@ -82,13 +65,7 @@ export class RoomHandler implements RoomHandlerInterface {
   @messageId(ROOM_MESSAGE_ID.MEMBER_NAME_POST)
   async memberNamePost(
     protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
+    { dispatch, rtcManager }: HandlerParameter,
   ) {
     const roomName = storage.getItem('roomName');
 
@@ -118,13 +95,7 @@ export class RoomHandler implements RoomHandlerInterface {
   @messageId(ROOM_MESSAGE_ID.SYNC_CHAT_LIST)
   async syncChatList(
     protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
+    { dispatch, rtcManager }: HandlerParameter,
   ) {
     const roomName = storage.getItem('roomName');
 
@@ -154,13 +125,7 @@ export class RoomHandler implements RoomHandlerInterface {
   @messageId(ROOM_MESSAGE_ID.SYNC_CHAT_LIST_OK)
   async syncChatListOk(
     protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
+    { dispatch, rtcManager }: HandlerParameter,
   ) {
     const { messageList } = protocol.data;
 

@@ -1,4 +1,4 @@
-import type { Protocol } from '../../constants/protocol';
+import type { Protocol, HandlerParameter } from '../../constants/protocol';
 import {
   CATEGORY,
   HandlerFunction,
@@ -18,13 +18,7 @@ interface NegotiationHandlerInterface {
 @category(CATEGORY.NEGOTIATION)
 export class NegotiationHandler implements NegotiationHandlerInterface {
   @messageId(NEGOTIATION_MESSAGE_ID.OFFER)
-  async offer(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: { dispatch: DispatchEvent; rtcManager: RTCManagerService },
-  ) {
+  async offer(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     const { from } = protocol;
     const { offer } = protocol.data;
     const rtcPeer = rtcManager.getPeer(from);
@@ -36,16 +30,7 @@ export class NegotiationHandler implements NegotiationHandlerInterface {
     dispatch.sendNegotiationAnswerMessage({ answer, to: from });
   }
   @messageId(NEGOTIATION_MESSAGE_ID.ANSWER)
-  async answer(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
-  ) {
+  async answer(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     const { answer } = protocol.data;
     const rtcPeer = rtcManager.getPeer(protocol.from);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });

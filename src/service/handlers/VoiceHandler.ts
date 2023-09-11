@@ -1,11 +1,9 @@
-import type { Protocol } from '../../constants/protocol';
+import type { HandlerParameter, Protocol } from '../../constants/protocol';
 import {
   CATEGORY,
   HandlerFunction,
   VOICE_MESSAGE_ID,
 } from '../../constants/protocol';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { RTCManagerService } from '../rtc/RTCManagerService';
 import { storage } from '../storage/StorageService';
 import { store } from '../../store/store';
 import { roomActions } from '../../store/features/roomSlice';
@@ -30,13 +28,7 @@ export class VoiceHandler implements VoiceHandlerInterface {
     @inject(SoundEffect) private soundEffect: SoundEffect,
   ) {}
   @messageId(VOICE_MESSAGE_ID.READY)
-  ready(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: { dispatch: DispatchEvent; rtcManager: RTCManagerService },
-  ) {
+  ready(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     const userKey = storage.getItem('userKey');
     if (!store.getState().user.voiceStatus) {
       return;
@@ -48,13 +40,7 @@ export class VoiceHandler implements VoiceHandlerInterface {
   @messageId(VOICE_MESSAGE_ID.READY_OK)
   async readyOk(
     protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
+    { dispatch, rtcManager }: HandlerParameter,
   ) {
     const userKey = storage.getItem('userKey');
     const { from } = protocol;
@@ -85,13 +71,7 @@ export class VoiceHandler implements VoiceHandlerInterface {
   @messageId(VOICE_MESSAGE_ID.CONNECTED)
   async connected(
     protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
+    { dispatch, rtcManager }: HandlerParameter,
   ) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
@@ -121,16 +101,7 @@ export class VoiceHandler implements VoiceHandlerInterface {
   }
 
   @messageId(VOICE_MESSAGE_ID.DISCONNECT)
-  disconnect(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
-  ) {
+  disconnect(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
       return;
