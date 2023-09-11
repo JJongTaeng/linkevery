@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { useRef } from 'react';
 import { debounce } from 'throttle-debounce';
-import { App } from '../../service/app/App';
+// import { App } from '../../service/app/App';
 import { storage } from '../../service/storage/StorageService';
 import { utils } from '../../service/utils/Utils';
 import { chatActions } from '../../store/features/chatSlice';
@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addChatByDB } from '../../store/thunk/chatThunk';
 import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
 import { useSlice } from '../useSlice';
+import { useApp } from '../useApp';
 
 type RoomState = typeof initialState;
 type RoomAction = {
@@ -59,6 +60,7 @@ const actions: Actions = {
 };
 
 export function useRoom() {
+  const [app] = useApp();
   const [state, dispatch] = useSlice<RoomState, keyof typeof actions>(
     actions,
     initialState,
@@ -68,19 +70,21 @@ export function useRoom() {
   const chatLoadingTriggerElement = useRef<HTMLDivElement>(null);
   const focusInput = useRef<HTMLInputElement>(null);
 
-  const app = useRef(App.getInstance()).current;
-
   const { username } = useAppSelector((state) => ({
     username: state.user.username,
   }));
   const storeDispatch = useAppDispatch();
-  const sendChatMessage = () => {
-    if (!state.chatMessage) return;
+  const sendChatMessage = (type = 'text', image?: string) => {
+    if (type === 'text' && !state.chatMessage) return;
     const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
+    const message: any = {
+      image: image,
+      text: state.chatMessage,
+    };
     const messageProtocol = {
-      messageType: 'text',
+      messageType: type,
       messageKey: username + '+' + date,
-      message: state.chatMessage,
+      message: message[type],
       userKey: storage.getItem('userKey'),
       date,
       username,
@@ -117,9 +121,11 @@ export function useRoom() {
   );
 
   const moveToChatScrollBottom = () => {
-    if (chatListElement.current)
-      chatListElement.current.scrollTop =
-        chatListElement?.current?.scrollHeight;
+    setTimeout(() => {
+      if (chatListElement.current)
+        chatListElement.current.scrollTop =
+          chatListElement?.current?.scrollHeight;
+    }, 0);
   };
 
   const handleChatKeydown = (e: any) => {
@@ -158,15 +164,17 @@ export function useRoom() {
     storage.setItem('username', username);
     dispatch.setUsernameModalVisible({ usernameModalVisible: false });
   };
-  const handleChatSubmit = (e: any) => {
-    e.preventDefault();
-    sendChatMessage();
+  const handleChatSubmit = (e?: any, type = 'text') => {
+    e?.preventDefault();
+    sendChatMessage(type);
+
     focusInput?.current?.focus();
-    e.target.message.focus();
+    e && e.target.message.focus();
   };
 
   return {
     state,
+    sendChatMessage,
     setIsFullScreen: (isFull: boolean) => {
       dispatch.setIsFullScreen({ isFullScreen: isFull });
     },

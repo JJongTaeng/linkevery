@@ -1,15 +1,14 @@
 import { EVENT_NAME, MESSAGE_TYPE, Protocol } from '../../constants/protocol';
 import { RTCManager } from '../rtc/RTCManager';
 import { SocketManagerService } from '../socket/SocketManagerService';
+import { SocketManager } from '../socket/SocketManager';
+import { inject, injectable } from 'tsyringe';
 
-interface SenderService {
-  send(protocol: Protocol): void;
-}
-
-export class Sender implements SenderService {
+@injectable()
+export class Sender {
   constructor(
-    private socketManager: SocketManagerService,
-    private rtcManager: RTCManager,
+    @inject(SocketManager) private socketManager: SocketManager,
+    @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
 
   send(protocol: Protocol) {

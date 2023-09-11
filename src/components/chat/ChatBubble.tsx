@@ -1,9 +1,11 @@
-import { Card, Tag } from 'antd';
+import { Card, Image, Tag } from 'antd';
 import color from 'color';
 import dayjs from 'dayjs';
 import { HTMLAttributes } from 'react';
 import stc from 'string-to-color';
 import styled from 'styled-components';
+import { chatUtils } from '../../service/utils/ChatUtils';
+import { utils } from '../../service/utils/Utils';
 
 interface ChatBubbleProps extends HTMLAttributes<HTMLDivElement> {
   date?: string;
@@ -19,23 +21,33 @@ const ChatBubble = ({
   isMyChat,
   ...props
 }: ChatBubbleProps) => {
-  const sum = (arr: number[]) =>
-    arr.reduce((prev, curr) => {
-      return prev + curr;
-    }, 0);
   const getColorObj = (colorCode: string) => color(colorCode) as any;
-  const isBlack = () =>
-    sum(getColorObj(stc(username)).color as number[]) / 765 > 0.6;
-
+  const isDark = () =>
+    utils.sum(getColorObj(stc(username)).color as number[]) / 765 > 0.6;
+  const chatMessageType = chatUtils.getChatType(message);
   const urlRegex = /(http[s]?:\/\/)?([^\/\s]+\/)([^\s]*)/g;
 
-  const isURL = (message: string) => !!message.match(urlRegex);
   const getURL = (message: string) => message.match(urlRegex)?.[0];
+
+  const chatElementByMessageType = {
+    text: <p>{message}</p>,
+    image: <Image src={message} />,
+    url: (
+      <>
+        <a href={getURL(message)} target="_blank" rel="noopener noreferrer">
+          {getURL(message)}
+        </a>
+        <span>{message.replace(getURL(message) || '', '')}</span>
+      </>
+    ),
+    file: <></>,
+    pdf: <></>,
+  };
 
   return (
     <ChatBubbleContainer
       {...props}
-      $isBlack={isBlack()}
+      $isBlack={isDark()}
       className={isMyChat ? 'chat-bubble  my-chat' : 'chat-bubble peer-chat'}
     >
       {username && (
@@ -50,20 +62,7 @@ const ChatBubble = ({
       )}
       <div className="chat-content">
         <StyledCard size="small">
-          {isURL(message) ? (
-            <>
-              <a
-                href={getURL(message)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {getURL(message)}
-              </a>
-              <span>{message.replace(getURL(message) || '', '')}</span>
-            </>
-          ) : (
-            <p>{message}</p>
-          )}
+          {chatElementByMessageType[chatMessageType]}
         </StyledCard>
         {date && (
           <span className="chat-time">{dayjs(date).format('HH:mm')}</span>
@@ -105,6 +104,7 @@ const StyledCard = styled(Card)`
     margin: 0;
   }
   min-width: 60px;
+  max-width: 400px;
 `;
 
 export default ChatBubble;

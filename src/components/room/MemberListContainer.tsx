@@ -1,23 +1,26 @@
 import { Button, Card, Popover, Slider } from 'antd';
 import { nanoid } from 'nanoid';
-import { useState } from 'react';
+import { useRef } from 'react';
 import styled from 'styled-components';
-import { audioManager } from '../../service/media/AudioManager';
-import { videoManager } from '../../service/media/VideoManager';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppSelector } from '../../store/hooks';
 import { highlight } from '../../style';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
 import SvgSpeakerOn from '../icons/SpeakerOn';
+import { container } from 'tsyringe';
+import { AudioManager } from '../../service/media/AudioManager';
+import { VideoManager } from '../../service/media/VideoManager';
 
 interface MemberListContainerProps {}
 
 const MemberListContainer = ({}: MemberListContainerProps) => {
-  const dispatch = useAppDispatch();
-  const [selectedUserKey, setSelectedUserKey] = useState('');
   const { myName, room } = useAppSelector((state) => ({
     myName: state.user.username,
     room: state.room.current,
   }));
+  const audioManager = useRef(container.resolve('AudioManager'))
+    .current as AudioManager;
+  const videoManager = useRef(container.resolve('VideoManager'))
+    .current as VideoManager;
 
   const onChangeVolume = (id: string, volume: number) => {
     audioManager.changeVolume(id, volume);
@@ -38,7 +41,6 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
                 size="small"
                 shape="circle"
                 onClick={() => {
-                  setSelectedUserKey(userKey);
                   videoManager.openVideoPopup(room.member[userKey].clientId);
                 }}
                 icon={<SvgScreenShareOn />}

@@ -1,4 +1,3 @@
-import { Socket } from 'socket.io-client';
 import {
   CATEGORY,
   EVENT_NAME,
@@ -7,6 +6,7 @@ import {
   StringifyProtocol,
 } from '../../constants/protocol';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
+import { MessageAssemble } from '../messages/MessageAssemble';
 import { RTCManager } from '../rtc/RTCManager';
 import { chatHandlers } from './chatHandlers';
 import { connectionHandlers } from './connectionHandlers';
@@ -15,11 +15,13 @@ import { roomHandlers } from './roomHandlers';
 import { screenShareHandlers } from './screenShareHandlers';
 import { signalingHandlers } from './signalingHandlers';
 import { voiceHandlers } from './voiceHandlers';
+import { HandlerManagerInterface } from './HandlerManagerInterface';
+import { Socket } from 'socket.io-client';
 
 type CategoryHandlers = { [key in CATEGORY]: HandlerMap<any> };
 
-export class HandlerManager {
-  private dataQueue: { [key: string]: string[] } = {};
+export class HandlerManager implements HandlerManagerInterface {
+  private messageAssembleMap: Map<string, MessageAssemble> = new Map();
   private handlers: CategoryHandlers = {
     [CATEGORY.CONNECTION]: connectionHandlers,
     [CATEGORY.SIGNALING]: signalingHandlers,
@@ -34,10 +36,12 @@ export class HandlerManager {
     private rtcManager: RTCManager,
     private dispatch: DispatchEvent,
   ) {
-    this.subscribeHandlers();
+    this.subscribe();
   }
 
-  subscribeHandlers() {
+  setHandlers() {}
+
+  subscribe() {
     this.socket.on(EVENT_NAME, (protocol: Protocol) => {
       console.debug('%c[receive] ', 'color:blue;font-weight:bold;', protocol);
       try {
@@ -53,11 +57,15 @@ export class HandlerManager {
       RTCManager.RTC_EVENT.DATA,
       (protocol: StringifyProtocol) => {
         const key = protocol.from + protocol.category + protocol.messageId;
-        if (!this.dataQueue[key]) this.dataQueue[key] = [];
-        this.dataQueue[key][protocol.index] = protocol.data;
+        if (!this.messageAssembleMap.has(key))
+          this.messageAssembleMap.set(key, new MessageAssemble());
+        const messageAssemble = this.messageAssembleMap.get(key);
+        messageAssemble?.push(protocol.data);
+
         if (protocol.index === protocol.endIndex) {
-          const dataString = this.dataQueue[key].join('');
-          this.dataQueue[key] = [];
+          const dataString = messageAssemble?.getJoinedMessage() ?? '';
+          messageAssemble?.clear();
+          this.messageAssembleMap.delete(key);
           const parsedData = JSON.parse(dataString);
           const newProtocol = {
             ...protocol,

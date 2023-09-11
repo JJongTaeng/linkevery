@@ -1,20 +1,58 @@
-import { HandlerMap, VOICE_MESSAGE_ID } from '../../constants/protocol';
-import { roomActions } from '../../store/features/roomSlice';
-import { store } from '../../store/store';
-// import { audioManager } from '../media/AudioManager';
-import { soundEffect } from '../media/SoundEffect';
+import type { Protocol } from '../../constants/protocol';
+import {
+  CATEGORY,
+  HandlerFunction,
+  VOICE_MESSAGE_ID,
+} from '../../constants/protocol';
+import { DispatchEvent } from '../dispatch/DispatchEvent';
+import { RTCManagerService } from '../rtc/RTCManagerService';
 import { storage } from '../storage/StorageService';
+import { store } from '../../store/store';
+import { soundEffect } from '../media/SoundEffect';
+import { roomActions } from '../../store/features/roomSlice';
+import { messageId } from '../../decorators/messageId';
+import { category } from '../../decorators/category';
+import { inject, injectable } from 'tsyringe';
+import { AudioManager } from '../media/AudioManager';
 
-export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
-  [VOICE_MESSAGE_ID.READY]: async (protocol, { dispatch, rtcManager }) => {
+interface VoiceHandlerInterface {
+  ready: HandlerFunction;
+  readyOk: HandlerFunction;
+  connected: HandlerFunction;
+  disconnect: HandlerFunction;
+}
+
+@category(CATEGORY.VOICE)
+@injectable()
+export class VoiceHandler implements VoiceHandlerInterface {
+  constructor(@inject('AudioManager') private audioManager: AudioManager) {}
+  @messageId(VOICE_MESSAGE_ID.READY)
+  ready(
+    protocol: Protocol,
+    {
+      dispatch,
+      rtcManager,
+    }: { dispatch: DispatchEvent; rtcManager: RTCManagerService },
+  ) {
     const userKey = storage.getItem('userKey');
     if (!store.getState().user.voiceStatus) {
       return;
     }
 
     dispatch.sendVoiceReadyOkMessage({ to: protocol.from, userKey });
-  },
-  [VOICE_MESSAGE_ID.READY_OK]: async (protocol, { dispatch, rtcManager }) => {
+  }
+
+  @messageId(VOICE_MESSAGE_ID.READY_OK)
+  async readyOk(
+    protocol: Protocol,
+    {
+      dispatch,
+      rtcManager,
+    }: {
+      dispatch: DispatchEvent;
+      rtcManager: RTCManagerService;
+    },
+  ) {
     const userKey = storage.getItem('userKey');
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
@@ -39,8 +77,19 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
       }),
     );
     dispatch.sendVoiceConnectedMessage({ to: from, userKey });
-  },
-  [VOICE_MESSAGE_ID.CONNECTED]: async (protocol, { dispatch, rtcManager }) => {
+  }
+
+  @messageId(VOICE_MESSAGE_ID.CONNECTED)
+  async connected(
+    protocol: Protocol,
+    {
+      dispatch,
+      rtcManager,
+    }: {
+      dispatch: DispatchEvent;
+      rtcManager: RTCManagerService;
+    },
+  ) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
       return;
@@ -66,15 +115,26 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
     if (store.getState().user.screenShareStatus) {
       dispatch.sendScreenReadyMessage({});
     }
-  },
-  [VOICE_MESSAGE_ID.DISCONNECT]: async (protocol, { dispatch, rtcManager }) => {
+  }
+
+  @messageId(VOICE_MESSAGE_ID.DISCONNECT)
+  disconnect(
+    protocol: Protocol,
+    {
+      dispatch,
+      rtcManager,
+    }: {
+      dispatch: DispatchEvent;
+      rtcManager: RTCManagerService;
+    },
+  ) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
       return;
     }
     const peer = rtcManager.getPeer(from);
     peer.removeAudioTrack();
-    // audioManager.removeAudio(from);
+    this.audioManager.removeAudio(from);
 
     soundEffect.closeVoice();
 
@@ -84,5 +144,5 @@ export const voiceHandlers: HandlerMap<VOICE_MESSAGE_ID> = {
         voiceStatus: false,
       }),
     );
-  },
-};
+  }
+}

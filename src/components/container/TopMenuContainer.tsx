@@ -1,11 +1,8 @@
 import { Tooltip, message } from 'antd';
 import Bowser from 'bowser';
-import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { App } from '../../service/app/App';
 import { mdUtils } from '../../service/media/MediaDeviceUtils';
-import { videoManager } from '../../service/media/VideoManager';
 import { storage } from '../../service/storage/StorageService';
 import { clipboard } from '../../service/utils/Clipboard';
 import { roomActions } from '../../store/features/roomSlice';
@@ -21,13 +18,18 @@ import SvgLeftIndent from '../icons/LeftIndent';
 import SvgMicOn from '../icons/MicOn';
 import SvgRightIndent from '../icons/RightIndent';
 import SvgScreenShareOn from '../icons/ScreenShareOn';
+import { useApp } from '../../hooks/useApp';
+import { useRef } from 'react';
+import { container } from 'tsyringe';
+import { VideoManager } from '../../service/media/VideoManager';
 
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const TopMenuContainer = () => {
   const navigate = useNavigate();
-  const app = useRef(App.getInstance()).current;
-
+  const [app] = useApp();
+  const videoManager = useRef(container.resolve('VideoManager'))
+    .current as VideoManager;
   const { leftMenuVisible, roomName, voiceStatus, screenShareStatus, room } =
     useAppSelector((state) => ({
       leftMenuVisible: state.status.leftMenuVisible,

@@ -1,242 +1,277 @@
+import type { ProtocolData } from '../../constants/protocol';
 import {
   CATEGORY,
   CHAT_MESSAGE_ID,
   CONNECTION_MESSAGE_ID,
-  MessageId,
+  MESSAGE_TYPE,
   NEGOTIATION_MESSAGE_ID,
   Protocol,
-  ProtocolData,
   ROOM_MESSAGE_ID,
   SCREEN_SHARE_MESSAGE_ID,
   SIGNALING_MESSAGE_ID,
   VOICE_MESSAGE_ID,
 } from '../../constants/protocol';
 import { Sender } from '../messages/Sender';
-import { rtcManager } from '../rtc/RTCManager';
 import { storage } from '../storage/StorageService';
-import { socketManager } from './../socket/SocketManager';
-import { DispatchEventService } from './DispatchEventService';
+import { inject, injectable } from 'tsyringe';
 
-@MessageSender
-export class DispatchEvent extends DispatchEventService {
-  constructor() {
-    super();
+@injectable()
+export class DispatchEvent {
+  constructor(@inject(Sender) private sender: Sender) {}
+
+  sendConnectionConnectMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.CONNECTION,
+      messageId: CONNECTION_MESSAGE_ID.CONNECT,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
   }
 
-  @SocketMessage({
-    category: CATEGORY.CONNECTION,
-    messageId: CONNECTION_MESSAGE_ID.CONNECT,
-  })
-  sendConnectionConnectMessage(data: ProtocolData) {}
+  sendConnectionJoinRoomMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.CONNECTION,
+      messageId: CONNECTION_MESSAGE_ID.JOIN_ROOM,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.CONNECTION,
-    messageId: CONNECTION_MESSAGE_ID.JOIN_ROOM,
-  })
-  sendConnectionJoinRoomMessage(data: ProtocolData) {}
+  sendConnectionDisconnectMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.CONNECTION,
+      messageId: CONNECTION_MESSAGE_ID.DISCONNECT,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.CONNECTION,
-    messageId: CONNECTION_MESSAGE_ID.DISCONNECT,
-  })
-  sendConnectionDisconnectMessage(data: ProtocolData) {}
+  sendSignalingStartMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SIGNALING,
+      messageId: SIGNALING_MESSAGE_ID.START,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.SIGNALING,
-    messageId: SIGNALING_MESSAGE_ID.START,
-  })
-  sendSignalingStartMessage(data: ProtocolData) {}
+  sendSignalingOfferMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SIGNALING,
+      messageId: SIGNALING_MESSAGE_ID.OFFER,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.SIGNALING,
-    messageId: SIGNALING_MESSAGE_ID.OFFER,
-  })
-  sendSignalingOfferMessage(data: ProtocolData) {}
+  sendSignalingAnswerMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SIGNALING,
+      messageId: SIGNALING_MESSAGE_ID.ANSWER,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.SIGNALING,
-    messageId: SIGNALING_MESSAGE_ID.ANSWER,
-  })
-  sendSignalingAnswerMessage(data: ProtocolData) {}
+  sendSignalingIceMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SIGNALING,
+      messageId: SIGNALING_MESSAGE_ID.ICE,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.SIGNALING,
-    messageId: SIGNALING_MESSAGE_ID.ICE,
-  })
-  sendSignalingIceMessage(data: ProtocolData) {}
+  sendSignalingCreateDataChannelMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SIGNALING,
+      messageId: SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.SIGNALING,
-    messageId: SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL,
-  })
-  sendSignalingCreateDataChannelMessage(data: ProtocolData) {}
+  sendSignalingConnectDataChannelMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SIGNALING,
+      messageId: SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.SIGNALING,
-    messageId: SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL,
-  })
-  sendSignalingConnectDataChannelMessage(data: ProtocolData) {}
+  sendSignalingEndMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SIGNALING,
+      messageId: SIGNALING_MESSAGE_ID.END,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.SIGNALING,
-    messageId: SIGNALING_MESSAGE_ID.END,
-  })
-  sendSignalingEndMessage(data: ProtocolData) {}
+  sendSignalingEndOkMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SIGNALING,
+      messageId: SIGNALING_MESSAGE_ID.END_OK,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.SIGNALING,
-    messageId: SIGNALING_MESSAGE_ID.END_OK,
-  })
-  sendSignalingEndOkMessage(data: ProtocolData) {}
+  sendChatSendMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.CHAT,
+      messageId: CHAT_MESSAGE_ID.SEND,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.CHAT,
-    messageId: CHAT_MESSAGE_ID.SEND,
-  })
-  sendChatSendMessage(data: ProtocolData) {}
+  sendChatOkMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.CHAT,
+      messageId: CHAT_MESSAGE_ID.OK,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.CHAT,
-    messageId: CHAT_MESSAGE_ID.OK,
-  })
-  sendChatOkMessage(data: ProtocolData) {}
+  sendRoomMemberNamePreMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.ROOM,
+      messageId: ROOM_MESSAGE_ID.MEMBER_NAME_PRE,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.ROOM,
-    messageId: ROOM_MESSAGE_ID.MEMBER_NAME_PRE,
-  })
-  sendRoomMemberNamePreMessage(data: ProtocolData) {}
+  sendRoomMemberNameMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.ROOM,
+      messageId: ROOM_MESSAGE_ID.MEMBER_NAME,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.ROOM,
-    messageId: ROOM_MESSAGE_ID.MEMBER_NAME,
-  })
-  sendRoomMemberNameMessage(data: ProtocolData) {}
+  sendRoomMemberNamePostMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.ROOM,
+      messageId: ROOM_MESSAGE_ID.MEMBER_NAME_POST,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.ROOM,
-    messageId: ROOM_MESSAGE_ID.MEMBER_NAME_POST,
-  })
-  sendRoomMemberNamePostMessage(data: ProtocolData) {}
+  sendRoomSyncChatListMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.ROOM,
+      messageId: ROOM_MESSAGE_ID.SYNC_CHAT_LIST,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.ROOM,
-    messageId: ROOM_MESSAGE_ID.SYNC_CHAT_LIST,
-  })
-  sendRoomSyncChatListMessage(data: ProtocolData) {}
+  sendRoomSyncChatListOkMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.ROOM,
+      messageId: ROOM_MESSAGE_ID.SYNC_CHAT_LIST_OK,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.ROOM,
-    messageId: ROOM_MESSAGE_ID.SYNC_CHAT_LIST_OK,
-  })
-  sendRoomSyncChatListOkMessage(data: ProtocolData) {}
+  sendVoiceReadyMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.VOICE,
+      messageId: VOICE_MESSAGE_ID.READY,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.VOICE,
-    messageId: VOICE_MESSAGE_ID.READY,
-  })
-  sendVoiceReadyMessage(data: ProtocolData) {}
+  sendVoiceReadyOkMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.VOICE,
+      messageId: VOICE_MESSAGE_ID.READY_OK,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.VOICE,
-    messageId: VOICE_MESSAGE_ID.READY_OK,
-  })
-  sendVoiceReadyOkMessage(data: ProtocolData) {}
+  sendVoiceConnectedMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.VOICE,
+      messageId: VOICE_MESSAGE_ID.CONNECTED,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.VOICE,
-    messageId: VOICE_MESSAGE_ID.CONNECTED,
-  })
-  sendVoiceConnectedMessage(data: ProtocolData) {}
+  sendVoiceDisconnectMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.VOICE,
+      messageId: VOICE_MESSAGE_ID.DISCONNECT,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.VOICE,
-    messageId: VOICE_MESSAGE_ID.DISCONNECT,
-  })
-  sendVoiceDisconnectMessage(data: ProtocolData) {}
+  sendScreenReadyMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SCREEN,
+      messageId: SCREEN_SHARE_MESSAGE_ID.READY,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
+  sendScreenReadyOkMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SCREEN,
+      messageId: SCREEN_SHARE_MESSAGE_ID.READY_OK,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.SCREEN,
-    messageId: SCREEN_SHARE_MESSAGE_ID.READY,
-  })
-  sendScreenReadyMessage(data: ProtocolData) {}
+  sendScreenConnectedMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SCREEN,
+      messageId: SCREEN_SHARE_MESSAGE_ID.CONNECTED,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.SCREEN,
-    messageId: SCREEN_SHARE_MESSAGE_ID.READY_OK,
-  })
-  sendScreenReadyOkMessage(data: ProtocolData) {}
+  sendScreenDisconnectMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.SCREEN,
+      messageId: SCREEN_SHARE_MESSAGE_ID.DISCONNECT,
+      messageType: MESSAGE_TYPE.RTC,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.SCREEN,
-    messageId: SCREEN_SHARE_MESSAGE_ID.CONNECTED,
-  })
-  sendScreenConnectedMessage(data: ProtocolData) {}
+  sendNegotiationOfferMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.NEGOTIATION,
+      messageId: NEGOTIATION_MESSAGE_ID.OFFER,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @RTCMessage({
-    category: CATEGORY.SCREEN,
-    messageId: SCREEN_SHARE_MESSAGE_ID.DISCONNECT,
-  })
-  sendScreenDisconnectMessage(data: ProtocolData) {}
+  sendNegotiationAnswerMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.NEGOTIATION,
+      messageId: NEGOTIATION_MESSAGE_ID.ANSWER,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
 
-  @SocketMessage({
-    category: CATEGORY.NEGOTIATION,
-    messageId: NEGOTIATION_MESSAGE_ID.OFFER,
-  })
-  sendNegotiationOfferMessage(data: ProtocolData) {}
-
-  @SocketMessage({
-    category: CATEGORY.NEGOTIATION,
-    messageId: NEGOTIATION_MESSAGE_ID.ANSWER,
-  })
-  sendNegotiationAnswerMessage(data: ProtocolData) {}
-}
-
-function RTCMessage({
-  category,
-  messageId,
-}: {
-  category: CATEGORY;
-  messageId: MessageId;
-}) {
-  return function (target: any, key: string, desc: PropertyDescriptor): void {
-    desc.value = function (data: any) {
-      const clientId = storage.getItem('clientId');
-      target.send({
-        category,
-        messageId,
-        data,
-        messageType: 'RTC',
-        from: clientId,
-      });
-    };
-  };
-}
-
-function SocketMessage({
-  category,
-  messageId,
-}: {
-  category: CATEGORY;
-  messageId: MessageId;
-}) {
-  return function (target: any, key: string, desc: PropertyDescriptor): void {
-    desc.value = function (data: any) {
-      const clientId = storage.getItem('clientId');
-      target.send({
-        category,
-        messageId,
-        data,
-        messageType: 'SOCKET',
-        from: clientId,
-      });
-    };
-  };
-}
-
-function MessageSender<T extends { new (...args: any[]): {} }>(constructor: T) {
-  constructor.prototype.send = (protocol: Protocol) => {
-    const sender = new Sender(socketManager, rtcManager);
-    sender.send(protocol);
-  };
+  send(protocol: Omit<Protocol, 'from'>) {
+    const clientId = storage.getItem('clientId');
+    this.sender.send({ ...protocol, from: clientId });
+  }
 }

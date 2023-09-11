@@ -4,8 +4,9 @@ import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { store } from '../../store/store';
 import { App } from '../app/App';
-import { videoManager } from '../media/VideoManager';
+// import { videoManager } from '../media/VideoManager';
 import { storage } from '../storage/StorageService';
+import { container } from 'tsyringe';
 
 export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
   [SCREEN_SHARE_MESSAGE_ID.READY]: async (
@@ -31,17 +32,19 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
       if (member[key].voiceStatus) voiceMember.push(member[key].clientId);
     }
     try {
-      let mediaStream = App.getInstance().screenMediaStream;
+      const app = container.resolve(App);
+
+      let mediaStream = app.screenMediaStream;
       if (!mediaStream) {
         mediaStream = await navigator.mediaDevices.getDisplayMedia({
           video: true,
           audio: false,
         });
-        App.getInstance().screenMediaStream = mediaStream;
+        app.screenMediaStream = mediaStream;
       }
 
       for (const clientId of voiceMember) {
-        mediaStream?.getTracks().forEach((track) => {
+        mediaStream?.getTracks().forEach((track: any) => {
           const peer = rtcManager.getPeer(clientId);
           peer.addTrack(track, mediaStream!);
         });
@@ -74,6 +77,6 @@ export const screenShareHandlers: HandlerMap<SCREEN_SHARE_MESSAGE_ID> = {
         screenShareStatus: false,
       }),
     );
-    videoManager.clearVideo(from);
+    // videoManager.clearVideo(from);
   },
 };

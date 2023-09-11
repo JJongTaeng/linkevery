@@ -1,3 +1,4 @@
+import { SendOutlined } from '@ant-design/icons';
 import { Button, Divider } from 'antd';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
@@ -18,17 +19,19 @@ import { deleteAllMemberByDB, getRoomByDB } from '../../store/thunk/roomThunk';
 import { getUserByDB } from '../../store/thunk/userThunk';
 import { PAGE_OFFSET } from '../../style/constants';
 import ChatBubble from '../chat/ChatBubble';
+import FileUpload from '../chat/FileUpload';
 import SvgArrowDown from '../icons/ArrowDown';
-import SvgSend from '../icons/Send';
 import UsernameModal from './UsernameModal';
+import { useApp } from '../../hooks/useApp';
 
 const Room = () => {
+  const [app] = useApp();
   const {
     state,
-    setIsFullScreen,
     setPage,
     setUsernameModalVisible,
     setChatMessage,
+    sendChatMessage,
     handleVisibleScrollButton,
     handleViewportResize,
     handleChatKeydown,
@@ -38,8 +41,6 @@ const Room = () => {
     moveToChatScrollBottom,
     elements: { chatListElement, chatLoadingTriggerElement, focusInput },
   } = useRoom();
-
-  const app = useRef(App.getInstance()).current;
 
   const { roomName } = useParams<{
     roomName: string;
@@ -193,6 +194,7 @@ const Room = () => {
             </ChatList>
             {state.isVisibleScrollButton && (
               <Button
+                className={'scroll-down-button'}
                 style={{ marginBottom: 8 }}
                 onClick={() => {
                   moveToChatScrollBottom();
@@ -202,7 +204,7 @@ const Room = () => {
                 <SvgArrowDown />
               </Button>
             )}
-            <ChatForm autoComplete="off" onSubmit={handleChatSubmit}>
+            <ChatForm autoComplete="off" onSubmit={(e) => handleChatSubmit(e)}>
               <div className="form-header">
                 <textarea
                   value={state.chatMessage}
@@ -226,9 +228,25 @@ const Room = () => {
               </div>
 
               <div className="form-footer">
-                <button type="submit">
-                  <SvgSend />
-                </button>
+                <FormControllerWrapper>
+                  <FileUpload
+                    onFileChange={(file) => {
+                      console.log(file);
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        sendChatMessage('image', reader.result as string);
+                      };
+                      reader.readAsDataURL(file as any);
+                    }}
+                  />
+                </FormControllerWrapper>
+                <div>
+                  <Button
+                    shape="circle"
+                    icon={<SendOutlined rev={undefined} />}
+                    htmlType="submit"
+                  ></Button>
+                </div>
               </div>
             </ChatForm>
           </ChatContainer>
@@ -261,7 +279,7 @@ const ChatContainer = styled.div`
 
   position: relative;
 
-  .ant-btn {
+  .scroll-down-button {
     position: absolute;
     left: calc(50% - 16px);
     bottom: 110px;
@@ -320,6 +338,10 @@ const ChatList = styled.div`
   }
 `;
 
+const FormControllerWrapper = styled.div`
+  display: flex;
+`;
+
 const ChatForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -352,41 +374,19 @@ const ChatForm = styled.form`
   textarea::placeholder {
   }
 
-  button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    border: 0;
-    svg {
-      width: 24px;
-      height: 24px;
-    }
-  }
-  button:disabled {
-    cursor: default;
-    svg {
-      path {
-        stroke: ${({ theme }) => theme.color.primary400};
-      }
-    }
-  }
-
   .form-header {
     height: 40px;
   }
 
   .form-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     height: 100%;
     background-color: ${({ theme }) => theme.color.grey800};
     border-bottom-right-radius: 8px;
     border-bottom-left-radius: 8px;
-    button {
-      background-color: ${({ theme }) => theme.color.grey800};
-    }
+    padding: 0 8px;
   }
 `;
 

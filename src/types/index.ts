@@ -11,3 +11,6 @@ export interface ReducerActionType<T, S> {
   type: T;
   payload: Partial<S>;
 }
+export interface Event<T = EventTarget> {
+  target: T;
+}

@@ -11,11 +11,12 @@ import { mediaSize } from '../../style/theme';
 import CreateRoomModal from '../room/CreateRoomModal';
 import MemberListContainer from '../room/MemberListContainer';
 import RoomBadge from '../room/RoomBadge';
+import { useApp } from '../../hooks/useApp';
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
+  const [app] = useApp();
   const [roomCreateModalVisible, setRoomCreateModalVisible] = useState(false);
-  const app = useRef(App.getInstance()).current;
   const dispatch = useAppDispatch();
   const {
     roomName: currentRoomName,
