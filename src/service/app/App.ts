@@ -15,7 +15,7 @@ export class App {
   constructor(
     @inject(DispatchEvent) private _dispatch: DispatchEvent,
     @inject(RTCManager) private _rtcManager: RTCManagerService,
-    @inject('AudioManager') private audioManager: AudioManager,
+    @inject(AudioManager) private audioManager: AudioManager,
   ) {}
 
   get dispatch() {

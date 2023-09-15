@@ -14,12 +14,12 @@ import { SoundEffect } from './service/media/SoundEffect';
 
 export const initContainer = () => {
   container.register(
-    'AudioManager',
+    AudioManager,
     { useClass: AudioManager },
     { lifecycle: Lifecycle.Singleton },
   );
   container.register(
-    'VideoManager',
+    VideoManager,
     { useClass: VideoManager },
     { lifecycle: Lifecycle.Singleton },
   );

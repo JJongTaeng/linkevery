@@ -24,7 +24,7 @@ interface VoiceHandlerInterface {
 @injectable()
 export class VoiceHandler implements VoiceHandlerInterface {
   constructor(
-    @inject('AudioManager') private audioManager: AudioManager,
+    @inject(AudioManager) private audioManager: AudioManager,
     @inject(SoundEffect) private soundEffect: SoundEffect,
   ) {}
   @messageId(VOICE_MESSAGE_ID.READY)

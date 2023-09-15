@@ -17,9 +17,9 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
     myName: state.user.username,
     room: state.room.current,
   }));
-  const audioManager = useRef(container.resolve('AudioManager'))
+  const audioManager = useRef(container.resolve(AudioManager))
     .current as AudioManager;
-  const videoManager = useRef(container.resolve('VideoManager'))
+  const videoManager = useRef(container.resolve(VideoManager))
     .current as VideoManager;
 
   const onChangeVolume = (id: string, volume: number) => {

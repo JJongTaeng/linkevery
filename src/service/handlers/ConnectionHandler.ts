@@ -27,8 +27,8 @@ interface ConnectionHandlerInterface {
 @injectable()
 export class ConnectionHandler implements ConnectionHandlerInterface {
   constructor(
-    @inject('AudioManager') private audioManager: AudioManager,
-    @inject('VideoManager') private videoManager: VideoManager,
+    @inject(AudioManager) private audioManager: AudioManager,
+    @inject(VideoManager) private videoManager: VideoManager,
   ) {}
   @messageId(CONNECTION_MESSAGE_ID.CONNECT)
   connect(

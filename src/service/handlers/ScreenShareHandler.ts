@@ -27,7 +27,7 @@ interface ScreenShareHandlerInterface {
 @category(CATEGORY.SCREEN)
 @injectable()
 export class ScreenShareHandler implements ScreenShareHandlerInterface {
-  constructor(@inject('VideoManager') private videoManager: VideoManager) {}
+  constructor(@inject(VideoManager) private videoManager: VideoManager) {}
   @messageId(SCREEN_SHARE_MESSAGE_ID.READY)
   ready(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
     if (!store.getState().user.voiceStatus) {

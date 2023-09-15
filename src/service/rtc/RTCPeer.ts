@@ -16,8 +16,8 @@ export class RTCPeer extends RTCPeerService {
   private audioSender?: RTCRtpSender;
 
   constructor(
-    @inject('AudioManager') private audioManager: AudioManager,
-    @inject('VideoManager') private videoManager: VideoManager,
+    @inject(AudioManager) private audioManager: AudioManager,
+    @inject(VideoManager) private videoManager: VideoManager,
   ) {
     super();
   }

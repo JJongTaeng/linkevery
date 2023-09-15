@@ -28,7 +28,7 @@ const agentInfo = Bowser.parse(window.navigator.userAgent);
 const TopMenuContainer = () => {
   const navigate = useNavigate();
   const [app] = useApp();
-  const videoManager = useRef(container.resolve('VideoManager'))
+  const videoManager = useRef(container.resolve(VideoManager))
     .current as VideoManager;
   const { leftMenuVisible, roomName, voiceStatus, screenShareStatus, room } =
     useAppSelector((state) => ({
