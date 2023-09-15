@@ -101,16 +101,7 @@ export interface Protocol {
 }
 
 export type HandlerMap<T extends string | number | symbol> = {
-  [key in T]: (
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
-  ) => void;
+  [key in T]: (protocol: Protocol) => void;
 };
 
 export type HandlerParameter = {

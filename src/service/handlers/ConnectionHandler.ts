@@ -1,13 +1,8 @@
 import { category } from '../../decorators/category';
-import type {
-  HandlerFunction,
-  Protocol,
-  HandlerParameter,
-} from '../../constants/protocol';
+import type { Protocol } from '../../constants/protocol';
 import { CATEGORY, CONNECTION_MESSAGE_ID } from '../../constants/protocol';
 import { messageId } from '../../decorators/messageId';
 import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { RTCManagerService } from '../rtc/RTCManagerService';
 import { storage } from '../storage/StorageService';
 import { utils } from '../utils/Utils';
 import { store } from '../../store/store';
@@ -16,46 +11,34 @@ import { deleteMemberByDB } from '../../store/thunk/roomThunk';
 import { inject, injectable } from 'tsyringe';
 import { AudioManager } from '../media/AudioManager';
 import { VideoManager } from '../media/VideoManager';
-
-interface ConnectionHandlerInterface {
-  connect: HandlerFunction;
-  joinRoom: HandlerFunction;
-  disconnect: HandlerFunction;
-}
+import { RTCManager } from '../rtc/RTCManager';
 
 @category(CATEGORY.CONNECTION)
 @injectable()
-export class ConnectionHandler implements ConnectionHandlerInterface {
+export class ConnectionHandler {
   constructor(
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(VideoManager) private videoManager: VideoManager,
+    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(CONNECTION_MESSAGE_ID.CONNECT)
-  connect(
-    protocol: Protocol,
-    { dispatch, rtcManager }: HandlerParameter,
-  ): void {
+  connect(protocol: Protocol): void {
     const { clientId } = protocol.data;
     storage.setItem('clientId', clientId);
   }
 
   @messageId(CONNECTION_MESSAGE_ID.JOIN_ROOM)
-  joinRoom(
-    protocol: Protocol,
-    { dispatch, rtcManager }: HandlerParameter,
-  ): void {
+  joinRoom(protocol: Protocol): void {
     const { roomName } = protocol.data;
-    dispatch.sendSignalingStartMessage({
+    this.dispatch.sendSignalingStartMessage({
       roomName,
       to: protocol.from,
     });
   }
 
   @messageId(CONNECTION_MESSAGE_ID.DISCONNECT)
-  disconnect(
-    protocol: Protocol,
-    { dispatch, rtcManager }: HandlerParameter,
-  ): void {
+  disconnect(protocol: Protocol): void {
     const { from } = protocol;
     const { roomName } = storage.getAll();
     const userKey = utils.getUserKeyByClientId(from) || '';
@@ -64,7 +47,7 @@ export class ConnectionHandler implements ConnectionHandlerInterface {
     this.audioManager.removeAudio(from);
     this.videoManager.clearVideo(from);
     try {
-      rtcManager.removePeer(from);
+      this.rtcManager.removePeer(from);
     } catch (e) {}
   }
 }

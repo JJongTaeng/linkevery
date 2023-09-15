@@ -12,36 +12,30 @@ import { category } from '../../decorators/category';
 import { inject, injectable } from 'tsyringe';
 import { AudioManager } from '../media/AudioManager';
 import { SoundEffect } from '../media/SoundEffect';
-
-interface VoiceHandlerInterface {
-  ready: HandlerFunction;
-  readyOk: HandlerFunction;
-  connected: HandlerFunction;
-  disconnect: HandlerFunction;
-}
+import { DispatchEvent } from '../dispatch/DispatchEvent';
+import { RTCManager } from '../rtc/RTCManager';
 
 @category(CATEGORY.VOICE)
 @injectable()
-export class VoiceHandler implements VoiceHandlerInterface {
+export class VoiceHandler {
   constructor(
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(SoundEffect) private soundEffect: SoundEffect,
+    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(VOICE_MESSAGE_ID.READY)
-  ready(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
+  ready(protocol: Protocol) {
     const userKey = storage.getItem('userKey');
     if (!store.getState().user.voiceStatus) {
       return;
     }
 
-    dispatch.sendVoiceReadyOkMessage({ to: protocol.from, userKey });
+    this.dispatch.sendVoiceReadyOkMessage({ to: protocol.from, userKey });
   }
 
   @messageId(VOICE_MESSAGE_ID.READY_OK)
-  async readyOk(
-    protocol: Protocol,
-    { dispatch, rtcManager }: HandlerParameter,
-  ) {
+  async readyOk(protocol: Protocol) {
     const userKey = storage.getItem('userKey');
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
@@ -53,7 +47,7 @@ export class VoiceHandler implements VoiceHandlerInterface {
       audio: { echoCancellation: true, noiseSuppression: true },
     });
     mediaStream?.getTracks().forEach((track) => {
-      const peer = rtcManager.getPeer(from);
+      const peer = this.rtcManager.getPeer(from);
       peer.addTrack(track, mediaStream);
     });
 
@@ -65,14 +59,11 @@ export class VoiceHandler implements VoiceHandlerInterface {
         userKey: protocol.data.userKey,
       }),
     );
-    dispatch.sendVoiceConnectedMessage({ to: from, userKey });
+    this.dispatch.sendVoiceConnectedMessage({ to: from, userKey });
   }
 
   @messageId(VOICE_MESSAGE_ID.CONNECTED)
-  async connected(
-    protocol: Protocol,
-    { dispatch, rtcManager }: HandlerParameter,
-  ) {
+  async connected(protocol: Protocol) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
       return;
@@ -83,7 +74,7 @@ export class VoiceHandler implements VoiceHandlerInterface {
       audio: { echoCancellation: true, noiseSuppression: true },
     });
     mediaStream?.getTracks().forEach((track) => {
-      const peer = rtcManager.getPeer(from);
+      const peer = this.rtcManager.getPeer(from);
       peer.addTrack(track, mediaStream);
     });
 
@@ -96,17 +87,17 @@ export class VoiceHandler implements VoiceHandlerInterface {
       }),
     );
     if (store.getState().user.screenShareStatus) {
-      dispatch.sendScreenReadyMessage({});
+      this.dispatch.sendScreenReadyMessage({});
     }
   }
 
   @messageId(VOICE_MESSAGE_ID.DISCONNECT)
-  disconnect(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
+  disconnect(protocol: Protocol) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
       return;
     }
-    const peer = rtcManager.getPeer(from);
+    const peer = this.rtcManager.getPeer(from);
     peer.removeAudioTrack();
     this.audioManager.removeAudio(from);
 

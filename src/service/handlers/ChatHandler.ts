@@ -12,16 +12,18 @@ import { store } from '../../store/store';
 import { chatActions } from '../../store/features/chatSlice';
 import { addChatByDB } from '../../store/thunk/chatThunk';
 import { storage } from '../storage/StorageService';
-
-interface ChatHandlerInterface {
-  send: HandlerFunction;
-  ok: HandlerFunction;
-}
+import { inject, delay, injectable } from 'tsyringe';
+import { RTCManager } from '../rtc/RTCManager';
 
 @category(CATEGORY.CHAT)
-export class ChatHandler implements ChatHandlerInterface {
+@injectable()
+export class ChatHandler {
+  constructor(
+    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    @inject(RTCManager) private rtcManager: RTCManager,
+  ) {}
   @messageId(CHAT_MESSAGE_ID.SEND)
-  send(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
+  send(protocol: Protocol) {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
     const chatInfo = {
@@ -34,7 +36,7 @@ export class ChatHandler implements ChatHandlerInterface {
     };
 
     store.dispatch(chatActions.addChat(chatInfo));
-    dispatch.sendChatOkMessage(chatInfo);
+    this.dispatch.sendChatOkMessage(chatInfo);
     store.dispatch(
       addChatByDB({
         ...chatInfo,

@@ -1,9 +1,5 @@
-import type { Protocol, HandlerParameter } from '../../constants/protocol';
-import {
-  CATEGORY,
-  HandlerFunction,
-  ROOM_MESSAGE_ID,
-} from '../../constants/protocol';
+import type { Protocol } from '../../constants/protocol';
+import { CATEGORY, ROOM_MESSAGE_ID } from '../../constants/protocol';
 import { category } from '../../decorators/category';
 import { messageId } from '../../decorators/messageId';
 import { storage } from '../storage/StorageService';
@@ -12,25 +8,23 @@ import { roomActions } from '../../store/features/roomSlice';
 import { updateMemberByDB } from '../../store/thunk/roomThunk';
 import { query } from '../db/Query';
 import { Message } from '../db/LinkeveryDB';
-
-interface RoomHandlerInterface {
-  memberNamePre: HandlerFunction;
-  memberName: HandlerFunction;
-  memberNamePost: HandlerFunction;
-  syncChatList: HandlerFunction;
-  syncChatListOk: HandlerFunction;
-}
+import { inject, injectable } from 'tsyringe';
+import { DispatchEvent } from '../dispatch/DispatchEvent';
+import { RTCManager } from '../rtc/RTCManager';
 
 @category(CATEGORY.ROOM)
-export class RoomHandler implements RoomHandlerInterface {
+@injectable()
+export class RoomHandler {
+  constructor(
+    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    @inject(RTCManager) private rtcManager: RTCManager,
+  ) {}
+
   @messageId(ROOM_MESSAGE_ID.MEMBER_NAME_PRE)
-  memberNamePre(
-    protocol: Protocol,
-    { dispatch, rtcManager }: HandlerParameter,
-  ) {
+  memberNamePre(protocol: Protocol) {
     const username = storage.getItem('username');
     const userKey = storage.getItem('userKey');
-    dispatch.sendRoomMemberNameMessage({
+    this.dispatch.sendRoomMemberNameMessage({
       username,
       to: protocol.from,
       userKey,
@@ -38,7 +32,7 @@ export class RoomHandler implements RoomHandlerInterface {
   }
 
   @messageId(ROOM_MESSAGE_ID.MEMBER_NAME)
-  memberName(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
+  memberName(protocol: Protocol) {
     const { username, userKey, roomName } = storage.getAll();
 
     store.dispatch(
@@ -55,7 +49,7 @@ export class RoomHandler implements RoomHandlerInterface {
         member: store.getState().room.current.member,
       }),
     );
-    dispatch.sendRoomMemberNamePostMessage({
+    this.dispatch.sendRoomMemberNamePostMessage({
       username,
       to: protocol.from,
       userKey,
@@ -63,10 +57,7 @@ export class RoomHandler implements RoomHandlerInterface {
   }
 
   @messageId(ROOM_MESSAGE_ID.MEMBER_NAME_POST)
-  async memberNamePost(
-    protocol: Protocol,
-    { dispatch, rtcManager }: HandlerParameter,
-  ) {
+  async memberNamePost(protocol: Protocol) {
     const roomName = storage.getItem('roomName');
 
     store.dispatch(
@@ -86,17 +77,14 @@ export class RoomHandler implements RoomHandlerInterface {
 
     const messageList = await query.getMessageList(roomName);
 
-    dispatch.sendRoomSyncChatListMessage({
+    this.dispatch.sendRoomSyncChatListMessage({
       messageList,
       to: protocol.from,
     });
   }
 
   @messageId(ROOM_MESSAGE_ID.SYNC_CHAT_LIST)
-  async syncChatList(
-    protocol: Protocol,
-    { dispatch, rtcManager }: HandlerParameter,
-  ) {
+  async syncChatList(protocol: Protocol) {
     const roomName = storage.getItem('roomName');
 
     const { messageList } = protocol.data;
@@ -116,17 +104,14 @@ export class RoomHandler implements RoomHandlerInterface {
     }
 
     const myMessageList = await query.getMessageList(roomName);
-    dispatch.sendRoomSyncChatListOkMessage({
+    this.dispatch.sendRoomSyncChatListOkMessage({
       messageList: myMessageList,
       to: protocol.from,
     });
   }
 
   @messageId(ROOM_MESSAGE_ID.SYNC_CHAT_LIST_OK)
-  async syncChatListOk(
-    protocol: Protocol,
-    { dispatch, rtcManager }: HandlerParameter,
-  ) {
+  async syncChatListOk(protocol: Protocol) {
     const { messageList } = protocol.data;
 
     if (messageList.length) {

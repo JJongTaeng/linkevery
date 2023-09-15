@@ -69,10 +69,7 @@ export class HandlerManagerV2 implements HandlerManagerInterface {
         );
       }
       try {
-        handler(protocol, {
-          dispatch: this.dispatch,
-          rtcManager: this.rtcManager,
-        });
+        handler(protocol);
         console.debug('%c[receive] ', 'color:blue;font-weight:bold;', protocol);
       } catch (e) {
         console.debug('%c[Error] ', 'color:red;font-weight:bold;', protocol);
@@ -103,10 +100,7 @@ export class HandlerManagerV2 implements HandlerManagerInterface {
             if (!handler) {
               throw new Error(ERROR_TYPE.FAILED_SEND_OFFER);
             }
-            handler(newProtocol, {
-              dispatch: this.dispatch,
-              rtcManager: this.rtcManager,
-            });
+            handler(newProtocol);
 
             console.debug(
               '%c[receive] ',

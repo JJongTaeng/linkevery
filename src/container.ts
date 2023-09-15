@@ -11,6 +11,8 @@ import { ScreenShareHandler } from './service/handlers/ScreenShareHandler';
 import { AudioManager } from './service/media/AudioManager';
 import { VideoManager } from './service/media/VideoManager';
 import { SoundEffect } from './service/media/SoundEffect';
+import { RTCManager } from './service/rtc/RTCManager';
+import { DispatchEvent } from './service/dispatch/DispatchEvent';
 
 export const initContainer = () => {
   container.register(
@@ -24,6 +26,14 @@ export const initContainer = () => {
     { lifecycle: Lifecycle.Singleton },
   );
   container.register(SoundEffect, { useClass: SoundEffect });
+  container.register(
+    RTCManager,
+    { useClass: RTCManager },
+    { lifecycle: Lifecycle.Singleton },
+  );
+  container.register(DispatchEvent, {
+    useClass: DispatchEvent,
+  });
 
   container.register('Handler', { useClass: ConnectionHandler });
   container.register('Handler', { useClass: SignalingHandler });
