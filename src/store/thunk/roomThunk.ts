@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Member, Message, Room } from '../../service/db/LinkeveryDB';
-import { query } from '../../service/db/Query';
+import { Member, Message, Room } from 'service/db/LinkeveryDB';
+import { query } from 'service/db/Query';
 
 export const getRoomByDB = createAsyncThunk(
   'db/getRoom',

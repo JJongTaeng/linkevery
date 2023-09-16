@@ -1,19 +1,15 @@
-import type { HandlerParameter, Protocol } from '../../constants/protocol';
-import {
-  CATEGORY,
-  HandlerFunction,
-  VOICE_MESSAGE_ID,
-} from '../../constants/protocol';
-import { storage } from '../storage/StorageService';
-import { store } from '../../store/store';
-import { roomActions } from '../../store/features/roomSlice';
-import { messageId } from '../../decorators/messageId';
-import { category } from '../../decorators/category';
+import type { Protocol } from 'constants/protocol';
+import { CATEGORY, VOICE_MESSAGE_ID } from 'constants/protocol';
+import { storage } from 'service/storage/StorageService';
+import { store } from 'store/store';
+import { roomActions } from 'store/features/roomSlice';
+import { messageId } from 'decorators/messageId';
+import { category } from 'decorators/category';
 import { inject, injectable } from 'tsyringe';
-import { AudioManager } from '../media/AudioManager';
-import { SoundEffect } from '../media/SoundEffect';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { RTCManager } from '../rtc/RTCManager';
+import { AudioManager } from 'service/media/AudioManager';
+import { SoundEffect } from 'service/media/SoundEffect';
+import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { RTCManager } from 'service/rtc/RTCManager';
 
 @category(CATEGORY.VOICE)
 @injectable()

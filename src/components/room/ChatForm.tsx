@@ -1,9 +1,9 @@
 import React from 'react';
-import FileUpload from '../chat/FileUpload';
+import FileUpload from 'components/chat/FileUpload';
 import { Button } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import { useRoom } from '../../hooks/room/useRoom';
+import { useRoom } from 'hooks/room/useRoom';
 
 const ChatForm = () => {
   const {

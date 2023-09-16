@@ -1,5 +1,5 @@
-import voiceOff from '../../assets/voiceOff.mp3';
-import voiceOn from '../../assets/voiceOn.mp3';
+import voiceOff from 'assets/voiceOff.mp3';
+import voiceOn from 'assets/voiceOn.mp3';
 
 export class SoundEffect {
   private voiceOn = new Audio(voiceOn);

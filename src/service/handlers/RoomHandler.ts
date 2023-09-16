@@ -1,16 +1,16 @@
-import type { Protocol } from '../../constants/protocol';
-import { CATEGORY, ROOM_MESSAGE_ID } from '../../constants/protocol';
-import { category } from '../../decorators/category';
-import { messageId } from '../../decorators/messageId';
-import { storage } from '../storage/StorageService';
-import { store } from '../../store/store';
-import { roomActions } from '../../store/features/roomSlice';
-import { updateMemberByDB } from '../../store/thunk/roomThunk';
-import { query } from '../db/Query';
-import { Message } from '../db/LinkeveryDB';
+import type { Protocol } from 'constants/protocol';
+import { CATEGORY, ROOM_MESSAGE_ID } from 'constants/protocol';
+import { category } from 'decorators/category';
+import { messageId } from 'decorators/messageId';
+import { storage } from 'service/storage/StorageService';
+import { store } from 'store/store';
+import { roomActions } from 'store/features/roomSlice';
+import { updateMemberByDB } from 'store/thunk/roomThunk';
+import { query } from 'service/db/Query';
+import { Message } from 'service/db/LinkeveryDB';
 import { inject, injectable } from 'tsyringe';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { RTCManager } from '../rtc/RTCManager';
+import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { RTCManager } from 'service/rtc/RTCManager';
 
 @category(CATEGORY.ROOM)
 @injectable()

@@ -1,10 +1,10 @@
-import { Protocol } from '../../constants/protocol';
-import { ERROR_TYPE } from '../../error/error';
-import { VideoManager } from '../media/VideoManager';
+import { Protocol } from 'constants/protocol';
+import { ERROR_TYPE } from 'error/error';
+import { VideoManager } from 'service/media/VideoManager';
 import { config } from './RTCManager';
 import { RTCPeerService, SdpType } from './RTCPeerService';
 import { inject, injectable } from 'tsyringe';
-import { AudioManager } from '../media/AudioManager';
+import { AudioManager } from 'service/media/AudioManager';
 
 @injectable()
 export class RTCPeer extends RTCPeerService {

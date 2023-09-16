@@ -2,13 +2,13 @@ import { Button, Card, Popover, Slider } from 'antd';
 import { nanoid } from 'nanoid';
 import { useRef } from 'react';
 import styled from 'styled-components';
-import { useAppSelector } from '../../store/hooks';
-import { highlight } from '../../style';
-import SvgScreenShareOn from '../icons/ScreenShareOn';
-import SvgSpeakerOn from '../icons/SpeakerOn';
+import { useAppSelector } from 'store/hooks';
+import { highlight } from 'style';
+import SvgScreenShareOn from 'components/icons/ScreenShareOn';
+import SvgSpeakerOn from 'components/icons/SpeakerOn';
 import { container } from 'tsyringe';
-import { AudioManager } from '../../service/media/AudioManager';
-import { VideoManager } from '../../service/media/VideoManager';
+import { AudioManager } from 'service/media/AudioManager';
+import { VideoManager } from 'service/media/VideoManager';
 
 interface MemberListContainerProps {}
 

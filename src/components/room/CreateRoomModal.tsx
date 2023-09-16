@@ -1,9 +1,9 @@
 import { Form, Input, Modal } from 'antd';
 import { nanoid } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
-import { roomActions } from '../../store/features/roomSlice';
-import { useAppDispatch } from '../../store/hooks';
-import { addRoomByDB } from '../../store/thunk/roomThunk';
+import { roomActions } from 'store/features/roomSlice';
+import { useAppDispatch } from 'store/hooks';
+import { addRoomByDB } from 'store/thunk/roomThunk';
 
 interface CreateRoomModalProps {
   open: boolean;

@@ -1,17 +1,17 @@
-import { category } from '../../decorators/category';
-import type { Protocol } from '../../constants/protocol';
-import { CATEGORY, CONNECTION_MESSAGE_ID } from '../../constants/protocol';
-import { messageId } from '../../decorators/messageId';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { storage } from '../storage/StorageService';
-import { utils } from '../utils/Utils';
-import { store } from '../../store/store';
-import { roomActions } from '../../store/features/roomSlice';
-import { deleteMemberByDB } from '../../store/thunk/roomThunk';
+import { category } from 'decorators/category';
+import type { Protocol } from 'constants/protocol';
+import { CATEGORY, CONNECTION_MESSAGE_ID } from 'constants/protocol';
+import { messageId } from 'decorators/messageId';
+import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { storage } from 'service/storage/StorageService';
+import { utils } from 'service/utils/Utils';
+import { store } from 'store/store';
+import { roomActions } from 'store/features/roomSlice';
+import { deleteMemberByDB } from 'store/thunk/roomThunk';
 import { inject, injectable } from 'tsyringe';
-import { AudioManager } from '../media/AudioManager';
-import { VideoManager } from '../media/VideoManager';
-import { RTCManager } from '../rtc/RTCManager';
+import { AudioManager } from 'service/media/AudioManager';
+import { VideoManager } from 'service/media/VideoManager';
+import { RTCManager } from 'service/rtc/RTCManager';
 
 @category(CATEGORY.CONNECTION)
 @injectable()

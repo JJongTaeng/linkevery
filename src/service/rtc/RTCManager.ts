@@ -1,8 +1,7 @@
-import { Protocol } from '../../constants/protocol';
-import { ERROR_TYPE } from '../../error/error';
-import { utils } from '../utils/Utils';
+import { Protocol } from 'constants/protocol';
+import { ERROR_TYPE } from 'error/error';
+import { utils } from 'service/utils/Utils';
 import { RTCManagerService } from './RTCManagerService';
-import { singleton } from 'tsyringe';
 
 export const config = {
   iceServers: [

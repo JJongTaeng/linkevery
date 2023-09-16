@@ -1,15 +1,14 @@
-import { category } from '../../decorators/category';
-import type { HandlerParameter, Protocol } from '../../constants/protocol';
-import { CATEGORY, SIGNALING_MESSAGE_ID } from '../../constants/protocol';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { RTCManagerService } from '../rtc/RTCManagerService';
-import { messageId } from '../../decorators/messageId';
-import { store } from '../../store/store';
-import { roomActions } from '../../store/features/roomSlice';
-import { SdpType } from '../rtc/RTCPeerService';
-import { RTCManager } from '../rtc/RTCManager';
-import { storage } from '../storage/StorageService';
+import { category } from 'decorators/category';
+import type { Protocol } from 'constants/protocol';
+import { CATEGORY, SIGNALING_MESSAGE_ID } from 'constants/protocol';
+import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { messageId } from 'decorators/messageId';
+import { store } from 'store/store';
+import { SdpType } from 'service/rtc/RTCPeerService';
+import { storage } from 'service/storage/StorageService';
 import { inject, injectable } from 'tsyringe';
+import { RTCManager } from 'service/rtc/RTCManager';
+import { roomActions } from 'store/features/roomSlice';
 
 @category(CATEGORY.SIGNALING)
 @injectable()
@@ -18,6 +17,7 @@ export class SignalingHandler {
     @inject(DispatchEvent) private dispatch: DispatchEvent,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
+
   @messageId(SIGNALING_MESSAGE_ID.START)
   async start(protocol: Protocol) {
     const { roomName, size } = protocol.data;

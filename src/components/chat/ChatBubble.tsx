@@ -4,8 +4,8 @@ import dayjs from 'dayjs';
 import { HTMLAttributes } from 'react';
 import stc from 'string-to-color';
 import styled from 'styled-components';
-import { chatUtils } from '../../service/utils/ChatUtils';
-import { utils } from '../../service/utils/Utils';
+import { chatUtils } from 'service/utils/ChatUtils';
+import { utils } from 'service/utils/Utils';
 
 interface ChatBubbleProps extends HTMLAttributes<HTMLDivElement> {
   date?: string;

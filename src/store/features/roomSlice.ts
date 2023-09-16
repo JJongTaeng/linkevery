@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { query } from '../../service/db/Query';
-import { storage } from '../../service/storage/StorageService';
+import { query } from 'service/db/Query';
+import { storage } from 'service/storage/StorageService';
 import {
   addRoomByDB,
   deleteRoomByDB,
   getRoomByDB,
   getRoomListByDB,
-} from '../thunk/roomThunk';
-import { Room } from './../../service/db/LinkeveryDB';
+} from 'store/thunk/roomThunk';
+import { Room } from 'service/db/LinkeveryDB';
 
 interface RoomState {
   current: Omit<Room, 'id'>;

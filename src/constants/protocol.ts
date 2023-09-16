@@ -1,5 +1,5 @@
-import { DispatchEvent } from '../service/dispatch/DispatchEvent';
-import { RTCManagerService } from '../service/rtc/RTCManagerService';
+import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { RTCManagerService } from 'service/rtc/RTCManagerService';
 
 export const EVENT_NAME = 'message';
 

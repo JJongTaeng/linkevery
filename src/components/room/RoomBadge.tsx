@@ -1,8 +1,8 @@
 import { Avatar } from 'antd';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { deleteRoomByDB } from '../../store/thunk/roomThunk';
-import SvgDelete from '../icons/Delete';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { deleteRoomByDB } from 'store/thunk/roomThunk';
+import SvgDelete from 'components/icons/Delete';
 
 interface RoomBadgeProps {
   name: string;

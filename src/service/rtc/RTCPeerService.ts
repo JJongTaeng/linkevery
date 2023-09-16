@@ -1,4 +1,4 @@
-import { Protocol } from '../../constants/protocol';
+import { Protocol } from 'constants/protocol';
 
 export enum SdpType {
   'local' = 'local',

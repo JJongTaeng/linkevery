@@ -1,17 +1,17 @@
-import type { Protocol } from '../../constants/protocol';
-import { CATEGORY, SCREEN_SHARE_MESSAGE_ID } from '../../constants/protocol';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { category } from '../../decorators/category';
-import { messageId } from '../../decorators/messageId';
-import { store } from '../../store/store';
-import { storage } from '../storage/StorageService';
-import { userActions } from '../../store/features/userSlice';
+import type { Protocol } from 'constants/protocol';
+import { CATEGORY, SCREEN_SHARE_MESSAGE_ID } from 'constants/protocol';
+import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { category } from 'decorators/category';
+import { messageId } from 'decorators/messageId';
+import { store } from 'store/store';
+import { storage } from 'service/storage/StorageService';
+import { userActions } from 'store/features/userSlice';
 import { container, inject, injectable } from 'tsyringe';
-import { App } from '../app/App';
+import { App } from 'service/app/App';
 import { message } from 'antd';
-import { roomActions } from '../../store/features/roomSlice';
-import { VideoManager } from '../media/VideoManager';
-import { RTCManager } from '../rtc/RTCManager';
+import { roomActions } from 'store/features/roomSlice';
+import { VideoManager } from 'service/media/VideoManager';
+import { RTCManager } from 'service/rtc/RTCManager';
 
 @category(CATEGORY.SCREEN)
 @injectable()

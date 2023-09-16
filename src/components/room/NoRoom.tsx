@@ -2,12 +2,12 @@ import { Button } from 'antd';
 import { nanoid } from 'nanoid';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { storage } from '../../service/storage/StorageService';
-import { roomActions } from '../../store/features/roomSlice';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
-import { TOP_MENU_HEIGHT } from '../../style/constants';
-import { ColorsTypes, SizeTypes, theme } from '../../style/theme';
+import { storage } from 'service/storage/StorageService';
+import { roomActions } from 'store/features/roomSlice';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { addUserByDB, getUserByDB } from 'store/thunk/userThunk';
+import { TOP_MENU_HEIGHT } from 'style/constants';
+import { ColorsTypes, SizeTypes, theme } from 'style/theme';
 import CreateRoomModal from './CreateRoomModal';
 import UsernameModal from './UsernameModal';
 

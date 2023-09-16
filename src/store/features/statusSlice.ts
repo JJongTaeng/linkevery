@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Bowser from 'bowser';
-import { PAGE_OFFSET } from '../../style/constants';
-import { getChatListPageByDB } from '../thunk/chatThunk';
+import { PAGE_OFFSET } from 'style/constants';
+import { getChatListPageByDB } from 'store/thunk/chatThunk';
 
 interface StatusState {
   leftMenuVisible: boolean;

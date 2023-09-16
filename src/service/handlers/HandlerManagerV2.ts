@@ -6,20 +6,20 @@ import {
   MessageId,
   Protocol,
   StringifyProtocol,
-} from '../../constants/protocol';
-import { SocketManager } from '../socket/SocketManager';
-import { RTCManager } from '../rtc/RTCManager';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { MessageAssemble } from '../messages/MessageAssemble';
-import { ERROR_TYPE } from '../../error/error';
-import { HandlerManagerInterface } from './HandlerManagerInterface';
+} from 'constants/protocol';
+import { SocketManager } from 'service/socket/SocketManager';
+import { RTCManager } from 'service/rtc/RTCManager';
+import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { MessageAssemble } from 'service/messages/MessageAssemble';
+import { ERROR_TYPE } from 'error/error';
 
 type CategoryHandlers = { [key in CATEGORY]?: HandlerMap<any> };
 
 @injectable()
-export class HandlerManagerV2 implements HandlerManagerInterface {
+export class HandlerManagerV2 {
   private messageAssembleMap: Map<string, MessageAssemble> = new Map();
   private handlerMap: CategoryHandlers = {};
+
   constructor(
     @injectAll('Handler') private handlers: any,
     @inject(SocketManager) private socketManager: SocketManager,

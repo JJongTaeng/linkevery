@@ -1,4 +1,4 @@
-import type { ProtocolData } from '../../constants/protocol';
+import type { ProtocolData } from 'constants/protocol';
 import {
   CATEGORY,
   CHAT_MESSAGE_ID,
@@ -10,9 +10,9 @@ import {
   SCREEN_SHARE_MESSAGE_ID,
   SIGNALING_MESSAGE_ID,
   VOICE_MESSAGE_ID,
-} from '../../constants/protocol';
-import { Sender } from '../messages/Sender';
-import { storage } from '../storage/StorageService';
+} from 'constants/protocol';
+import { Sender } from 'service/messages/Sender';
+import { storage } from 'service/storage/StorageService';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()

@@ -1,15 +1,11 @@
-import type { Protocol } from '../../constants/protocol';
-import {
-  CATEGORY,
-  HandlerFunction,
-  NEGOTIATION_MESSAGE_ID,
-} from '../../constants/protocol';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { SdpType } from '../rtc/RTCPeerService';
-import { messageId } from '../../decorators/messageId';
-import { category } from '../../decorators/category';
+import type { Protocol } from 'constants/protocol';
+import { CATEGORY, NEGOTIATION_MESSAGE_ID } from 'constants/protocol';
+import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { SdpType } from 'service/rtc/RTCPeerService';
+import { messageId } from 'decorators/messageId';
+import { category } from 'decorators/category';
 import { inject, injectable } from 'tsyringe';
-import { RTCManager } from '../rtc/RTCManager';
+import { RTCManager } from 'service/rtc/RTCManager';
 
 @category(CATEGORY.NEGOTIATION)
 @injectable()
