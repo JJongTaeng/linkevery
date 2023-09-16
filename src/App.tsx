@@ -23,7 +23,7 @@ function App() {
   return (
     <Container>
       <TopMenuContainer />
-      <div className={'left-content-container'}>
+      <div className={'main-content-container'}>
         <LeftMenuContainer />
         <ContentSection>
           <ContentContainer />
@@ -53,7 +53,7 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   background-color: ${({ theme }) => theme.color.white};
-  .left-content-container {
+  .main-content-container {
     width: 100%;
     height: calc(100% - ${TOP_MENU_HEIGHT}px);
     display: flex;

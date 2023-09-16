@@ -132,7 +132,7 @@ const Room = () => {
   return (
     <>
       <RoomContent $leftMenuVisible={status.leftMenuVisible}>
-        <ContentContainer className="content-container">
+        <ContentContainer>
           <ChatContainer>
             <ChatList id={'chat-list'} ref={chatListElement}>
               <div id="chat-loading-trigger" ref={chatLoadingTriggerElement} />

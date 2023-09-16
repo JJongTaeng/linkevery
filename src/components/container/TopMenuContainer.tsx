@@ -102,10 +102,8 @@ const TopMenuContainer = () => {
                   message.info(
                     `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
                   );
-
                   return;
                 }
-
                 storage.setItem('voiceStatus', true);
                 dispatch(userActions.changeVoiceStatus(true));
                 app.dispatch.sendVoiceReadyMessage({});
