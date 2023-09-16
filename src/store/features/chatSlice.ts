@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Message } from 'service/db/LinkeveryDB';
 import { CHAT_ITEM_HEIGHT } from 'style/constants';
-import { getChatListPageByDB } from 'store/hunk/chatThunk';
+import { getChatListPageByDB } from 'store/thunk/chatThunk';
 
 interface ChatState {
   messageList: Omit<Message, 'id' | 'roomName'>[];

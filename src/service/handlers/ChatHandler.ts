@@ -1,5 +1,5 @@
-import { CATEGORY, CHAT_MESSAGE_ID } from 'constants/protocol';
 import type { Protocol } from 'constants/protocol';
+import { CATEGORY, CHAT_MESSAGE_ID } from 'constants/protocol';
 import { category } from 'decorators/category';
 import { messageId } from 'decorators/messageId';
 import { DispatchEvent } from 'service/dispatch/DispatchEvent';
@@ -9,6 +9,8 @@ import { chatActions } from 'store/features/chatSlice';
 import { store } from 'store/store';
 import { addChatByDB } from 'store/thunk/chatThunk';
 import { storage } from 'service/storage/StorageService';
+import { query } from '../db/Query';
+import { Message } from '../db/LinkeveryDB';
 
 @category(CATEGORY.CHAT)
 @injectable()
@@ -45,5 +47,51 @@ export class ChatHandler {
   ok(protocol: Protocol) {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
+  }
+
+  @messageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST)
+  async syncChatList(protocol: Protocol) {
+    const roomName = storage.getItem('roomName');
+
+    const { messageList } = protocol.data;
+
+    if (messageList.length) {
+      await query.addMessageList(
+        messageList.map((message: Message) => ({
+          message: message.message,
+          date: message.date,
+          messageKey: message.messageKey,
+          userKey: message.userKey,
+          username: message.username,
+          roomName: message.roomName,
+          messageType: message.messageType,
+        })),
+      );
+    }
+
+    const myMessageList = await query.getMessageList(roomName);
+    this.dispatch.sendSyncChatListOkMessage({
+      messageList: myMessageList,
+      to: protocol.from,
+    });
+  }
+
+  @messageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST_OK)
+  async syncChatListOk(protocol: Protocol) {
+    const { messageList } = protocol.data;
+
+    if (messageList.length) {
+      await query.addMessageList(
+        messageList.map((message: Message) => ({
+          message: message.message,
+          date: message.date,
+          messageKey: message.messageKey,
+          userKey: message.userKey,
+          username: message.username,
+          roomName: message.roomName,
+          messageType: message.messageType,
+        })),
+      );
+    }
   }
 }

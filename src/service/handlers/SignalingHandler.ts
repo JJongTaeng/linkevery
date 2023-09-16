@@ -183,12 +183,13 @@ export class SignalingHandler {
   @messageId(SIGNALING_MESSAGE_ID.END)
   end(protocol: Protocol) {
     const { from } = protocol;
+    const { username, userKey } = storage.getAll();
 
     if (store.getState().user.voiceStatus) {
       this.dispatch.sendVoiceReadyMessage({});
     }
 
-    this.dispatch.sendRoomMemberNamePreMessage({ to: from });
+    this.dispatch.sendMemberNameMessage({ to: from, username, userKey });
     this.dispatch.sendSignalingEndOkMessage({});
   }
 

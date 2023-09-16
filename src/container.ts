@@ -3,7 +3,6 @@ import { App } from './service/app/App';
 import { ConnectionHandler } from './service/handlers/ConnectionHandler';
 import { SignalingHandler } from './service/handlers/SignalingHandler';
 import { NegotiationHandler } from './service/handlers/NegotiationHandler';
-import { RoomHandler } from './service/handlers/RoomHandler';
 import { VoiceHandler } from './service/handlers/VoiceHandler';
 import { HandlerManagerV2 } from './service/handlers/HandlerManagerV2';
 import { ChatHandler } from './service/handlers/ChatHandler';
@@ -13,6 +12,7 @@ import { VideoManager } from './service/media/VideoManager';
 import { SoundEffect } from './service/media/SoundEffect';
 import { RTCManager } from './service/rtc/RTCManager';
 import { DispatchEvent } from './service/dispatch/DispatchEvent';
+import { MemberHandler } from './service/handlers/MemberHandler';
 
 export const initContainer = () => {
   container.register(
@@ -38,10 +38,10 @@ export const initContainer = () => {
   container.register('Handler', { useClass: ConnectionHandler });
   container.register('Handler', { useClass: SignalingHandler });
   container.register('Handler', { useClass: NegotiationHandler });
-  container.register('Handler', { useClass: RoomHandler });
   container.register('Handler', { useClass: VoiceHandler });
   container.register('Handler', { useClass: ChatHandler });
   container.register('Handler', { useClass: ScreenShareHandler });
+  container.register('Handler', { useClass: MemberHandler });
   container.register('HandlerManager', { useClass: HandlerManagerV2 });
   container.resolve(App);
   container.afterResolution(
