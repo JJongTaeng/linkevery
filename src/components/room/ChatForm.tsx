@@ -3,7 +3,7 @@ import FileUpload from 'components/chat/FileUpload';
 import { Button } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import { useRoom } from 'hooks/room/useRoom';
+import { useChat } from '../../hooks/room/useChat';
 
 const ChatForm = () => {
   const {
@@ -14,7 +14,7 @@ const ChatForm = () => {
     handleChatSubmit,
     handleChatKeyup,
     elements: { focusInput },
-  } = useRoom();
+  } = useChat();
 
   return (
     <StyledChatForm autoComplete="off" onSubmit={(e) => handleChatSubmit(e)}>

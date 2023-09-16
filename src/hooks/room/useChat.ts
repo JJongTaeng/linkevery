@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { nanoid } from 'nanoid';
 import { useRef } from 'react';
 import { debounce } from 'throttle-debounce';
 import { storage } from 'service/storage/StorageService';
@@ -7,24 +6,21 @@ import { utils } from 'service/utils/Utils';
 import { chatActions } from 'store/features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { addChatByDB } from 'store/thunk/chatThunk';
-import { addUserByDB, getUserByDB } from 'store/thunk/userThunk';
 import { useSlice } from 'hooks/useSlice';
 import { useApp } from 'hooks/useApp';
 
-type RoomState = typeof initialState;
-type RoomAction = {
+type ChatState = typeof initialState;
+type ChatAction = {
   type: string;
-  payload: Partial<RoomState>;
+  payload: Partial<ChatState>;
 };
 
 type Actions = Record<
   string,
-  (state: RoomState, action: RoomAction) => RoomState
+  (state: ChatState, action: ChatAction) => ChatState
 >;
 
 const initialState = {
-  usernameModalVisible: false,
-  isFullScreen: false,
   page: 0,
   isVisibleScrollButton: false,
   chatMessage: '',
@@ -32,10 +28,6 @@ const initialState = {
 };
 
 const actions: Actions = {
-  setIsFullScreen: (state, action) => ({
-    ...state,
-    isFullScreen: action.payload.isFullScreen ?? false,
-  }),
   setIsVisibleScrollButton: (state, action) => ({
     ...state,
     isVisibleScrollButton: action.payload.isVisibleScrollButton ?? false,
@@ -43,10 +35,6 @@ const actions: Actions = {
   setPage: (state, action) => ({
     ...state,
     page: action.payload.page ?? 0,
-  }),
-  setUsernameModalVisible: (state, action) => ({
-    ...state,
-    usernameModalVisible: action.payload.usernameModalVisible ?? false,
   }),
   setChatMessage: (state, action) => ({
     ...state,
@@ -58,9 +46,9 @@ const actions: Actions = {
   }),
 };
 
-export function useRoom() {
+export function useChat() {
   const [app] = useApp();
-  const [state, dispatch] = useSlice<RoomState, keyof typeof actions>(
+  const [state, dispatch] = useSlice<ChatState, keyof typeof actions>(
     actions,
     initialState,
   );
@@ -111,14 +99,6 @@ export function useRoom() {
     }
   });
 
-  const handleViewportResize = debounce(
-    50,
-    (e: any) => {
-      window.scrollTo(0, document.body.scrollHeight - e.target.height);
-    },
-    {},
-  );
-
   const moveToChatScrollBottom = () => {
     setTimeout(() => {
       if (chatListElement.current)
@@ -155,14 +135,6 @@ export function useRoom() {
     }
   };
 
-  const handleUsernameSubmit = (username: string) => {
-    const key = nanoid();
-    storeDispatch(addUserByDB({ username, key }));
-    storeDispatch(getUserByDB());
-    storage.setItem('userKey', key);
-    storage.setItem('username', username);
-    dispatch.setUsernameModalVisible({ usernameModalVisible: false });
-  };
   const handleChatSubmit = (e?: any, type = 'text') => {
     e?.preventDefault();
     sendChatMessage(type);
@@ -174,14 +146,9 @@ export function useRoom() {
   return {
     state,
     sendChatMessage,
-    setIsFullScreen: (isFull: boolean) => {
-      dispatch.setIsFullScreen({ isFullScreen: isFull });
-    },
+
     setPage: (page: number) => {
       dispatch.setPage({ page });
-    },
-    setUsernameModalVisible: (visible: boolean) => {
-      dispatch.setUsernameModalVisible({ usernameModalVisible: visible });
     },
     setChatMessage: (message: string) => {
       dispatch.setChatMessage({ chatMessage: message });
@@ -190,10 +157,8 @@ export function useRoom() {
       dispatch.setIsShiftKeyDowned({ isShiftKeyDowned: isKeyDowned });
     },
     handleVisibleScrollButton,
-    handleViewportResize,
     handleChatKeydown,
     handleChatSubmit,
-    handleUsernameSubmit,
     handleChatKeyup,
     moveToChatScrollBottom,
     elements: {

@@ -30,9 +30,6 @@ export class MemberHandler {
         userKey: protocol.data.userKey,
       }),
     );
-    console.log(protocol.data.username);
-
-    console.log('###', store.getState().room.current.member);
     store.dispatch(
       updateMemberByDB({
         roomName,
