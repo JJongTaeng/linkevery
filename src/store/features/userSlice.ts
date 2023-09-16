@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { storage } from '../../service/storage/StorageService';
-import { addUserByDB, getUserByDB } from '../thunk/userThunk';
+import { storage } from 'service/storage/StorageService';
+import { addUserByDB, getUserByDB } from 'store/thunk/userThunk';
 
 interface UserState {
   key: string;

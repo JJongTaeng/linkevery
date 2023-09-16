@@ -1,43 +1,33 @@
-import { category } from '../../decorators/category';
-import type { HandlerParameter, Protocol } from '../../constants/protocol';
-import {
-  CATEGORY,
-  HandlerFunction,
-  SIGNALING_MESSAGE_ID,
-} from '../../constants/protocol';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { RTCManagerService } from '../rtc/RTCManagerService';
-import { messageId } from '../../decorators/messageId';
-import { store } from '../../store/store';
-import { roomActions } from '../../store/features/roomSlice';
-import { SdpType } from '../rtc/RTCPeerService';
-import { protocol } from 'socket.io-client';
-import { RTCManager, rtcManager } from '../rtc/RTCManager';
-import { storage } from '../storage/StorageService';
-
-interface SignalingHandlerInterface {
-  start: HandlerFunction;
-  offer: HandlerFunction;
-  answer: HandlerFunction;
-  ice: HandlerFunction;
-  createDataChannel: HandlerFunction;
-  connectDataChannel: HandlerFunction;
-  end: HandlerFunction;
-  endOk: HandlerFunction;
-}
+import { category } from 'decorators/category';
+import type { Protocol } from 'constants/protocol';
+import { CATEGORY, SIGNALING_MESSAGE_ID } from 'constants/protocol';
+import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { messageId } from 'decorators/messageId';
+import { store } from 'store/store';
+import { SdpType } from 'service/rtc/RTCPeerService';
+import { storage } from 'service/storage/StorageService';
+import { inject, injectable } from 'tsyringe';
+import { RTCManager } from 'service/rtc/RTCManager';
+import { roomActions } from 'store/features/roomSlice';
 
 @category(CATEGORY.SIGNALING)
-export class SignalingHandler implements SignalingHandlerInterface {
+@injectable()
+export class SignalingHandler {
+  constructor(
+    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    @inject(RTCManager) private rtcManager: RTCManager,
+  ) {}
+
   @messageId(SIGNALING_MESSAGE_ID.START)
-  async start(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
+  async start(protocol: Protocol) {
     const { roomName, size } = protocol.data;
     const { from } = protocol;
     store.dispatch(roomActions.setMemberSize(size));
-    rtcManager.createPeer(from);
-    const rtcPeer = rtcManager.getPeer(from);
+    this.rtcManager.createPeer(from);
+    const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer
       .onIceCandidate((ice) => {
-        dispatch.sendSignalingIceMessage({
+        this.dispatch.sendSignalingIceMessage({
           to: from,
           ice,
         });
@@ -51,7 +41,7 @@ export class SignalingHandler implements SignalingHandlerInterface {
             '[negotiationneeded connection state] ',
             e.currentTarget?.connectionState,
           );
-          dispatch.sendNegotiationOfferMessage({ offer, to: from });
+          this.dispatch.sendNegotiationOfferMessage({ offer, to: from });
         }
       })
       .onSignalingStateChange((e: any) => {
@@ -77,19 +67,19 @@ export class SignalingHandler implements SignalingHandlerInterface {
       });
     const offer = await rtcPeer.createOffer();
     rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-    dispatch.sendSignalingOfferMessage({ offer, to: from, roomName });
+    this.dispatch.sendSignalingOfferMessage({ offer, to: from, roomName });
   }
 
   @messageId(SIGNALING_MESSAGE_ID.OFFER)
-  async offer(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
+  async offer(protocol: Protocol) {
     const { offer } = protocol.data;
     const { from } = protocol;
     // store.dispatch(roomActions.setMemberSize(size));
-    rtcManager.createPeer(from);
-    const rtcPeer = rtcManager.getPeer(from);
+    this.rtcManager.createPeer(from);
+    const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer
       .onIceCandidate((ice) => {
-        dispatch.sendSignalingIceMessage({
+        this.dispatch.sendSignalingIceMessage({
           to: from,
           ice,
         });
@@ -103,7 +93,7 @@ export class SignalingHandler implements SignalingHandlerInterface {
             '[negotiationneeded connection state] ',
             e.currentTarget?.connectionState,
           );
-          dispatch.sendNegotiationOfferMessage({ offer, to: from });
+          this.dispatch.sendNegotiationOfferMessage({ offer, to: from });
         }
       })
       .onSignalingStateChange((e: any) => {
@@ -131,58 +121,52 @@ export class SignalingHandler implements SignalingHandlerInterface {
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
-    dispatch.sendSignalingAnswerMessage({
+    this.dispatch.sendSignalingAnswerMessage({
       answer,
       to: from,
     });
   }
 
   @messageId(SIGNALING_MESSAGE_ID.ANSWER)
-  answer(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
+  answer(protocol: Protocol) {
     const { answer } = protocol.data;
     const { from } = protocol;
-    const rtcPeer = rtcManager.getPeer(from);
+    const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
-    dispatch.sendSignalingCreateDataChannelMessage({ to: from });
+    this.dispatch.sendSignalingCreateDataChannelMessage({ to: from });
   }
 
   @messageId(SIGNALING_MESSAGE_ID.ICE)
-  ice(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
+  ice(protocol: Protocol) {
     const { ice } = protocol.data;
-    const rtcPeer = rtcManager.getPeer(protocol.from);
+    const rtcPeer = this.rtcManager.getPeer(protocol.from);
     rtcPeer.setIcecandidate(ice);
   }
 
   @messageId(SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL)
-  createDataChannel(
-    protocol: Protocol,
-    { dispatch, rtcManager }: HandlerParameter,
-  ) {
+  createDataChannel(protocol: Protocol) {
     const { from } = protocol;
-    const rtcPeer = rtcManager.getPeer(from);
+    const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.onDataChannel((e) => {
       console.debug('[open datachannel]', from);
-      dispatch.sendSignalingEndMessage({});
+      this.dispatch.sendSignalingEndMessage({});
 
       rtcPeer.dataChannel = e.channel;
       rtcPeer.onDataChannelMessage((e) => {
         const parsedMessage = {
           ...JSON.parse(e.data),
         };
-        rtcManager.emit(RTCManager.RTC_EVENT.DATA, parsedMessage);
+        this.rtcManager.emit(RTCManager.RTC_EVENT.DATA, parsedMessage);
       });
     });
-    dispatch.sendSignalingConnectDataChannelMessage({ to: from });
+    this.dispatch.sendSignalingConnectDataChannelMessage({ to: from });
   }
 
   @messageId(SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL)
-  connectDataChannel(
-    protocol: Protocol,
-    { dispatch, rtcManager }: HandlerParameter,
-  ): void {
+  connectDataChannel(protocol: Protocol): void {
     const roomName = storage.getItem('roomName');
     const { from } = protocol;
-    const rtcPeer = rtcManager.getPeer(from);
+    const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.createDataChannel(roomName);
     rtcPeer
       .onDataChannelOpen((e) => {
@@ -192,36 +176,25 @@ export class SignalingHandler implements SignalingHandlerInterface {
         const parsedMessage = {
           ...JSON.parse(e.data),
         };
-        rtcManager.emit(RTCManager.RTC_EVENT.DATA, parsedMessage);
+        this.rtcManager.emit(RTCManager.RTC_EVENT.DATA, parsedMessage);
       });
   }
 
   @messageId(SIGNALING_MESSAGE_ID.END)
-  end(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: { dispatch: DispatchEvent; rtcManager: RTCManagerService },
-  ) {
+  end(protocol: Protocol) {
     const { from } = protocol;
+    const { username, userKey } = storage.getAll();
 
     if (store.getState().user.voiceStatus) {
-      dispatch.sendVoiceReadyMessage({});
+      this.dispatch.sendVoiceReadyMessage({});
     }
 
-    dispatch.sendRoomMemberNamePreMessage({ to: from });
-    dispatch.sendSignalingEndOkMessage({});
+    this.dispatch.sendMemberNameMessage({ to: from, username, userKey });
+    this.dispatch.sendSignalingEndOkMessage({});
   }
 
   @messageId(SIGNALING_MESSAGE_ID.END_OK)
-  endOk(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: { dispatch: DispatchEvent; rtcManager: RTCManagerService },
-  ): any {
+  endOk(protocol: Protocol): any {
     const { from } = protocol;
   }
 }

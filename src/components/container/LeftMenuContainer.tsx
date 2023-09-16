@@ -1,17 +1,16 @@
 import { Button } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { throttle } from 'throttle-debounce';
-import { App } from '../../service/app/App';
-import { statusActions } from '../../store/features/statusSlice';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { getRoomListByDB } from '../../store/thunk/roomThunk';
-import { mediaSize } from '../../style/theme';
-import CreateRoomModal from '../room/CreateRoomModal';
-import MemberListContainer from '../room/MemberListContainer';
-import RoomBadge from '../room/RoomBadge';
-import { useApp } from '../../hooks/useApp';
+import { statusActions } from 'store/features/statusSlice';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { getRoomListByDB } from 'store/thunk/roomThunk';
+import { mediaSize } from 'style/theme';
+import CreateRoomModal from 'components/room/CreateRoomModal';
+import MemberListContainer from 'components/room/MemberListContainer';
+import RoomBadge from 'components/room/RoomBadge';
+import { useApp } from 'hooks/useApp';
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();

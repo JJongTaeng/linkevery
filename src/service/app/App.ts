@@ -1,12 +1,12 @@
-import { roomActions } from '../../store/features/roomSlice';
-import { userActions } from '../../store/features/userSlice';
-import { store } from '../../store/store';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { RTCManager } from '../rtc/RTCManager';
-import { storage } from '../storage/StorageService';
+import { roomActions } from 'store/features/roomSlice';
+import { userActions } from 'store/features/userSlice';
+import { store } from 'store/store';
+import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { RTCManager } from 'service/rtc/RTCManager';
+import { storage } from 'service/storage/StorageService';
 import { inject, singleton } from 'tsyringe';
-import { RTCManagerService } from '../rtc/RTCManagerService';
-import { AudioManager } from '../media/AudioManager';
+import { RTCManagerService } from 'service/rtc/RTCManagerService';
+import { AudioManager } from 'service/media/AudioManager';
 
 @singleton()
 export class App {
@@ -15,7 +15,7 @@ export class App {
   constructor(
     @inject(DispatchEvent) private _dispatch: DispatchEvent,
     @inject(RTCManager) private _rtcManager: RTCManagerService,
-    @inject('AudioManager') private audioManager: AudioManager,
+    @inject(AudioManager) private audioManager: AudioManager,
   ) {}
 
   get dispatch() {

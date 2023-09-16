@@ -1,27 +1,27 @@
-import type { Protocol, HandlerParameter } from '../../constants/protocol';
-import {
-  CATEGORY,
-  CHAT_MESSAGE_ID,
-  HandlerFunction,
-} from '../../constants/protocol';
-import { category } from '../../decorators/category';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
-import { RTCManagerService } from '../rtc/RTCManagerService';
-import { messageId } from '../../decorators/messageId';
-import { store } from '../../store/store';
-import { chatActions } from '../../store/features/chatSlice';
-import { addChatByDB } from '../../store/thunk/chatThunk';
-import { storage } from '../storage/StorageService';
-
-interface ChatHandlerInterface {
-  send: HandlerFunction;
-  ok: HandlerFunction;
-}
+import type { Protocol } from 'constants/protocol';
+import { CATEGORY, CHAT_MESSAGE_ID } from 'constants/protocol';
+import { category } from 'decorators/category';
+import { messageId } from 'decorators/messageId';
+import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { RTCManager } from 'service/rtc/RTCManager';
+import { inject, injectable } from 'tsyringe';
+import { chatActions } from 'store/features/chatSlice';
+import { store } from 'store/store';
+import { addChatByDB } from 'store/thunk/chatThunk';
+import { storage } from 'service/storage/StorageService';
+import { query } from '../db/Query';
+import { Message } from '../db/LinkeveryDB';
 
 @category(CATEGORY.CHAT)
-export class ChatHandler implements ChatHandlerInterface {
+@injectable()
+export class ChatHandler {
+  constructor(
+    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    @inject(RTCManager) private rtcManager: RTCManager,
+  ) {}
+
   @messageId(CHAT_MESSAGE_ID.SEND)
-  send(protocol: Protocol, { dispatch, rtcManager }: HandlerParameter) {
+  send(protocol: Protocol) {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
     const chatInfo = {
@@ -34,7 +34,7 @@ export class ChatHandler implements ChatHandlerInterface {
     };
 
     store.dispatch(chatActions.addChat(chatInfo));
-    dispatch.sendChatOkMessage(chatInfo);
+    this.dispatch.sendChatOkMessage(chatInfo);
     store.dispatch(
       addChatByDB({
         ...chatInfo,
@@ -44,17 +44,54 @@ export class ChatHandler implements ChatHandlerInterface {
   }
 
   @messageId(CHAT_MESSAGE_ID.OK)
-  ok(
-    protocol: Protocol,
-    {
-      dispatch,
-      rtcManager,
-    }: {
-      dispatch: DispatchEvent;
-      rtcManager: RTCManagerService;
-    },
-  ) {
+  ok(protocol: Protocol) {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
+  }
+
+  @messageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST)
+  async syncChatList(protocol: Protocol) {
+    const roomName = storage.getItem('roomName');
+
+    const { messageList } = protocol.data;
+
+    if (messageList.length) {
+      await query.addMessageList(
+        messageList.map((message: Message) => ({
+          message: message.message,
+          date: message.date,
+          messageKey: message.messageKey,
+          userKey: message.userKey,
+          username: message.username,
+          roomName: message.roomName,
+          messageType: message.messageType,
+        })),
+      );
+    }
+
+    const myMessageList = await query.getMessageList(roomName);
+    this.dispatch.sendSyncChatListOkMessage({
+      messageList: myMessageList,
+      to: protocol.from,
+    });
+  }
+
+  @messageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST_OK)
+  async syncChatListOk(protocol: Protocol) {
+    const { messageList } = protocol.data;
+
+    if (messageList.length) {
+      await query.addMessageList(
+        messageList.map((message: Message) => ({
+          message: message.message,
+          date: message.date,
+          messageKey: message.messageKey,
+          userKey: message.userKey,
+          username: message.username,
+          roomName: message.roomName,
+          messageType: message.messageType,
+        })),
+      );
+    }
   }
 }

@@ -1,18 +1,18 @@
-import type { ProtocolData } from '../../constants/protocol';
+import type { ProtocolData } from 'constants/protocol';
 import {
   CATEGORY,
   CHAT_MESSAGE_ID,
   CONNECTION_MESSAGE_ID,
+  MEMBER_MESSAGE_ID,
   MESSAGE_TYPE,
   NEGOTIATION_MESSAGE_ID,
   Protocol,
-  ROOM_MESSAGE_ID,
   SCREEN_SHARE_MESSAGE_ID,
   SIGNALING_MESSAGE_ID,
   VOICE_MESSAGE_ID,
-} from '../../constants/protocol';
-import { Sender } from '../messages/Sender';
-import { storage } from '../storage/StorageService';
+} from 'constants/protocol';
+import { Sender } from 'service/messages/Sender';
+import { storage } from 'service/storage/StorageService';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -136,47 +136,38 @@ export class DispatchEvent {
     });
   }
 
-  sendRoomMemberNamePreMessage(data: ProtocolData) {
+  sendMemberNameMessage(data: ProtocolData) {
     this.send({
       data,
-      category: CATEGORY.ROOM,
-      messageId: ROOM_MESSAGE_ID.MEMBER_NAME_PRE,
+      category: CATEGORY.MEMBER,
+      messageId: MEMBER_MESSAGE_ID.NAME,
       messageType: MESSAGE_TYPE.SOCKET,
     });
   }
 
-  sendRoomMemberNameMessage(data: ProtocolData) {
+  sendMemberNameOkMessage(data: ProtocolData) {
     this.send({
       data,
-      category: CATEGORY.ROOM,
-      messageId: ROOM_MESSAGE_ID.MEMBER_NAME,
+      category: CATEGORY.MEMBER,
+      messageId: MEMBER_MESSAGE_ID.NAME_OK,
       messageType: MESSAGE_TYPE.SOCKET,
     });
   }
 
-  sendRoomMemberNamePostMessage(data: ProtocolData) {
+  sendSyncChatListMessage(data: ProtocolData) {
     this.send({
       data,
-      category: CATEGORY.ROOM,
-      messageId: ROOM_MESSAGE_ID.MEMBER_NAME_POST,
-      messageType: MESSAGE_TYPE.SOCKET,
-    });
-  }
-
-  sendRoomSyncChatListMessage(data: ProtocolData) {
-    this.send({
-      data,
-      category: CATEGORY.ROOM,
-      messageId: ROOM_MESSAGE_ID.SYNC_CHAT_LIST,
+      category: CATEGORY.CHAT,
+      messageId: CHAT_MESSAGE_ID.SYNC_CHAT_LIST,
       messageType: MESSAGE_TYPE.RTC,
     });
   }
 
-  sendRoomSyncChatListOkMessage(data: ProtocolData) {
+  sendSyncChatListOkMessage(data: ProtocolData) {
     this.send({
       data,
-      category: CATEGORY.ROOM,
-      messageId: ROOM_MESSAGE_ID.SYNC_CHAT_LIST_OK,
+      category: CATEGORY.CHAT,
+      messageId: CHAT_MESSAGE_ID.SYNC_CHAT_LIST_OK,
       messageType: MESSAGE_TYPE.RTC,
     });
   }

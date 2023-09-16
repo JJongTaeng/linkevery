@@ -1,34 +1,34 @@
-import { Tooltip, message } from 'antd';
+import { message, Tooltip } from 'antd';
 import Bowser from 'bowser';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { mdUtils } from '../../service/media/MediaDeviceUtils';
-import { storage } from '../../service/storage/StorageService';
-import { clipboard } from '../../service/utils/Clipboard';
-import { roomActions } from '../../store/features/roomSlice';
-import { statusActions } from '../../store/features/statusSlice';
-import { userActions } from '../../store/features/userSlice';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { TOP_MENU_HEIGHT } from '../../style/constants';
-import Button from '../elements/Button';
-import ToggleButton from '../elements/ToggleButton';
-import SvgExit from '../icons/Exit';
-import SvgInviteMember from '../icons/InviteMember';
-import SvgLeftIndent from '../icons/LeftIndent';
-import SvgMicOn from '../icons/MicOn';
-import SvgRightIndent from '../icons/RightIndent';
-import SvgScreenShareOn from '../icons/ScreenShareOn';
-import { useApp } from '../../hooks/useApp';
+import { mdUtils } from 'service/media/MediaDeviceUtils';
+import { storage } from 'service/storage/StorageService';
+import { clipboard } from 'service/utils/Clipboard';
+import { roomActions } from 'store/features/roomSlice';
+import { statusActions } from 'store/features/statusSlice';
+import { userActions } from 'store/features/userSlice';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { TOP_MENU_HEIGHT } from 'style/constants';
+import Button from 'components/elements/Button';
+import ToggleButton from 'components/elements/ToggleButton';
+import SvgExit from 'components/icons/Exit';
+import SvgInviteMember from 'components/icons/InviteMember';
+import SvgLeftIndent from 'components/icons/LeftIndent';
+import SvgMicOn from 'components/icons/MicOn';
+import SvgRightIndent from 'components/icons/RightIndent';
+import SvgScreenShareOn from 'components/icons/ScreenShareOn';
+import { useApp } from 'hooks/useApp';
 import { useRef } from 'react';
 import { container } from 'tsyringe';
-import { VideoManager } from '../../service/media/VideoManager';
+import { VideoManager } from 'service/media/VideoManager';
 
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const TopMenuContainer = () => {
   const navigate = useNavigate();
   const [app] = useApp();
-  const videoManager = useRef(container.resolve('VideoManager'))
+  const videoManager = useRef(container.resolve(VideoManager))
     .current as VideoManager;
   const { leftMenuVisible, roomName, voiceStatus, screenShareStatus, room } =
     useAppSelector((state) => ({
@@ -102,10 +102,8 @@ const TopMenuContainer = () => {
                   message.info(
                     `연결된 마이크가 없습니다. 마이크 확인 후 다시 시도해주세요.`,
                   );
-
                   return;
                 }
-
                 storage.setItem('voiceStatus', true);
                 dispatch(userActions.changeVoiceStatus(true));
                 app.dispatch.sendVoiceReadyMessage({});

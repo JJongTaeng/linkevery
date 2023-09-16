@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { ERROR_TYPE } from '../../error/error';
+import { ERROR_TYPE } from 'error/error';
 import { RTCPeer } from './RTCPeer';
 import { container } from 'tsyringe';
 

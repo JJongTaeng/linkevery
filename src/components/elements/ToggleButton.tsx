@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { selectedAnimation } from '../../style';
+import { selectedAnimation } from 'style';
 
 interface ToggleButtonProps {
   children: React.ReactNode;

@@ -1,8 +1,7 @@
-import { Protocol } from '../../constants/protocol';
-import { ERROR_TYPE } from '../../error/error';
-import { utils } from '../utils/Utils';
+import { Protocol } from 'constants/protocol';
+import { ERROR_TYPE } from 'error/error';
+import { utils } from 'service/utils/Utils';
 import { RTCManagerService } from './RTCManagerService';
-import { singleton } from 'tsyringe';
 
 export const config = {
   iceServers: [
@@ -24,7 +23,6 @@ export const config = {
   ],
 };
 
-@singleton()
 export class RTCManager extends RTCManagerService {
   static SLICE_LENGTH = 16000;
   public static RTC_EVENT = {
@@ -81,5 +79,3 @@ export class RTCManager extends RTCManagerService {
     });
   }
 }
-
-export const rtcManager = new RTCManager();
