@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { storage } from 'service/storage/StorageService';
@@ -17,8 +17,7 @@ import { nanoid } from 'nanoid';
 
 const Room = () => {
   const [app] = useApp();
-  const [modalVisible, setModalVisible] = useState(false);
-
+  const dispatch = useAppDispatch();
   const handleViewportResize = debounce(
     50,
     (e: any) => {
@@ -27,34 +26,26 @@ const Room = () => {
     {},
   );
 
-  const handleUsernameSubmit = (username: string) => {
-    const key = nanoid();
-    storeDispatch(addUserByDB({ username, key }));
-    storeDispatch(getUserByDB());
-    storage.setItem('userKey', key);
-    storage.setItem('username', username);
-    setModalVisible(false);
-  };
-
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { username, status } = useAppSelector((state) => ({
+  const { username, status, modalVisible } = useAppSelector((state) => ({
     status: state.status,
     username: state.user.username,
+    modalVisible: state.status.usernameModalVisible,
   }));
   const storeDispatch = useAppDispatch();
 
   useEffect(() => {
     if (username && roomName) {
       storage.setItem('roomName', roomName);
-      setModalVisible(false);
+      dispatch(statusActions.setUsernameModalVisible(false));
       app.dispatch.sendConnectionConnectMessage({}); // socket join
       app.dispatch.sendConnectionJoinRoomMessage({ roomName }); // join
       storeDispatch(roomActions.setRoomName(roomName));
       storeDispatch(getRoomByDB(roomName));
     } else {
-      setModalVisible(true);
+      dispatch(statusActions.setUsernameModalVisible(true));
     }
     return () => {
       app.disconnect();
@@ -62,6 +53,15 @@ const Room = () => {
       storeDispatch(statusActions.resetAllStatusState());
     };
   }, [username, roomName]);
+
+  const handleUsernameSubmit = (username: string) => {
+    const key = nanoid();
+    storeDispatch(addUserByDB({ username, key }));
+    storeDispatch(getUserByDB());
+    storage.setItem('userKey', key);
+    storage.setItem('username', username);
+    dispatch(statusActions.setUsernameModalVisible(true));
+  };
 
   useEffect(() => {
     storeDispatch(getUserByDB());

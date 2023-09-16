@@ -21,14 +21,13 @@ const ChatList = () => {
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { messageList, status, page, isVisibleScrollButton } = useAppSelector(
-    (state) => ({
+  const { messageList, isMaxPage, page, isVisibleScrollButton } =
+    useAppSelector((state) => ({
       messageList: state.chat.messageList,
-      status: state.status,
       isVisibleScrollButton: state.chat.isVisibleScrollButton,
       page: state.chat.page,
-    }),
-  );
+      isMaxPage: state.chat.isMaxPage,
+    }));
 
   const dispatch = useAppDispatch();
 
@@ -85,7 +84,7 @@ const ChatList = () => {
   }, [messageList.length, page]);
 
   useEffect(() => {
-    if (isIntersecting && !status.isMaxPageMessageList) {
+    if (isIntersecting && !isMaxPage) {
       dispatch(
         getChatListPageByDB({
           roomName: roomName!,
@@ -95,7 +94,7 @@ const ChatList = () => {
       );
       dispatch(chatActions.setPage({ page: page + 1 }));
     }
-  }, [isIntersecting, status.isMaxPageMessageList]);
+  }, [isIntersecting, isMaxPage]);
   const isSameTime = (before: string, after: string) =>
     dayjs(before).isSame(after, 'minute');
 

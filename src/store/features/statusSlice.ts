@@ -1,17 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Bowser from 'bowser';
-import { PAGE_OFFSET } from 'style/constants';
-import { getChatListPageByDB } from 'store/thunk/chatThunk';
 
 interface StatusState {
   leftMenuVisible: boolean;
-  isMaxPageMessageList: boolean;
+  usernameModalVisible: boolean;
 }
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const initialState: StatusState = {
   leftMenuVisible: agentInfo.platform.type === 'desktop',
-  isMaxPageMessageList: false,
+  usernameModalVisible: false,
 };
 
 export const statusSlice = createSlice({
@@ -21,16 +19,12 @@ export const statusSlice = createSlice({
     changeLeftMenuVisible: (state, { payload }: { payload: boolean }) => {
       state.leftMenuVisible = payload;
     },
+    setUsernameModalVisible: (state, { payload }) => {
+      state.usernameModalVisible = payload;
+    },
     resetAllStatusState: () => {
       return initialState;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(getChatListPageByDB.fulfilled, (state, { payload }) => {
-      if (payload.length < PAGE_OFFSET) {
-        state.isMaxPageMessageList = true;
-      }
-    });
   },
 });
 
