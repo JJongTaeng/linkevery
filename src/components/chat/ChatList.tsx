@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { nanoid } from 'nanoid';
 import { Button, Divider } from 'antd';
 import dayjs from 'dayjs';
 import ChatBubble from './ChatBubble';
 import { storage } from '../../service/storage/StorageService';
 import styled from 'styled-components';
-import { useChat } from '../../hooks/room/useChat';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { utils } from '../../service/utils/Utils';
@@ -13,23 +12,25 @@ import { getChatListPageByDB } from '../../store/thunk/chatThunk';
 import { PAGE_OFFSET } from '../../style/constants';
 import { useParams } from 'react-router-dom';
 import SvgArrowDown from '../icons/ArrowDown';
+import { chatActions } from '../../store/features/chatSlice';
+import { debounce } from 'throttle-debounce';
 
 const ChatList = () => {
-  const {
-    setPage,
-    handleVisibleScrollButton,
-    moveToChatScrollBottom,
-    state,
-    elements: { chatListElement, chatLoadingTriggerElement },
-  } = useChat();
+  const chatListElement = useRef<HTMLDivElement>(null);
+  const chatLoadingTriggerElement = useRef<HTMLDivElement>(null);
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { messageList, status } = useAppSelector((state) => ({
-    messageList: state.chat.messageList,
-    status: state.status,
-  }));
-  const storeDispatch = useAppDispatch();
+  const { messageList, status, page, isVisibleScrollButton } = useAppSelector(
+    (state) => ({
+      messageList: state.chat.messageList,
+      status: state.status,
+      isVisibleScrollButton: state.chat.isVisibleScrollButton,
+      page: state.chat.page,
+    }),
+  );
+
+  const dispatch = useAppDispatch();
 
   const [isIntersecting] = useIntersectionObserver<HTMLDivElement>(
     chatLoadingTriggerElement,
@@ -37,6 +38,26 @@ const ChatList = () => {
       root: chatListElement.current,
     },
   );
+
+  const handleVisibleScrollButton = debounce(200, () => {
+    if (utils.isBottomScrollElement(chatListElement.current!)) {
+      dispatch(
+        chatActions.setIsVisibleScrollButton({ isVisibleScrollButton: false }),
+      );
+    } else {
+      dispatch(
+        chatActions.setIsVisibleScrollButton({ isVisibleScrollButton: true }),
+      );
+    }
+  });
+
+  const moveToChatScrollBottom = () => {
+    setTimeout(() => {
+      if (chatListElement.current)
+        chatListElement.current.scrollTop =
+          chatListElement?.current?.scrollHeight;
+    }, 0);
+  };
 
   useEffect(() => {
     chatListElement?.current?.addEventListener(
@@ -49,29 +70,30 @@ const ChatList = () => {
         'scroll',
         handleVisibleScrollButton,
       );
-      setPage(0);
+      dispatch(chatActions.setPage({ page: 0 }));
     };
   }, []);
 
   useEffect(() => {
-    if (state.page === 1) {
+    if (page === 1) {
+      // 1페이지에서 스크롤 아래로
       moveToChatScrollBottom();
     }
     if (utils.isBottomScrollElement(chatListElement.current!)) {
-      moveToChatScrollBottom();
+      moveToChatScrollBottom(); // 스크롤이 하단 고정일 때, 새로운 메시지 도착 시 스크롤 아래로
     }
-  }, [messageList.length, state.page]);
+  }, [messageList.length, page]);
 
   useEffect(() => {
     if (isIntersecting && !status.isMaxPageMessageList) {
-      storeDispatch(
+      dispatch(
         getChatListPageByDB({
           roomName: roomName!,
-          page: state.page + 1,
+          page: page + 1,
           offset: PAGE_OFFSET,
         }),
       );
-      setPage(state.page + 1);
+      dispatch(chatActions.setPage({ page: page + 1 }));
     }
   }, [isIntersecting, status.isMaxPageMessageList]);
   const isSameTime = (before: string, after: string) =>
@@ -116,7 +138,7 @@ const ChatList = () => {
           </React.Fragment>
         );
       })}
-      {state.isVisibleScrollButton && (
+      {isVisibleScrollButton && (
         <Button
           className={'scroll-down-button'}
           style={{ marginBottom: 8 }}

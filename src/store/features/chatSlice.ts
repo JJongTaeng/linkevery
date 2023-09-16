@@ -5,16 +5,28 @@ import { getChatListPageByDB } from 'store/thunk/chatThunk';
 
 interface ChatState {
   messageList: Omit<Message, 'id' | 'roomName'>[];
+  page: number;
+  isVisibleScrollButton: boolean;
 }
 
 const initialState: ChatState = {
   messageList: [],
+  page: 0,
+  isVisibleScrollButton: false,
 };
 
 export const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
+    setIsVisibleScrollButton: (state, { payload }) => {
+      state.isVisibleScrollButton = payload.isVisibleScrollButton;
+    },
+
+    setPage: (state, { payload }) => {
+      state.page = payload.page ?? 0;
+    },
+
     addChat: (
       state,
       {

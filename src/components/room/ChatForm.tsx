@@ -1,29 +1,100 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import FileUpload from 'components/chat/FileUpload';
 import { Button } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import { useChat } from '../../hooks/room/useChat';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import dayjs from 'dayjs';
+import { storage } from '../../service/storage/StorageService';
+import { chatActions } from '../../store/features/chatSlice';
+import { addChatByDB } from '../../store/thunk/chatThunk';
+import { useApp } from '../../hooks/useApp';
 
 const ChatForm = () => {
-  const {
-    state,
-    setChatMessage,
-    sendChatMessage,
-    handleChatKeydown,
-    handleChatSubmit,
-    handleChatKeyup,
-    elements: { focusInput },
-  } = useChat();
+  const [app] = useApp();
+
+  const focusInput = useRef<HTMLInputElement>(null);
+  const [chatMessage, setChatMessage] = useState('');
+  const [isShiftKeyDowned, setIsShiftKeydowned] = useState(false);
+  const { username } = useAppSelector((state) => ({
+    username: state.user.username,
+  }));
+  const dispatch = useAppDispatch();
+
+  const sendChatMessage = (type = 'text', image?: string) => {
+    if (type === 'text' && !chatMessage) return;
+    const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
+    const message: any = {
+      image: image,
+      text: chatMessage,
+    };
+    const messageProtocol = {
+      messageType: type,
+      messageKey: username + '+' + date,
+      message: message[type],
+      userKey: storage.getItem('userKey'),
+      date,
+      username,
+    };
+
+    app.dispatch.sendChatSendMessage(messageProtocol); // send
+    dispatch(chatActions.addChat(messageProtocol)); // store add
+
+    // db add
+    dispatch(
+      addChatByDB({
+        ...messageProtocol,
+        roomName: storage.getItem('roomName'),
+      }),
+    );
+    setChatMessage('');
+  };
+  const handleChatKeydown = (e: any) => {
+    switch (e.key) {
+      case 'Enter':
+        e.preventDefault();
+        if (isShiftKeyDowned) {
+          setChatMessage(chatMessage + '\n');
+          return;
+        }
+        if (e.nativeEvent.isComposing) return;
+        sendChatMessage();
+        e.target.value = '';
+        focusInput?.current?.focus();
+        e.target.focus();
+        break;
+      case 'Shift':
+        setIsShiftKeydowned(true);
+        break;
+    }
+  };
+
+  const handleChatKeyup = (e: any) => {
+    switch (e.key) {
+      case 'Shift':
+        setIsShiftKeydowned(false);
+        break;
+    }
+  };
+
+  const handleChatSubmit = (e?: any, type = 'text') => {
+    e?.preventDefault();
+    sendChatMessage(type);
+
+    focusInput?.current?.focus();
+    e && e.target.message.focus();
+  };
 
   return (
     <StyledChatForm autoComplete="off" onSubmit={(e) => handleChatSubmit(e)}>
       <div className="form-header">
         <textarea
-          value={state.chatMessage}
+          value={chatMessage}
           onKeyDown={handleChatKeydown}
           onKeyUp={handleChatKeyup}
-          onChange={(e) => setChatMessage(e.target.value)}
+          onChange={(e) => {
+            setChatMessage(e.target.value);
+          }}
           name="message"
           style={{ height: 40 }}
           placeholder={'이곳에 보낼 채팅을 적어주세요'}
