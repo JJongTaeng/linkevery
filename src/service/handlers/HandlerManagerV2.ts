@@ -9,7 +9,6 @@ import {
 } from 'constants/protocol';
 import { SocketManager } from 'service/socket/SocketManager';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { DispatchEvent } from 'service/dispatch/DispatchEvent';
 import { MessageAssemble } from 'service/messages/MessageAssemble';
 import { ERROR_TYPE } from 'error/error';
 
@@ -24,7 +23,6 @@ export class HandlerManagerV2 {
     @injectAll('Handler') private handlers: any,
     @inject(SocketManager) private socketManager: SocketManager,
     @inject(RTCManager) private rtcManager: RTCManager,
-    @inject(DispatchEvent) private dispatch: DispatchEvent,
   ) {
     this.setHandlers();
     this.subscribe();

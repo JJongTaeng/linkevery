@@ -8,15 +8,17 @@ import { storage } from '../storage/StorageService';
 import { store } from '../../store/store';
 import { roomActions } from '../../store/features/roomSlice';
 import { updateMemberByDB } from '../../store/thunk/roomThunk';
-import { DispatchEvent } from '../dispatch/DispatchEvent';
 import { query } from '../db/Query';
+import { MemberDispatch } from '../dispatch/MemberDispatch';
+import { ChatDispatch } from '../dispatch/ChatDispatch';
 
 @category(CATEGORY.MEMBER)
 @injectable()
 export class MemberHandler {
   constructor(
     @inject(RTCManager) private rtcManager: RTCManager,
-    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    @inject(MemberDispatch) private memberDispatch: MemberDispatch,
+    @inject(ChatDispatch) private chatDispatch: ChatDispatch,
   ) {}
 
   @messageId(MEMBER_MESSAGE_ID.NAME)
@@ -36,7 +38,7 @@ export class MemberHandler {
         member: store.getState().room.current.member,
       }),
     );
-    this.dispatch.sendMemberNameOkMessage({
+    this.memberDispatch.sendMemberNameOkMessage({
       username,
       to: protocol.from,
       userKey,
@@ -64,7 +66,7 @@ export class MemberHandler {
 
     const messageList = await query.getMessageList(roomName);
 
-    this.dispatch.sendSyncChatListMessage({
+    this.chatDispatch.sendSyncChatListMessage({
       messageList,
       to: protocol.from,
     });

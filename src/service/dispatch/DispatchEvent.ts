@@ -136,24 +136,6 @@ export class DispatchEvent {
     });
   }
 
-  sendMemberNameMessage(data: ProtocolData) {
-    this.send({
-      data,
-      category: CATEGORY.MEMBER,
-      messageId: MEMBER_MESSAGE_ID.NAME,
-      messageType: MESSAGE_TYPE.SOCKET,
-    });
-  }
-
-  sendMemberNameOkMessage(data: ProtocolData) {
-    this.send({
-      data,
-      category: CATEGORY.MEMBER,
-      messageId: MEMBER_MESSAGE_ID.NAME_OK,
-      messageType: MESSAGE_TYPE.SOCKET,
-    });
-  }
-
   sendSyncChatListMessage(data: ProtocolData) {
     this.send({
       data,
@@ -169,6 +151,24 @@ export class DispatchEvent {
       category: CATEGORY.CHAT,
       messageId: CHAT_MESSAGE_ID.SYNC_CHAT_LIST_OK,
       messageType: MESSAGE_TYPE.RTC,
+    });
+  }
+
+  sendMemberNameMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.MEMBER,
+      messageId: MEMBER_MESSAGE_ID.NAME,
+      messageType: MESSAGE_TYPE.SOCKET,
+    });
+  }
+
+  sendMemberNameOkMessage(data: ProtocolData) {
+    this.send({
+      data,
+      category: CATEGORY.MEMBER,
+      messageId: MEMBER_MESSAGE_ID.NAME_OK,
+      messageType: MESSAGE_TYPE.SOCKET,
     });
   }
 

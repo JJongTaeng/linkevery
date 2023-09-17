@@ -11,8 +11,7 @@ import { addChatByDB } from '../../store/thunk/chatThunk';
 import { useApp } from '../../hooks/useApp';
 
 const ChatForm = () => {
-  const [app] = useApp();
-
+  const { app, chatDispatch } = useApp();
   const focusInput = useRef<HTMLInputElement>(null);
   const [chatMessage, setChatMessage] = useState('');
   const [isShiftKeyDowned, setIsShiftKeydowned] = useState(false);
@@ -37,7 +36,7 @@ const ChatForm = () => {
       username,
     };
 
-    app.dispatch.sendChatSendMessage(messageProtocol); // send
+    chatDispatch.sendChatSendMessage(messageProtocol); // send
     dispatch(chatActions.addChat(messageProtocol)); // store add
 
     // db add

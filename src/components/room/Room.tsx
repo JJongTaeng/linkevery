@@ -16,7 +16,7 @@ import { debounce } from 'throttle-debounce';
 import { nanoid } from 'nanoid';
 
 const Room = () => {
-  const [app] = useApp();
+  const { app, connectionDispatch } = useApp();
   const dispatch = useAppDispatch();
   const handleViewportResize = debounce(
     50,
@@ -34,44 +34,43 @@ const Room = () => {
     username: state.user.username,
     modalVisible: state.status.usernameModalVisible,
   }));
-  const storeDispatch = useAppDispatch();
 
   useEffect(() => {
     if (username && roomName) {
       storage.setItem('roomName', roomName);
       dispatch(statusActions.setUsernameModalVisible(false));
-      app.dispatch.sendConnectionConnectMessage({}); // socket join
-      app.dispatch.sendConnectionJoinRoomMessage({ roomName }); // join
-      storeDispatch(roomActions.setRoomName(roomName));
-      storeDispatch(getRoomByDB(roomName));
+      connectionDispatch.sendConnectionConnectMessage({}); // socket join
+      connectionDispatch.sendConnectionJoinRoomMessage({ roomName }); // join
+      dispatch(roomActions.setRoomName(roomName));
+      dispatch(getRoomByDB(roomName));
     } else {
       dispatch(statusActions.setUsernameModalVisible(true));
     }
     return () => {
       app.disconnect();
-      storeDispatch(chatActions.resetChatList());
-      storeDispatch(statusActions.resetAllStatusState());
+      dispatch(chatActions.resetChatState());
+      dispatch(statusActions.resetAllStatusState());
     };
   }, [username, roomName]);
 
   const handleUsernameSubmit = (username: string) => {
     const key = nanoid();
-    storeDispatch(addUserByDB({ username, key }));
-    storeDispatch(getUserByDB());
+    dispatch(addUserByDB({ username, key }));
+    dispatch(getUserByDB());
     storage.setItem('userKey', key);
     storage.setItem('username', username);
     dispatch(statusActions.setUsernameModalVisible(true));
   };
 
   useEffect(() => {
-    storeDispatch(getUserByDB());
+    dispatch(getUserByDB());
     window.addEventListener('beforeunload', async () => {
-      roomName && storeDispatch(deleteAllMemberByDB({ roomName }));
+      roomName && dispatch(deleteAllMemberByDB({ roomName }));
     });
     window.visualViewport?.addEventListener('resize', handleViewportResize);
     window.visualViewport?.addEventListener('scroll', handleViewportResize);
     return () => {
-      roomName && storeDispatch(deleteAllMemberByDB({ roomName }));
+      roomName && dispatch(deleteAllMemberByDB({ roomName }));
       window.visualViewport?.removeEventListener(
         'resize',
         handleViewportResize,

@@ -1,7 +1,6 @@
 import { category } from 'decorators/category';
 import type { Protocol } from 'constants/protocol';
 import { CATEGORY, SIGNALING_MESSAGE_ID } from 'constants/protocol';
-import { DispatchEvent } from 'service/dispatch/DispatchEvent';
 import { messageId } from 'decorators/messageId';
 import { store } from 'store/store';
 import { SdpType } from 'service/rtc/RTCPeerService';
@@ -9,12 +8,20 @@ import { storage } from 'service/storage/StorageService';
 import { inject, injectable } from 'tsyringe';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { roomActions } from 'store/features/roomSlice';
+import { SignalingDispatch } from '../dispatch/SignalingDispatch';
+import { NegotiationDispatch } from '../dispatch/NegotiationDispatch';
+import { VoiceDispatch } from '../dispatch/VoiceDispatch';
+import { MemberDispatch } from '../dispatch/MemberDispatch';
 
 @category(CATEGORY.SIGNALING)
 @injectable()
 export class SignalingHandler {
   constructor(
-    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    @inject(SignalingDispatch) private signalingDispatch: SignalingDispatch,
+    @inject(NegotiationDispatch)
+    private negotiationDispatch: NegotiationDispatch,
+    @inject(VoiceDispatch) private voiceDispatch: VoiceDispatch,
+    @inject(MemberDispatch) private memberDispatch: MemberDispatch,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
 
@@ -27,7 +34,7 @@ export class SignalingHandler {
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer
       .onIceCandidate((ice) => {
-        this.dispatch.sendSignalingIceMessage({
+        this.signalingDispatch.sendSignalingIceMessage({
           to: from,
           ice,
         });
@@ -41,7 +48,10 @@ export class SignalingHandler {
             '[negotiationneeded connection state] ',
             e.currentTarget?.connectionState,
           );
-          this.dispatch.sendNegotiationOfferMessage({ offer, to: from });
+          this.negotiationDispatch.sendNegotiationOfferMessage({
+            offer,
+            to: from,
+          });
         }
       })
       .onSignalingStateChange((e: any) => {
@@ -67,7 +77,11 @@ export class SignalingHandler {
       });
     const offer = await rtcPeer.createOffer();
     rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-    this.dispatch.sendSignalingOfferMessage({ offer, to: from, roomName });
+    this.signalingDispatch.sendSignalingOfferMessage({
+      offer,
+      to: from,
+      roomName,
+    });
   }
 
   @messageId(SIGNALING_MESSAGE_ID.OFFER)
@@ -79,7 +93,7 @@ export class SignalingHandler {
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer
       .onIceCandidate((ice) => {
-        this.dispatch.sendSignalingIceMessage({
+        this.signalingDispatch.sendSignalingIceMessage({
           to: from,
           ice,
         });
@@ -93,7 +107,10 @@ export class SignalingHandler {
             '[negotiationneeded connection state] ',
             e.currentTarget?.connectionState,
           );
-          this.dispatch.sendNegotiationOfferMessage({ offer, to: from });
+          this.negotiationDispatch.sendNegotiationOfferMessage({
+            offer,
+            to: from,
+          });
         }
       })
       .onSignalingStateChange((e: any) => {
@@ -121,7 +138,7 @@ export class SignalingHandler {
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
-    this.dispatch.sendSignalingAnswerMessage({
+    this.signalingDispatch.sendSignalingAnswerMessage({
       answer,
       to: from,
     });
@@ -133,7 +150,7 @@ export class SignalingHandler {
     const { from } = protocol;
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
-    this.dispatch.sendSignalingCreateDataChannelMessage({ to: from });
+    this.signalingDispatch.sendSignalingCreateDataChannelMessage({ to: from });
   }
 
   @messageId(SIGNALING_MESSAGE_ID.ICE)
@@ -149,7 +166,7 @@ export class SignalingHandler {
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.onDataChannel((e) => {
       console.debug('[open datachannel]', from);
-      this.dispatch.sendSignalingEndMessage({});
+      this.signalingDispatch.sendSignalingEndMessage({});
 
       rtcPeer.dataChannel = e.channel;
       rtcPeer.onDataChannelMessage((e) => {
@@ -159,7 +176,7 @@ export class SignalingHandler {
         this.rtcManager.emit(RTCManager.RTC_EVENT.DATA, parsedMessage);
       });
     });
-    this.dispatch.sendSignalingConnectDataChannelMessage({ to: from });
+    this.signalingDispatch.sendSignalingConnectDataChannelMessage({ to: from });
   }
 
   @messageId(SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL)
@@ -186,11 +203,11 @@ export class SignalingHandler {
     const { username, userKey } = storage.getAll();
 
     if (store.getState().user.voiceStatus) {
-      this.dispatch.sendVoiceReadyMessage({});
+      this.voiceDispatch.sendVoiceReadyMessage({});
     }
 
-    this.dispatch.sendMemberNameMessage({ to: from, username, userKey });
-    this.dispatch.sendSignalingEndOkMessage({});
+    this.memberDispatch.sendMemberNameMessage({ to: from, username, userKey });
+    this.signalingDispatch.sendSignalingEndOkMessage({});
   }
 
   @messageId(SIGNALING_MESSAGE_ID.END_OK)

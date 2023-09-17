@@ -14,7 +14,7 @@ import { useApp } from 'hooks/useApp';
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
-  const [app] = useApp();
+  const { app } = useApp();
   const [roomCreateModalVisible, setRoomCreateModalVisible] = useState(false);
   const dispatch = useAppDispatch();
   const {

@@ -1,17 +1,18 @@
 import type { Protocol } from 'constants/protocol';
 import { CATEGORY, NEGOTIATION_MESSAGE_ID } from 'constants/protocol';
-import { DispatchEvent } from 'service/dispatch/DispatchEvent';
 import { SdpType } from 'service/rtc/RTCPeerService';
 import { messageId } from 'decorators/messageId';
 import { category } from 'decorators/category';
 import { inject, injectable } from 'tsyringe';
 import { RTCManager } from 'service/rtc/RTCManager';
+import { NegotiationDispatch } from '../dispatch/NegotiationDispatch';
 
 @category(CATEGORY.NEGOTIATION)
 @injectable()
 export class NegotiationHandler {
   constructor(
-    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    @inject(NegotiationDispatch)
+    private negotiationDispatch: NegotiationDispatch,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(NEGOTIATION_MESSAGE_ID.OFFER)
@@ -24,7 +25,7 @@ export class NegotiationHandler {
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
 
-    this.dispatch.sendNegotiationAnswerMessage({ answer, to: from });
+    this.negotiationDispatch.sendNegotiationAnswerMessage({ answer, to: from });
   }
   @messageId(NEGOTIATION_MESSAGE_ID.ANSWER)
   async answer(protocol: Protocol) {
