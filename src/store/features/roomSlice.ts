@@ -71,6 +71,7 @@ export const roomSlice = createSlice({
     leaveRoom: (state) => {
       storage.setItem('roomName', '');
       state.current.roomName = '';
+      state.current.member = {};
     },
     setMemberSize: (state, { payload }) => {
       state.size = payload;

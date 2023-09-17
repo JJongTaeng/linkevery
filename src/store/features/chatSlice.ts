@@ -44,8 +44,11 @@ export const chatSlice = createSlice({
         username,
       });
     },
-    resetChatList: (state) => {
+    resetChatState: (state) => {
       state.messageList = [];
+      state.isVisibleScrollButton = false;
+      state.isMaxPage = false;
+      state.page = 0;
     },
   },
   extraReducers: (builder) => {

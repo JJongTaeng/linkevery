@@ -33,8 +33,9 @@ export class App {
     const roomName = storage.getItem('roomName');
     store.dispatch(roomActions.leaveRoom());
     store.dispatch(userActions.changeVoiceStatus(false));
+    store.dispatch(userActions.changeScreenShareStatus(false));
     this.connectionDispatch.sendConnectionDisconnectMessage({ roomName });
-    // this._dispatch.sendConnectionDisconnectMessage({ roomName });
+    this.disconnectVoice();
     this.rtcManager.clearPeerMap();
   }
 
@@ -50,9 +51,6 @@ export class App {
 
   public closeScreenShare() {
     const userKey = storage.getItem('userKey');
-    // this._dispatch.sendScreenDisconnectMessage({
-    //   userKey,
-    // });
     this.screenDispatch.sendScreenDisconnectMessage({ userKey });
     this.rtcManager.clearVideoTrack();
     this.screenMediaStream = undefined;
