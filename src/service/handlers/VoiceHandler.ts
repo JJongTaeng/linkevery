@@ -8,8 +8,9 @@ import { category } from 'decorators/category';
 import { inject, injectable } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { SoundEffect } from 'service/media/SoundEffect';
-import { DispatchEvent } from 'service/dispatch/DispatchEvent';
 import { RTCManager } from 'service/rtc/RTCManager';
+import { VoiceDispatch } from '../dispatch/VoiceDispatch';
+import { ScreenShareDispatch } from '../dispatch/ScreenShareDispatch';
 
 @category(CATEGORY.VOICE)
 @injectable()
@@ -17,7 +18,8 @@ export class VoiceHandler {
   constructor(
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(SoundEffect) private soundEffect: SoundEffect,
-    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    @inject(VoiceDispatch) private voiceDispatch: VoiceDispatch,
+    @inject(ScreenShareDispatch) private screenDispatch: ScreenShareDispatch,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(VOICE_MESSAGE_ID.READY)
@@ -27,7 +29,7 @@ export class VoiceHandler {
       return;
     }
 
-    this.dispatch.sendVoiceReadyOkMessage({ to: protocol.from, userKey });
+    this.voiceDispatch.sendVoiceReadyOkMessage({ to: protocol.from, userKey });
   }
 
   @messageId(VOICE_MESSAGE_ID.READY_OK)
@@ -55,7 +57,7 @@ export class VoiceHandler {
         userKey: protocol.data.userKey,
       }),
     );
-    this.dispatch.sendVoiceConnectedMessage({ to: from, userKey });
+    this.voiceDispatch.sendVoiceConnectedMessage({ to: from, userKey });
   }
 
   @messageId(VOICE_MESSAGE_ID.CONNECTED)
@@ -83,7 +85,7 @@ export class VoiceHandler {
       }),
     );
     if (store.getState().user.screenShareStatus) {
-      this.dispatch.sendScreenReadyMessage({});
+      this.screenDispatch.sendScreenReadyMessage({});
     }
   }
 

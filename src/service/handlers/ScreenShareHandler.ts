@@ -1,6 +1,5 @@
 import type { Protocol } from 'constants/protocol';
 import { CATEGORY, SCREEN_SHARE_MESSAGE_ID } from 'constants/protocol';
-import { DispatchEvent } from 'service/dispatch/DispatchEvent';
 import { category } from 'decorators/category';
 import { messageId } from 'decorators/messageId';
 import { store } from 'store/store';
@@ -12,13 +11,14 @@ import { message } from 'antd';
 import { roomActions } from 'store/features/roomSlice';
 import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
+import { ScreenShareDispatch } from '../dispatch/ScreenShareDispatch';
 
 @category(CATEGORY.SCREEN)
 @injectable()
 export class ScreenShareHandler {
   constructor(
     @inject(VideoManager) private videoManager: VideoManager,
-    @inject(DispatchEvent) private dispatch: DispatchEvent,
+    @inject(ScreenShareDispatch) private screenDispatch: ScreenShareDispatch,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(SCREEN_SHARE_MESSAGE_ID.READY)
@@ -27,7 +27,7 @@ export class ScreenShareHandler {
       return;
     }
 
-    this.dispatch.sendScreenReadyOkMessage({ to: protocol.from });
+    this.screenDispatch.sendScreenReadyOkMessage({ to: protocol.from });
   }
 
   @messageId(SCREEN_SHARE_MESSAGE_ID.READY_OK)
@@ -57,7 +57,10 @@ export class ScreenShareHandler {
           const peer = this.rtcManager.getPeer(clientId);
           peer.addTrack(track, mediaStream!);
         });
-        this.dispatch.sendScreenConnectedMessage({ to: clientId, userKey });
+        this.screenDispatch.sendScreenConnectedMessage({
+          to: clientId,
+          userKey,
+        });
       }
     } catch (error: any) {
       if (error?.name === 'NotAllowedError') {

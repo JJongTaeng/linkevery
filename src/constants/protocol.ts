@@ -1,6 +1,3 @@
-import { DispatchEvent } from 'service/dispatch/DispatchEvent';
-import { RTCManagerService } from 'service/rtc/RTCManagerService';
-
 export const EVENT_NAME = 'message';
 
 export enum MESSAGE_TYPE {
@@ -102,13 +99,3 @@ export interface Protocol {
 export type HandlerMap<T extends string | number | symbol> = {
   [key in T]: (protocol: Protocol) => void;
 };
-
-export type HandlerParameter = {
-  dispatch: DispatchEvent;
-  rtcManager: RTCManagerService;
-};
-
-export type HandlerFunction = (
-  protocol: Protocol,
-  { dispatch, rtcManager }: HandlerParameter,
-) => any;

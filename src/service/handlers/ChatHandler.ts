@@ -2,8 +2,6 @@ import type { Protocol } from 'constants/protocol';
 import { CATEGORY, CHAT_MESSAGE_ID } from 'constants/protocol';
 import { category } from 'decorators/category';
 import { messageId } from 'decorators/messageId';
-import { DispatchEvent } from 'service/dispatch/DispatchEvent';
-import { RTCManager } from 'service/rtc/RTCManager';
 import { inject, injectable } from 'tsyringe';
 import { chatActions } from 'store/features/chatSlice';
 import { store } from 'store/store';
@@ -11,14 +9,12 @@ import { addChatByDB } from 'store/thunk/chatThunk';
 import { storage } from 'service/storage/StorageService';
 import { query } from '../db/Query';
 import { Message } from '../db/LinkeveryDB';
+import { ChatDispatch } from '../dispatch/ChatDispatch';
 
 @category(CATEGORY.CHAT)
 @injectable()
 export class ChatHandler {
-  constructor(
-    @inject(DispatchEvent) private dispatch: DispatchEvent,
-    @inject(RTCManager) private rtcManager: RTCManager,
-  ) {}
+  constructor(@inject(ChatDispatch) private chatDispatch: ChatDispatch) {}
 
   @messageId(CHAT_MESSAGE_ID.SEND)
   send(protocol: Protocol) {
@@ -34,7 +30,7 @@ export class ChatHandler {
     };
 
     store.dispatch(chatActions.addChat(chatInfo));
-    this.dispatch.sendChatOkMessage(chatInfo);
+    this.chatDispatch.sendChatOkMessage(chatInfo);
     store.dispatch(
       addChatByDB({
         ...chatInfo,
@@ -70,7 +66,7 @@ export class ChatHandler {
     }
 
     const myMessageList = await query.getMessageList(roomName);
-    this.dispatch.sendSyncChatListOkMessage({
+    this.chatDispatch.sendSyncChatListOkMessage({
       messageList: myMessageList,
       to: protocol.from,
     });
