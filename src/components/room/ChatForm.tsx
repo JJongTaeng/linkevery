@@ -30,7 +30,7 @@ const ChatForm = () => {
     };
     const messageProtocol = {
       messageType: type,
-      messageKey: username + '+' + date,
+      messageKey: storage.getItem('userKey') + username + date,
       message: message[type],
       userKey: storage.getItem('userKey'),
       date,
