@@ -51,7 +51,6 @@ export const chatSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getChatListPageByDB.fulfilled, (state, { payload }) => {
       if (payload.length < PAGE_OFFSET) {
-        // db조회 결과값이 offset값보다 낮으면 마지막 페이지
         state.isMaxPage = true;
       }
       state.messageList.unshift(...payload);

@@ -1,7 +1,6 @@
 import Dexie from 'dexie';
 import { LinkeveryDB, Member, Message, Room } from './LinkeveryDB';
 import { QueryService } from './QueryService';
-import dayjs from 'dayjs';
 
 class Query implements QueryService {
   db = new LinkeveryDB();
@@ -83,18 +82,14 @@ class Query implements QueryService {
 
   async getMessageListByPage(roomName: string, page = 1, offset = 30) {
     return await this.db.message
-      .where('roomName')
-      .equals(roomName)
+      .orderBy('date')
       .offset(offset * (page - 1))
       .limit(offset)
       .reverse()
       .toArray((messageList) => {
-        messageList.sort((a, b) => {
-          if (dayjs(a.date).isBefore(b.date)) return 1;
-          else if (dayjs(a.date).isAfter(b.date)) return -1;
-          else return 0;
-        });
-        return messageList.reverse();
+        return messageList
+          .filter((message) => message.roomName === roomName)
+          .reverse();
       });
   }
 
