@@ -8,10 +8,10 @@ import { storage } from 'service/storage/StorageService';
 import { inject, injectable } from 'tsyringe';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { roomActions } from 'store/features/roomSlice';
-import { SignalingDispatch } from '../dispatch/SignalingDispatch';
-import { NegotiationDispatch } from '../dispatch/NegotiationDispatch';
-import { VoiceDispatch } from '../dispatch/VoiceDispatch';
-import { MemberDispatch } from '../dispatch/MemberDispatch';
+import { SignalingDispatch } from '../peerEmitter/SignalingDispatch';
+import { NegotiationDispatch } from '../peerEmitter/NegotiationDispatch';
+import { VoiceDispatch } from '../peerEmitter/VoiceDispatch';
+import { MemberDispatch } from '../peerEmitter/MemberDispatch';
 
 @category(CATEGORY.SIGNALING)
 @injectable()

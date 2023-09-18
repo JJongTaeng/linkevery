@@ -11,7 +11,7 @@ import { message } from 'antd';
 import { roomActions } from 'store/features/roomSlice';
 import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { ScreenShareDispatch } from '../dispatch/ScreenShareDispatch';
+import { ScreenShareDispatch } from '../peerEmitter/ScreenShareDispatch';
 
 @category(CATEGORY.SCREEN)
 @injectable()

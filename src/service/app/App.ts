@@ -1,15 +1,15 @@
 import { roomActions } from 'store/features/roomSlice';
 import { userActions } from 'store/features/userSlice';
 import { store } from 'store/store';
-import { DispatchEvent } from 'service/dispatch/DispatchEvent';
+import { DispatchEvent } from '../peerEmitter/DispatchEvent';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { storage } from 'service/storage/StorageService';
 import { inject, singleton } from 'tsyringe';
 import { RTCManagerService } from 'service/rtc/RTCManagerService';
 import { AudioManager } from 'service/media/AudioManager';
-import { ScreenShareDispatch } from '../dispatch/ScreenShareDispatch';
-import { VoiceDispatch } from '../dispatch/VoiceDispatch';
-import { ConnectionDispatch } from '../dispatch/ConnectionDispatch';
+import { ScreenShareDispatch } from '../peerEmitter/ScreenShareDispatch';
+import { VoiceDispatch } from '../peerEmitter/VoiceDispatch';
+import { ConnectionDispatch } from '../peerEmitter/ConnectionDispatch';
 
 @singleton()
 export class App {

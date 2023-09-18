@@ -11,7 +11,7 @@ import { inject, injectable } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { SignalingDispatch } from '../dispatch/SignalingDispatch';
+import { SignalingDispatch } from '../peerEmitter/SignalingDispatch';
 
 @category(CATEGORY.CONNECTION)
 @injectable()

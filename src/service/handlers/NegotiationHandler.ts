@@ -5,7 +5,7 @@ import { messageId } from 'decorators/messageId';
 import { category } from 'decorators/category';
 import { inject, injectable } from 'tsyringe';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { NegotiationDispatch } from '../dispatch/NegotiationDispatch';
+import { NegotiationDispatch } from '../peerEmitter/NegotiationDispatch';
 
 @category(CATEGORY.NEGOTIATION)
 @injectable()

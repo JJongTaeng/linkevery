@@ -9,8 +9,8 @@ import { inject, injectable } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { SoundEffect } from 'service/media/SoundEffect';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { VoiceDispatch } from '../dispatch/VoiceDispatch';
-import { ScreenShareDispatch } from '../dispatch/ScreenShareDispatch';
+import { VoiceDispatch } from '../peerEmitter/VoiceDispatch';
+import { ScreenShareDispatch } from '../peerEmitter/ScreenShareDispatch';
 
 @category(CATEGORY.VOICE)
 @injectable()

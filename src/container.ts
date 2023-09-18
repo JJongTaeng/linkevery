@@ -11,15 +11,15 @@ import { AudioManager } from './service/media/AudioManager';
 import { VideoManager } from './service/media/VideoManager';
 import { SoundEffect } from './service/media/SoundEffect';
 import { RTCManager } from './service/rtc/RTCManager';
-import { DispatchEvent } from './service/dispatch/DispatchEvent';
+import { DispatchEvent } from './service/peerEmitter/DispatchEvent';
 import { MemberHandler } from './service/handlers/MemberHandler';
-import { ConnectionDispatch } from './service/dispatch/ConnectionDispatch';
-import { ChatDispatch } from './service/dispatch/ChatDispatch';
-import { MemberDispatch } from './service/dispatch/MemberDispatch';
-import { NegotiationDispatch } from './service/dispatch/NegotiationDispatch';
-import { ScreenShareDispatch } from './service/dispatch/ScreenShareDispatch';
-import { VoiceDispatch } from './service/dispatch/VoiceDispatch';
-import { SignalingDispatch } from './service/dispatch/SignalingDispatch';
+import { ConnectionDispatch } from './service/peerEmitter/ConnectionDispatch';
+import { ChatDispatch } from './service/peerEmitter/ChatDispatch';
+import { MemberDispatch } from './service/peerEmitter/MemberDispatch';
+import { NegotiationDispatch } from './service/peerEmitter/NegotiationDispatch';
+import { ScreenShareDispatch } from './service/peerEmitter/ScreenShareDispatch';
+import { VoiceDispatch } from './service/peerEmitter/VoiceDispatch';
+import { SignalingDispatch } from './service/peerEmitter/SignalingDispatch';
 
 export const initContainer = () => {
   container.register(

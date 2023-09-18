@@ -9,7 +9,7 @@ import { addChatByDB } from 'store/thunk/chatThunk';
 import { storage } from 'service/storage/StorageService';
 import { query } from '../db/Query';
 import { Message } from '../db/LinkeveryDB';
-import { ChatDispatch } from '../dispatch/ChatDispatch';
+import { ChatDispatch } from '../peerEmitter/ChatDispatch';
 
 @category(CATEGORY.CHAT)
 @injectable()
