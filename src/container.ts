@@ -11,15 +11,14 @@ import { AudioManager } from './service/media/AudioManager';
 import { VideoManager } from './service/media/VideoManager';
 import { SoundEffect } from './service/media/SoundEffect';
 import { RTCManager } from './service/rtc/RTCManager';
-import { DispatchEvent } from './service/peerEmitter/DispatchEvent';
 import { MemberHandler } from './service/handlers/MemberHandler';
-import { ConnectionDispatch } from './service/peerEmitter/ConnectionDispatch';
-import { ChatDispatch } from './service/peerEmitter/ChatDispatch';
-import { MemberDispatch } from './service/peerEmitter/MemberDispatch';
-import { NegotiationDispatch } from './service/peerEmitter/NegotiationDispatch';
-import { ScreenShareDispatch } from './service/peerEmitter/ScreenShareDispatch';
-import { VoiceDispatch } from './service/peerEmitter/VoiceDispatch';
-import { SignalingDispatch } from './service/peerEmitter/SignalingDispatch';
+import { ConnectionPeerEmitter } from './service/peerEmitter/ConnectionPeerEmitter';
+import { ChatPeerEmitter } from './service/peerEmitter/ChatPeerEmitter';
+import { MemberPeerEmitter } from './service/peerEmitter/MemberPeerEmitter';
+import { NegotiationPeerEmitter } from './service/peerEmitter/NegotiationPeerEmitter';
+import { ScreenSharePeerEmitter } from './service/peerEmitter/ScreenSharePeerEmitter';
+import { VoicePeerEmitter } from './service/peerEmitter/VoicePeerEmitter';
+import { SignalingPeerEmitter } from './service/peerEmitter/SignalingPeerEmitter';
 
 export const initContainer = () => {
   container.register(
@@ -38,17 +37,20 @@ export const initContainer = () => {
     { useClass: RTCManager },
     { lifecycle: Lifecycle.Singleton },
   );
-  container.register(DispatchEvent, {
-    useClass: DispatchEvent,
-  });
 
-  container.register(ConnectionDispatch, { useClass: ConnectionDispatch });
-  container.register(SignalingDispatch, { useClass: SignalingDispatch });
-  container.register(ChatDispatch, { useClass: ChatDispatch });
-  container.register(MemberDispatch, { useClass: MemberDispatch });
-  container.register(NegotiationDispatch, { useClass: NegotiationDispatch });
-  container.register(ScreenShareDispatch, { useClass: ScreenShareDispatch });
-  container.register(VoiceDispatch, { useClass: VoiceDispatch });
+  container.register(ConnectionPeerEmitter, {
+    useClass: ConnectionPeerEmitter,
+  });
+  container.register(SignalingPeerEmitter, { useClass: SignalingPeerEmitter });
+  container.register(ChatPeerEmitter, { useClass: ChatPeerEmitter });
+  container.register(MemberPeerEmitter, { useClass: MemberPeerEmitter });
+  container.register(NegotiationPeerEmitter, {
+    useClass: NegotiationPeerEmitter,
+  });
+  container.register(ScreenSharePeerEmitter, {
+    useClass: ScreenSharePeerEmitter,
+  });
+  container.register(VoicePeerEmitter, { useClass: VoicePeerEmitter });
 
   container.register('Handler', { useClass: ConnectionHandler });
   container.register('Handler', { useClass: SignalingHandler });

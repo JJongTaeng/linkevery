@@ -5,7 +5,7 @@ import { CATEGORY, VOICE_MESSAGE_ID } from 'constants/protocol';
 import { rtcMessage } from 'decorators/rtcMessage';
 
 @injectable()
-export class VoiceDispatch {
+export class VoicePeerEmitter {
   constructor(@inject(Sender) private sender: Sender) {}
 
   @rtcMessage({

@@ -16,7 +16,7 @@ import { debounce } from 'throttle-debounce';
 import { nanoid } from 'nanoid';
 
 const Room = () => {
-  const { app, connectionDispatch } = useApp();
+  const { app, connectionPeerEmitter } = useApp();
   const dispatch = useAppDispatch();
   const handleViewportResize = debounce(
     50,
@@ -39,8 +39,8 @@ const Room = () => {
     if (username && roomName) {
       storage.setItem('roomName', roomName);
       dispatch(statusActions.setUsernameModalVisible(false));
-      connectionDispatch.sendConnectionConnectMessage({}); // socket join
-      connectionDispatch.sendConnectionJoinRoomMessage({ roomName }); // join
+      connectionPeerEmitter.sendConnectionConnectMessage({}); // socket join
+      connectionPeerEmitter.sendConnectionJoinRoomMessage({ roomName }); // join
       dispatch(roomActions.setRoomName(roomName));
       dispatch(getRoomByDB(roomName));
     } else {

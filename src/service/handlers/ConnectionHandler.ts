@@ -11,7 +11,7 @@ import { inject, injectable } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { SignalingDispatch } from '../peerEmitter/SignalingDispatch';
+import { SignalingPeerEmitter } from '../peerEmitter/SignalingPeerEmitter';
 
 @category(CATEGORY.CONNECTION)
 @injectable()
@@ -19,7 +19,8 @@ export class ConnectionHandler {
   constructor(
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(VideoManager) private videoManager: VideoManager,
-    @inject(SignalingDispatch) private signalingDispatch: SignalingDispatch,
+    @inject(SignalingPeerEmitter)
+    private signalingPeerEmitter: SignalingPeerEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(CONNECTION_MESSAGE_ID.CONNECT)
@@ -31,7 +32,7 @@ export class ConnectionHandler {
   @messageId(CONNECTION_MESSAGE_ID.JOIN_ROOM)
   joinRoom(protocol: Protocol): void {
     const { roomName } = protocol.data;
-    this.signalingDispatch.sendSignalingStartMessage({
+    this.signalingPeerEmitter.sendSignalingStartMessage({
       roomName,
       to: protocol.from,
     });

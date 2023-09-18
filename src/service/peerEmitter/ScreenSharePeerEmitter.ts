@@ -5,7 +5,7 @@ import { CATEGORY, SCREEN_SHARE_MESSAGE_ID } from 'constants/protocol';
 import { rtcMessage } from 'decorators/rtcMessage';
 
 @injectable()
-export class ScreenShareDispatch {
+export class ScreenSharePeerEmitter {
   constructor(@inject(Sender) private sender: Sender) {}
 
   @rtcMessage({

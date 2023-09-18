@@ -5,7 +5,7 @@ import type { ProtocolData } from '../../constants/protocol';
 import { CATEGORY, MEMBER_MESSAGE_ID } from '../../constants/protocol';
 
 @injectable()
-export class MemberDispatch {
+export class MemberPeerEmitter {
   constructor(@inject(Sender) private sender: Sender) {}
 
   @socketMessage({

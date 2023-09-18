@@ -5,7 +5,7 @@ import { CATEGORY, NEGOTIATION_MESSAGE_ID } from 'constants/protocol';
 import { socketMessage } from 'decorators/socketMessage';
 
 @injectable()
-export class NegotiationDispatch {
+export class NegotiationPeerEmitter {
   constructor(@inject(Sender) private sender: Sender) {}
 
   @socketMessage({

@@ -9,12 +9,14 @@ import { addChatByDB } from 'store/thunk/chatThunk';
 import { storage } from 'service/storage/StorageService';
 import { query } from '../db/Query';
 import { Message } from '../db/LinkeveryDB';
-import { ChatDispatch } from '../peerEmitter/ChatDispatch';
+import { ChatPeerEmitter } from '../peerEmitter/ChatPeerEmitter';
 
 @category(CATEGORY.CHAT)
 @injectable()
 export class ChatHandler {
-  constructor(@inject(ChatDispatch) private chatDispatch: ChatDispatch) {}
+  constructor(
+    @inject(ChatPeerEmitter) private chatPeerEmitter: ChatPeerEmitter,
+  ) {}
 
   @messageId(CHAT_MESSAGE_ID.SEND)
   send(protocol: Protocol) {
@@ -30,7 +32,7 @@ export class ChatHandler {
     };
 
     store.dispatch(chatActions.addChat(chatInfo));
-    this.chatDispatch.sendChatOkMessage(chatInfo);
+    this.chatPeerEmitter.sendChatOkMessage(chatInfo);
     store.dispatch(
       addChatByDB({
         ...chatInfo,
@@ -66,7 +68,7 @@ export class ChatHandler {
     }
 
     const myMessageList = await query.getMessageList(roomName);
-    this.chatDispatch.sendSyncChatListOkMessage({
+    this.chatPeerEmitter.sendSyncChatListOkMessage({
       messageList: myMessageList,
       to: protocol.from,
     });
