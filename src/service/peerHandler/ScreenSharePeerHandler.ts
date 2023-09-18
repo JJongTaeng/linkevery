@@ -11,14 +11,15 @@ import { message } from 'antd';
 import { roomActions } from 'store/features/roomSlice';
 import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { ScreenShareDispatch } from '../dispatch/ScreenShareDispatch';
+import { ScreenSharePeerEmitter } from '../peerEmitter/ScreenSharePeerEmitter';
 
 @category(CATEGORY.SCREEN)
 @injectable()
-export class ScreenShareHandler {
+export class ScreenSharePeerHandler {
   constructor(
     @inject(VideoManager) private videoManager: VideoManager,
-    @inject(ScreenShareDispatch) private screenDispatch: ScreenShareDispatch,
+    @inject(ScreenSharePeerEmitter)
+    private screenSharePeerEmitter: ScreenSharePeerEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(SCREEN_SHARE_MESSAGE_ID.READY)
@@ -27,7 +28,7 @@ export class ScreenShareHandler {
       return;
     }
 
-    this.screenDispatch.sendScreenReadyOkMessage({ to: protocol.from });
+    this.screenSharePeerEmitter.sendScreenReadyOkMessage({ to: protocol.from });
   }
 
   @messageId(SCREEN_SHARE_MESSAGE_ID.READY_OK)
@@ -57,7 +58,7 @@ export class ScreenShareHandler {
           const peer = this.rtcManager.getPeer(clientId);
           peer.addTrack(track, mediaStream!);
         });
-        this.screenDispatch.sendScreenConnectedMessage({
+        this.screenSharePeerEmitter.sendScreenConnectedMessage({
           to: clientId,
           userKey,
         });

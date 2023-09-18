@@ -9,16 +9,16 @@ import { store } from '../../store/store';
 import { roomActions } from '../../store/features/roomSlice';
 import { updateMemberByDB } from '../../store/thunk/roomThunk';
 import { query } from '../db/Query';
-import { MemberDispatch } from '../dispatch/MemberDispatch';
-import { ChatDispatch } from '../dispatch/ChatDispatch';
+import { MemberPeerEmitter } from '../peerEmitter/MemberPeerEmitter';
+import { ChatPeerEmitter } from '../peerEmitter/ChatPeerEmitter';
 
 @category(CATEGORY.MEMBER)
 @injectable()
-export class MemberHandler {
+export class MemberPeerHandler {
   constructor(
     @inject(RTCManager) private rtcManager: RTCManager,
-    @inject(MemberDispatch) private memberDispatch: MemberDispatch,
-    @inject(ChatDispatch) private chatDispatch: ChatDispatch,
+    @inject(MemberPeerEmitter) private memberPeerEmitter: MemberPeerEmitter,
+    @inject(ChatPeerEmitter) private chatPeerEmitter: ChatPeerEmitter,
   ) {}
 
   @messageId(MEMBER_MESSAGE_ID.NAME)
@@ -38,7 +38,7 @@ export class MemberHandler {
         member: store.getState().room.current.member,
       }),
     );
-    this.memberDispatch.sendMemberNameOkMessage({
+    this.memberPeerEmitter.sendMemberNameOkMessage({
       username,
       to: protocol.from,
       userKey,
@@ -66,7 +66,7 @@ export class MemberHandler {
 
     const messageList = await query.getMessageList(roomName);
 
-    this.chatDispatch.sendSyncChatListMessage({
+    this.chatPeerEmitter.sendSyncChatListMessage({
       messageList,
       to: protocol.from,
     });

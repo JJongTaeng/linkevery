@@ -5,7 +5,7 @@ import { CATEGORY, SIGNALING_MESSAGE_ID } from 'constants/protocol';
 import { socketMessage } from 'decorators/socketMessage';
 
 @injectable()
-export class SignalingDispatch {
+export class SignalingPeerEmitter {
   constructor(@inject(Sender) private sender: Sender) {}
 
   @socketMessage({

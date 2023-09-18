@@ -1,40 +1,42 @@
 import { useRef } from 'react';
 import { container } from 'tsyringe';
 import { App } from 'service/app/App';
-import { ConnectionDispatch } from '../service/dispatch/ConnectionDispatch';
-import { SignalingDispatch } from '../service/dispatch/SignalingDispatch';
-import { ChatDispatch } from '../service/dispatch/ChatDispatch';
-import { MemberDispatch } from '../service/dispatch/MemberDispatch';
-import { NegotiationDispatch } from '../service/dispatch/NegotiationDispatch';
-import { ScreenShareDispatch } from '../service/dispatch/ScreenShareDispatch';
-import { VoiceDispatch } from '../service/dispatch/VoiceDispatch';
+import { ConnectionPeerEmitter } from '../service/peerEmitter/ConnectionPeerEmitter';
+import { SignalingPeerEmitter } from '../service/peerEmitter/SignalingPeerEmitter';
+import { ChatPeerEmitter } from '../service/peerEmitter/ChatPeerEmitter';
+import { MemberPeerEmitter } from '../service/peerEmitter/MemberPeerEmitter';
+import { NegotiationPeerEmitter } from '../service/peerEmitter/NegotiationPeerEmitter';
+import { ScreenSharePeerEmitter } from '../service/peerEmitter/ScreenSharePeerEmitter';
+import { VoicePeerEmitter } from '../service/peerEmitter/VoicePeerEmitter';
 
 export const useApp = () => {
   const app = useRef(container.resolve(App)).current;
-  const connectionDispatch = useRef(
-    container.resolve(ConnectionDispatch),
+  const connectionPeerEmitter = useRef(
+    container.resolve(ConnectionPeerEmitter),
   ).current;
-  const signalingDispatch = useRef(
-    container.resolve(SignalingDispatch),
+  const signalingPeerEmitter = useRef(
+    container.resolve(SignalingPeerEmitter),
   ).current;
-  const chatDispatch = useRef(container.resolve(ChatDispatch)).current;
-  const memberDispatch = useRef(container.resolve(MemberDispatch)).current;
-  const negotiationDispatch = useRef(
-    container.resolve(NegotiationDispatch),
+  const chatPeerEmitter = useRef(container.resolve(ChatPeerEmitter)).current;
+  const memberPeerEmitter = useRef(
+    container.resolve(MemberPeerEmitter),
   ).current;
-  const screenShareDispatch = useRef(
-    container.resolve(ScreenShareDispatch),
+  const negotiationPeerEmitter = useRef(
+    container.resolve(NegotiationPeerEmitter),
   ).current;
-  const voiceDispatch = useRef(container.resolve(VoiceDispatch)).current;
+  const screenSharePeerEmitter = useRef(
+    container.resolve(ScreenSharePeerEmitter),
+  ).current;
+  const voicePeerEmitter = useRef(container.resolve(VoicePeerEmitter)).current;
 
   return {
     app,
-    connectionDispatch,
-    signalingDispatch,
-    chatDispatch,
-    memberDispatch,
-    negotiationDispatch,
-    screenShareDispatch,
-    voiceDispatch,
+    connectionPeerEmitter,
+    signalingPeerEmitter,
+    chatPeerEmitter,
+    memberPeerEmitter,
+    negotiationPeerEmitter,
+    screenSharePeerEmitter,
+    voicePeerEmitter,
   };
 };

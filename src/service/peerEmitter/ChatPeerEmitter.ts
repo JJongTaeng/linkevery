@@ -5,7 +5,7 @@ import { CATEGORY, CHAT_MESSAGE_ID } from 'constants/protocol';
 import { rtcMessage } from 'decorators/rtcMessage';
 
 @injectable()
-export class ChatDispatch {
+export class ChatPeerEmitter {
   constructor(@inject(Sender) private sender: Sender) {}
 
   @rtcMessage({

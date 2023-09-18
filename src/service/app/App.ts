@@ -1,26 +1,25 @@
 import { roomActions } from 'store/features/roomSlice';
 import { userActions } from 'store/features/userSlice';
 import { store } from 'store/store';
-import { DispatchEvent } from 'service/dispatch/DispatchEvent';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { storage } from 'service/storage/StorageService';
 import { inject, singleton } from 'tsyringe';
 import { RTCManagerService } from 'service/rtc/RTCManagerService';
 import { AudioManager } from 'service/media/AudioManager';
-import { ScreenShareDispatch } from '../dispatch/ScreenShareDispatch';
-import { VoiceDispatch } from '../dispatch/VoiceDispatch';
-import { ConnectionDispatch } from '../dispatch/ConnectionDispatch';
+import { ScreenSharePeerEmitter } from '../peerEmitter/ScreenSharePeerEmitter';
+import { VoicePeerEmitter } from '../peerEmitter/VoicePeerEmitter';
+import { ConnectionPeerEmitter } from '../peerEmitter/ConnectionPeerEmitter';
 
 @singleton()
 export class App {
   screenMediaStream?: MediaStream;
 
   constructor(
-    @inject(ScreenShareDispatch)
-    private screenDispatch: ScreenShareDispatch,
-    @inject(VoiceDispatch) private voiceDispatch: VoiceDispatch,
-    @inject(ConnectionDispatch) private connectionDispatch: ConnectionDispatch,
-    @inject(DispatchEvent) private _dispatch: DispatchEvent,
+    @inject(ScreenSharePeerEmitter)
+    private screenSharePeerEmitter: ScreenSharePeerEmitter,
+    @inject(VoicePeerEmitter) private voicePeerEmitter: VoicePeerEmitter,
+    @inject(ConnectionPeerEmitter)
+    private connectionPeerEmitter: ConnectionPeerEmitter,
     @inject(RTCManager) private _rtcManager: RTCManagerService,
     @inject(AudioManager) private audioManager: AudioManager,
   ) {}
@@ -34,7 +33,7 @@ export class App {
     store.dispatch(roomActions.leaveRoom());
     store.dispatch(userActions.changeVoiceStatus(false));
     store.dispatch(userActions.changeScreenShareStatus(false));
-    this.connectionDispatch.sendConnectionDisconnectMessage({ roomName });
+    this.connectionPeerEmitter.sendConnectionDisconnectMessage({ roomName });
     this.disconnectVoice();
     this.rtcManager.clearPeerMap();
   }
@@ -43,7 +42,7 @@ export class App {
     const userKey = storage.getItem('userKey');
 
     // this._dispatch.sendVoiceDisconnectMessage({ userKey });
-    this.voiceDispatch.sendVoiceDisconnectMessage({ userKey });
+    this.voicePeerEmitter.sendVoiceDisconnectMessage({ userKey });
     this.rtcManager.clearAudioTrack();
     this.audioManager.removeAllAudio();
     this.rtcManager.clearVideoTrack();
@@ -51,7 +50,7 @@ export class App {
 
   public closeScreenShare() {
     const userKey = storage.getItem('userKey');
-    this.screenDispatch.sendScreenDisconnectMessage({ userKey });
+    this.screenSharePeerEmitter.sendScreenDisconnectMessage({ userKey });
     this.rtcManager.clearVideoTrack();
     this.screenMediaStream = undefined;
   }

@@ -5,7 +5,7 @@ import { inject, injectable } from 'tsyringe';
 import { Sender } from '../messages/Sender';
 
 @injectable()
-export class ConnectionDispatch {
+export class ConnectionPeerEmitter {
   constructor(@inject(Sender) private sender: Sender) {}
 
   @socketMessage({
