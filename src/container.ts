@@ -19,8 +19,19 @@ import { NegotiationPeerEmitter } from './service/peerEmitter/NegotiationPeerEmi
 import { ScreenSharePeerEmitter } from './service/peerEmitter/ScreenSharePeerEmitter';
 import { VoicePeerEmitter } from './service/peerEmitter/VoicePeerEmitter';
 import { SignalingPeerEmitter } from './service/peerEmitter/SignalingPeerEmitter';
+import EventEmitter from 'events';
+import { ChatLocalHandler } from 'service/localHandler/ChatLocalHandler';
+import { LocalHandler } from './service/localHandler/LocalHandler';
+import { ChatLocalEmitter } from './service/localEmitter/ChatLocalEmitter';
+import { RoomLocalHandler } from './service/localHandler/RoomLocalHandler';
+import { RoomLocalEmitter } from 'service/localEmitter/RoomLocalEmitter';
+import { storage } from './service/storage/StorageService';
+import { store } from './store/store';
 
 export const initContainer = () => {
+  container.register('ee', { useValue: new EventEmitter() });
+  container.register('storage', { useValue: storage });
+  container.register('store', { useValue: store });
   container.register(
     AudioManager,
     { useClass: AudioManager },
@@ -38,6 +49,13 @@ export const initContainer = () => {
     { lifecycle: Lifecycle.Singleton },
   );
 
+  container.register(ChatLocalEmitter, { useClass: ChatLocalEmitter });
+  container.register(RoomLocalEmitter, { useClass: RoomLocalEmitter });
+
+  container.register('LocalHandler', { useClass: ChatLocalHandler });
+  container.register('LocalHandler', { useClass: RoomLocalHandler });
+  container.register('LocalHandlerManager', { useClass: LocalHandler });
+
   container.register(ConnectionPeerEmitter, {
     useClass: ConnectionPeerEmitter,
   });
@@ -52,19 +70,25 @@ export const initContainer = () => {
   });
   container.register(VoicePeerEmitter, { useClass: VoicePeerEmitter });
 
-  container.register('Handler', { useClass: ConnectionPeerHandler });
-  container.register('Handler', { useClass: SignalingPeerHandler });
-  container.register('Handler', { useClass: NegotiationPeerHandler });
-  container.register('Handler', { useClass: VoicePeerHandler });
-  container.register('Handler', { useClass: ChatPeerHandler });
-  container.register('Handler', { useClass: ScreenSharePeerHandler });
-  container.register('Handler', { useClass: MemberPeerHandler });
-  container.register('HandlerManager', { useClass: PeerHandler });
+  container.register('PeerHandler', { useClass: ConnectionPeerHandler });
+  container.register('PeerHandler', { useClass: SignalingPeerHandler });
+  container.register('PeerHandler', { useClass: NegotiationPeerHandler });
+  container.register('PeerHandler', { useClass: VoicePeerHandler });
+  container.register('PeerHandler', { useClass: ChatPeerHandler });
+  container.register('PeerHandler', { useClass: ScreenSharePeerHandler });
+  container.register('PeerHandler', { useClass: MemberPeerHandler });
+  container.register('PeerHandlerManager', { useClass: PeerHandler });
   container.resolve(App);
   container.afterResolution(
     App,
     (_t, result) => {
-      container.resolve('HandlerManager');
+      container.resolve('PeerHandlerManager');
+      container.resolve('LocalHandlerManager');
+      const re = container.resolve(RoomLocalEmitter);
+      const ce = container.resolve(ChatLocalEmitter);
+      re.leave();
+      ce.send();
+      ce.receive();
     },
     { frequency: 'Once' },
   );

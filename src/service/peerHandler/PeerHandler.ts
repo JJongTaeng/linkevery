@@ -20,7 +20,7 @@ export class PeerHandler {
   private handlerMap: CategoryHandlers = {};
 
   constructor(
-    @injectAll('Handler') private handlers: any,
+    @injectAll('PeerHandler') private handlers: any,
     @inject(SocketManager) private socketManager: SocketManager,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {

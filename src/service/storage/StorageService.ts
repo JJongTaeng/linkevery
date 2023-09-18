@@ -1,3 +1,5 @@
+import { injectable } from 'tsyringe';
+
 interface StorageData {
   clientId: string;
   username: string;
@@ -10,6 +12,7 @@ type Key = keyof StorageData;
 
 const APP = 'APP';
 
+@injectable()
 export class StorageService {
   private storage: StorageData = {
     clientId: '',

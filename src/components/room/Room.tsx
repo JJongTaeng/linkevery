@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { storage } from 'service/storage/StorageService';
-import { chatActions } from 'store/features/chatSlice';
 import { roomActions } from 'store/features/roomSlice';
 import { statusActions } from 'store/features/statusSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
@@ -14,9 +13,11 @@ import ChatForm from './ChatForm';
 import ChatList from '../chat/ChatList';
 import { debounce } from 'throttle-debounce';
 import { nanoid } from 'nanoid';
+import { useLocalEmitter } from '../../hooks/useLocalEmitter';
 
 const Room = () => {
   const { app, connectionPeerEmitter } = useApp();
+  const { roomLocalEmitter } = useLocalEmitter();
   const dispatch = useAppDispatch();
   const handleViewportResize = debounce(
     50,
@@ -47,9 +48,7 @@ const Room = () => {
       dispatch(statusActions.setUsernameModalVisible(true));
     }
     return () => {
-      app.disconnect();
-      dispatch(chatActions.resetChatState());
-      dispatch(statusActions.resetAllStatusState());
+      roomLocalEmitter.leave();
     };
   }, [username, roomName]);
 
