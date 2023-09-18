@@ -14,7 +14,7 @@ import { ChatPeerEmitter } from '../peerEmitter/ChatPeerEmitter';
 
 @category(CATEGORY.MEMBER)
 @injectable()
-export class MemberHandler {
+export class MemberPeerHandler {
   constructor(
     @inject(RTCManager) private rtcManager: RTCManager,
     @inject(MemberPeerEmitter) private memberPeerEmitter: MemberPeerEmitter,

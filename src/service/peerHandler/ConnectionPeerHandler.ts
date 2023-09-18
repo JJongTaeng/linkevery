@@ -15,7 +15,7 @@ import { SignalingPeerEmitter } from '../peerEmitter/SignalingPeerEmitter';
 
 @category(CATEGORY.CONNECTION)
 @injectable()
-export class ConnectionHandler {
+export class ConnectionPeerHandler {
   constructor(
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(VideoManager) private videoManager: VideoManager,

@@ -13,7 +13,7 @@ import { ChatPeerEmitter } from '../peerEmitter/ChatPeerEmitter';
 
 @category(CATEGORY.CHAT)
 @injectable()
-export class ChatHandler {
+export class ChatPeerHandler {
   constructor(
     @inject(ChatPeerEmitter) private chatPeerEmitter: ChatPeerEmitter,
   ) {}

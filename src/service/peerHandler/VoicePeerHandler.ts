@@ -14,7 +14,7 @@ import { ScreenSharePeerEmitter } from '../peerEmitter/ScreenSharePeerEmitter';
 
 @category(CATEGORY.VOICE)
 @injectable()
-export class VoiceHandler {
+export class VoicePeerHandler {
   constructor(
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(SoundEffect) private soundEffect: SoundEffect,

@@ -15,7 +15,7 @@ import { MemberPeerEmitter } from '../peerEmitter/MemberPeerEmitter';
 
 @category(CATEGORY.SIGNALING)
 @injectable()
-export class SignalingHandler {
+export class SignalingPeerHandler {
   constructor(
     @inject(SignalingPeerEmitter)
     private signalingPeerEmitter: SignalingPeerEmitter,

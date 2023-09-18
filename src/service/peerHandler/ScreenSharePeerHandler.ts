@@ -15,7 +15,7 @@ import { ScreenSharePeerEmitter } from '../peerEmitter/ScreenSharePeerEmitter';
 
 @category(CATEGORY.SCREEN)
 @injectable()
-export class ScreenShareHandler {
+export class ScreenSharePeerHandler {
   constructor(
     @inject(VideoManager) private videoManager: VideoManager,
     @inject(ScreenSharePeerEmitter)

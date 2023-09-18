@@ -9,7 +9,7 @@ import { NegotiationPeerEmitter } from '../peerEmitter/NegotiationPeerEmitter';
 
 @category(CATEGORY.NEGOTIATION)
 @injectable()
-export class NegotiationHandler {
+export class NegotiationPeerHandler {
   constructor(
     @inject(NegotiationPeerEmitter)
     private negotiationPeerEmitter: NegotiationPeerEmitter,

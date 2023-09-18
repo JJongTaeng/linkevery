@@ -15,7 +15,7 @@ import { ERROR_TYPE } from 'error/error';
 type CategoryHandlers = { [key in CATEGORY]?: HandlerMap<any> };
 
 @injectable()
-export class HandlerManagerV2 {
+export class PeerHandler {
   private messageAssembleMap: Map<string, MessageAssemble> = new Map();
   private handlerMap: CategoryHandlers = {};
 
