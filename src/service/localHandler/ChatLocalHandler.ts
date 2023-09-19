@@ -1,14 +1,14 @@
-import { localEventFeature } from '../../decorators/localEventFeature';
-import { ChatAction, LocalFeature } from '../../constants/localEvent';
-import { localEventAction } from '../../decorators/localEventAction';
+import { CATEGORY, CHAT_MESSAGE_ID } from '../../constants/localEvent';
+import { localCategory } from '../../decorators/localCategory';
+import { localMessageId } from '../../decorators/localMessageId';
 
-@localEventFeature(LocalFeature.CHAT)
+@localCategory(CATEGORY.CHAT)
 export class ChatLocalHandler {
   constructor() {}
 
-  @localEventAction(ChatAction.SEND)
+  @localMessageId(CHAT_MESSAGE_ID.SEND)
   send() {}
 
-  @localEventAction(ChatAction.RECEIVE)
+  @localMessageId(CHAT_MESSAGE_ID.RECEIVE)
   receive() {}
 }

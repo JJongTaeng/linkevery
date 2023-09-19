@@ -1,6 +1,4 @@
-import { localEventFeature } from '../../decorators/localEventFeature';
-import { LocalFeature, RoomAction } from '../../constants/localEvent';
-import { localEventAction } from '../../decorators/localEventAction';
+import { CATEGORY, ROOM_MESSAGE_ID } from '../../constants/localEvent';
 import { inject, injectable } from 'tsyringe';
 import { StorageService } from '../storage/StorageService';
 import type { StoreType } from '../../store/store';
@@ -13,8 +11,10 @@ import { VoicePeerEmitter } from '../peerEmitter/VoicePeerEmitter';
 import { AudioManager } from '../media/AudioManager';
 import { chatActions } from '../../store/features/chatSlice';
 import { statusActions } from '../../store/features/statusSlice';
+import { localCategory } from '../../decorators/localCategory';
+import { localMessageId } from 'decorators/localMessageId';
 
-@localEventFeature(LocalFeature.ROOM)
+@localCategory(CATEGORY.ROOM)
 @injectable()
 export class RoomLocalHandler {
   constructor(
@@ -26,7 +26,7 @@ export class RoomLocalHandler {
     @inject(VoicePeerEmitter) private voicePeerEmitter: VoicePeerEmitter,
     @inject(AudioManager) private audioManager: AudioManager,
   ) {}
-  @localEventAction(RoomAction.LEAVE)
+  @localMessageId(ROOM_MESSAGE_ID.LEAVE)
   leave() {
     const roomName = this.storage.getItem('roomName');
     const userKey = this.storage.getItem('userKey');

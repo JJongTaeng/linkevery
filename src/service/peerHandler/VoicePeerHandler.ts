@@ -3,8 +3,8 @@ import { CATEGORY, VOICE_MESSAGE_ID } from '../../constants/peerEvent';
 import { storage } from 'service/storage/StorageService';
 import { store } from 'store/store';
 import { roomActions } from 'store/features/roomSlice';
-import { messageId } from 'decorators/messageId';
-import { category } from 'decorators/category';
+import { peerMessageId } from '../../decorators/peerMessageId';
+import { peerCategory } from '../../decorators/peerCategory';
 import { inject, injectable } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { SoundEffect } from 'service/media/SoundEffect';
@@ -12,7 +12,7 @@ import { RTCManager } from 'service/rtc/RTCManager';
 import { VoicePeerEmitter } from '../peerEmitter/VoicePeerEmitter';
 import { ScreenSharePeerEmitter } from '../peerEmitter/ScreenSharePeerEmitter';
 
-@category(CATEGORY.VOICE)
+@peerCategory(CATEGORY.VOICE)
 @injectable()
 export class VoicePeerHandler {
   constructor(
@@ -23,7 +23,7 @@ export class VoicePeerHandler {
     private screenSharePeerEmitter: ScreenSharePeerEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
-  @messageId(VOICE_MESSAGE_ID.READY)
+  @peerMessageId(VOICE_MESSAGE_ID.READY)
   ready(protocol: PeerEvent) {
     const userKey = storage.getItem('userKey');
     if (!store.getState().user.voiceStatus) {
@@ -36,7 +36,7 @@ export class VoicePeerHandler {
     });
   }
 
-  @messageId(VOICE_MESSAGE_ID.READY_OK)
+  @peerMessageId(VOICE_MESSAGE_ID.READY_OK)
   async readyOk(protocol: PeerEvent) {
     const userKey = storage.getItem('userKey');
     const { from } = protocol;
@@ -64,7 +64,7 @@ export class VoicePeerHandler {
     this.voicePeerEmitter.sendVoiceConnectedMessage({ to: from, userKey });
   }
 
-  @messageId(VOICE_MESSAGE_ID.CONNECTED)
+  @peerMessageId(VOICE_MESSAGE_ID.CONNECTED)
   async connected(protocol: PeerEvent) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
@@ -93,7 +93,7 @@ export class VoicePeerHandler {
     }
   }
 
-  @messageId(VOICE_MESSAGE_ID.DISCONNECT)
+  @peerMessageId(VOICE_MESSAGE_ID.DISCONNECT)
   disconnect(protocol: PeerEvent) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {

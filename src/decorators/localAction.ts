@@ -1,19 +1,19 @@
-import { EVENT_NAME, LocalAction, LocalFeature } from '../constants/localEvent';
+import { CATEGORY, EVENT_NAME, MessageId } from '../constants/localEvent';
 
 export function localAction({
-  feature,
-  action,
+  category,
+  messageId,
 }: {
-  feature: LocalFeature;
-  action: LocalAction;
+  category: CATEGORY;
+  messageId: MessageId;
 }) {
   return function (target: any, key: string, desc: any): void {
     const originalMethod = desc.value;
     desc.value = function (data: any) {
       const result = originalMethod.apply(this, data);
       this.ee.emit(EVENT_NAME, {
-        feature,
-        action,
+        category: category,
+        messageId: messageId,
       });
       return result;
     };

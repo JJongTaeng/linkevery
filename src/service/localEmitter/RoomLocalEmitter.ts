@@ -1,15 +1,15 @@
 import { inject, injectable } from 'tsyringe';
 import EventEmitter from 'events';
 import { localAction } from '../../decorators/localAction';
-import { LocalFeature, RoomAction } from '../../constants/localEvent';
+import { CATEGORY, ROOM_MESSAGE_ID } from '../../constants/localEvent';
 
 @injectable()
 export class RoomLocalEmitter {
   constructor(@inject('ee') private ee: EventEmitter) {}
 
   @localAction({
-    feature: LocalFeature.ROOM,
-    action: RoomAction.LEAVE,
+    category: CATEGORY.ROOM,
+    messageId: ROOM_MESSAGE_ID.LEAVE,
   })
   leave() {}
 }

@@ -1,7 +1,7 @@
-import { category } from 'decorators/category';
+import { peerCategory } from '../../decorators/peerCategory';
 import type { PeerEvent } from '../../constants/peerEvent';
 import { CATEGORY, CONNECTION_MESSAGE_ID } from '../../constants/peerEvent';
-import { messageId } from 'decorators/messageId';
+import { peerMessageId } from '../../decorators/peerMessageId';
 import { storage } from 'service/storage/StorageService';
 import { utils } from 'service/utils/Utils';
 import { store } from 'store/store';
@@ -13,7 +13,7 @@ import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { SignalingPeerEmitter } from '../peerEmitter/SignalingPeerEmitter';
 
-@category(CATEGORY.CONNECTION)
+@peerCategory(CATEGORY.CONNECTION)
 @injectable()
 export class ConnectionPeerHandler {
   constructor(
@@ -23,13 +23,13 @@ export class ConnectionPeerHandler {
     private signalingPeerEmitter: SignalingPeerEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
-  @messageId(CONNECTION_MESSAGE_ID.CONNECT)
+  @peerMessageId(CONNECTION_MESSAGE_ID.CONNECT)
   connect(protocol: PeerEvent): void {
     const { clientId } = protocol.data;
     storage.setItem('clientId', clientId);
   }
 
-  @messageId(CONNECTION_MESSAGE_ID.JOIN_ROOM)
+  @peerMessageId(CONNECTION_MESSAGE_ID.JOIN_ROOM)
   joinRoom(protocol: PeerEvent): void {
     const { roomName } = protocol.data;
     this.signalingPeerEmitter.sendSignalingStartMessage({
@@ -38,7 +38,7 @@ export class ConnectionPeerHandler {
     });
   }
 
-  @messageId(CONNECTION_MESSAGE_ID.DISCONNECT)
+  @peerMessageId(CONNECTION_MESSAGE_ID.DISCONNECT)
   disconnect(protocol: PeerEvent): void {
     const { from } = protocol;
     const { roomName } = storage.getAll();

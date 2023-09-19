@@ -1,6 +1,6 @@
-import { CATEGORY } from '../constants/peerEvent';
+import { CATEGORY } from '../constants/localEvent';
 
-export function category(category: CATEGORY) {
+export function localCategory(category: CATEGORY) {
   return function (target: any) {
     for (const methodName of Object.getOwnPropertyNames(target.prototype)) {
       if (methodName === 'constructor') continue;

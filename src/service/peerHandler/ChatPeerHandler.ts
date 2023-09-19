@@ -1,7 +1,7 @@
 import type { PeerEvent } from '../../constants/peerEvent';
 import { CATEGORY, CHAT_MESSAGE_ID } from '../../constants/peerEvent';
-import { category } from 'decorators/category';
-import { messageId } from 'decorators/messageId';
+import { peerCategory } from '../../decorators/peerCategory';
+import { peerMessageId } from '../../decorators/peerMessageId';
 import { inject, injectable } from 'tsyringe';
 import { chatActions } from 'store/features/chatSlice';
 import { store } from 'store/store';
@@ -11,14 +11,14 @@ import { query } from '../db/Query';
 import { Message } from '../db/LinkeveryDB';
 import { ChatPeerEmitter } from '../peerEmitter/ChatPeerEmitter';
 
-@category(CATEGORY.CHAT)
+@peerCategory(CATEGORY.CHAT)
 @injectable()
 export class ChatPeerHandler {
   constructor(
     @inject(ChatPeerEmitter) private chatPeerEmitter: ChatPeerEmitter,
   ) {}
 
-  @messageId(CHAT_MESSAGE_ID.SEND)
+  @peerMessageId(CHAT_MESSAGE_ID.SEND)
   send(protocol: PeerEvent) {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
@@ -41,13 +41,13 @@ export class ChatPeerHandler {
     );
   }
 
-  @messageId(CHAT_MESSAGE_ID.OK)
+  @peerMessageId(CHAT_MESSAGE_ID.OK)
   ok(protocol: PeerEvent) {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
   }
 
-  @messageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST)
+  @peerMessageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST)
   async syncChatList(protocol: PeerEvent) {
     const roomName = storage.getItem('roomName');
 
@@ -74,7 +74,7 @@ export class ChatPeerHandler {
     });
   }
 
-  @messageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST_OK)
+  @peerMessageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST_OK)
   async syncChatListOk(protocol: PeerEvent) {
     const { messageList } = protocol.data;
 
