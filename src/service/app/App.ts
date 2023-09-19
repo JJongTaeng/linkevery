@@ -1,6 +1,3 @@
-import { roomActions } from 'store/features/roomSlice';
-import { userActions } from 'store/features/userSlice';
-import { store } from 'store/store';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { storage } from 'service/storage/StorageService';
 import { inject, singleton } from 'tsyringe';
@@ -26,16 +23,6 @@ export class App {
 
   get rtcManager() {
     return this._rtcManager;
-  }
-
-  public disconnect() {
-    const roomName = storage.getItem('roomName');
-    store.dispatch(roomActions.leaveRoom());
-    store.dispatch(userActions.changeVoiceStatus(false));
-    store.dispatch(userActions.changeScreenShareStatus(false));
-    this.connectionPeerEmitter.sendConnectionDisconnectMessage({ roomName });
-    this.disconnectVoice();
-    this.rtcManager.clearPeerMap();
   }
 
   public disconnectVoice() {
