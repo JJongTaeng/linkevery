@@ -1,7 +1,7 @@
 import { CATEGORY, MessageId } from '../constants/peerEvent';
 import { storage } from 'service/storage/StorageService';
 
-export function socketMessage({
+export function socketAction({
   category,
   messageId,
 }: {

@@ -1,19 +1,19 @@
 import { inject, injectable } from 'tsyringe';
 import EventEmitter from 'events';
-import { localEmitter } from '../../decorators/localEmitter';
+import { localAction } from '../../decorators/localAction';
 import { ChatAction, LocalFeature } from '../../constants/localEvent';
 
 @injectable()
 export class ChatLocalEmitter {
   constructor(@inject('ee') private ee: EventEmitter) {}
 
-  @localEmitter({
+  @localAction({
     feature: LocalFeature.CHAT,
     action: ChatAction.SEND,
   })
   send() {}
 
-  @localEmitter({
+  @localAction({
     feature: LocalFeature.CHAT,
     action: ChatAction.RECEIVE,
   })

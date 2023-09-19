@@ -1,6 +1,6 @@
 import { EVENT_NAME, LocalAction, LocalFeature } from '../constants/localEvent';
 
-export function localEmitter({
+export function localAction({
   feature,
   action,
 }: {
