@@ -1,5 +1,5 @@
-import type { Protocol } from 'constants/protocol';
-import { CATEGORY, CHAT_MESSAGE_ID } from 'constants/protocol';
+import type { PeerEvent } from '../../constants/peerEvent';
+import { CATEGORY, CHAT_MESSAGE_ID } from '../../constants/peerEvent';
 import { category } from 'decorators/category';
 import { messageId } from 'decorators/messageId';
 import { inject, injectable } from 'tsyringe';
@@ -19,7 +19,7 @@ export class ChatPeerHandler {
   ) {}
 
   @messageId(CHAT_MESSAGE_ID.SEND)
-  send(protocol: Protocol) {
+  send(protocol: PeerEvent) {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
     const chatInfo = {
@@ -42,13 +42,13 @@ export class ChatPeerHandler {
   }
 
   @messageId(CHAT_MESSAGE_ID.OK)
-  ok(protocol: Protocol) {
+  ok(protocol: PeerEvent) {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
   }
 
   @messageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST)
-  async syncChatList(protocol: Protocol) {
+  async syncChatList(protocol: PeerEvent) {
     const roomName = storage.getItem('roomName');
 
     const { messageList } = protocol.data;
@@ -75,7 +75,7 @@ export class ChatPeerHandler {
   }
 
   @messageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST_OK)
-  async syncChatListOk(protocol: Protocol) {
+  async syncChatListOk(protocol: PeerEvent) {
     const { messageList } = protocol.data;
 
     if (messageList.length) {

@@ -1,4 +1,4 @@
-import { CATEGORY } from 'constants/protocol';
+import { CATEGORY } from '../constants/peerEvent';
 
 export function category(category: CATEGORY) {
   return function (target: any) {

@@ -1,5 +1,5 @@
-import type { Protocol } from 'constants/protocol';
-import { CATEGORY, SCREEN_SHARE_MESSAGE_ID } from 'constants/protocol';
+import type { PeerEvent } from '../../constants/peerEvent';
+import { CATEGORY, SCREEN_SHARE_MESSAGE_ID } from '../../constants/peerEvent';
 import { category } from 'decorators/category';
 import { messageId } from 'decorators/messageId';
 import { store } from 'store/store';
@@ -23,7 +23,7 @@ export class ScreenSharePeerHandler {
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(SCREEN_SHARE_MESSAGE_ID.READY)
-  ready(protocol: Protocol) {
+  ready(protocol: PeerEvent) {
     if (!store.getState().user.voiceStatus) {
       return;
     }
@@ -32,7 +32,7 @@ export class ScreenSharePeerHandler {
   }
 
   @messageId(SCREEN_SHARE_MESSAGE_ID.READY_OK)
-  async readyOk(protocol: Protocol) {
+  async readyOk(protocol: PeerEvent) {
     const { userKey } = storage.getAll();
     store.dispatch(userActions.changeScreenShareStatus(true));
 
@@ -72,7 +72,7 @@ export class ScreenSharePeerHandler {
   }
 
   @messageId(SCREEN_SHARE_MESSAGE_ID.CONNECTED)
-  connected(protocol: Protocol) {
+  connected(protocol: PeerEvent) {
     store.dispatch(
       roomActions.setMemberScreenShareStatus({
         userKey: protocol.data.userKey,
@@ -82,7 +82,7 @@ export class ScreenSharePeerHandler {
   }
 
   @messageId(SCREEN_SHARE_MESSAGE_ID.DISCONNECT)
-  disconnect(protocol: Protocol) {
+  disconnect(protocol: PeerEvent) {
     const { from } = protocol;
 
     store.dispatch(

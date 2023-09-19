@@ -1,5 +1,5 @@
-import type { Protocol } from 'constants/protocol';
-import { CATEGORY, VOICE_MESSAGE_ID } from 'constants/protocol';
+import type { PeerEvent } from '../../constants/peerEvent';
+import { CATEGORY, VOICE_MESSAGE_ID } from '../../constants/peerEvent';
 import { storage } from 'service/storage/StorageService';
 import { store } from 'store/store';
 import { roomActions } from 'store/features/roomSlice';
@@ -24,7 +24,7 @@ export class VoicePeerHandler {
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(VOICE_MESSAGE_ID.READY)
-  ready(protocol: Protocol) {
+  ready(protocol: PeerEvent) {
     const userKey = storage.getItem('userKey');
     if (!store.getState().user.voiceStatus) {
       return;
@@ -37,7 +37,7 @@ export class VoicePeerHandler {
   }
 
   @messageId(VOICE_MESSAGE_ID.READY_OK)
-  async readyOk(protocol: Protocol) {
+  async readyOk(protocol: PeerEvent) {
     const userKey = storage.getItem('userKey');
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
@@ -65,7 +65,7 @@ export class VoicePeerHandler {
   }
 
   @messageId(VOICE_MESSAGE_ID.CONNECTED)
-  async connected(protocol: Protocol) {
+  async connected(protocol: PeerEvent) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
       return;
@@ -94,7 +94,7 @@ export class VoicePeerHandler {
   }
 
   @messageId(VOICE_MESSAGE_ID.DISCONNECT)
-  disconnect(protocol: Protocol) {
+  disconnect(protocol: PeerEvent) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
       return;

@@ -1,5 +1,5 @@
-import type { Protocol } from 'constants/protocol';
-import { CATEGORY, MEMBER_MESSAGE_ID } from 'constants/protocol';
+import type { PeerEvent } from '../../constants/peerEvent';
+import { CATEGORY, MEMBER_MESSAGE_ID } from '../../constants/peerEvent';
 import { RTCManager } from '../rtc/RTCManager';
 import { inject, injectable } from 'tsyringe';
 import { category } from 'decorators/category';
@@ -22,7 +22,7 @@ export class MemberPeerHandler {
   ) {}
 
   @messageId(MEMBER_MESSAGE_ID.NAME)
-  memberName(protocol: Protocol) {
+  memberName(protocol: PeerEvent) {
     const { username, userKey, roomName } = storage.getAll();
 
     store.dispatch(
@@ -46,7 +46,7 @@ export class MemberPeerHandler {
   }
 
   @messageId(MEMBER_MESSAGE_ID.NAME_OK)
-  async memberNameOk(protocol: Protocol) {
+  async memberNameOk(protocol: PeerEvent) {
     const roomName = storage.getItem('roomName');
 
     store.dispatch(

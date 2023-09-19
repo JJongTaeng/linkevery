@@ -1,6 +1,6 @@
 import { category } from 'decorators/category';
-import type { Protocol } from 'constants/protocol';
-import { CATEGORY, CONNECTION_MESSAGE_ID } from 'constants/protocol';
+import type { PeerEvent } from '../../constants/peerEvent';
+import { CATEGORY, CONNECTION_MESSAGE_ID } from '../../constants/peerEvent';
 import { messageId } from 'decorators/messageId';
 import { storage } from 'service/storage/StorageService';
 import { utils } from 'service/utils/Utils';
@@ -24,13 +24,13 @@ export class ConnectionPeerHandler {
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(CONNECTION_MESSAGE_ID.CONNECT)
-  connect(protocol: Protocol): void {
+  connect(protocol: PeerEvent): void {
     const { clientId } = protocol.data;
     storage.setItem('clientId', clientId);
   }
 
   @messageId(CONNECTION_MESSAGE_ID.JOIN_ROOM)
-  joinRoom(protocol: Protocol): void {
+  joinRoom(protocol: PeerEvent): void {
     const { roomName } = protocol.data;
     this.signalingPeerEmitter.sendSignalingStartMessage({
       roomName,
@@ -39,7 +39,7 @@ export class ConnectionPeerHandler {
   }
 
   @messageId(CONNECTION_MESSAGE_ID.DISCONNECT)
-  disconnect(protocol: Protocol): void {
+  disconnect(protocol: PeerEvent): void {
     const { from } = protocol;
     const { roomName } = storage.getAll();
     const userKey = utils.getUserKeyByClientId(from) || '';

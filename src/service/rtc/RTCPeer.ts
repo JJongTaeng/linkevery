@@ -1,4 +1,4 @@
-import { Protocol } from 'constants/protocol';
+import { PeerEvent } from '../../constants/peerEvent';
 import { ERROR_TYPE } from 'error/error';
 import { VideoManager } from 'service/media/VideoManager';
 import { config } from './RTCManager';
@@ -195,7 +195,7 @@ export class RTCPeer extends RTCPeerService {
     this.peer?.removeTrack(this.videoSender);
   }
 
-  public sendMessage(protocol: Protocol) {
+  public sendMessage(protocol: PeerEvent) {
     if (!this.dataChannel) throw new Error(ERROR_TYPE.INVALID_DATACHANNEL);
     const stringify = JSON.stringify(protocol);
     this.dataChannel.send(stringify);

@@ -1,6 +1,6 @@
 import { category } from 'decorators/category';
-import type { Protocol } from 'constants/protocol';
-import { CATEGORY, SIGNALING_MESSAGE_ID } from 'constants/protocol';
+import type { PeerEvent } from '../../constants/peerEvent';
+import { CATEGORY, SIGNALING_MESSAGE_ID } from '../../constants/peerEvent';
 import { messageId } from 'decorators/messageId';
 import { store } from 'store/store';
 import { SdpType } from 'service/rtc/RTCPeerService';
@@ -27,7 +27,7 @@ export class SignalingPeerHandler {
   ) {}
 
   @messageId(SIGNALING_MESSAGE_ID.START)
-  async start(protocol: Protocol) {
+  async start(protocol: PeerEvent) {
     const { roomName, size } = protocol.data;
     const { from } = protocol;
     store.dispatch(roomActions.setMemberSize(size));
@@ -86,7 +86,7 @@ export class SignalingPeerHandler {
   }
 
   @messageId(SIGNALING_MESSAGE_ID.OFFER)
-  async offer(protocol: Protocol) {
+  async offer(protocol: PeerEvent) {
     const { offer } = protocol.data;
     const { from } = protocol;
     // store.dispatch(roomActions.setMemberSize(size));
@@ -146,7 +146,7 @@ export class SignalingPeerHandler {
   }
 
   @messageId(SIGNALING_MESSAGE_ID.ANSWER)
-  answer(protocol: Protocol) {
+  answer(protocol: PeerEvent) {
     const { answer } = protocol.data;
     const { from } = protocol;
     const rtcPeer = this.rtcManager.getPeer(from);
@@ -157,14 +157,14 @@ export class SignalingPeerHandler {
   }
 
   @messageId(SIGNALING_MESSAGE_ID.ICE)
-  ice(protocol: Protocol) {
+  ice(protocol: PeerEvent) {
     const { ice } = protocol.data;
     const rtcPeer = this.rtcManager.getPeer(protocol.from);
     rtcPeer.setIcecandidate(ice);
   }
 
   @messageId(SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL)
-  createDataChannel(protocol: Protocol) {
+  createDataChannel(protocol: PeerEvent) {
     const { from } = protocol;
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.onDataChannel((e) => {
@@ -185,7 +185,7 @@ export class SignalingPeerHandler {
   }
 
   @messageId(SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL)
-  connectDataChannel(protocol: Protocol): void {
+  connectDataChannel(protocol: PeerEvent): void {
     const roomName = storage.getItem('roomName');
     const { from } = protocol;
     const rtcPeer = this.rtcManager.getPeer(from);
@@ -203,7 +203,7 @@ export class SignalingPeerHandler {
   }
 
   @messageId(SIGNALING_MESSAGE_ID.END)
-  end(protocol: Protocol) {
+  end(protocol: PeerEvent) {
     const { from } = protocol;
     const { username, userKey } = storage.getAll();
 
@@ -220,7 +220,7 @@ export class SignalingPeerHandler {
   }
 
   @messageId(SIGNALING_MESSAGE_ID.END_OK)
-  endOk(protocol: Protocol): any {
+  endOk(protocol: PeerEvent): any {
     const { from } = protocol;
   }
 }

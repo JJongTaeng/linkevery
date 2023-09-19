@@ -1,5 +1,5 @@
-import type { Protocol } from 'constants/protocol';
-import { CATEGORY, NEGOTIATION_MESSAGE_ID } from 'constants/protocol';
+import type { PeerEvent } from '../../constants/peerEvent';
+import { CATEGORY, NEGOTIATION_MESSAGE_ID } from '../../constants/peerEvent';
 import { SdpType } from 'service/rtc/RTCPeerService';
 import { messageId } from 'decorators/messageId';
 import { category } from 'decorators/category';
@@ -16,7 +16,7 @@ export class NegotiationPeerHandler {
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(NEGOTIATION_MESSAGE_ID.OFFER)
-  async offer(protocol: Protocol) {
+  async offer(protocol: PeerEvent) {
     const { from } = protocol;
     const { offer } = protocol.data;
     const rtcPeer = this.rtcManager.getPeer(from);
@@ -31,7 +31,7 @@ export class NegotiationPeerHandler {
     });
   }
   @messageId(NEGOTIATION_MESSAGE_ID.ANSWER)
-  async answer(protocol: Protocol) {
+  async answer(protocol: PeerEvent) {
     const { answer } = protocol.data;
     const rtcPeer = this.rtcManager.getPeer(protocol.from);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });

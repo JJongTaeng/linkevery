@@ -1,4 +1,4 @@
-import { MessageId } from 'constants/protocol';
+import { MessageId } from '../constants/peerEvent';
 
 export function messageId(message: MessageId) {
   return function (target: any, key: string, desc: PropertyDescriptor) {

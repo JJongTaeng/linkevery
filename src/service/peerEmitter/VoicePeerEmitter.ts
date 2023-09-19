@@ -1,7 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 import { Sender } from '../messages/Sender';
-import type { ProtocolData } from 'constants/protocol';
-import { CATEGORY, VOICE_MESSAGE_ID } from 'constants/protocol';
+import type { ProtocolData } from '../../constants/peerEvent';
+import { CATEGORY, VOICE_MESSAGE_ID } from '../../constants/peerEvent';
 import { rtcMessage } from 'decorators/rtcMessage';
 
 @injectable()

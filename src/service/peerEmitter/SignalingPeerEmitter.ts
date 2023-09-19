@@ -1,7 +1,7 @@
 import { Sender } from 'service/messages/Sender';
 import { inject, injectable } from 'tsyringe';
-import type { ProtocolData } from 'constants/protocol';
-import { CATEGORY, SIGNALING_MESSAGE_ID } from 'constants/protocol';
+import type { ProtocolData } from '../../constants/peerEvent';
+import { CATEGORY, SIGNALING_MESSAGE_ID } from '../../constants/peerEvent';
 import { socketMessage } from 'decorators/socketMessage';
 
 @injectable()
