@@ -1,15 +1,20 @@
 import styled from 'styled-components';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  style?: React.CSSProperties;
 }
 
-const Button = ({ children, onClick }: ButtonProps) => {
-  return <ButtonContainer onClick={onClick}>{children}</ButtonContainer>;
+const Button = ({ children, onClick, style, ...props }: ButtonProps) => {
+  return (
+    <ButtonContainer style={style} onClick={onClick} {...props}>
+      {children}
+    </ButtonContainer>
+  );
 };
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled.button`
   border-radius: 50%;
   border: 1px solid #fff;
 
@@ -21,9 +26,12 @@ const ButtonContainer = styled.div`
   align-items: center;
 
   cursor: pointer;
-  svg {
-    width: 20px;
-    height: 20px;
+  background: none;
+
+  &:hover {
+    svg {
+      transform: scale(1.1);
+    }
   }
 `;
 

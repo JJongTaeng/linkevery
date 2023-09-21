@@ -1,7 +1,5 @@
 import React, { useRef, useState } from 'react';
-import FileUpload from 'components/chat/FileUpload';
-import { Button } from 'antd';
-import { SendOutlined } from '@ant-design/icons';
+import FileUploadButton from '../chat/FileUploadButton';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import dayjs from 'dayjs';
@@ -9,6 +7,8 @@ import { storage } from '../../service/storage/StorageService';
 import { chatActions } from '../../store/features/chatSlice';
 import { addChatByDB } from '../../store/thunk/chatThunk';
 import { useApp } from '../../hooks/useApp';
+import SvgSend from '../icons/Send';
+import Button from '../elements/Button';
 
 const ChatForm = () => {
   const { app, chatPeerEmitter } = useApp();
@@ -112,7 +112,7 @@ const ChatForm = () => {
 
       <div className="form-footer">
         <FormControllerWrapper>
-          <FileUpload
+          <FileUploadButton
             onFileChange={(file) => {
               const reader = new FileReader();
               reader.onloadend = () => {
@@ -123,11 +123,9 @@ const ChatForm = () => {
           />
         </FormControllerWrapper>
         <div>
-          <Button
-            shape="circle"
-            icon={<SendOutlined rev={undefined} />}
-            htmlType="submit"
-          ></Button>
+          <Button type={'submit'}>
+            <SvgSend style={{ width: '100%', height: '100%' }} />
+          </Button>
         </div>
       </div>
     </StyledChatForm>

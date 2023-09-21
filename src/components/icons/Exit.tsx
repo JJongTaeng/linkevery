@@ -1,20 +1,19 @@
-import * as React from "react";
-import { SVGProps } from "react";
+import * as React from 'react';
+import { SVGProps } from 'react';
 const SvgExit = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width="1em"
     height="1em"
     viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
     fill="none"
+    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <path
-      stroke="#fff"
+      d="M9 4.5H8c-2.357 0-3.536 0-4.268.732C3 5.964 3 7.143 3 9.5v.5m6 9.5H8c-2.357 0-3.536 0-4.268-.732C3 18.035 3 16.857 3 14.5V14M13.658 2.347c-2.162-.377-3.243-.565-3.95.062C9 3.036 9 4.183 9 6.476v11.048c0 2.293 0 3.44.707 4.067.707.627 1.788.439 3.95.062l2.33-.406c2.394-.418 3.591-.627 4.302-1.505.711-.879.711-2.149.711-4.69V8.948c0-2.54 0-3.81-.71-4.689-.476-.587-1.168-.875-2.29-1.126M12 11v2"
+      stroke="#1C274C"
+      strokeWidth={1.5}
       strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M16 4h3a2 2 0 0 1 2 2v1m-5 13h3a2 2 0 0 0 2-2v-1M4.425 19.428l6 1.8A2 2 0 0 0 13 19.312V4.688a2 2 0 0 0-2.575-1.916l-6 1.8A2 2 0 0 0 3 6.488v11.024a2 2 0 0 0 1.425 1.916zM9.001 12H9m7 0h5m0 0-2-2m2 2-2 2"
     />
   </svg>
 );

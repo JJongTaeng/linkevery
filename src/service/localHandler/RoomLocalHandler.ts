@@ -13,6 +13,7 @@ import { chatActions } from '../../store/features/chatSlice';
 import { statusActions } from '../../store/features/statusSlice';
 import { localCategory } from '../../decorators/localCategory';
 import { localMessageId } from 'decorators/localMessageId';
+import { getRoomByDB } from '../../store/thunk/roomThunk';
 
 @localCategory(CATEGORY.ROOM)
 @injectable()
@@ -43,5 +44,14 @@ export class RoomLocalHandler {
     this.audioManager.removeAllAudio();
     this.rtcManager.clearVideoTrack();
     this.rtcManager.clearPeerMap();
+  }
+
+  @localMessageId(ROOM_MESSAGE_ID.JOIN)
+  joinRoom() {
+    const roomName = this.storage.getItem('roomName');
+    this.connectionPeerEmitter.sendConnectionConnectMessage({}); // socket join
+    this.connectionPeerEmitter.sendConnectionJoinRoomMessage({ roomName }); // join
+    this.store.dispatch(roomActions.setRoomName(roomName));
+    this.store.dispatch(getRoomByDB(roomName));
   }
 }

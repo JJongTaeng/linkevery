@@ -12,6 +12,8 @@ export enum CHAT_MESSAGE_ID {
 
 export enum ROOM_MESSAGE_ID {
   LEAVE = 'LEAVE',
+
+  JOIN = 'JOIN',
 }
 
 export type MessageId = CHAT_MESSAGE_ID | ROOM_MESSAGE_ID;

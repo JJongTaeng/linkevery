@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
 <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M3 19C3.69137 16.6928 5.46998 16 9.5 16C13.53 16 15.3086 16.6928 16 19" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-<path d="M13 9.5C13 11.433 11.433 13 9.5 13C7.567 13 6 11.433 6 9.5C6 7.567 7.567 6 9.5 6C11.433 6 13 7.567 13 9.5Z" stroke="#fff" stroke-width="2"/>
-<path d="M15 6H21" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M18 3L18 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="10" cy="6" r="4" stroke="#1C274C" stroke-width="1.5"/>
+<path d="M21 10H19M19 10H17M19 10L19 8M19 10L19 12" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M17.9975 18C18 17.8358 18 17.669 18 17.5C18 15.0147 14.4183 13 10 13C5.58172 13 2 15.0147 2 17.5C2 19.9853 2 22 10 22C12.231 22 13.8398 21.8433 15 21.5634" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
 </svg>

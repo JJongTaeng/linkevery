@@ -11,12 +11,12 @@ export const highlight = keyframes`
 
 export const selectedAnimation = keyframes`
 	0% {
-    background: linear-gradient(-45deg, #9c27b0, #74efff, #9c27b0, #74efff);
+    background: linear-gradient(-45deg, #cf97e0, #94ffff, #cf97e0, #94ffff);
     background-size: 400% 400%;
 		background-position: 0% 0%;
 	}
 	100% {
-    background: linear-gradient(-45deg, #9c27b0, #74efff, #9c27b0, #74efff);
+    background: linear-gradient(-45deg, #cf97e0, #94ffff, #cf97e0, #94ffff);
     background-size: 400% 400%;
 		background-position: 100% 100%;
 	}

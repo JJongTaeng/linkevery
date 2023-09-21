@@ -7,6 +7,7 @@ interface ToggleButtonProps {
   defaultValue?: boolean;
   checked: boolean;
   disabled?: boolean;
+  style?: React.CSSProperties;
 }
 
 const ToggleButton = ({
@@ -15,9 +16,11 @@ const ToggleButton = ({
   defaultValue = false,
   disabled = false,
   onChange,
+  style,
 }: ToggleButtonProps) => {
   return (
     <ToggleButtonContainer
+      style={{ ...style }}
       disabled={disabled}
       toggled={checked}
       onClick={(e) => {
@@ -48,15 +51,16 @@ const ToggleButtonContainer = styled.div<{
   justify-content: center;
   align-items: center;
 
+  background: white;
   cursor: pointer;
   svg {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
   }
   ${({ disabled, theme }) =>
     disabled &&
     `
-    background: ${theme.color.grey100};
+    background: ${theme.color.grey400};
     border: 1px solid ${theme.color.grey100};
     cursor: not-allowed;
   `}

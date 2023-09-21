@@ -12,4 +12,10 @@ export class RoomLocalEmitter {
     messageId: ROOM_MESSAGE_ID.LEAVE,
   })
   leave() {}
+
+  @localAction({
+    category: CATEGORY.ROOM,
+    messageId: ROOM_MESSAGE_ID.JOIN,
+  })
+  joinRoom() {}
 }
