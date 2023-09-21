@@ -3,7 +3,6 @@ import { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { nanoid } from 'nanoid';
 import SvgImageUploadIcon from '../icons/ImageUploadIcon';
-import Button from '../elements/Button';
 
 interface FileUploadProps extends HTMLAttributes<HTMLInputElement> {
   onFileChange: (file: File[]) => void;
@@ -19,9 +18,9 @@ const ImageUploadButton = ({
   return (
     <FileUploadButtonContainer>
       <label htmlFor={id}>
-        <Button>
+        <div>
           <SvgImageUploadIcon />
-        </Button>
+        </div>
       </label>
       <input
         id={id}
@@ -53,6 +52,30 @@ const FileUploadButtonContainer = styled.div`
   }
 
   label {
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    background: white;
+    border: 1px solid #eee;
+
+    cursor: pointer;
+
+    div {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  label:hover {
+    svg {
+      transform: scale(1.1);
+    }
   }
 `;
 
