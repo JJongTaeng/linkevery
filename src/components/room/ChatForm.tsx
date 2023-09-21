@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import FileUploadButton from '../chat/FileUploadButton';
+import ImageUploadButton from '../chat/ImageUploadButton';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import dayjs from 'dayjs';
@@ -112,7 +112,7 @@ const ChatForm = () => {
 
       <div className="form-footer">
         <FormControllerWrapper>
-          <FileUploadButton
+          <ImageUploadButton
             onFileChange={(file) => {
               const reader = new FileReader();
               reader.onloadend = () => {

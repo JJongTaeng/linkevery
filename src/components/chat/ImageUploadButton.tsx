@@ -10,7 +10,7 @@ interface FileUploadProps extends HTMLAttributes<HTMLInputElement> {
   onRemove?: (file: UploadFile<any>) => void;
 }
 
-const FileUploadButton = ({
+const ImageUploadButton = ({
   onFileChange,
   onRemove,
   ...props
@@ -53,21 +53,7 @@ const FileUploadButtonContainer = styled.div`
   }
 
   label {
-    //width: 32px;
-    //height: 32px;
-    //padding: 4px;
-    //border-radius: 50%;
-    //display: flex;
-    //justify-content: center;
-    //align-content: center;
-    //background: white;
-    //border: 1px solid #eee;
-    //svg {
-    //  width: 100%;
-    //  height: 100%;
-    //}
-    //cursor: pointer;
   }
 `;
 
-export default FileUploadButton;
+export default ImageUploadButton;
