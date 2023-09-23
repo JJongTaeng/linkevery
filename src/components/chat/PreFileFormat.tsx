@@ -3,13 +3,14 @@ import styled from 'styled-components';
 import SvgCloseButton from '../icons/CloseButton';
 import Button from '../elements/Button';
 import { nanoid } from 'nanoid';
+import SvgPdfIcon from '../icons/PdfIcon';
 
 interface PreImageProps {
   dataUrlList: any[];
   onRemove: (index: number) => void;
 }
 
-const PreImage = ({ dataUrlList, onRemove }: PreImageProps) => {
+const PreFileFormat = ({ dataUrlList, onRemove }: PreImageProps) => {
   return (
     <PreImageContainer>
       {dataUrlList.map((dataUrl, index) => (
@@ -17,7 +18,8 @@ const PreImage = ({ dataUrlList, onRemove }: PreImageProps) => {
           <CloseButton onClick={() => onRemove(index)}>
             <SvgCloseButton />
           </CloseButton>
-          <img src={dataUrl} />
+          {dataUrl.includes('data:application/pdf') && <SvgPdfIcon />}
+          {dataUrl.includes('data:image') && <img src={dataUrl} />}
         </ImageItem>
       ))}
     </PreImageContainer>
@@ -40,11 +42,14 @@ const PreImageContainer = styled.div`
 
 const ImageItem = styled.div`
   position: relative;
-  background: white;
   img {
     width: 150px;
     height: 150px;
     object-fit: contain;
+  }
+  svg {
+    width: 150px;
+    height: 150px;
   }
 `;
 
@@ -69,4 +74,4 @@ const CloseButton = styled(Button)`
   }
 `;
 
-export default PreImage;
+export default PreFileFormat;

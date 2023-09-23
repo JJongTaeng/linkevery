@@ -2,25 +2,28 @@ import { UploadFile } from 'antd';
 import { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { nanoid } from 'nanoid';
-import SvgImageUploadIcon from '../icons/ImageUploadIcon';
 
-interface FileUploadProps extends HTMLAttributes<HTMLInputElement> {
+interface UploadButtonProp extends HTMLAttributes<HTMLInputElement> {
   onFileChange: (file: File[]) => void;
   onRemove?: (file: UploadFile<any>) => void;
+  icon: React.ReactNode;
+  multiple?: boolean;
+  accept: string;
 }
 
-const ImageUploadButton = ({
+const UploadButton = ({
   onFileChange,
   onRemove,
+  icon,
+  accept,
+  multiple,
   ...props
-}: FileUploadProps) => {
+}: UploadButtonProp) => {
   const id = nanoid();
   return (
     <FileUploadButtonContainer>
       <label htmlFor={id}>
-        <div>
-          <SvgImageUploadIcon />
-        </div>
+        <div>{icon}</div>
       </label>
       <input
         id={id}
@@ -38,8 +41,8 @@ const ImageUploadButton = ({
           }
         }}
         type={'file'}
-        multiple={true}
-        accept="image/png, image/jpeg, application/pdf"
+        accept={accept}
+        multiple={multiple}
         {...props}
       ></input>
     </FileUploadButtonContainer>
@@ -79,4 +82,4 @@ const FileUploadButtonContainer = styled.div`
   }
 `;
 
-export default ImageUploadButton;
+export default UploadButton;

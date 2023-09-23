@@ -99,7 +99,7 @@ const ChatForm = () => {
   return (
     <StyledChatForm autoComplete="off" onSubmit={(e) => handleChatSubmit(e)}>
       {dataUrlList.length ? (
-        <PreImage
+        <PreFileFormat
           dataUrlList={dataUrlList}
           onRemove={(index) => {
             const newArr = dataUrlList.filter((_, i) => i !== index);
@@ -134,7 +134,19 @@ const ChatForm = () => {
 
       <div className="form-footer">
         <FormControllerWrapper>
-          <ImageUploadButton
+          <UploadButton
+            multiple={true}
+            accept="image/png, image/jpeg"
+            icon={<SvgImageUploadIcon />}
+            onFileChange={async (files) => {
+              const dataUrlList = await utils.convertFilesToDataUrls(files);
+              setDataUrlList([...dataUrlList]);
+              focusTextArea.current?.focus();
+            }}
+          />
+          <UploadButton
+            accept={'application/pdf'}
+            icon={<SvgFileUploadIcon />}
             onFileChange={async (files) => {
               const dataUrlList = await utils.convertFilesToDataUrls(files);
               setDataUrlList([...dataUrlList]);
@@ -154,6 +166,7 @@ const ChatForm = () => {
 
 const FormControllerWrapper = styled.div`
   display: flex;
+  gap: 4px;
 `;
 
 const StyledChatForm = styled.form`
