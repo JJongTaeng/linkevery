@@ -9,22 +9,27 @@ import { addChatByDB } from '../../store/thunk/chatThunk';
 import { useApp } from '../../hooks/useApp';
 import SvgSend from '../icons/Send';
 import Button from '../elements/Button';
+import { utils } from '../../service/utils/Utils';
+import PreImage from '../chat/PreImage';
 
 const ChatForm = () => {
   const { app, chatPeerEmitter } = useApp();
   const focusInput = useRef<HTMLInputElement>(null);
+  const focusTextArea = useRef<HTMLTextAreaElement>(null);
   const [chatMessage, setChatMessage] = useState('');
+  const [dataUrlList, setDataUrlList] = useState<any[]>([]);
   const [isShiftKeyDowned, setIsShiftKeydowned] = useState(false);
   const { username } = useAppSelector((state) => ({
     username: state.user.username,
   }));
   const dispatch = useAppDispatch();
 
-  const sendChatMessage = (type = 'text', image?: string) => {
+  const sendChatMessage = (type = 'text') => {
     if (type === 'text' && !chatMessage) return;
+    if (type === 'image' && !dataUrlList.length) return;
     const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
     const message: any = {
-      image: image,
+      image: dataUrlList,
       text: chatMessage,
     };
     const messageProtocol = {
@@ -47,6 +52,7 @@ const ChatForm = () => {
       }),
     );
     setChatMessage('');
+    setDataUrlList([]);
   };
   const handleChatKeydown = (e: any) => {
     switch (e.key) {
@@ -57,6 +63,7 @@ const ChatForm = () => {
           return;
         }
         if (e.nativeEvent.isComposing) return;
+        if (dataUrlList.length) sendChatMessage('image');
         sendChatMessage();
         e.target.value = '';
         focusInput?.current?.focus();
@@ -78,7 +85,12 @@ const ChatForm = () => {
 
   const handleChatSubmit = (e?: any, type = 'text') => {
     e?.preventDefault();
-    sendChatMessage(type);
+    if (chatMessage) {
+      sendChatMessage('text');
+    }
+    if (dataUrlList) {
+      sendChatMessage('image');
+    }
 
     focusInput?.current?.focus();
     e && e.target.message.focus();
@@ -86,8 +98,18 @@ const ChatForm = () => {
 
   return (
     <StyledChatForm autoComplete="off" onSubmit={(e) => handleChatSubmit(e)}>
+      {dataUrlList.length ? (
+        <PreImage
+          dataUrlList={dataUrlList}
+          onRemove={(index) => {
+            const newArr = dataUrlList.filter((_, i) => i !== index);
+            setDataUrlList([...newArr]);
+          }}
+        />
+      ) : null}
       <div className="form-header">
         <textarea
+          ref={focusTextArea}
           value={chatMessage}
           onKeyDown={handleChatKeydown}
           onKeyUp={handleChatKeyup}
@@ -113,18 +135,16 @@ const ChatForm = () => {
       <div className="form-footer">
         <FormControllerWrapper>
           <ImageUploadButton
-            onFileChange={(file) => {
-              const reader = new FileReader();
-              reader.onloadend = () => {
-                sendChatMessage('image', reader.result as string);
-              };
-              reader.readAsDataURL(file as any);
+            onFileChange={async (files) => {
+              const dataUrlList = await utils.convertFilesToDataUrls(files);
+              setDataUrlList([...dataUrlList]);
+              focusTextArea.current?.focus();
             }}
           />
         </FormControllerWrapper>
         <div>
-          <Button type={'submit'}>
-            <SvgSend style={{ width: '100%', height: '100%' }} />
+          <Button style={{ background: 'white' }} type={'submit'}>
+            <SvgSend />
           </Button>
         </div>
       </div>
@@ -137,18 +157,15 @@ const FormControllerWrapper = styled.div`
 `;
 
 const StyledChatForm = styled.form`
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-
   height: 80px;
+
+  margin-top: 20px;
 
   border: 1px solid ${({ theme }) => theme.color.primary400};
   border-radius: 8px;
-
   box-shadow: ${({ theme }) => theme.boxShadow};
 
   textarea {
@@ -158,14 +175,11 @@ const StyledChatForm = styled.form`
     border: 0;
     border-top-right-radius: 8px;
     border-top-left-radius: 8px;
-
     padding: 8px;
 
     resize: none;
     box-sizing: border-box;
     border-bottom: 1px solid ${({ theme }) => theme.color.primary400};
-  }
-  textarea::placeholder {
   }
 
   .form-header {

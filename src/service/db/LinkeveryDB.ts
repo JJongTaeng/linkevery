@@ -13,7 +13,7 @@ export interface Message {
   username: string;
   messageKey: string;
   userKey: string;
-  message: string;
+  message: string | string[];
   messageType: string;
   date: string;
 }

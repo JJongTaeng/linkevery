@@ -58,6 +58,21 @@ class Utils {
       return prev + curr;
     }, 0);
   }
+  convertFilesToDataUrls(fileList: File[]): Promise<any[]> {
+    let promises = fileList.map((file) => {
+      // 각 파일에 대해 Promise 생성
+      return new Promise((resolve, reject) => {
+        let reader = new FileReader();
+
+        reader.onloadend = () => resolve(reader.result); // 파일 읽기가 끝나면 resolve
+        reader.onerror = reject; // 에러 발생 시 reject
+
+        reader.readAsDataURL(file); // 파일을 데이터 URL로 읽기 시작
+      });
+    });
+
+    return Promise.all(promises); // 모든 Promise가 완료될 때까지 기다림
+  }
 }
 
 export const utils = new Utils();

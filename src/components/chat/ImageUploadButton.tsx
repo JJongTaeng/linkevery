@@ -34,7 +34,7 @@ const ImageUploadButton = ({
               !file.type.includes('image') && !file.type.includes('pdf'),
           ).length;
           if (isSendableFile) {
-            console.log(files);
+            onFileChange(files);
           }
         }}
         type={'file'}

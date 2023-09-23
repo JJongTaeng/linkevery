@@ -18,6 +18,7 @@ const ButtonContainer = styled.button`
   border-radius: 50%;
   border: 1px solid #fff;
 
+  padding: 0;
   width: 30px;
   height: 30px;
 
