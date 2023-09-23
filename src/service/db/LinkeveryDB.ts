@@ -38,6 +38,7 @@ export class LinkeveryDB extends Dexie {
   user!: Table<User>;
   room!: Table<Room>;
   message!: Table<Message>;
+  dbVersion = 2; // DB 리셋이 필요하면 해당 버전을 1씩 올립니다.
   constructor() {
     super('linkevery');
     this.version(1).stores({
@@ -46,5 +47,17 @@ export class LinkeveryDB extends Dexie {
       message:
         '++id, &messageKey, roomName, username, userKey, message, messageType, date',
     });
+
+    this.resetDB();
+  }
+
+  resetDB() {
+    // DB 리셋이 필요하면 dbVersion을 1씩 올립니다.
+    if (this.dbVersion > parseInt(localStorage.getItem('dbVersion') || '1')) {
+      console.debug('Linkevery DB reset !');
+      this.delete();
+      localStorage.setItem('dbVersion', this.dbVersion.toString());
+      window.location.reload();
+    }
   }
 }
