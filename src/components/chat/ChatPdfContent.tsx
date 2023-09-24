@@ -12,13 +12,13 @@ const ChatPdfContent = ({ dataUrlList }: ChatPdfContentProps) => {
   return (
     <>
       {dataUrlList.map((dataUrl) => (
-        <PdfIconContainer>
+        <PdfIconContainer key={nanoid()}>
           <Download
             onClick={() => utils.downloadDataUrl('download.pdf', dataUrl)}
           >
             <SvgDownload />
           </Download>
-          <StyledPdfIcon key={nanoid()} />
+          <StyledPdfIcon />
         </PdfIconContainer>
       ))}
     </>
