@@ -38,7 +38,7 @@ export class LinkeveryDB extends Dexie {
   user!: Table<User>;
   room!: Table<Room>;
   message!: Table<Message>;
-  dbVersion = 3; // DB 리셋이 필요하면 해당 버전을 1씩 올립니다.
+  dbVersion = 2; // DB 리셋이 필요하면 해당 버전을 1씩 올립니다.
   constructor() {
     super('linkevery');
     this.version(1).stores({
