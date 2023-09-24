@@ -3,15 +3,16 @@ import { Image } from 'antd';
 import { nanoid } from 'nanoid';
 
 interface ChatImageContentsProps {
-  dataUrlList: string[];
+  dataUrlFilenameList: { dataUrl: string; filename: string }[];
 }
-const ChatImageContents = ({ dataUrlList }: ChatImageContentsProps) => {
+const ChatImageContents = ({ dataUrlFilenameList }: ChatImageContentsProps) => {
   return (
     <div>
       <Image.PreviewGroup>
-        {dataUrlList.map((dataUrl) => (
-          <Image key={nanoid()} width={180} src={dataUrl} />
-        ))}
+        {dataUrlFilenameList.map((dataUrlFilename) => {
+          const { dataUrl } = dataUrlFilename;
+          return <Image key={nanoid()} width={180} src={dataUrl} />;
+        })}
       </Image.PreviewGroup>
     </div>
   );

@@ -6,21 +6,25 @@ import SvgPdfIcon from '../icons/PdfIcon';
 import SvgDownload from '../icons/Download';
 
 interface ChatPdfContentProps {
-  dataUrlList: string[];
+  dataUrlFilenameList: { dataUrl: string; filename: string }[];
 }
-const ChatPdfContent = ({ dataUrlList }: ChatPdfContentProps) => {
+const ChatPdfContent = ({ dataUrlFilenameList }: ChatPdfContentProps) => {
   return (
     <>
-      {dataUrlList.map((dataUrl) => (
-        <PdfIconContainer key={nanoid()}>
-          <Download
-            onClick={() => utils.downloadDataUrl('download.pdf', dataUrl)}
-          >
-            <SvgDownload />
-          </Download>
-          <StyledPdfIcon />
-        </PdfIconContainer>
-      ))}
+      {dataUrlFilenameList.map((dataUrlFilename) => {
+        const { dataUrl, filename } = dataUrlFilename;
+        return (
+          <PdfIconContainer key={nanoid()}>
+            <Download
+              onClick={() => utils.downloadDataUrl('download.pdf', dataUrl)}
+            >
+              <SvgDownload />
+            </Download>
+            <StyledPdfIcon />
+            <span>{filename}</span>
+          </PdfIconContainer>
+        );
+      })}
     </>
   );
 };
@@ -32,6 +36,11 @@ const StyledPdfIcon = styled(SvgPdfIcon)`
 
 const PdfIconContainer = styled.div`
   position: relative;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 `;
 
 const Download = styled.div`
