@@ -32,6 +32,7 @@ const StyledPdfIcon = styled(SvgPdfIcon)`
 
 const PdfIconContainer = styled.div`
   position: relative;
+  cursor: pointer;
 `;
 
 const Download = styled.div`
