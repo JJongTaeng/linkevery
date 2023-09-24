@@ -1,7 +1,7 @@
-import { CATEGORY, MessageId } from 'constants/protocol';
+import { CATEGORY, MessageId } from '../constants/peerEvent';
 import { storage } from 'service/storage/StorageService';
 
-export function rtcMessage({
+export function rtcAction({
   category,
   messageId,
 }: {

@@ -104,39 +104,46 @@ const ChatList = () => {
   return (
     <StyledChatList id={'chat-list'} ref={chatListElement}>
       <div id="chat-loading-trigger" ref={chatLoadingTriggerElement} />
-      {messageList.map(({ message, userKey, date, username }, index) => {
-        const prevMessage = messageList[index - 1];
-        const currentMessage = messageList[index];
-        const nextMessage = messageList[index + 1];
+      {messageList.map(
+        ({ message, userKey, date, username, messageType }, index) => {
+          const prevMessage = messageList[index - 1];
+          const currentMessage = messageList[index];
+          const nextMessage = messageList[index + 1];
 
-        const isSameUserPrev = prevMessage?.userKey === currentMessage.userKey;
-        const isSameUser = nextMessage?.userKey === currentMessage.userKey;
+          const isSameUserPrev =
+            prevMessage?.userKey === currentMessage.userKey;
+          const isSameUser = nextMessage?.userKey === currentMessage.userKey;
 
-        const isSameUserAndSameTimeForTime =
-          isSameUser && isSameTime(currentMessage?.date, nextMessage?.date);
-        const isSameUserAndSameTimeForUsername =
-          isSameTime(prevMessage?.date, currentMessage?.date) && isSameUserPrev;
-        return (
-          <React.Fragment key={nanoid()}>
-            {isSameDay(prevMessage?.date, currentMessage?.date) ? null : (
-              <Divider className="chat-date" plain>
-                {dayjs(currentMessage.date).format('YYYY년 MM월 DD일')}
-              </Divider>
-            )}
-            <ChatBubble
-              key={nanoid()}
-              message={message}
-              date={
-                isSameUserAndSameTimeForTime
-                  ? undefined
-                  : dayjs(date).format('YYYY-MM-DD HH:mm')
-              }
-              username={isSameUserAndSameTimeForUsername ? undefined : username}
-              isMyChat={userKey === storage.getItem('userKey')}
-            />
-          </React.Fragment>
-        );
-      })}
+          const isSameUserAndSameTimeForTime =
+            isSameUser && isSameTime(currentMessage?.date, nextMessage?.date);
+          const isSameUserAndSameTimeForUsername =
+            isSameTime(prevMessage?.date, currentMessage?.date) &&
+            isSameUserPrev;
+          return (
+            <React.Fragment key={nanoid()}>
+              {isSameDay(prevMessage?.date, currentMessage?.date) ? null : (
+                <Divider className="chat-date" plain>
+                  {dayjs(currentMessage.date).format('YYYY년 MM월 DD일')}
+                </Divider>
+              )}
+              <ChatBubble
+                key={nanoid()}
+                message={message}
+                date={
+                  isSameUserAndSameTimeForTime
+                    ? undefined
+                    : dayjs(date).format('YYYY-MM-DD HH:mm')
+                }
+                type={messageType}
+                username={
+                  isSameUserAndSameTimeForUsername ? undefined : username
+                }
+                isMyChat={userKey === storage.getItem('userKey')}
+              />
+            </React.Fragment>
+          );
+        },
+      )}
       {isVisibleScrollButton && (
         <Button
           className={'scroll-down-button'}

@@ -2,7 +2,7 @@ import { Avatar } from 'antd';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { deleteRoomByDB } from 'store/thunk/roomThunk';
-import SvgDelete from 'components/icons/Delete';
+import SvgCloseButton from '../icons/CloseButton';
 
 interface RoomBadgeProps {
   name: string;
@@ -21,7 +21,7 @@ const RoomBadge = ({ name, onClick }: RoomBadgeProps) => {
           className={'x-button'}
           onClick={() => dispatch(deleteRoomByDB({ roomName: name }))}
         >
-          <SvgDelete />
+          <SvgCloseButton />
         </XButton>
       )}
       <Badge
@@ -60,11 +60,15 @@ const XButton = styled.div`
 
   transition: 0.3s;
   svg {
+    width: 20px;
+    height: 20px;
     padding-bottom: 4px;
   }
 
   &:hover {
-    transform: scale(1.1);
+    svg {
+      transform: scale(1.1);
+    }
   }
 `;
 

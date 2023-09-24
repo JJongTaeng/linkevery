@@ -1,4 +1,4 @@
-import { Protocol } from 'constants/protocol';
+import { PeerEvent } from '../../constants/peerEvent';
 
 export enum SdpType {
   'local' = 'local',
@@ -55,5 +55,5 @@ export abstract class RTCPeerService {
 
   public abstract closePeer(): void;
 
-  public abstract sendMessage(protocol: Protocol): void;
+  public abstract sendMessage(protocol: PeerEvent): void;
 }

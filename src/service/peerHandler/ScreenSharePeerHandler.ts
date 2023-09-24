@@ -1,7 +1,7 @@
-import type { Protocol } from 'constants/protocol';
-import { CATEGORY, SCREEN_SHARE_MESSAGE_ID } from 'constants/protocol';
-import { category } from 'decorators/category';
-import { messageId } from 'decorators/messageId';
+import type { PeerEvent } from '../../constants/peerEvent';
+import { CATEGORY, SCREEN_SHARE_MESSAGE_ID } from '../../constants/peerEvent';
+import { peerCategory } from '../../decorators/peerCategory';
+import { peerMessageId } from '../../decorators/peerMessageId';
 import { store } from 'store/store';
 import { storage } from 'service/storage/StorageService';
 import { userActions } from 'store/features/userSlice';
@@ -13,7 +13,7 @@ import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { ScreenSharePeerEmitter } from '../peerEmitter/ScreenSharePeerEmitter';
 
-@category(CATEGORY.SCREEN)
+@peerCategory(CATEGORY.SCREEN)
 @injectable()
 export class ScreenSharePeerHandler {
   constructor(
@@ -22,8 +22,8 @@ export class ScreenSharePeerHandler {
     private screenSharePeerEmitter: ScreenSharePeerEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
-  @messageId(SCREEN_SHARE_MESSAGE_ID.READY)
-  ready(protocol: Protocol) {
+  @peerMessageId(SCREEN_SHARE_MESSAGE_ID.READY)
+  ready(protocol: PeerEvent) {
     if (!store.getState().user.voiceStatus) {
       return;
     }
@@ -31,8 +31,8 @@ export class ScreenSharePeerHandler {
     this.screenSharePeerEmitter.sendScreenReadyOkMessage({ to: protocol.from });
   }
 
-  @messageId(SCREEN_SHARE_MESSAGE_ID.READY_OK)
-  async readyOk(protocol: Protocol) {
+  @peerMessageId(SCREEN_SHARE_MESSAGE_ID.READY_OK)
+  async readyOk(protocol: PeerEvent) {
     const { userKey } = storage.getAll();
     store.dispatch(userActions.changeScreenShareStatus(true));
 
@@ -71,8 +71,8 @@ export class ScreenSharePeerHandler {
     }
   }
 
-  @messageId(SCREEN_SHARE_MESSAGE_ID.CONNECTED)
-  connected(protocol: Protocol) {
+  @peerMessageId(SCREEN_SHARE_MESSAGE_ID.CONNECTED)
+  connected(protocol: PeerEvent) {
     store.dispatch(
       roomActions.setMemberScreenShareStatus({
         userKey: protocol.data.userKey,
@@ -81,8 +81,8 @@ export class ScreenSharePeerHandler {
     );
   }
 
-  @messageId(SCREEN_SHARE_MESSAGE_ID.DISCONNECT)
-  disconnect(protocol: Protocol) {
+  @peerMessageId(SCREEN_SHARE_MESSAGE_ID.DISCONNECT)
+  disconnect(protocol: PeerEvent) {
     const { from } = protocol;
 
     store.dispatch(

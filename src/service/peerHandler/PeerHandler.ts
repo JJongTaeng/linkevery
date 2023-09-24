@@ -4,9 +4,9 @@ import {
   EVENT_NAME,
   HandlerMap,
   MessageId,
-  Protocol,
+  PeerEvent,
   StringifyProtocol,
-} from 'constants/protocol';
+} from '../../constants/peerEvent';
 import { SocketManager } from 'service/socket/SocketManager';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { MessageAssemble } from 'service/messages/MessageAssemble';
@@ -58,7 +58,7 @@ export class PeerHandler {
   }
 
   subscribe() {
-    this.socketManager.socket.on(EVENT_NAME, (protocol: Protocol) => {
+    this.socketManager.socket.on(EVENT_NAME, (protocol: PeerEvent) => {
       const handler = this.handlerMap[protocol.category]?.[protocol.messageId];
       if (!handler) {
         throw new Error(

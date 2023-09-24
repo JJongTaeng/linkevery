@@ -1,4 +1,4 @@
-import { CSSProp, DefaultTheme, css } from 'styled-components';
+import { css, CSSProp, DefaultTheme } from 'styled-components';
 
 interface MediaTest {
   mobile: (literals: TemplateStringsArray, ...args: string[]) => CSSProp;
@@ -13,6 +13,7 @@ const color = {
   primary400: '#c7b9ed',
   primary800: '#f9f7fc',
   grey100: '#3c3a42',
+  grey400: '#8c8c8c',
   grey800: '#dddae6',
 };
 

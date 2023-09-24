@@ -86,7 +86,7 @@ export interface StringifyProtocol {
   endIndex: number;
 }
 
-export interface Protocol {
+export interface PeerEvent {
   messageType: MESSAGE_TYPE;
   category: CATEGORY;
   messageId: MessageId;
@@ -97,5 +97,5 @@ export interface Protocol {
 }
 
 export type HandlerMap<T extends string | number | symbol> = {
-  [key in T]: (protocol: Protocol) => void;
+  [key in T]: (protocol: PeerEvent) => void;
 };

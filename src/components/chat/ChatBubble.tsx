@@ -1,17 +1,20 @@
-import { Card, Image, Tag } from 'antd';
+import { Card, Tag } from 'antd';
 import color from 'color';
 import dayjs from 'dayjs';
-import { HTMLAttributes } from 'react';
+import React, { HTMLAttributes } from 'react';
 import stc from 'string-to-color';
 import styled from 'styled-components';
-import { chatUtils } from 'service/utils/ChatUtils';
 import { utils } from 'service/utils/Utils';
+import { nanoid } from 'nanoid';
+import ChatImageContents from './ChatImageContents';
+import ChatPdfContent from './ChatPdfContent';
 
 interface ChatBubbleProps extends HTMLAttributes<HTMLDivElement> {
   date?: string;
   username?: string;
   isMyChat: boolean;
-  message: string;
+  message: string | string[];
+  type: string;
 }
 
 const ChatBubble = ({
@@ -19,29 +22,60 @@ const ChatBubble = ({
   date,
   username,
   isMyChat,
+  type,
   ...props
 }: ChatBubbleProps) => {
+  if (!message) return <></>;
+
   const getColorObj = (colorCode: string) => color(colorCode) as any;
   const isDark = () =>
     utils.sum(getColorObj(stc(username)).color as number[]) / 765 > 0.6;
-  const chatMessageType = chatUtils.getChatType(message);
+
   const urlRegex = /(http[s]?:\/\/)?([^\/\s]+\/)([^\s]*)/g;
 
   const getURL = (message: string) => message.match(urlRegex)?.[0];
 
-  const chatElementByMessageType = {
-    text: <p>{message}</p>,
-    image: <Image src={message} />,
-    url: (
-      <>
-        <a href={getURL(message)} target="_blank" rel="noopener noreferrer">
-          {getURL(message)}
-        </a>
-        <span>{message.replace(getURL(message) || '', '')}</span>
-      </>
-    ),
-    file: <></>,
-    pdf: <></>,
+  const chatElementByMessageType: {
+    [key: string]: (value: any) => React.ReactNode;
+  } = {
+    text: (message: string) => {
+      return (
+        <React.Fragment key={nanoid()}>
+          {!!message.match(/(http[s]?:\/\/)?([^\/\s]+\/)([^\s]*)/g) ? (
+            <>
+              <a
+                href={getURL(message)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {getURL(message)}
+              </a>
+              <span>{message.replace(getURL(message) || '', '')}</span>
+            </>
+          ) : (
+            <p>{message}</p>
+          )}
+        </React.Fragment>
+      );
+    },
+
+    file: (dataUrlList: string[]) => {
+      if (!(dataUrlList instanceof Array)) return;
+      const dataUrlType = utils.getFileTypeFromDataUrl(dataUrlList[0]);
+      return (
+        <>
+          {
+            {
+              image: <ChatImageContents dataUrlList={dataUrlList} />,
+              pdf: <ChatPdfContent dataUrlList={dataUrlList} />,
+              ppt: <></>,
+              unknown: <></>,
+            }[dataUrlType]
+          }
+        </>
+      );
+    },
+    image: () => null,
   };
 
   return (
@@ -62,7 +96,7 @@ const ChatBubble = ({
       )}
       <div className="chat-content">
         <StyledCard size="small">
-          {chatElementByMessageType[chatMessageType]}
+          {chatElementByMessageType[type](message)}
         </StyledCard>
         {date && (
           <span className="chat-time">{dayjs(date).format('HH:mm')}</span>
@@ -105,6 +139,10 @@ const StyledCard = styled(Card)`
   }
   min-width: 60px;
   max-width: 400px;
+
+  .ant-image {
+    margin: 3px;
+  }
 `;
 
 export default ChatBubble;

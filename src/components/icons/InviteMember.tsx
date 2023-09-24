@@ -1,5 +1,5 @@
-import * as React from "react";
-import { SVGProps } from "react";
+import * as React from 'react';
+import { SVGProps } from 'react';
 const SvgInviteMember = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width="1em"
@@ -9,23 +9,12 @@ const SvgInviteMember = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
+    <circle cx={10} cy={6} r={4} stroke="#1C274C" strokeWidth={1.5} />
     <path
-      d="M3 19c.691-2.307 2.47-3 6.5-3 4.03 0 5.809.693 6.5 3"
-      stroke="#fff"
-      strokeWidth={2}
+      d="M21 10h-2m0 0h-2m2 0V8m0 2v2M17.997 18c.003-.164.003-.331.003-.5 0-2.485-3.582-4.5-8-4.5s-8 2.015-8 4.5S2 22 10 22c2.231 0 3.84-.157 5-.437"
+      stroke="#1C274C"
+      strokeWidth={1.5}
       strokeLinecap="round"
-    />
-    <path
-      d="M13 9.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-      stroke="#fff"
-      strokeWidth={2}
-    />
-    <path
-      d="M15 6h6M18 3v6"
-      stroke="#fff"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
     />
   </svg>
 );

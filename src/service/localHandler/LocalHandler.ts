@@ -1,14 +1,10 @@
 import { inject, injectable, injectAll } from 'tsyringe';
-import {
-  EVENT_NAME,
-  LocalAction,
-  LocalFeature,
-} from '../../constants/localEvent';
+import { CATEGORY, EVENT_NAME, MessageId } from '../../constants/localEvent';
 import EventEmitter from 'events';
 import { ERROR_TYPE } from '../../error/error';
 
 type HandlerMap = {
-  [key in LocalFeature]?: { [key in LocalAction]?: Function };
+  [key in CATEGORY]?: { [key in MessageId]?: Function };
 };
 @injectable()
 export class LocalHandler {
@@ -34,13 +30,13 @@ export class LocalHandler {
         const feature = Reflect.getMetadata(
           methodName,
           instance.constructor,
-          'feature',
-        ) as LocalFeature;
+          'category',
+        ) as CATEGORY;
         const action = Reflect.getMetadata(
           methodName,
           instance.constructor,
-          'action',
-        ) as LocalAction;
+          'messageId',
+        ) as MessageId;
 
         if (!this.handlerMap[feature]) {
           this.handlerMap[feature] = {};
@@ -53,10 +49,18 @@ export class LocalHandler {
   subscribe() {
     this.ee.on(
       EVENT_NAME,
-      ({ feature, action }: { feature: LocalFeature; action: LocalAction }) => {
-        const handler = this.handlerMap[feature]?.[action];
+      ({
+        category,
+        messageId,
+      }: {
+        category: CATEGORY;
+        messageId: MessageId;
+      }) => {
+        const handler = this.handlerMap[category]?.[messageId];
         if (!handler) {
-          throw new Error(ERROR_TYPE.NOT_DEFINED_HANDLER);
+          throw new Error(
+            `${ERROR_TYPE.NOT_DEFINED_HANDLER} ${category} ${messageId}`,
+          );
         }
         handler();
       },

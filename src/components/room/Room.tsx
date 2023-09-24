@@ -2,13 +2,11 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { storage } from 'service/storage/StorageService';
-import { roomActions } from 'store/features/roomSlice';
 import { statusActions } from 'store/features/statusSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
-import { deleteAllMemberByDB, getRoomByDB } from 'store/thunk/roomThunk';
+import { deleteAllMemberByDB } from 'store/thunk/roomThunk';
 import { addUserByDB, getUserByDB } from 'store/thunk/userThunk';
 import UsernameModal from './UsernameModal';
-import { useApp } from 'hooks/useApp';
 import ChatForm from './ChatForm';
 import ChatList from '../chat/ChatList';
 import { debounce } from 'throttle-debounce';
@@ -16,7 +14,6 @@ import { nanoid } from 'nanoid';
 import { useLocalEmitter } from '../../hooks/useLocalEmitter';
 
 const Room = () => {
-  const { app, connectionPeerEmitter } = useApp();
   const { roomLocalEmitter } = useLocalEmitter();
   const dispatch = useAppDispatch();
   const handleViewportResize = debounce(
@@ -40,10 +37,7 @@ const Room = () => {
     if (username && roomName) {
       storage.setItem('roomName', roomName);
       dispatch(statusActions.setUsernameModalVisible(false));
-      connectionPeerEmitter.sendConnectionConnectMessage({}); // socket join
-      connectionPeerEmitter.sendConnectionJoinRoomMessage({ roomName }); // join
-      dispatch(roomActions.setRoomName(roomName));
-      dispatch(getRoomByDB(roomName));
+      roomLocalEmitter.joinRoom();
     } else {
       dispatch(statusActions.setUsernameModalVisible(true));
     }

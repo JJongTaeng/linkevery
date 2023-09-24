@@ -14,14 +14,13 @@ import Button from 'components/elements/Button';
 import ToggleButton from 'components/elements/ToggleButton';
 import SvgExit from 'components/icons/Exit';
 import SvgInviteMember from 'components/icons/InviteMember';
-import SvgLeftIndent from 'components/icons/LeftIndent';
 import SvgMicOn from 'components/icons/MicOn';
-import SvgRightIndent from 'components/icons/RightIndent';
 import SvgScreenShareOn from 'components/icons/ScreenShareOn';
 import { useApp } from 'hooks/useApp';
 import { useRef } from 'react';
 import { container } from 'tsyringe';
 import { VideoManager } from 'service/media/VideoManager';
+import SvgMenu from '../icons/Menu';
 
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
@@ -50,14 +49,14 @@ const TopMenuContainer = () => {
 
   return (
     <Container>
-      <div
-        className={'menu-button'}
+      <Button
+        style={{ background: 'white' }}
         onClick={() =>
           dispatch(statusActions.changeLeftMenuVisible(!leftMenuVisible))
         }
       >
-        {leftMenuVisible ? <SvgLeftIndent /> : <SvgRightIndent />}
-      </div>
+        <SvgMenu />
+      </Button>
       <RoomName>
         <Text>{roomName ? roomName?.split('+')[0] : ''}</Text>
         <div>
@@ -91,10 +90,11 @@ const TopMenuContainer = () => {
               disabled={!isOnVoiceMember()}
               checked={screenShareStatus}
             >
-              <SvgScreenShareOn />
+              <SvgScreenShareOn style={{ width: 20, height: 20 }} />
             </ToggleButton>
           )}
           <ToggleButton
+            style={{ background: 'white' }}
             checked={voiceStatus}
             onChange={async (value) => {
               if (value) {
@@ -125,7 +125,7 @@ const TopMenuContainer = () => {
           >
             <SvgMicOn />
           </ToggleButton>
-          <Button>
+          <Button style={{ background: 'white' }}>
             <SvgExit
               className={'exit'}
               onClick={() => {
@@ -150,27 +150,10 @@ const Container = styled.div`
   padding: 0 20px;
   .exit {
     cursor: pointer;
-    width: 20px;
-    height: 20px;
     transition: 0.2s;
   }
   .exit:hover {
     transform: scale(1.1);
-  }
-  .menu-button {
-    position: relative;
-    border-radius: 50%;
-    border: 1px solid #fff;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    svg {
-      width: 20px;
-      height: 20px;
-    }
   }
 `;
 

@@ -1,17 +1,19 @@
 export const EVENT_NAME = 'localEvent';
 
-export enum LocalFeature {
+export enum CATEGORY {
   CHAT = 'CHAT',
   ROOM = 'ROOM',
 }
 
-export enum ChatAction {
+export enum CHAT_MESSAGE_ID {
   SEND = 'SEND',
   RECEIVE = 'RECEIVE',
 }
 
-export enum RoomAction {
+export enum ROOM_MESSAGE_ID {
   LEAVE = 'LEAVE',
+
+  JOIN = 'JOIN',
 }
 
-export type LocalAction = ChatAction | RoomAction;
+export type MessageId = CHAT_MESSAGE_ID | ROOM_MESSAGE_ID;

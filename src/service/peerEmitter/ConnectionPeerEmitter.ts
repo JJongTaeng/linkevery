@@ -1,6 +1,6 @@
-import type { ProtocolData } from 'constants/protocol';
-import { CATEGORY, CONNECTION_MESSAGE_ID } from 'constants/protocol';
-import { socketMessage } from 'decorators/socketMessage';
+import type { ProtocolData } from '../../constants/peerEvent';
+import { CATEGORY, CONNECTION_MESSAGE_ID } from '../../constants/peerEvent';
+import { socketAction } from '../../decorators/socketAction';
 import { inject, injectable } from 'tsyringe';
 import { Sender } from '../messages/Sender';
 
@@ -8,19 +8,19 @@ import { Sender } from '../messages/Sender';
 export class ConnectionPeerEmitter {
   constructor(@inject(Sender) private sender: Sender) {}
 
-  @socketMessage({
+  @socketAction({
     category: CATEGORY.CONNECTION,
     messageId: CONNECTION_MESSAGE_ID.CONNECT,
   })
   sendConnectionConnectMessage(data: ProtocolData) {}
 
-  @socketMessage({
+  @socketAction({
     category: CATEGORY.CONNECTION,
     messageId: CONNECTION_MESSAGE_ID.JOIN_ROOM,
   })
   sendConnectionJoinRoomMessage(data: ProtocolData) {}
 
-  @socketMessage({
+  @socketAction({
     category: CATEGORY.CONNECTION,
     messageId: CONNECTION_MESSAGE_ID.DISCONNECT,
   })
