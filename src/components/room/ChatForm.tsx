@@ -19,7 +19,9 @@ const ChatForm = () => {
   const focusInput = useRef<HTMLInputElement>(null);
   const focusTextArea = useRef<HTMLTextAreaElement>(null);
   const [chatMessage, setChatMessage] = useState('');
-  const [dataUrlList, setDataUrlList] = useState<any[]>([]);
+  const [dataUrlFilenameList, setDataUrlFilenameList] = useState<
+    { dataUrl: string; filename: string }[]
+  >([]);
   const [isShiftKeyDowned, setIsShiftKeydowned] = useState(false);
   const { username } = useAppSelector((state) => ({
     username: state.user.username,
@@ -28,10 +30,10 @@ const ChatForm = () => {
 
   const sendChatMessage = (type = 'text') => {
     if (type === 'text' && !chatMessage) return;
-    if (type === 'file' && !dataUrlList.length) return;
+    if (type === 'file' && !dataUrlFilenameList.length) return;
     const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
     const message: any = {
-      file: dataUrlList,
+      file: dataUrlFilenameList,
       text: chatMessage,
     };
     const messageProtocol = {
@@ -54,7 +56,7 @@ const ChatForm = () => {
       }),
     );
     setChatMessage('');
-    setDataUrlList([]);
+    setDataUrlFilenameList([]);
   };
   const handleChatKeydown = (e: any) => {
     switch (e.key) {
@@ -65,7 +67,7 @@ const ChatForm = () => {
           return;
         }
         if (e.nativeEvent.isComposing) return;
-        if (dataUrlList.length) sendChatMessage('file');
+        if (dataUrlFilenameList.length) sendChatMessage('file');
         sendChatMessage();
         e.target.value = '';
         focusInput?.current?.focus();
@@ -85,12 +87,22 @@ const ChatForm = () => {
     }
   };
 
+  const handleFileChange = async (files: File[]) => {
+    const dataUrlList = await utils.convertFilesToDataUrls(files);
+    const dataUrlFilenameList = dataUrlList.map((dataUrl, index) => ({
+      dataUrl,
+      filename: files[index].name,
+    }));
+    setDataUrlFilenameList([...dataUrlFilenameList]);
+    focusTextArea.current?.focus();
+  };
+
   const handleChatSubmit = (e?: any, type = 'text') => {
     e?.preventDefault();
     if (chatMessage) {
       sendChatMessage('text');
     }
-    if (dataUrlList) {
+    if (dataUrlFilenameList) {
       sendChatMessage('file');
     }
 
@@ -100,12 +112,12 @@ const ChatForm = () => {
 
   return (
     <StyledChatForm autoComplete="off" onSubmit={(e) => handleChatSubmit(e)}>
-      {dataUrlList.length ? (
+      {dataUrlFilenameList.length ? (
         <PreFileFormat
-          dataUrlList={dataUrlList}
+          dataUrlFilenameList={dataUrlFilenameList}
           onRemove={(index) => {
-            const newArr = dataUrlList.filter((_, i) => i !== index);
-            setDataUrlList([...newArr]);
+            const newArr = dataUrlFilenameList.filter((_, i) => i !== index);
+            setDataUrlFilenameList([...newArr]);
           }}
         />
       ) : null}
@@ -140,20 +152,12 @@ const ChatForm = () => {
             multiple={true}
             accept="image/png, image/jpeg"
             icon={<SvgImageUploadIcon />}
-            onFileChange={async (files) => {
-              const dataUrlList = await utils.convertFilesToDataUrls(files);
-              setDataUrlList([...dataUrlList]);
-              focusTextArea.current?.focus();
-            }}
+            onFileChange={handleFileChange}
           />
           <UploadButton
             accept={'application/pdf'}
             icon={<SvgFileUploadIcon />}
-            onFileChange={async (files) => {
-              const dataUrlList = await utils.convertFilesToDataUrls(files);
-              setDataUrlList([...dataUrlList]);
-              focusTextArea.current?.focus();
-            }}
+            onFileChange={handleFileChange}
           />
         </FormControllerWrapper>
         <div>

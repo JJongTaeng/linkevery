@@ -59,15 +59,19 @@ const ChatBubble = ({
       );
     },
 
-    file: (dataUrlList: string[]) => {
-      if (!(dataUrlList instanceof Array)) return;
-      const dataUrlType = utils.getFileTypeFromDataUrl(dataUrlList[0]);
+    file: (dataUrlFilenameList: { dataUrl: string; filename: string }[]) => {
+      if (!(dataUrlFilenameList instanceof Array)) return;
+      const dataUrlType = utils.getFileTypeFromDataUrl(
+        dataUrlFilenameList[0].dataUrl,
+      );
       return (
         <>
           {
             {
-              image: <ChatImageContents dataUrlList={dataUrlList} />,
-              pdf: <ChatPdfContent dataUrlList={dataUrlList} />,
+              image: (
+                <ChatImageContents dataUrlFilenameList={dataUrlFilenameList} />
+              ),
+              pdf: <ChatPdfContent dataUrlFilenameList={dataUrlFilenameList} />,
               ppt: <></>,
               unknown: <></>,
             }[dataUrlType]
@@ -75,7 +79,6 @@ const ChatBubble = ({
         </>
       );
     },
-    image: () => null,
   };
 
   return (

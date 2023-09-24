@@ -4,24 +4,40 @@ import SvgCloseButton from '../icons/CloseButton';
 import Button from '../elements/Button';
 import { nanoid } from 'nanoid';
 import SvgPdfIcon from '../icons/PdfIcon';
+import { utils } from '../../service/utils/Utils';
 
 interface PreImageProps {
-  dataUrlList: any[];
+  dataUrlFilenameList: { dataUrl: string; filename: string }[];
   onRemove: (index: number) => void;
 }
 
-const PreFileFormat = ({ dataUrlList, onRemove }: PreImageProps) => {
+const PreFileFormat = ({ dataUrlFilenameList, onRemove }: PreImageProps) => {
   return (
     <PreImageContainer>
-      {dataUrlList.map((dataUrl, index) => (
-        <ImageItem key={nanoid()}>
-          <CloseButton onClick={() => onRemove(index)}>
-            <SvgCloseButton />
-          </CloseButton>
-          {dataUrl.includes('data:application/pdf') && <SvgPdfIcon />}
-          {dataUrl.includes('data:image') && <img src={dataUrl} />}
-        </ImageItem>
-      ))}
+      {dataUrlFilenameList.map((dataUrlFilename, index) => {
+        const { dataUrl, filename } = dataUrlFilename;
+        const type = utils.getFileTypeFromDataUrl(dataUrl);
+        return (
+          <ImageItem key={nanoid()}>
+            <CloseButton onClick={() => onRemove(index)}>
+              <SvgCloseButton />
+            </CloseButton>
+            {
+              {
+                image: <img src={dataUrl} />,
+                pdf: (
+                  <PrePdfContainer>
+                    <SvgPdfIcon />
+                    <span>{filename}</span>
+                  </PrePdfContainer>
+                ),
+                ppt: <></>,
+                unknown: <></>,
+              }[type]
+            }
+          </ImageItem>
+        );
+      })}
     </PreImageContainer>
   );
 };
@@ -72,6 +88,13 @@ const CloseButton = styled(Button)`
     width: 24px;
     height: 24px;
   }
+`;
+
+const PrePdfContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
 `;
 
 export default PreFileFormat;
