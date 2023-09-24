@@ -1,11 +1,13 @@
-import { Card, Image, Tag } from 'antd';
+import { Card, Tag } from 'antd';
 import color from 'color';
 import dayjs from 'dayjs';
-import { HTMLAttributes } from 'react';
+import React, { HTMLAttributes } from 'react';
 import stc from 'string-to-color';
 import styled from 'styled-components';
 import { utils } from 'service/utils/Utils';
 import { nanoid } from 'nanoid';
+import ChatImageContents from './ChatImageContents';
+import ChatPdfContent from './ChatPdfContent';
 
 interface ChatBubbleProps extends HTMLAttributes<HTMLDivElement> {
   date?: string;
@@ -38,7 +40,7 @@ const ChatBubble = ({
   } = {
     text: (message: string) => {
       return (
-        <>
+        <React.Fragment key={nanoid()}>
           {!!message.match(/(http[s]?:\/\/)?([^\/\s]+\/)([^\s]*)/g) ? (
             <>
               <a
@@ -53,21 +55,27 @@ const ChatBubble = ({
           ) : (
             <p>{message}</p>
           )}
-        </>
+        </React.Fragment>
       );
     },
 
-    image: (dataUrlList: string[]) => {
+    file: (dataUrlList: string[]) => {
       if (!(dataUrlList instanceof Array)) return;
+      const dataUrlType = utils.getFileTypeFromDataUrl(dataUrlList[0]);
       return (
-        <Image.PreviewGroup>
-          {dataUrlList.map((src) => (
-            <Image key={nanoid()} width={180} src={src} />
-          ))}
-        </Image.PreviewGroup>
+        <>
+          {
+            {
+              image: <ChatImageContents dataUrlList={dataUrlList} />,
+              pdf: <ChatPdfContent dataUrlList={dataUrlList} />,
+              ppt: <></>,
+              unknown: <></>,
+            }[dataUrlType]
+          }
+        </>
       );
     },
-    file: () => <></>,
+    image: () => null,
   };
 
   return (

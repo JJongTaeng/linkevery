@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import ImageUploadButton from '../chat/ImageUploadButton';
+import UploadButton from '../chat/UploadButton';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import dayjs from 'dayjs';
@@ -10,7 +10,9 @@ import { useApp } from '../../hooks/useApp';
 import SvgSend from '../icons/Send';
 import Button from '../elements/Button';
 import { utils } from '../../service/utils/Utils';
-import PreImage from '../chat/PreImage';
+import PreFileFormat from '../chat/PreFileFormat';
+import SvgImageUploadIcon from '../icons/ImageUploadIcon';
+import SvgFileUploadIcon from '../icons/FileUploadIcon';
 
 const ChatForm = () => {
   const { app, chatPeerEmitter } = useApp();
@@ -26,10 +28,10 @@ const ChatForm = () => {
 
   const sendChatMessage = (type = 'text') => {
     if (type === 'text' && !chatMessage) return;
-    if (type === 'image' && !dataUrlList.length) return;
+    if (type === 'file' && !dataUrlList.length) return;
     const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
     const message: any = {
-      image: dataUrlList,
+      file: dataUrlList,
       text: chatMessage,
     };
     const messageProtocol = {
@@ -63,7 +65,7 @@ const ChatForm = () => {
           return;
         }
         if (e.nativeEvent.isComposing) return;
-        if (dataUrlList.length) sendChatMessage('image');
+        if (dataUrlList.length) sendChatMessage('file');
         sendChatMessage();
         e.target.value = '';
         focusInput?.current?.focus();
@@ -89,7 +91,7 @@ const ChatForm = () => {
       sendChatMessage('text');
     }
     if (dataUrlList) {
-      sendChatMessage('image');
+      sendChatMessage('file');
     }
 
     focusInput?.current?.focus();

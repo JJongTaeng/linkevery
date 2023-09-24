@@ -73,6 +73,41 @@ class Utils {
 
     return Promise.all(promises); // 모든 Promise가 완료될 때까지 기다림
   }
+  downloadDataUrl(filename: string, dataUrl: string) {
+    // 데이터를 담은 a 태그 생성
+    var downloadLink = document.createElement('a');
+
+    // 링크의 href 속성에 Data URL 할당
+    downloadLink.href = dataUrl;
+
+    // 다운로드될 파일 이름 설정
+    downloadLink.download = filename;
+
+    // body에 링크 추가
+    document.body.appendChild(downloadLink);
+
+    // 링크 클릭 시도 (이것이 실제 다운로드를 발생시킵니다)
+    downloadLink.click();
+
+    // body에서 링크 제거 (더 이상 필요하지 않으므로)
+    document.body.removeChild(downloadLink);
+  }
+  getFileTypeFromDataUrl(dataUrl: string) {
+    // data: 뒤에 오는 ; 이전까지가 MIME 타입입니다.
+    const mimeType = dataUrl.split(':')[1].split(';')[0];
+
+    switch (mimeType) {
+      case 'image/jpeg':
+      case 'image/png':
+        return 'image';
+      case 'application/pdf':
+        return 'pdf';
+      case 'application/vnd.ms-powerpoint':
+        return 'ppt';
+      default:
+        return 'unknown';
+    }
+  }
 }
 
 export const utils = new Utils();
