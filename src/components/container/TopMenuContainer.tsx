@@ -13,7 +13,6 @@ import { TOP_MENU_HEIGHT } from 'style/constants';
 import Button from 'components/elements/Button';
 import ToggleButton from 'components/elements/ToggleButton';
 import SvgExit from 'components/icons/Exit';
-import SvgInviteMember from 'components/icons/InviteMember';
 import SvgMicOn from 'components/icons/MicOn';
 import SvgScreenShareOn from 'components/icons/ScreenShareOn';
 import { useApp } from 'hooks/useApp';
@@ -21,6 +20,7 @@ import { useRef } from 'react';
 import { container } from 'tsyringe';
 import { VideoManager } from 'service/media/VideoManager';
 import SvgMenu from '../icons/Menu';
+import SvgInviteMember from '../icons/InviteMember';
 
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
@@ -65,7 +65,7 @@ const TopMenuContainer = () => {
               defaultOpen={true}
               title="복사된 URL을 초대할 사람에게 보내주세요."
             >
-              <StyledSvgInviteMember
+              <SvgInviteMember
                 onClick={() => {
                   clipboard.updateClipboard(window.location.href);
                 }}
@@ -165,25 +165,24 @@ const Text = styled.span`
 
 const RoomName = styled.div`
   display: flex;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    cursor: pointer;
+    circle {
+      stroke: white;
+    }
+    path {
+      stroke: white;
+    }
+  }
 `;
 
 const ControllerWrapper = styled.div`
   display: flex;
   gap: 8px;
-`;
-
-const StyledSvgInviteMember = styled(SvgInviteMember)`
-  width: 16px;
-  height: 16px;
-  margin-left: 8px;
-  cursor: pointer;
-
-  circle {
-    stroke: white;
-  }
-  path {
-    stroke: white;
-  }
 `;
 
 export default TopMenuContainer;
