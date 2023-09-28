@@ -65,7 +65,7 @@ const TopMenuContainer = () => {
               defaultOpen={true}
               title="복사된 URL을 초대할 사람에게 보내주세요."
             >
-              <SvgInviteMember
+              <StyledSvgInviteMember
                 onClick={() => {
                   clipboard.updateClipboard(window.location.href);
                 }}
@@ -165,17 +165,25 @@ const Text = styled.span`
 
 const RoomName = styled.div`
   display: flex;
-  svg {
-    margin-left: 8px;
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-  }
 `;
 
 const ControllerWrapper = styled.div`
   display: flex;
   gap: 8px;
+`;
+
+const StyledSvgInviteMember = styled(SvgInviteMember)`
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+  cursor: pointer;
+
+  circle {
+    stroke: white;
+  }
+  path {
+    stroke: white;
+  }
 `;
 
 export default TopMenuContainer;
