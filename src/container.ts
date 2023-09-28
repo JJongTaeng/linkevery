@@ -25,13 +25,9 @@ import { LocalHandler } from './service/localHandler/LocalHandler';
 import { ChatLocalEmitter } from './service/localEmitter/ChatLocalEmitter';
 import { RoomLocalHandler } from './service/localHandler/RoomLocalHandler';
 import { RoomLocalEmitter } from 'service/localEmitter/RoomLocalEmitter';
-import { storage } from './service/storage/StorageService';
-import { store } from './store/store';
 
 export const initContainer = () => {
   container.register('ee', { useValue: new EventEmitter() });
-  container.register('storage', { useValue: storage });
-  container.register('store', { useValue: store });
   container.register(
     AudioManager,
     { useClass: AudioManager },
@@ -84,11 +80,6 @@ export const initContainer = () => {
     (_t, result) => {
       container.resolve('PeerHandlerManager');
       container.resolve('LocalHandlerManager');
-      const re = container.resolve(RoomLocalEmitter);
-      const ce = container.resolve(ChatLocalEmitter);
-      re.leave();
-      ce.send();
-      ce.receive();
     },
     { frequency: 'Once' },
   );

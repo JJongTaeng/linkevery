@@ -1,7 +1,7 @@
 import { CATEGORY, ROOM_MESSAGE_ID } from '../../constants/localEvent';
 import { inject, injectable } from 'tsyringe';
-import { StorageService } from '../storage/StorageService';
-import type { StoreType } from '../../store/store';
+import { storage } from '../storage/StorageService';
+import { store } from '../../store/store';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
 import { ConnectionPeerEmitter } from '../peerEmitter/ConnectionPeerEmitter';
@@ -19,8 +19,6 @@ import { getRoomByDB } from '../../store/thunk/roomThunk';
 @injectable()
 export class RoomLocalHandler {
   constructor(
-    @inject('storage') private storage: StorageService,
-    @inject('store') private store: StoreType,
     @inject(ConnectionPeerEmitter)
     private connectionPeerEmitter: ConnectionPeerEmitter,
     @inject(RTCManager) private rtcManager: RTCManagerService,
@@ -29,14 +27,14 @@ export class RoomLocalHandler {
   ) {}
   @localMessageId(ROOM_MESSAGE_ID.LEAVE)
   leave() {
-    const roomName = this.storage.getItem('roomName');
-    const userKey = this.storage.getItem('userKey');
+    const roomName = storage.getItem('roomName');
+    const userKey = storage.getItem('userKey');
 
-    this.store.dispatch(roomActions.leaveRoom());
-    this.store.dispatch(userActions.changeVoiceStatus(false));
-    this.store.dispatch(userActions.changeScreenShareStatus(false));
-    this.store.dispatch(chatActions.resetChatState());
-    this.store.dispatch(statusActions.resetAllStatusState());
+    store.dispatch(roomActions.leaveRoom());
+    store.dispatch(userActions.changeVoiceStatus(false));
+    store.dispatch(userActions.changeScreenShareStatus(false));
+    store.dispatch(chatActions.resetChatState());
+    store.dispatch(statusActions.resetAllStatusState());
 
     this.connectionPeerEmitter.sendConnectionDisconnectMessage({ roomName });
     this.voicePeerEmitter.sendVoiceDisconnectMessage({ userKey });
@@ -48,10 +46,10 @@ export class RoomLocalHandler {
 
   @localMessageId(ROOM_MESSAGE_ID.JOIN)
   joinRoom() {
-    const roomName = this.storage.getItem('roomName');
+    const roomName = storage.getItem('roomName');
     this.connectionPeerEmitter.sendConnectionConnectMessage({}); // socket join
     this.connectionPeerEmitter.sendConnectionJoinRoomMessage({ roomName }); // join
-    this.store.dispatch(roomActions.setRoomName(roomName));
-    this.store.dispatch(getRoomByDB(roomName));
+    store.dispatch(roomActions.setRoomName(roomName));
+    store.dispatch(getRoomByDB(roomName));
   }
 }
