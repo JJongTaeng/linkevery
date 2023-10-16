@@ -13,6 +13,7 @@ import { chatActions } from '../../store/features/chatSlice';
 import { statusActions } from '../../store/features/statusSlice';
 import { localCategory } from '../../decorators/localCategory';
 import { localMessageId } from 'decorators/localMessageId';
+import { addRoomByDB } from '../../store/thunk/roomThunk';
 
 @localCategory(CATEGORY.ROOM)
 @injectable()
@@ -47,7 +48,7 @@ export class RoomLocalHandler {
   joinRoom() {
     const roomName = storage.getItem('roomName');
     const userKey = storage.getItem('userKey');
-
+    store.dispatch(addRoomByDB({ roomName, member: {} }));
     this.connectionPeerEmitter.sendConnectionConnectMessage({}); // socket join
     this.connectionPeerEmitter.sendConnectionJoinRoomMessage({
       roomName,
