@@ -12,11 +12,14 @@ import { AudioManager } from 'service/media/AudioManager';
 import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { SignalingPeerEmitter } from '../peerEmitter/SignalingPeerEmitter';
+import { router } from '../../index';
+import { RoomLocalEmitter } from '../localEmitter/RoomLocalEmitter';
 
 @peerCategory(CATEGORY.CONNECTION)
 @injectable()
 export class ConnectionPeerHandler {
   constructor(
+    @inject(RoomLocalEmitter) private roomLocalEmitter: RoomLocalEmitter,
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(VideoManager) private videoManager: VideoManager,
     @inject(SignalingPeerEmitter)
@@ -31,7 +34,13 @@ export class ConnectionPeerHandler {
 
   @peerMessageId(CONNECTION_MESSAGE_ID.JOIN_ROOM)
   joinRoom(protocol: PeerEvent): void {
-    const { roomName } = protocol.data;
+    const { roomName, userKey } = protocol.data;
+    const myUserKey = storage.getItem('userKey');
+
+    if (myUserKey === userKey) {
+      this.roomLocalEmitter.leave();
+      router.navigate('/');
+    }
     this.signalingPeerEmitter.sendSignalingStartMessage({
       roomName,
       to: protocol.from,

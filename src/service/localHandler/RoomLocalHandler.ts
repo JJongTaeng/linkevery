@@ -46,8 +46,13 @@ export class RoomLocalHandler {
   @localMessageId(ROOM_MESSAGE_ID.JOIN)
   joinRoom() {
     const roomName = storage.getItem('roomName');
+    const userKey = storage.getItem('userKey');
+
     this.connectionPeerEmitter.sendConnectionConnectMessage({}); // socket join
-    this.connectionPeerEmitter.sendConnectionJoinRoomMessage({ roomName }); // join
+    this.connectionPeerEmitter.sendConnectionJoinRoomMessage({
+      roomName,
+      userKey,
+    }); // join
     store.dispatch(roomActions.setRoomName(roomName));
   }
 }
