@@ -21,6 +21,7 @@ import { container } from 'tsyringe';
 import { VideoManager } from 'service/media/VideoManager';
 import SvgMenu from '../icons/Menu';
 import SvgInviteMember from '../icons/InviteMember';
+import { EVENT_NAME } from '../../constants/gtm';
 
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
@@ -82,9 +83,17 @@ const TopMenuContainer = () => {
               onChange={(value) => {
                 if (value) {
                   screenSharePeerEmitter.sendScreenReadyMessage({});
+                  window.dataLayer.push({
+                    event: EVENT_NAME.screenShareStart,
+                    roomName,
+                  });
                 } else {
                   app.closeScreenShare();
                   dispatch(userActions.changeScreenShareStatus(false));
+                  window.dataLayer.push({
+                    event: EVENT_NAME.screenShareEnd,
+                    roomName,
+                  });
                 }
               }}
               disabled={!isOnVoiceMember()}
@@ -107,6 +116,11 @@ const TopMenuContainer = () => {
                 storage.setItem('voiceStatus', true);
                 dispatch(userActions.changeVoiceStatus(true));
                 voicePeerEmitter.sendVoiceReadyMessage({});
+
+                window.dataLayer.push({
+                  event: EVENT_NAME.voiceStart,
+                  roomName,
+                });
               } else {
                 storage.setItem('voiceStatus', false);
                 app.disconnectVoice();
@@ -120,6 +134,10 @@ const TopMenuContainer = () => {
                 dispatch(userActions.changeVoiceStatus(false));
                 dispatch(roomActions.setAllMemberVoiceOff());
                 dispatch(roomActions.setAllMemberScreenShareOff());
+                window.dataLayer.push({
+                  event: EVENT_NAME.voiceEnd,
+                  roomName,
+                });
               }
             }}
           >
@@ -129,6 +147,10 @@ const TopMenuContainer = () => {
             <SvgExit
               className={'exit'}
               onClick={() => {
+                window.dataLayer.push({
+                  event: EVENT_NAME.exitRoom,
+                  roomName,
+                });
                 navigate('/');
               }}
             />

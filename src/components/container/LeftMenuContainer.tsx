@@ -11,6 +11,7 @@ import CreateRoomModal from 'components/room/CreateRoomModal';
 import MemberListContainer from 'components/room/MemberListContainer';
 import RoomBadge from 'components/room/RoomBadge';
 import { useApp } from 'hooks/useApp';
+import { EVENT_NAME } from '../../constants/gtm';
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
@@ -48,6 +49,10 @@ const LeftMenuContainer = () => {
           {roomList.map((roomName) => (
             <RoomBadge
               onClick={() => {
+                window.dataLayer.push({
+                  event: EVENT_NAME.enterRoom,
+                  roomName,
+                });
                 navigate('/' + roomName);
               }}
               name={roomName}
