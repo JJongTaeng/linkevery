@@ -16,7 +16,7 @@ const ChatPdfContent = ({ dataUrlFilenameList }: ChatPdfContentProps) => {
         return (
           <PdfIconContainer key={nanoid()}>
             <Download
-              onClick={() => utils.downloadDataUrl('download.pdf', dataUrl)}
+              onClick={() => utils.downloadDataUrl(`${filename}`, dataUrl)}
             >
               <SvgDownload />
             </Download>

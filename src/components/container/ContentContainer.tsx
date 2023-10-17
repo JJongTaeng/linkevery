@@ -1,15 +1,10 @@
-import { Route, Routes } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-import NoRoom from 'components/room/NoRoom';
-import Room from 'components/room/Room';
 
 const ContentContainer = () => {
   return (
     <Container>
-      <Routes>
-        <Route path={'/'} element={<NoRoom />} />
-        <Route path={'/:roomName'} element={<Room />} />
-      </Routes>
+      <Outlet />
     </Container>
   );
 };

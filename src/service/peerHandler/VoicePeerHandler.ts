@@ -53,8 +53,6 @@ export class VoicePeerHandler {
       peer.addTrack(track, mediaStream);
     });
 
-    this.soundEffect.startVoice();
-
     store.dispatch(
       roomActions.setMemberVoiceStatus({
         voiceStatus: true,
