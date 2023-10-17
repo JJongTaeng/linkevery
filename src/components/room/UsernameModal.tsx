@@ -1,4 +1,5 @@
 import { Button, Form, Input, Modal } from 'antd';
+import { EVENT_NAME } from '../../constants/gtm';
 
 interface UsernameModalProps {
   open: boolean;
@@ -25,6 +26,10 @@ const UsernameModal = ({ open, onSubmit }: UsernameModalProps) => {
       <Form
         form={form}
         onFinish={({ username }) => {
+          window.dataLayer.push({
+            event: EVENT_NAME.userCreate,
+            username,
+          });
           onSubmit(username);
         }}
       >

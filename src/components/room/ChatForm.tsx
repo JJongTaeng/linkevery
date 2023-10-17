@@ -13,6 +13,7 @@ import { utils } from '../../service/utils/Utils';
 import PreFileFormat from '../chat/PreFileFormat';
 import SvgImageUploadIcon from '../icons/ImageUploadIcon';
 import SvgFileUploadIcon from '../icons/FileUploadIcon';
+import { EVENT_NAME } from '../../constants/gtm';
 
 const ChatForm = () => {
   const { app, chatPeerEmitter } = useApp();
@@ -55,6 +56,11 @@ const ChatForm = () => {
         roomName: storage.getItem('roomName'),
       }),
     );
+    window.dataLayer.push({
+      event: EVENT_NAME.chatSend,
+      roomName: storage.getItem('roomName'),
+      username,
+    });
     setChatMessage('');
     setDataUrlFilenameList([]);
   };
