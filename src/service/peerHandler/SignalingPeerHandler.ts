@@ -208,7 +208,7 @@ export class SignalingPeerHandler {
     const { username, userKey } = storage.getAll();
 
     if (store.getState().user.voiceStatus) {
-      this.voicePeerEmitter.sendVoiceReadyMessage({});
+      this.voicePeerEmitter.sendVoiceReadyMessage({ to: from });
     }
 
     this.memberPeerEmitter.sendMemberNameMessage({
@@ -216,7 +216,7 @@ export class SignalingPeerHandler {
       username,
       userKey,
     });
-    this.signalingPeerEmitter.sendSignalingEndOkMessage({});
+    this.signalingPeerEmitter.sendSignalingEndOkMessage({ to: from });
   }
 
   @peerMessageId(SIGNALING_MESSAGE_ID.END_OK)
