@@ -55,14 +55,17 @@ const NoRoom = () => {
             </p>
             <p>친구로 초대받은 링크로 접속해주세요!</p>
           </span>
+          <div style={{ maxWidth: 728, height: 90 }}>
+            <GoogleDisplay
+              className={''}
+              adClient={'ca-pub-5575580268159871'}
+              adSlot={'3987400403'}
+              adFormat={'inline'}
+              fullWidthResponsive={'true'}
+            />
+          </div>
         </div>
-        <GoogleDisplay
-          className={''}
-          adClient={'ca-pub-5575580268159871'}
-          adSlot={'3987400403'}
-          adFormat={'auto'}
-          fullWidthResponsive={'true'}
-        />
+
         <UsernameModal
           open={usernameModalVisible}
           onSubmit={(username) => {
@@ -81,6 +84,7 @@ const NoRoom = () => {
 };
 
 const NoRoomContent = styled.div`
+  position: relative;
   width: 100%;
   height: calc(100% - ${TOP_MENU_HEIGHT}px);
   display: flex;
