@@ -11,6 +11,7 @@ import { ColorsTypes, SizeTypes, theme } from 'style/theme';
 import CreateRoomModal from './CreateRoomModal';
 import UsernameModal from './UsernameModal';
 import { statusActions } from '../../store/features/statusSlice';
+import GoogleDisplay from '../googleAd/GoogleDisplay';
 
 const NoRoom = () => {
   const { username, usernameModalVisible } = useAppSelector((state) => ({
@@ -55,6 +56,13 @@ const NoRoom = () => {
             <p>친구로 초대받은 링크로 접속해주세요!</p>
           </span>
         </div>
+        <GoogleDisplay
+          className={''}
+          adClient={'ca-pub-5575580268159871'}
+          adSlot={'3987400403'}
+          adFormat={'auto'}
+          fullWidthResponsive={'true'}
+        />
         <UsernameModal
           open={usernameModalVisible}
           onSubmit={(username) => {
