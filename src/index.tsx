@@ -13,6 +13,7 @@ import { initContainer } from './container';
 import { ThemeProvider } from 'styled-components';
 import NoRoom from './components/room/NoRoom';
 import Room from './components/room/Room';
+import './initGTM';
 
 initContainer();
 
