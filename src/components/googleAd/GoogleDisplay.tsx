@@ -15,7 +15,7 @@ const GoogleDisplay = (props: GoogleDisplayProps) => {
 
   return (
     <ins
-      style={{ display: 'inline-block', width: '100%', height: 90 }}
+      style={{ display: 'block' }}
       className={`adsbygoogle ${props.className}`}
       data-ad-client={props.adClient}
       data-ad-slot={props.adSlot}
