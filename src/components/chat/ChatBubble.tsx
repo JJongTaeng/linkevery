@@ -31,7 +31,7 @@ const ChatBubble = ({
   const isDark = () =>
     utils.sum(getColorObj(stc(username)).color as number[]) / 765 > 0.6;
 
-  const urlRegex = /(http[s]?:\/\/)?([^\/\s]+\/)([^\s]*)/g;
+  const urlRegex = /^(http|https):\/\/([^\/\s]+\/)([^\s]*)/g;
 
   const getURL = (message: string) => message.match(urlRegex)?.[0];
 
@@ -41,7 +41,7 @@ const ChatBubble = ({
     text: (message: string) => {
       return (
         <React.Fragment key={nanoid()}>
-          {!!message.match(/(http[s]?:\/\/)?([^\/\s]+\/)([^\s]*)/g) ? (
+          {!!message.match(urlRegex) ? (
             <>
               <a
                 href={getURL(message)}
