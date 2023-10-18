@@ -5,6 +5,5 @@ declare global {
   interface Window {
     debug: any;
     dataLayer: any[];
-    adsbygoogle: any[];
   }
 }
