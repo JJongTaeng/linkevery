@@ -30,14 +30,21 @@ const TopMenuContainer = () => {
   const { app, voicePeerEmitter, screenSharePeerEmitter } = useApp();
   const videoManager = useRef(container.resolve(VideoManager))
     .current as VideoManager;
-  const { leftMenuVisible, roomName, voiceStatus, screenShareStatus, room } =
-    useAppSelector((state) => ({
-      leftMenuVisible: state.status.leftMenuVisible,
-      roomName: state.room.current.roomName,
-      screenShareStatus: state.user.screenShareStatus,
-      voiceStatus: state.user.voiceStatus,
-      room: state.room.current,
-    }));
+  const {
+    leftMenuVisible,
+    roomName,
+    voiceStatus,
+    screenShareStatus,
+    room,
+    username,
+  } = useAppSelector((state) => ({
+    leftMenuVisible: state.status.leftMenuVisible,
+    roomName: state.room.current.roomName,
+    screenShareStatus: state.user.screenShareStatus,
+    voiceStatus: state.user.voiceStatus,
+    room: state.room.current,
+    username: state.user.username,
+  }));
   const dispatch = useAppDispatch();
 
   const isOnVoiceMember = () => {
@@ -86,6 +93,7 @@ const TopMenuContainer = () => {
                   window.dataLayer.push({
                     event: EVENT_NAME.screenShareStart,
                     roomName,
+                    username,
                   });
                 } else {
                   app.closeScreenShare();
@@ -93,6 +101,7 @@ const TopMenuContainer = () => {
                   window.dataLayer.push({
                     event: EVENT_NAME.screenShareEnd,
                     roomName,
+                    username,
                   });
                 }
               }}
@@ -120,6 +129,7 @@ const TopMenuContainer = () => {
                 window.dataLayer.push({
                   event: EVENT_NAME.voiceStart,
                   roomName,
+                  username,
                 });
               } else {
                 storage.setItem('voiceStatus', false);
@@ -137,6 +147,7 @@ const TopMenuContainer = () => {
                 window.dataLayer.push({
                   event: EVENT_NAME.voiceEnd,
                   roomName,
+                  username,
                 });
               }
             }}
