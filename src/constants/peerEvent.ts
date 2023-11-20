@@ -3,6 +3,7 @@ export const EVENT_NAME = 'message';
 export enum MESSAGE_TYPE {
   RTC = 'RTC',
   SOCKET = 'SOCKET',
+  EVENT = 'EVENT',
 }
 
 export enum CATEGORY {

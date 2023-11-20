@@ -1,12 +1,12 @@
 import { inject, injectable } from 'tsyringe';
-import { Sender } from '../messages/Sender';
 import type { ProtocolData } from '../../constants/peerEvent';
 import { CATEGORY, VOICE_MESSAGE_ID } from '../../constants/peerEvent';
 import { rtcAction } from '../../decorators/rtcAction';
+import type { EmitterService } from 'service/dataExchanger/EmitterService';
 
 @injectable()
 export class VoicePeerEmitter {
-  constructor(@inject(Sender) private sender: Sender) {}
+  constructor(@inject('EmitterService') private sender: EmitterService) {}
 
   @rtcAction({
     category: CATEGORY.VOICE,

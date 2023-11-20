@@ -2,9 +2,10 @@ import { EVENT_NAME, MESSAGE_TYPE, PeerEvent } from '../../constants/peerEvent';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { SocketManager } from 'service/socket/SocketManager';
 import { inject, injectable } from 'tsyringe';
+import { EmitterService } from './EmitterService';
 
 @injectable()
-export class Sender {
+export class Sender implements EmitterService {
   constructor(
     @inject(SocketManager) private socketManager: SocketManager,
     @inject(RTCManager) private rtcManager: RTCManager,

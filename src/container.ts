@@ -25,9 +25,16 @@ import { LocalHandler } from './service/localHandler/LocalHandler';
 import { ChatLocalEmitter } from './service/localEmitter/ChatLocalEmitter';
 import { RoomLocalHandler } from './service/localHandler/RoomLocalHandler';
 import { RoomLocalEmitter } from 'service/localEmitter/RoomLocalEmitter';
+import { EventManager } from './service/event/EventManager';
+import { Sender } from './service/dataExchanger/Sender';
 
 export const initContainer = () => {
   container.register('ee', { useValue: new EventEmitter() });
+  container.register(
+    EventManager,
+    { useClass: EventManager },
+    { lifecycle: Lifecycle.Singleton },
+  );
   container.register(
     AudioManager,
     { useClass: AudioManager },
@@ -44,6 +51,8 @@ export const initContainer = () => {
     { useClass: RTCManager },
     { lifecycle: Lifecycle.Singleton },
   );
+
+  container.register('EmitterService', { useClass: Sender });
 
   container.register(ChatLocalEmitter, { useClass: ChatLocalEmitter });
   container.register(RoomLocalEmitter, { useClass: RoomLocalEmitter });
