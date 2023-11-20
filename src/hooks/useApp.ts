@@ -1,13 +1,13 @@
 import { useRef } from 'react';
 import { container } from 'tsyringe';
 import { App } from 'service/app/App';
-import { ConnectionPeerEmitter } from '../service/peerEmitter/ConnectionPeerEmitter';
-import { SignalingPeerEmitter } from '../service/peerEmitter/SignalingPeerEmitter';
-import { ChatPeerEmitter } from '../service/peerEmitter/ChatPeerEmitter';
-import { MemberPeerEmitter } from '../service/peerEmitter/MemberPeerEmitter';
-import { NegotiationPeerEmitter } from '../service/peerEmitter/NegotiationPeerEmitter';
-import { ScreenSharePeerEmitter } from '../service/peerEmitter/ScreenSharePeerEmitter';
-import { VoicePeerEmitter } from '../service/peerEmitter/VoicePeerEmitter';
+import { ConnectionPeerEmitter } from '../service/emitter/ConnectionPeerEmitter';
+import { SignalingPeerEmitter } from '../service/emitter/SignalingPeerEmitter';
+import { ChatPeerEmitter } from '../service/emitter/ChatPeerEmitter';
+import { MemberPeerEmitter } from '../service/emitter/MemberPeerEmitter';
+import { NegotiationPeerEmitter } from '../service/emitter/NegotiationPeerEmitter';
+import { ScreenSharePeerEmitter } from '../service/emitter/ScreenSharePeerEmitter';
+import { VoicePeerEmitter } from '../service/emitter/VoicePeerEmitter';
 
 export const useApp = () => {
   const app = useRef(container.resolve(App)).current;

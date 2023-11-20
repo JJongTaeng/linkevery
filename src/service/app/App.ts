@@ -3,9 +3,9 @@ import { storage } from 'service/storage/StorageService';
 import { inject, singleton } from 'tsyringe';
 import { RTCManagerService } from 'service/rtc/RTCManagerService';
 import { AudioManager } from 'service/media/AudioManager';
-import { ScreenSharePeerEmitter } from '../peerEmitter/ScreenSharePeerEmitter';
-import { VoicePeerEmitter } from '../peerEmitter/VoicePeerEmitter';
-import { ConnectionPeerEmitter } from '../peerEmitter/ConnectionPeerEmitter';
+import { ScreenSharePeerEmitter } from '../emitter/ScreenSharePeerEmitter';
+import { VoicePeerEmitter } from '../emitter/VoicePeerEmitter';
+import { ConnectionPeerEmitter } from '../emitter/ConnectionPeerEmitter';
 
 @singleton()
 export class App {

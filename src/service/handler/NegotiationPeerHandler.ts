@@ -5,7 +5,7 @@ import { peerMessageId } from '../../decorators/peerMessageId';
 import { peerCategory } from '../../decorators/peerCategory';
 import { inject, injectable } from 'tsyringe';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { NegotiationPeerEmitter } from '../peerEmitter/NegotiationPeerEmitter';
+import { NegotiationPeerEmitter } from '../emitter/NegotiationPeerEmitter';
 
 @peerCategory(CATEGORY.NEGOTIATION)
 @injectable()

@@ -1,3 +1,1 @@
-export class Handler {
-  on() {}
-}
+export class Handler {}

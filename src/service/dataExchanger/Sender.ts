@@ -2,7 +2,7 @@ import { EVENT_NAME, MESSAGE_TYPE, PeerEvent } from '../../constants/peerEvent';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { SocketManager } from 'service/socket/SocketManager';
 import { inject, injectable } from 'tsyringe';
-import { EmitterService } from './EmitterService';
+import { EmitterService } from '../emitter/EmitterService';
 
 @injectable()
 export class Sender implements EmitterService {

@@ -9,8 +9,8 @@ import { store } from '../../store/store';
 import { roomActions } from '../../store/features/roomSlice';
 import { updateMemberByDB } from '../../store/thunk/roomThunk';
 import { query } from '../db/Query';
-import { MemberPeerEmitter } from '../peerEmitter/MemberPeerEmitter';
-import { ChatPeerEmitter } from '../peerEmitter/ChatPeerEmitter';
+import { MemberPeerEmitter } from '../emitter/MemberPeerEmitter';
+import { ChatPeerEmitter } from '../emitter/ChatPeerEmitter';
 
 @peerCategory(CATEGORY.MEMBER)
 @injectable()

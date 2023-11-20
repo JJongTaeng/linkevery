@@ -2,7 +2,7 @@ import { inject, injectable } from 'tsyringe';
 import type { ProtocolData } from '../../constants/peerEvent';
 import { CATEGORY, VOICE_MESSAGE_ID } from '../../constants/peerEvent';
 import { rtcAction } from '../../decorators/rtcAction';
-import type { EmitterService } from 'service/dataExchanger/EmitterService';
+import type { EmitterService } from 'service/emitter/EmitterService';
 
 @injectable()
 export class VoicePeerEmitter {

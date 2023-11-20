@@ -11,7 +11,7 @@ import { inject, injectable } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { SignalingPeerEmitter } from '../peerEmitter/SignalingPeerEmitter';
+import { SignalingPeerEmitter } from '../emitter/SignalingPeerEmitter';
 import { router } from '../../index';
 import { RoomLocalEmitter } from '../localEmitter/RoomLocalEmitter';
 
