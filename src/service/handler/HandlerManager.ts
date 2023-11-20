@@ -128,7 +128,11 @@ export class HandlerManager {
       }
       try {
         handler(protocol);
-        console.debug('%c[receive] ', 'color:blue;font-weight:bold;', protocol);
+        console.debug(
+          '%c[receive_local] ',
+          'color:#999;font-weight:bold;',
+          protocol,
+        );
       } catch (e) {
         console.debug('%c[Error] ', 'color:red;font-weight:bold;', protocol);
       }
