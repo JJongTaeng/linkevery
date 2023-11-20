@@ -3,20 +3,20 @@ import { storage } from 'service/storage/StorageService';
 import { inject, singleton } from 'tsyringe';
 import { RTCManagerService } from 'service/rtc/RTCManagerService';
 import { AudioManager } from 'service/media/AudioManager';
-import { ScreenSharePeerEmitter } from '../emitter/ScreenSharePeerEmitter';
-import { VoicePeerEmitter } from '../emitter/VoicePeerEmitter';
-import { ConnectionPeerEmitter } from '../emitter/ConnectionPeerEmitter';
+import { ScreenShareEmitter } from '../emitter/ScreenShareEmitter';
+import { VoiceEmitter } from '../emitter/VoiceEmitter';
+import { ConnectionEmitter } from '../emitter/ConnectionEmitter';
 
 @singleton()
 export class App {
   screenMediaStream?: MediaStream;
 
   constructor(
-    @inject(ScreenSharePeerEmitter)
-    private screenSharePeerEmitter: ScreenSharePeerEmitter,
-    @inject(VoicePeerEmitter) private voicePeerEmitter: VoicePeerEmitter,
-    @inject(ConnectionPeerEmitter)
-    private connectionPeerEmitter: ConnectionPeerEmitter,
+    @inject(ScreenShareEmitter)
+    private screenSharePeerEmitter: ScreenShareEmitter,
+    @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
+    @inject(ConnectionEmitter)
+    private connectionPeerEmitter: ConnectionEmitter,
     @inject(RTCManager) private _rtcManager: RTCManagerService,
     @inject(AudioManager) private audioManager: AudioManager,
   ) {}

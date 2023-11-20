@@ -4,10 +4,10 @@ import { storage } from '../storage/StorageService';
 import { store } from '../../store/store';
 import { roomActions } from '../../store/features/roomSlice';
 import { userActions } from '../../store/features/userSlice';
-import { ConnectionPeerEmitter } from '../emitter/ConnectionPeerEmitter';
+import { ConnectionEmitter } from '../emitter/ConnectionEmitter';
 import { RTCManager } from '../rtc/RTCManager';
 import { RTCManagerService } from '../rtc/RTCManagerService';
-import { VoicePeerEmitter } from '../emitter/VoicePeerEmitter';
+import { VoiceEmitter } from '../emitter/VoiceEmitter';
 import { AudioManager } from '../media/AudioManager';
 import { chatActions } from '../../store/features/chatSlice';
 import { statusActions } from '../../store/features/statusSlice';
@@ -19,10 +19,10 @@ import { messageId } from '../../decorators/messageId';
 @injectable()
 export class RoomHandler {
   constructor(
-    @inject(ConnectionPeerEmitter)
-    private connectionPeerEmitter: ConnectionPeerEmitter,
+    @inject(ConnectionEmitter)
+    private connectionPeerEmitter: ConnectionEmitter,
     @inject(RTCManager) private rtcManager: RTCManagerService,
-    @inject(VoicePeerEmitter) private voicePeerEmitter: VoicePeerEmitter,
+    @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
     @inject(AudioManager) private audioManager: AudioManager,
   ) {}
   @messageId(ROOM_MESSAGE_ID.LEAVE)

@@ -5,14 +5,14 @@ import { messageId } from '../../decorators/messageId';
 import { category } from '../../decorators/category';
 import { inject, injectable } from 'tsyringe';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { NegotiationPeerEmitter } from '../emitter/NegotiationPeerEmitter';
+import { NegotiationEmitter } from '../emitter/NegotiationEmitter';
 
 @category(CATEGORY.NEGOTIATION)
 @injectable()
-export class NegotiationPeerHandler {
+export class NegotiationHandler {
   constructor(
-    @inject(NegotiationPeerEmitter)
-    private negotiationPeerEmitter: NegotiationPeerEmitter,
+    @inject(NegotiationEmitter)
+    private negotiationPeerEmitter: NegotiationEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(NEGOTIATION_MESSAGE_ID.OFFER)

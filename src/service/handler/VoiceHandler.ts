@@ -9,18 +9,18 @@ import { inject, injectable } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { SoundEffect } from 'service/media/SoundEffect';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { VoicePeerEmitter } from '../emitter/VoicePeerEmitter';
-import { ScreenSharePeerEmitter } from '../emitter/ScreenSharePeerEmitter';
+import { VoiceEmitter } from '../emitter/VoiceEmitter';
+import { ScreenShareEmitter } from '../emitter/ScreenShareEmitter';
 
 @category(CATEGORY.VOICE)
 @injectable()
-export class VoicePeerHandler {
+export class VoiceHandler {
   constructor(
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(SoundEffect) private soundEffect: SoundEffect,
-    @inject(VoicePeerEmitter) private voicePeerEmitter: VoicePeerEmitter,
-    @inject(ScreenSharePeerEmitter)
-    private screenSharePeerEmitter: ScreenSharePeerEmitter,
+    @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
+    @inject(ScreenShareEmitter)
+    private screenSharePeerEmitter: ScreenShareEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(VOICE_MESSAGE_ID.READY)

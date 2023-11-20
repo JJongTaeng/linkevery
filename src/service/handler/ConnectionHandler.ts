@@ -11,19 +11,19 @@ import { inject, injectable } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { SignalingPeerEmitter } from '../emitter/SignalingPeerEmitter';
+import { SignalingEmitter } from '../emitter/SignalingEmitter';
 import { router } from '../../index';
-import { RoomLocalEmitter } from '../emitter/RoomLocalEmitter';
+import { RoomEmitter } from '../emitter/RoomEmitter';
 
 @category(CATEGORY.CONNECTION)
 @injectable()
-export class ConnectionPeerHandler {
+export class ConnectionHandler {
   constructor(
-    @inject(RoomLocalEmitter) private roomLocalEmitter: RoomLocalEmitter,
+    @inject(RoomEmitter) private roomLocalEmitter: RoomEmitter,
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(VideoManager) private videoManager: VideoManager,
-    @inject(SignalingPeerEmitter)
-    private signalingPeerEmitter: SignalingPeerEmitter,
+    @inject(SignalingEmitter)
+    private signalingPeerEmitter: SignalingEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(CONNECTION_MESSAGE_ID.CONNECT)

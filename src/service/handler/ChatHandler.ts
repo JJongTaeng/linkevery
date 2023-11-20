@@ -9,14 +9,12 @@ import { addChatByDB } from 'store/thunk/chatThunk';
 import { storage } from 'service/storage/StorageService';
 import { query } from '../db/Query';
 import { Message } from '../db/LinkeveryDB';
-import { ChatPeerEmitter } from '../emitter/ChatPeerEmitter';
+import { ChatEmitter } from '../emitter/ChatEmitter';
 
 @category(CATEGORY.CHAT)
 @injectable()
-export class ChatPeerHandler {
-  constructor(
-    @inject(ChatPeerEmitter) private chatPeerEmitter: ChatPeerEmitter,
-  ) {}
+export class ChatHandler {
+  constructor(@inject(ChatEmitter) private chatPeerEmitter: ChatEmitter) {}
 
   @messageId(CHAT_MESSAGE_ID.SEND)
   send(protocol: EventType) {

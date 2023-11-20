@@ -11,15 +11,15 @@ import { message } from 'antd';
 import { roomActions } from 'store/features/roomSlice';
 import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { ScreenSharePeerEmitter } from '../emitter/ScreenSharePeerEmitter';
+import { ScreenShareEmitter } from '../emitter/ScreenShareEmitter';
 
 @category(CATEGORY.SCREEN)
 @injectable()
-export class ScreenSharePeerHandler {
+export class ScreenShareHandler {
   constructor(
     @inject(VideoManager) private videoManager: VideoManager,
-    @inject(ScreenSharePeerEmitter)
-    private screenSharePeerEmitter: ScreenSharePeerEmitter,
+    @inject(ScreenShareEmitter)
+    private screenSharePeerEmitter: ScreenShareEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(SCREEN_SHARE_MESSAGE_ID.READY)

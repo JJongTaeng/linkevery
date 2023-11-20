@@ -5,7 +5,7 @@ import { socketAction } from '../../decorators/socketAction';
 import type { EmitterService } from 'service/emitter/EmitterService';
 
 @injectable()
-export class NegotiationPeerEmitter {
+export class NegotiationEmitter {
   constructor(@inject('EmitterService') private sender: EmitterService) {}
 
   @socketAction({

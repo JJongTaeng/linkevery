@@ -9,16 +9,16 @@ import { store } from '../../store/store';
 import { roomActions } from '../../store/features/roomSlice';
 import { updateMemberByDB } from '../../store/thunk/roomThunk';
 import { query } from '../db/Query';
-import { MemberPeerEmitter } from '../emitter/MemberPeerEmitter';
-import { ChatPeerEmitter } from '../emitter/ChatPeerEmitter';
+import { MemberEmitter } from '../emitter/MemberEmitter';
+import { ChatEmitter } from '../emitter/ChatEmitter';
 
 @category(CATEGORY.MEMBER)
 @injectable()
-export class MemberPeerHandler {
+export class MemberHandler {
   constructor(
     @inject(RTCManager) private rtcManager: RTCManager,
-    @inject(MemberPeerEmitter) private memberPeerEmitter: MemberPeerEmitter,
-    @inject(ChatPeerEmitter) private chatPeerEmitter: ChatPeerEmitter,
+    @inject(MemberEmitter) private memberPeerEmitter: MemberEmitter,
+    @inject(ChatEmitter) private chatPeerEmitter: ChatEmitter,
   ) {}
 
   @messageId(MEMBER_MESSAGE_ID.NAME)

@@ -8,21 +8,21 @@ import { storage } from 'service/storage/StorageService';
 import { inject, injectable } from 'tsyringe';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { roomActions } from 'store/features/roomSlice';
-import { SignalingPeerEmitter } from '../emitter/SignalingPeerEmitter';
-import { NegotiationPeerEmitter } from '../emitter/NegotiationPeerEmitter';
-import { VoicePeerEmitter } from '../emitter/VoicePeerEmitter';
-import { MemberPeerEmitter } from '../emitter/MemberPeerEmitter';
+import { SignalingEmitter } from '../emitter/SignalingEmitter';
+import { NegotiationEmitter } from '../emitter/NegotiationEmitter';
+import { VoiceEmitter } from '../emitter/VoiceEmitter';
+import { MemberEmitter } from '../emitter/MemberEmitter';
 
 @category(CATEGORY.SIGNALING)
 @injectable()
-export class SignalingPeerHandler {
+export class SignalingHandler {
   constructor(
-    @inject(SignalingPeerEmitter)
-    private signalingPeerEmitter: SignalingPeerEmitter,
-    @inject(NegotiationPeerEmitter)
-    private negotiationPeerEmitter: NegotiationPeerEmitter,
-    @inject(VoicePeerEmitter) private voicePeerEmitter: VoicePeerEmitter,
-    @inject(MemberPeerEmitter) private memberPeerEmitter: MemberPeerEmitter,
+    @inject(SignalingEmitter)
+    private signalingPeerEmitter: SignalingEmitter,
+    @inject(NegotiationEmitter)
+    private negotiationPeerEmitter: NegotiationEmitter,
+    @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
+    @inject(MemberEmitter) private memberPeerEmitter: MemberEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
 

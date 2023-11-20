@@ -1,33 +1,31 @@
 import { useRef } from 'react';
 import { container } from 'tsyringe';
 import { App } from 'service/app/App';
-import { ConnectionPeerEmitter } from '../service/emitter/ConnectionPeerEmitter';
-import { SignalingPeerEmitter } from '../service/emitter/SignalingPeerEmitter';
-import { ChatPeerEmitter } from '../service/emitter/ChatPeerEmitter';
-import { MemberPeerEmitter } from '../service/emitter/MemberPeerEmitter';
-import { NegotiationPeerEmitter } from '../service/emitter/NegotiationPeerEmitter';
-import { ScreenSharePeerEmitter } from '../service/emitter/ScreenSharePeerEmitter';
-import { VoicePeerEmitter } from '../service/emitter/VoicePeerEmitter';
+import { ConnectionEmitter } from '../service/emitter/ConnectionEmitter';
+import { SignalingEmitter } from '../service/emitter/SignalingEmitter';
+import { ChatEmitter } from '../service/emitter/ChatEmitter';
+import { MemberEmitter } from '../service/emitter/MemberEmitter';
+import { NegotiationEmitter } from '../service/emitter/NegotiationEmitter';
+import { ScreenShareEmitter } from '../service/emitter/ScreenShareEmitter';
+import { VoiceEmitter } from '../service/emitter/VoiceEmitter';
 
 export const useApp = () => {
   const app = useRef(container.resolve(App)).current;
   const connectionPeerEmitter = useRef(
-    container.resolve(ConnectionPeerEmitter),
+    container.resolve(ConnectionEmitter),
   ).current;
   const signalingPeerEmitter = useRef(
-    container.resolve(SignalingPeerEmitter),
+    container.resolve(SignalingEmitter),
   ).current;
-  const chatPeerEmitter = useRef(container.resolve(ChatPeerEmitter)).current;
-  const memberPeerEmitter = useRef(
-    container.resolve(MemberPeerEmitter),
-  ).current;
+  const chatPeerEmitter = useRef(container.resolve(ChatEmitter)).current;
+  const memberPeerEmitter = useRef(container.resolve(MemberEmitter)).current;
   const negotiationPeerEmitter = useRef(
-    container.resolve(NegotiationPeerEmitter),
+    container.resolve(NegotiationEmitter),
   ).current;
   const screenSharePeerEmitter = useRef(
-    container.resolve(ScreenSharePeerEmitter),
+    container.resolve(ScreenShareEmitter),
   ).current;
-  const voicePeerEmitter = useRef(container.resolve(VoicePeerEmitter)).current;
+  const voicePeerEmitter = useRef(container.resolve(VoiceEmitter)).current;
 
   return {
     app,

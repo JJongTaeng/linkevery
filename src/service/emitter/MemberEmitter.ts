@@ -5,7 +5,7 @@ import { CATEGORY, MEMBER_MESSAGE_ID } from '../../constants/eventType';
 import type { EmitterService } from 'service/emitter/EmitterService';
 
 @injectable()
-export class MemberPeerEmitter {
+export class MemberEmitter {
   constructor(@inject('EmitterService') private sender: EmitterService) {}
 
   @socketAction({

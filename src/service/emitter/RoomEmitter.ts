@@ -4,7 +4,7 @@ import { CATEGORY, ROOM_MESSAGE_ID } from '../../constants/eventType';
 import { EventManager } from '../event/EventManager';
 
 @injectable()
-export class RoomLocalEmitter {
+export class RoomEmitter {
   constructor(@inject(EventManager) private eventManager: EventManager) {}
 
   @eventAction({

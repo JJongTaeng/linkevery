@@ -5,7 +5,7 @@ import { rtcAction } from '../../decorators/rtcAction';
 import type { EmitterService } from 'service/emitter/EmitterService';
 
 @injectable()
-export class ScreenSharePeerEmitter {
+export class ScreenShareEmitter {
   constructor(@inject('EmitterService') private sender: EmitterService) {}
 
   @rtcAction({
