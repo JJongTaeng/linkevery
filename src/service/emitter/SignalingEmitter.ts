@@ -1,12 +1,12 @@
-import { Sender } from 'service/messages/Sender';
 import { inject, injectable } from 'tsyringe';
-import type { ProtocolData } from '../../constants/peerEvent';
-import { CATEGORY, SIGNALING_MESSAGE_ID } from '../../constants/peerEvent';
+import type { ProtocolData } from '../../constants/eventType';
+import { CATEGORY, SIGNALING_MESSAGE_ID } from '../../constants/eventType';
 import { socketAction } from '../../decorators/socketAction';
+import type { EmitterService } from 'service/emitter/EmitterService';
 
 @injectable()
-export class SignalingPeerEmitter {
-  constructor(@inject(Sender) private sender: Sender) {}
+export class SignalingEmitter {
+  constructor(@inject('EmitterService') private sender: EmitterService) {}
 
   @socketAction({
     category: CATEGORY.SIGNALING,

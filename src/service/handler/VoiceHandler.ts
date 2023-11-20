@@ -1,30 +1,30 @@
-import type { PeerEvent } from '../../constants/peerEvent';
-import { CATEGORY, VOICE_MESSAGE_ID } from '../../constants/peerEvent';
+import type { EventType } from '../../constants/eventType';
+import { CATEGORY, VOICE_MESSAGE_ID } from '../../constants/eventType';
 import { storage } from 'service/storage/StorageService';
 import { store } from 'store/store';
 import { roomActions } from 'store/features/roomSlice';
-import { peerMessageId } from '../../decorators/peerMessageId';
-import { peerCategory } from '../../decorators/peerCategory';
+import { messageId } from '../../decorators/messageId';
+import { category } from '../../decorators/category';
 import { inject, injectable } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { SoundEffect } from 'service/media/SoundEffect';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { VoicePeerEmitter } from '../peerEmitter/VoicePeerEmitter';
-import { ScreenSharePeerEmitter } from '../peerEmitter/ScreenSharePeerEmitter';
+import { VoiceEmitter } from '../emitter/VoiceEmitter';
+import { ScreenShareEmitter } from '../emitter/ScreenShareEmitter';
 
-@peerCategory(CATEGORY.VOICE)
+@category(CATEGORY.VOICE)
 @injectable()
-export class VoicePeerHandler {
+export class VoiceHandler {
   constructor(
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(SoundEffect) private soundEffect: SoundEffect,
-    @inject(VoicePeerEmitter) private voicePeerEmitter: VoicePeerEmitter,
-    @inject(ScreenSharePeerEmitter)
-    private screenSharePeerEmitter: ScreenSharePeerEmitter,
+    @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
+    @inject(ScreenShareEmitter)
+    private screenSharePeerEmitter: ScreenShareEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
-  @peerMessageId(VOICE_MESSAGE_ID.READY)
-  ready(protocol: PeerEvent) {
+  @messageId(VOICE_MESSAGE_ID.READY)
+  ready(protocol: EventType) {
     const userKey = storage.getItem('userKey');
     if (!store.getState().user.voiceStatus) {
       return;
@@ -36,8 +36,8 @@ export class VoicePeerHandler {
     });
   }
 
-  @peerMessageId(VOICE_MESSAGE_ID.READY_OK)
-  async readyOk(protocol: PeerEvent) {
+  @messageId(VOICE_MESSAGE_ID.READY_OK)
+  async readyOk(protocol: EventType) {
     const userKey = storage.getItem('userKey');
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
@@ -62,8 +62,8 @@ export class VoicePeerHandler {
     this.voicePeerEmitter.sendVoiceConnectedMessage({ to: from, userKey });
   }
 
-  @peerMessageId(VOICE_MESSAGE_ID.CONNECTED)
-  async connected(protocol: PeerEvent) {
+  @messageId(VOICE_MESSAGE_ID.CONNECTED)
+  async connected(protocol: EventType) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
       return;
@@ -91,8 +91,8 @@ export class VoicePeerHandler {
     }
   }
 
-  @peerMessageId(VOICE_MESSAGE_ID.DISCONNECT)
-  disconnect(protocol: PeerEvent) {
+  @messageId(VOICE_MESSAGE_ID.DISCONNECT)
+  disconnect(protocol: EventType) {
     const { from } = protocol;
     if (!store.getState().user.voiceStatus) {
       return;

@@ -1,33 +1,36 @@
 import { container, Lifecycle } from 'tsyringe';
 import { App } from './service/app/App';
-import { ConnectionPeerHandler } from './service/peerHandler/ConnectionPeerHandler';
-import { SignalingPeerHandler } from './service/peerHandler/SignalingPeerHandler';
-import { NegotiationPeerHandler } from './service/peerHandler/NegotiationPeerHandler';
-import { VoicePeerHandler } from './service/peerHandler/VoicePeerHandler';
-import { PeerHandler } from './service/peerHandler/PeerHandler';
-import { ChatPeerHandler } from './service/peerHandler/ChatPeerHandler';
-import { ScreenSharePeerHandler } from './service/peerHandler/ScreenSharePeerHandler';
+import { ConnectionHandler } from './service/handler/ConnectionHandler';
+import { SignalingHandler } from './service/handler/SignalingHandler';
+import { NegotiationHandler } from './service/handler/NegotiationHandler';
+import { VoiceHandler } from './service/handler/VoiceHandler';
+import { HandlerManager } from './service/handler/HandlerManager';
+import { ChatHandler } from './service/handler/ChatHandler';
+import { ScreenShareHandler } from './service/handler/ScreenShareHandler';
 import { AudioManager } from './service/media/AudioManager';
 import { VideoManager } from './service/media/VideoManager';
 import { SoundEffect } from './service/media/SoundEffect';
 import { RTCManager } from './service/rtc/RTCManager';
-import { MemberPeerHandler } from './service/peerHandler/MemberPeerHandler';
-import { ConnectionPeerEmitter } from './service/peerEmitter/ConnectionPeerEmitter';
-import { ChatPeerEmitter } from './service/peerEmitter/ChatPeerEmitter';
-import { MemberPeerEmitter } from './service/peerEmitter/MemberPeerEmitter';
-import { NegotiationPeerEmitter } from './service/peerEmitter/NegotiationPeerEmitter';
-import { ScreenSharePeerEmitter } from './service/peerEmitter/ScreenSharePeerEmitter';
-import { VoicePeerEmitter } from './service/peerEmitter/VoicePeerEmitter';
-import { SignalingPeerEmitter } from './service/peerEmitter/SignalingPeerEmitter';
+import { MemberHandler } from './service/handler/MemberHandler';
+import { ConnectionEmitter } from './service/emitter/ConnectionEmitter';
+import { ChatEmitter } from './service/emitter/ChatEmitter';
+import { MemberEmitter } from './service/emitter/MemberEmitter';
+import { NegotiationEmitter } from './service/emitter/NegotiationEmitter';
+import { ScreenShareEmitter } from './service/emitter/ScreenShareEmitter';
+import { VoiceEmitter } from './service/emitter/VoiceEmitter';
+import { SignalingEmitter } from './service/emitter/SignalingEmitter';
 import EventEmitter from 'events';
-import { ChatLocalHandler } from 'service/localHandler/ChatLocalHandler';
-import { LocalHandler } from './service/localHandler/LocalHandler';
-import { ChatLocalEmitter } from './service/localEmitter/ChatLocalEmitter';
-import { RoomLocalHandler } from './service/localHandler/RoomLocalHandler';
-import { RoomLocalEmitter } from 'service/localEmitter/RoomLocalEmitter';
+import { EventManager } from './service/event/EventManager';
+import { EmitterManager } from './service/emitter/EmitterManager';
+import { RoomHandler } from './service/handler/RoomHandler';
 
 export const initContainer = () => {
   container.register('ee', { useValue: new EventEmitter() });
+  container.register(
+    EventManager,
+    { useClass: EventManager },
+    { lifecycle: Lifecycle.Singleton },
+  );
   container.register(
     AudioManager,
     { useClass: AudioManager },
@@ -45,41 +48,37 @@ export const initContainer = () => {
     { lifecycle: Lifecycle.Singleton },
   );
 
-  container.register(ChatLocalEmitter, { useClass: ChatLocalEmitter });
-  container.register(RoomLocalEmitter, { useClass: RoomLocalEmitter });
+  container.register('EmitterService', { useClass: EmitterManager });
 
-  container.register('LocalHandler', { useClass: ChatLocalHandler });
-  container.register('LocalHandler', { useClass: RoomLocalHandler });
-  container.register('LocalHandlerManager', { useClass: LocalHandler });
+  container.register(ConnectionEmitter, {
+    useClass: ConnectionEmitter,
+  });
+  container.register(SignalingEmitter, { useClass: SignalingEmitter });
+  container.register(ChatEmitter, { useClass: ChatEmitter });
+  container.register(MemberEmitter, { useClass: MemberEmitter });
+  container.register(NegotiationEmitter, {
+    useClass: NegotiationEmitter,
+  });
+  container.register(ScreenShareEmitter, {
+    useClass: ScreenShareEmitter,
+  });
+  container.register(VoiceEmitter, { useClass: VoiceEmitter });
 
-  container.register(ConnectionPeerEmitter, {
-    useClass: ConnectionPeerEmitter,
-  });
-  container.register(SignalingPeerEmitter, { useClass: SignalingPeerEmitter });
-  container.register(ChatPeerEmitter, { useClass: ChatPeerEmitter });
-  container.register(MemberPeerEmitter, { useClass: MemberPeerEmitter });
-  container.register(NegotiationPeerEmitter, {
-    useClass: NegotiationPeerEmitter,
-  });
-  container.register(ScreenSharePeerEmitter, {
-    useClass: ScreenSharePeerEmitter,
-  });
-  container.register(VoicePeerEmitter, { useClass: VoicePeerEmitter });
+  container.register('PeerHandler', { useClass: ConnectionHandler });
+  container.register('PeerHandler', { useClass: SignalingHandler });
+  container.register('PeerHandler', { useClass: NegotiationHandler });
+  container.register('PeerHandler', { useClass: VoiceHandler });
+  container.register('PeerHandler', { useClass: ChatHandler });
+  container.register('PeerHandler', { useClass: ScreenShareHandler });
+  container.register('PeerHandler', { useClass: MemberHandler });
+  container.register('PeerHandler', { useClass: RoomHandler });
 
-  container.register('PeerHandler', { useClass: ConnectionPeerHandler });
-  container.register('PeerHandler', { useClass: SignalingPeerHandler });
-  container.register('PeerHandler', { useClass: NegotiationPeerHandler });
-  container.register('PeerHandler', { useClass: VoicePeerHandler });
-  container.register('PeerHandler', { useClass: ChatPeerHandler });
-  container.register('PeerHandler', { useClass: ScreenSharePeerHandler });
-  container.register('PeerHandler', { useClass: MemberPeerHandler });
-  container.register('PeerHandlerManager', { useClass: PeerHandler });
+  container.register('HandlerManager', { useClass: HandlerManager });
   container.resolve(App);
   container.afterResolution(
     App,
     (_t, result) => {
-      container.resolve('PeerHandlerManager');
-      container.resolve('LocalHandlerManager');
+      container.resolve('HandlerManager');
     },
     { frequency: 'Once' },
   );

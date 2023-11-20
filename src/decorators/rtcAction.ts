@@ -1,4 +1,4 @@
-import { CATEGORY, MessageId } from '../constants/peerEvent';
+import { CATEGORY, MessageId } from '../constants/eventType';
 import { storage } from 'service/storage/StorageService';
 
 export function rtcAction({

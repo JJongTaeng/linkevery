@@ -1,12 +1,12 @@
 import { inject, injectable } from 'tsyringe';
-import { Sender } from '../messages/Sender';
-import type { ProtocolData } from '../../constants/peerEvent';
-import { CATEGORY, SCREEN_SHARE_MESSAGE_ID } from '../../constants/peerEvent';
+import type { ProtocolData } from '../../constants/eventType';
+import { CATEGORY, SCREEN_SHARE_MESSAGE_ID } from '../../constants/eventType';
 import { rtcAction } from '../../decorators/rtcAction';
+import type { EmitterService } from 'service/emitter/EmitterService';
 
 @injectable()
-export class ScreenSharePeerEmitter {
-  constructor(@inject(Sender) private sender: Sender) {}
+export class ScreenShareEmitter {
+  constructor(@inject('EmitterService') private sender: EmitterService) {}
 
   @rtcAction({
     category: CATEGORY.SCREEN,

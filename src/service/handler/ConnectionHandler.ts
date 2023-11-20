@@ -1,7 +1,7 @@
-import { peerCategory } from '../../decorators/peerCategory';
-import type { PeerEvent } from '../../constants/peerEvent';
-import { CATEGORY, CONNECTION_MESSAGE_ID } from '../../constants/peerEvent';
-import { peerMessageId } from '../../decorators/peerMessageId';
+import { category } from '../../decorators/category';
+import type { EventType } from '../../constants/eventType';
+import { CATEGORY, CONNECTION_MESSAGE_ID } from '../../constants/eventType';
+import { messageId } from '../../decorators/messageId';
 import { storage } from 'service/storage/StorageService';
 import { utils } from 'service/utils/Utils';
 import { store } from 'store/store';
@@ -11,29 +11,29 @@ import { inject, injectable } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { SignalingPeerEmitter } from '../peerEmitter/SignalingPeerEmitter';
+import { SignalingEmitter } from '../emitter/SignalingEmitter';
 import { router } from '../../index';
-import { RoomLocalEmitter } from '../localEmitter/RoomLocalEmitter';
+import { RoomEmitter } from '../emitter/RoomEmitter';
 
-@peerCategory(CATEGORY.CONNECTION)
+@category(CATEGORY.CONNECTION)
 @injectable()
-export class ConnectionPeerHandler {
+export class ConnectionHandler {
   constructor(
-    @inject(RoomLocalEmitter) private roomLocalEmitter: RoomLocalEmitter,
+    @inject(RoomEmitter) private roomLocalEmitter: RoomEmitter,
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(VideoManager) private videoManager: VideoManager,
-    @inject(SignalingPeerEmitter)
-    private signalingPeerEmitter: SignalingPeerEmitter,
+    @inject(SignalingEmitter)
+    private signalingPeerEmitter: SignalingEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
-  @peerMessageId(CONNECTION_MESSAGE_ID.CONNECT)
-  connect(protocol: PeerEvent): void {
+  @messageId(CONNECTION_MESSAGE_ID.CONNECT)
+  connect(protocol: EventType): void {
     const { clientId } = protocol.data;
     storage.setItem('clientId', clientId);
   }
 
-  @peerMessageId(CONNECTION_MESSAGE_ID.JOIN_ROOM)
-  joinRoom(protocol: PeerEvent): void {
+  @messageId(CONNECTION_MESSAGE_ID.JOIN_ROOM)
+  joinRoom(protocol: EventType): void {
     const { roomName, userKey } = protocol.data;
     const myUserKey = storage.getItem('userKey');
 
@@ -47,8 +47,8 @@ export class ConnectionPeerHandler {
     });
   }
 
-  @peerMessageId(CONNECTION_MESSAGE_ID.DISCONNECT)
-  disconnect(protocol: PeerEvent): void {
+  @messageId(CONNECTION_MESSAGE_ID.DISCONNECT)
+  disconnect(protocol: EventType): void {
     const { from } = protocol;
     const { roomName } = storage.getAll();
     const userKey = utils.getUserKeyByClientId(from) || '';

@@ -1,12 +1,12 @@
 import { inject, injectable } from 'tsyringe';
-import { Sender } from '../messages/Sender';
-import type { ProtocolData } from '../../constants/peerEvent';
-import { CATEGORY, NEGOTIATION_MESSAGE_ID } from '../../constants/peerEvent';
+import type { ProtocolData } from '../../constants/eventType';
+import { CATEGORY, NEGOTIATION_MESSAGE_ID } from '../../constants/eventType';
 import { socketAction } from '../../decorators/socketAction';
+import type { EmitterService } from 'service/emitter/EmitterService';
 
 @injectable()
-export class NegotiationPeerEmitter {
-  constructor(@inject(Sender) private sender: Sender) {}
+export class NegotiationEmitter {
+  constructor(@inject('EmitterService') private sender: EmitterService) {}
 
   @socketAction({
     category: CATEGORY.NEGOTIATION,

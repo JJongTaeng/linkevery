@@ -1,6 +1,6 @@
-import { CATEGORY, EVENT_NAME, MessageId } from '../constants/localEvent';
+import { CATEGORY, EVENT_NAME, MessageId } from '../constants/eventType';
 
-export function localAction({
+export function eventAction({
   category,
   messageId,
 }: {
@@ -11,7 +11,7 @@ export function localAction({
     const originalMethod = desc.value;
     desc.value = function (data: any) {
       const result = originalMethod.apply(this, data);
-      this.ee.emit(EVENT_NAME, {
+      this.eventManager.emit(EVENT_NAME, {
         category: category,
         messageId: messageId,
       });

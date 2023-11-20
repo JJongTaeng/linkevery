@@ -1,22 +1,22 @@
-import type { PeerEvent } from '../../constants/peerEvent';
-import { CATEGORY, NEGOTIATION_MESSAGE_ID } from '../../constants/peerEvent';
+import type { EventType } from '../../constants/eventType';
+import { CATEGORY, NEGOTIATION_MESSAGE_ID } from '../../constants/eventType';
 import { SdpType } from 'service/rtc/RTCPeerService';
-import { peerMessageId } from '../../decorators/peerMessageId';
-import { peerCategory } from '../../decorators/peerCategory';
+import { messageId } from '../../decorators/messageId';
+import { category } from '../../decorators/category';
 import { inject, injectable } from 'tsyringe';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { NegotiationPeerEmitter } from '../peerEmitter/NegotiationPeerEmitter';
+import { NegotiationEmitter } from '../emitter/NegotiationEmitter';
 
-@peerCategory(CATEGORY.NEGOTIATION)
+@category(CATEGORY.NEGOTIATION)
 @injectable()
-export class NegotiationPeerHandler {
+export class NegotiationHandler {
   constructor(
-    @inject(NegotiationPeerEmitter)
-    private negotiationPeerEmitter: NegotiationPeerEmitter,
+    @inject(NegotiationEmitter)
+    private negotiationPeerEmitter: NegotiationEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
-  @peerMessageId(NEGOTIATION_MESSAGE_ID.OFFER)
-  async offer(protocol: PeerEvent) {
+  @messageId(NEGOTIATION_MESSAGE_ID.OFFER)
+  async offer(protocol: EventType) {
     const { from } = protocol;
     const { offer } = protocol.data;
     const rtcPeer = this.rtcManager.getPeer(from);
@@ -30,8 +30,8 @@ export class NegotiationPeerHandler {
       to: from,
     });
   }
-  @peerMessageId(NEGOTIATION_MESSAGE_ID.ANSWER)
-  async answer(protocol: PeerEvent) {
+  @messageId(NEGOTIATION_MESSAGE_ID.ANSWER)
+  async answer(protocol: EventType) {
     const { answer } = protocol.data;
     const rtcPeer = this.rtcManager.getPeer(protocol.from);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });

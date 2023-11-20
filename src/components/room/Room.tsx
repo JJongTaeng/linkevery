@@ -11,10 +11,10 @@ import ChatForm from './ChatForm';
 import ChatList from '../chat/ChatList';
 import { debounce } from 'throttle-debounce';
 import { nanoid } from 'nanoid';
-import { useLocalEmitter } from '../../hooks/useLocalEmitter';
+import { useEmitter } from '../../hooks/useEmitter';
 
 const Room = () => {
-  const { roomLocalEmitter } = useLocalEmitter();
+  const { roomEmitter } = useEmitter();
   const dispatch = useAppDispatch();
   const handleViewportResize = debounce(
     50,
@@ -37,12 +37,12 @@ const Room = () => {
     if (username && roomName) {
       storage.setItem('roomName', roomName);
       dispatch(statusActions.setUsernameModalVisible(false));
-      roomLocalEmitter.joinRoom();
+      roomEmitter.joinRoom();
     } else {
       dispatch(statusActions.setUsernameModalVisible(true));
     }
     return () => {
-      roomLocalEmitter.leave();
+      roomEmitter.leave();
     };
   }, [username, roomName]);
 
