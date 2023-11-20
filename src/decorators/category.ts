@@ -1,6 +1,6 @@
-import { CATEGORY } from '../constants/localEvent';
+import { CATEGORY } from '../constants/eventType';
 
-export function localCategory(category: CATEGORY) {
+export function category(category: CATEGORY) {
   return function (target: any) {
     for (const methodName of Object.getOwnPropertyNames(target.prototype)) {
       if (methodName === 'constructor') continue;

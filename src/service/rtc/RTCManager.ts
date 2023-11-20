@@ -1,4 +1,4 @@
-import { PeerEvent } from '../../constants/peerEvent';
+import { EventType } from '../../constants/eventType';
 import { ERROR_TYPE } from 'error/error';
 import { utils } from 'service/utils/Utils';
 import { RTCManagerService } from './RTCManagerService';
@@ -33,7 +33,7 @@ export class RTCManager extends RTCManagerService {
     super();
   }
 
-  sendTo(protocol: PeerEvent) {
+  sendTo(protocol: EventType) {
     const { to } = protocol.data;
     if (!to)
       throw new Error(
@@ -58,7 +58,7 @@ export class RTCManager extends RTCManagerService {
     });
   }
 
-  sendAll(protocol: PeerEvent) {
+  sendAll(protocol: EventType) {
     this.peerMap.forEach((peer, key) => {
       const datachannel = peer.getDataChannel();
       const dataString = JSON.stringify(protocol.data);

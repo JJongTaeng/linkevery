@@ -1,9 +1,9 @@
-import type { PeerEvent } from '../../constants/peerEvent';
-import { CATEGORY, MEMBER_MESSAGE_ID } from '../../constants/peerEvent';
+import type { EventType } from '../../constants/eventType';
+import { CATEGORY, MEMBER_MESSAGE_ID } from '../../constants/eventType';
 import { RTCManager } from '../rtc/RTCManager';
 import { inject, injectable } from 'tsyringe';
-import { peerCategory } from '../../decorators/peerCategory';
-import { peerMessageId } from '../../decorators/peerMessageId';
+import { category } from '../../decorators/category';
+import { messageId } from '../../decorators/messageId';
 import { storage } from '../storage/StorageService';
 import { store } from '../../store/store';
 import { roomActions } from '../../store/features/roomSlice';
@@ -12,7 +12,7 @@ import { query } from '../db/Query';
 import { MemberPeerEmitter } from '../emitter/MemberPeerEmitter';
 import { ChatPeerEmitter } from '../emitter/ChatPeerEmitter';
 
-@peerCategory(CATEGORY.MEMBER)
+@category(CATEGORY.MEMBER)
 @injectable()
 export class MemberPeerHandler {
   constructor(
@@ -21,8 +21,8 @@ export class MemberPeerHandler {
     @inject(ChatPeerEmitter) private chatPeerEmitter: ChatPeerEmitter,
   ) {}
 
-  @peerMessageId(MEMBER_MESSAGE_ID.NAME)
-  memberName(protocol: PeerEvent) {
+  @messageId(MEMBER_MESSAGE_ID.NAME)
+  memberName(protocol: EventType) {
     const { username, userKey, roomName } = storage.getAll();
 
     store.dispatch(
@@ -45,8 +45,8 @@ export class MemberPeerHandler {
     });
   }
 
-  @peerMessageId(MEMBER_MESSAGE_ID.NAME_OK)
-  async memberNameOk(protocol: PeerEvent) {
+  @messageId(MEMBER_MESSAGE_ID.NAME_OK)
+  async memberNameOk(protocol: EventType) {
     const roomName = storage.getItem('roomName');
 
     store.dispatch(

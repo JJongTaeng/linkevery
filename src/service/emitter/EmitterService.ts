@@ -1,5 +1,5 @@
-import { PeerEvent } from 'constants/peerEvent';
+import { EventType } from '../../constants/eventType';
 
 export interface EmitterService {
-  send(protocol: PeerEvent): void;
+  send(protocol: EventType): void;
 }

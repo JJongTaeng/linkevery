@@ -1,4 +1,4 @@
-import { EVENT_NAME, MESSAGE_TYPE, PeerEvent } from '../../constants/peerEvent';
+import { EVENT_NAME, MESSAGE_TYPE, EventType } from '../../constants/eventType';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { SocketManager } from 'service/socket/SocketManager';
 import { inject, injectable } from 'tsyringe';
@@ -11,7 +11,7 @@ export class Sender implements EmitterService {
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
 
-  send(protocol: PeerEvent) {
+  send(protocol: EventType) {
     if (protocol.messageType === MESSAGE_TYPE.SOCKET) {
       console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
       this.socketManager.socket.emit(EVENT_NAME, protocol);

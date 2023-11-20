@@ -2,20 +2,21 @@ import { inject, injectable, injectAll } from 'tsyringe';
 import {
   CATEGORY,
   EVENT_NAME,
+  EventType,
   HandlerMap,
   MessageId,
-  PeerEvent,
   StringifyProtocol,
-} from '../../constants/peerEvent';
+} from '../../constants/eventType';
 import { SocketManager } from 'service/socket/SocketManager';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { MessageAssemble } from 'service/messages/MessageAssemble';
 import { ERROR_TYPE } from 'error/error';
+import { EventManager } from '../event/EventManager';
 
 type CategoryHandlers = { [key in CATEGORY]?: HandlerMap<any> };
 
 @injectable()
-export class PeerHandler {
+export class HandlerManager {
   private messageAssembleMap: Map<string, MessageAssemble> = new Map();
   private handlerMap: CategoryHandlers = {};
 
@@ -23,6 +24,7 @@ export class PeerHandler {
     @injectAll('PeerHandler') private handlers: any,
     @inject(SocketManager) private socketManager: SocketManager,
     @inject(RTCManager) private rtcManager: RTCManager,
+    @inject(EventManager) private eventManager: EventManager,
   ) {
     this.setHandlers();
     this.subscribe();
@@ -58,7 +60,7 @@ export class PeerHandler {
   }
 
   subscribe() {
-    this.socketManager.socket.on(EVENT_NAME, (protocol: PeerEvent) => {
+    this.socketManager.socket.on(EVENT_NAME, (protocol: EventType) => {
       const handler = this.handlerMap[protocol.category]?.[protocol.messageId];
       if (!handler) {
         throw new Error(
@@ -116,5 +118,20 @@ export class PeerHandler {
         }
       },
     );
+    this.eventManager.on(EVENT_NAME, (protocol: EventType) => {
+      const handler = this.handlerMap[protocol.category]?.[protocol.messageId];
+      if (!handler) {
+        throw new Error(
+          ERROR_TYPE.NOT_DEFINED_HANDLER +
+            `category = ${protocol.category} messageId = ${protocol.messageId}`,
+        );
+      }
+      try {
+        handler(protocol);
+        console.debug('%c[receive] ', 'color:blue;font-weight:bold;', protocol);
+      } catch (e) {
+        console.debug('%c[Error] ', 'color:red;font-weight:bold;', protocol);
+      }
+    });
   }
 }

@@ -1,7 +1,7 @@
-import type { PeerEvent } from '../../constants/peerEvent';
-import { CATEGORY, CHAT_MESSAGE_ID } from '../../constants/peerEvent';
-import { peerCategory } from '../../decorators/peerCategory';
-import { peerMessageId } from '../../decorators/peerMessageId';
+import type { EventType } from '../../constants/eventType';
+import { CATEGORY, CHAT_MESSAGE_ID } from '../../constants/eventType';
+import { category } from '../../decorators/category';
+import { messageId } from '../../decorators/messageId';
 import { inject, injectable } from 'tsyringe';
 import { chatActions } from 'store/features/chatSlice';
 import { store } from 'store/store';
@@ -11,15 +11,15 @@ import { query } from '../db/Query';
 import { Message } from '../db/LinkeveryDB';
 import { ChatPeerEmitter } from '../emitter/ChatPeerEmitter';
 
-@peerCategory(CATEGORY.CHAT)
+@category(CATEGORY.CHAT)
 @injectable()
 export class ChatPeerHandler {
   constructor(
     @inject(ChatPeerEmitter) private chatPeerEmitter: ChatPeerEmitter,
   ) {}
 
-  @peerMessageId(CHAT_MESSAGE_ID.SEND)
-  send(protocol: PeerEvent) {
+  @messageId(CHAT_MESSAGE_ID.SEND)
+  send(protocol: EventType) {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
     const chatInfo = {
@@ -41,14 +41,14 @@ export class ChatPeerHandler {
     );
   }
 
-  @peerMessageId(CHAT_MESSAGE_ID.OK)
-  ok(protocol: PeerEvent) {
+  @messageId(CHAT_MESSAGE_ID.OK)
+  ok(protocol: EventType) {
     const { userKey, message, date, username, messageType, messageKey } =
       protocol.data;
   }
 
-  @peerMessageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST)
-  async syncChatList(protocol: PeerEvent) {
+  @messageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST)
+  async syncChatList(protocol: EventType) {
     const roomName = storage.getItem('roomName');
 
     const { messageList } = protocol.data;
@@ -74,8 +74,8 @@ export class ChatPeerHandler {
     });
   }
 
-  @peerMessageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST_OK)
-  async syncChatListOk(protocol: PeerEvent) {
+  @messageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST_OK)
+  async syncChatListOk(protocol: EventType) {
     const { messageList } = protocol.data;
 
     if (messageList.length) {

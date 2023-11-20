@@ -1,4 +1,4 @@
-import { CATEGORY, ROOM_MESSAGE_ID } from '../../constants/localEvent';
+import { CATEGORY, ROOM_MESSAGE_ID } from '../../constants/eventType';
 import { inject, injectable } from 'tsyringe';
 import { storage } from '../storage/StorageService';
 import { store } from '../../store/store';
@@ -11,13 +11,13 @@ import { VoicePeerEmitter } from '../emitter/VoicePeerEmitter';
 import { AudioManager } from '../media/AudioManager';
 import { chatActions } from '../../store/features/chatSlice';
 import { statusActions } from '../../store/features/statusSlice';
-import { localCategory } from '../../decorators/localCategory';
-import { localMessageId } from 'decorators/localMessageId';
 import { addRoomByDB } from '../../store/thunk/roomThunk';
+import { category } from '../../decorators/category';
+import { messageId } from '../../decorators/messageId';
 
-@localCategory(CATEGORY.ROOM)
+@category(CATEGORY.ROOM)
 @injectable()
-export class RoomLocalHandler {
+export class RoomHandler {
   constructor(
     @inject(ConnectionPeerEmitter)
     private connectionPeerEmitter: ConnectionPeerEmitter,
@@ -25,7 +25,7 @@ export class RoomLocalHandler {
     @inject(VoicePeerEmitter) private voicePeerEmitter: VoicePeerEmitter,
     @inject(AudioManager) private audioManager: AudioManager,
   ) {}
-  @localMessageId(ROOM_MESSAGE_ID.LEAVE)
+  @messageId(ROOM_MESSAGE_ID.LEAVE)
   leave() {
     const roomName = storage.getItem('roomName');
     const userKey = storage.getItem('userKey');
@@ -44,7 +44,7 @@ export class RoomLocalHandler {
     this.rtcManager.clearPeerMap();
   }
 
-  @localMessageId(ROOM_MESSAGE_ID.JOIN)
+  @messageId(ROOM_MESSAGE_ID.JOIN)
   joinRoom() {
     const roomName = storage.getItem('roomName');
     const userKey = storage.getItem('userKey');

@@ -2,18 +2,18 @@ import { inject, injectable } from 'tsyringe';
 import { SocketManager } from '../socket/SocketManager';
 import { RTCManager } from '../rtc/RTCManager';
 import { EventManager } from '../event/EventManager';
-import { EVENT_NAME, MESSAGE_TYPE, PeerEvent } from '../../constants/peerEvent';
+import { EVENT_NAME, MESSAGE_TYPE, EventType } from '../../constants/eventType';
 import { EmitterService } from './EmitterService';
 
 @injectable()
-export class Emitter implements EmitterService {
+export class EmitterManager implements EmitterService {
   constructor(
     @inject(SocketManager) private socketManager: SocketManager,
     @inject(RTCManager) private rtcManager: RTCManager,
     @inject(EventManager) private eventManager: EventManager,
   ) {}
 
-  send(protocol: PeerEvent) {
+  send(protocol: EventType) {
     switch (protocol.messageType) {
       case MESSAGE_TYPE.RTC:
         console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);

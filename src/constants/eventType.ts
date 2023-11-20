@@ -14,6 +14,7 @@ export enum CATEGORY {
   SCREEN = 'SCREEN',
   NEGOTIATION = 'NEGOTIATION',
   MEMBER = 'MEMBER',
+  ROOM = 'ROOM',
 }
 
 export enum CONNECTION_MESSAGE_ID {
@@ -64,6 +65,11 @@ export enum NEGOTIATION_MESSAGE_ID {
   ANSWER = 'ANSWER',
 }
 
+export enum ROOM_MESSAGE_ID {
+  JOIN = 'JOIN',
+  LEAVE = 'LEAVE',
+}
+
 export type MessageId =
   | CONNECTION_MESSAGE_ID
   | CHAT_MESSAGE_ID
@@ -71,7 +77,8 @@ export type MessageId =
   | VOICE_MESSAGE_ID
   | NEGOTIATION_MESSAGE_ID
   | SCREEN_SHARE_MESSAGE_ID
-  | MEMBER_MESSAGE_ID;
+  | MEMBER_MESSAGE_ID
+  | ROOM_MESSAGE_ID;
 
 export interface ProtocolData {
   [key: string]: any;
@@ -87,7 +94,7 @@ export interface StringifyProtocol {
   endIndex: number;
 }
 
-export interface PeerEvent {
+export interface EventType {
   messageType: MESSAGE_TYPE;
   category: CATEGORY;
   messageId: MessageId;
@@ -98,5 +105,5 @@ export interface PeerEvent {
 }
 
 export type HandlerMap<T extends string | number | symbol> = {
-  [key in T]: (protocol: PeerEvent) => void;
+  [key in T]: (protocol: EventType) => void;
 };
