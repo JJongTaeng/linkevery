@@ -31,7 +31,8 @@ const ChatBubble = ({
   const isDark = () =>
     utils.sum(getColorObj(stc(username)).color as number[]) / 765 > 0.6;
 
-  const urlRegex = /^(http|https):\/\/([^\/\s]+\/)([^\s]*)/g;
+  const urlRegex =
+    /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
 
   const getURL = (message: string) => message.match(urlRegex)?.[0];
 
