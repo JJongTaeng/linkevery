@@ -119,6 +119,12 @@ export class HandlerManager {
       },
     );
     this.eventManager.on(EVENT_NAME, (protocol: EventType) => {
+      console.debug(
+        '%c[local-event] ',
+        'color:blue;font-weight:bold;',
+        protocol,
+      );
+
       const handler = this.handlerMap[protocol.category]?.[protocol.messageId];
       if (!handler) {
         throw new Error(

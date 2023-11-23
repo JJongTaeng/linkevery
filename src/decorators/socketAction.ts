@@ -1,4 +1,4 @@
-import { CATEGORY, MessageId } from '../constants/eventType';
+import { CATEGORY, MESSAGE_TYPE, MessageId } from '../constants/eventType';
 import { storage } from 'service/storage/StorageService';
 
 export function socketAction({
@@ -17,7 +17,7 @@ export function socketAction({
         category,
         messageId,
         data,
-        messageType: 'SOCKET',
+        messageType: MESSAGE_TYPE.SOCKET,
         from: clientId,
       });
       return result;

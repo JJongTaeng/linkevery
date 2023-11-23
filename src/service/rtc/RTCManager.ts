@@ -1,4 +1,4 @@
-import { EventType } from '../../constants/eventType';
+import { EventType, MESSAGE_TYPE } from '../../constants/eventType';
 import { ERROR_TYPE } from 'error/error';
 import { utils } from 'service/utils/Utils';
 import { RTCManagerService } from './RTCManagerService';
@@ -33,7 +33,25 @@ export class RTCManager extends RTCManagerService {
     super();
   }
 
-  sendTo(protocol: EventType) {
+  send(protocol: EventType) {
+    console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
+    const { to } = protocol.data;
+    if (to) {
+      try {
+        this.sendTo(protocol);
+      } catch (e) {
+        this.send({ ...protocol, messageType: MESSAGE_TYPE.SOCKET });
+      }
+    } else {
+      try {
+        this.sendAll(protocol);
+      } catch (e) {
+        this.send({ ...protocol, messageType: MESSAGE_TYPE.SOCKET });
+      }
+    }
+  }
+
+  private sendTo(protocol: EventType) {
     const { to } = protocol.data;
     if (!to)
       throw new Error(
@@ -58,7 +76,7 @@ export class RTCManager extends RTCManagerService {
     });
   }
 
-  sendAll(protocol: EventType) {
+  private sendAll(protocol: EventType) {
     this.peerMap.forEach((peer, key) => {
       const datachannel = peer.getDataChannel();
       const dataString = JSON.stringify(protocol.data);

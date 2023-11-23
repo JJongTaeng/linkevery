@@ -1,4 +1,4 @@
-import { CATEGORY, EVENT_NAME, MessageId } from '../constants/eventType';
+import { CATEGORY, MESSAGE_TYPE, MessageId } from '../constants/eventType';
 
 export function eventAction({
   category,
@@ -9,11 +9,13 @@ export function eventAction({
 }) {
   return function (target: any, key: string, desc: any): void {
     const originalMethod = desc.value;
-    desc.value = function (data: any) {
+    desc.value = function (data: any = {}) {
       const result = originalMethod.apply(this, data);
-      this.eventManager.emit(EVENT_NAME, {
+      this.sender.send({
         category: category,
         messageId: messageId,
+        data,
+        messageType: MESSAGE_TYPE.EVENT,
       });
       return result;
     };

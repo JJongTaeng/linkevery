@@ -1,4 +1,4 @@
-import { CATEGORY, MessageId } from '../constants/eventType';
+import { CATEGORY, MESSAGE_TYPE, MessageId } from '../constants/eventType';
 import { storage } from 'service/storage/StorageService';
 
 export function rtcAction({
@@ -17,7 +17,7 @@ export function rtcAction({
         category,
         messageId,
         data,
-        messageType: 'RTC',
+        messageType: MESSAGE_TYPE.RTC,
         from: clientId,
       });
       return result;
