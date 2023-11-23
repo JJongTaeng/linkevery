@@ -1,4 +1,4 @@
-import { EventType, MESSAGE_TYPE } from 'constants/eventType';
+import { EventType } from 'constants/eventType';
 import { SLICE_LENGTH } from 'constants/message';
 import { ERROR_TYPE } from 'error/error';
 import { utils } from 'service/utils/Utils';
@@ -37,17 +37,9 @@ export class RTCManager extends RTCManagerService {
     console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
     const { to } = protocol.data;
     if (to) {
-      try {
-        this.sendTo(protocol);
-      } catch (e) {
-        this.send({ ...protocol, messageType: MESSAGE_TYPE.SOCKET });
-      }
+      this.sendTo(protocol);
     } else {
-      try {
-        this.sendAll(protocol);
-      } catch (e) {
-        this.send({ ...protocol, messageType: MESSAGE_TYPE.SOCKET });
-      }
+      this.sendAll(protocol);
     }
   }
 

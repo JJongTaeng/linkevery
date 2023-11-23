@@ -16,7 +16,11 @@ export class EmitterManager implements EmitterService {
   send(protocol: EventType) {
     switch (protocol.messageType) {
       case MESSAGE_TYPE.RTC:
-        this.rtcManager.send(protocol);
+        try {
+          this.rtcManager.send(protocol);
+        } catch (e) {
+          this.socketManager.send(protocol);
+        }
         break;
       case MESSAGE_TYPE.SOCKET:
         this.socketManager.send(protocol);
