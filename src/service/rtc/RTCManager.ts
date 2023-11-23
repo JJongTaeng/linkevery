@@ -1,4 +1,5 @@
-import { EventType } from '../../constants/eventType';
+import { EventType, MESSAGE_TYPE } from 'constants/eventType';
+import { SLICE_LENGTH } from 'constants/message';
 import { ERROR_TYPE } from 'error/error';
 import { utils } from 'service/utils/Utils';
 import { RTCManagerService } from './RTCManagerService';
@@ -24,7 +25,6 @@ export const config = {
 };
 
 export class RTCManager extends RTCManagerService {
-  static SLICE_LENGTH = 16000;
   public static RTC_EVENT = {
     DATA: 'RTC_DATA',
   };
@@ -33,7 +33,25 @@ export class RTCManager extends RTCManagerService {
     super();
   }
 
-  sendTo(protocol: EventType) {
+  send(protocol: EventType) {
+    console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
+    const { to } = protocol.data;
+    if (to) {
+      try {
+        this.sendTo(protocol);
+      } catch (e) {
+        this.send({ ...protocol, messageType: MESSAGE_TYPE.SOCKET });
+      }
+    } else {
+      try {
+        this.sendAll(protocol);
+      } catch (e) {
+        this.send({ ...protocol, messageType: MESSAGE_TYPE.SOCKET });
+      }
+    }
+  }
+
+  private sendTo(protocol: EventType) {
     const { to } = protocol.data;
     if (!to)
       throw new Error(
@@ -42,10 +60,7 @@ export class RTCManager extends RTCManagerService {
     const peer = this.peerMap.get(to);
     const datachannel = peer?.getDataChannel();
     const dataString = JSON.stringify(protocol.data);
-    const slicedDataList = utils.sliceString(
-      dataString,
-      RTCManager.SLICE_LENGTH,
-    );
+    const slicedDataList = utils.sliceString(dataString, SLICE_LENGTH);
     slicedDataList.forEach((slicedData, index) => {
       const newProtocol = {
         ...protocol,
@@ -58,14 +73,11 @@ export class RTCManager extends RTCManagerService {
     });
   }
 
-  sendAll(protocol: EventType) {
+  private sendAll(protocol: EventType) {
     this.peerMap.forEach((peer, key) => {
       const datachannel = peer.getDataChannel();
       const dataString = JSON.stringify(protocol.data);
-      const slicedDataList = utils.sliceString(
-        dataString,
-        RTCManager.SLICE_LENGTH,
-      );
+      const slicedDataList = utils.sliceString(dataString, SLICE_LENGTH);
       slicedDataList.forEach((slicedData, index) => {
         const newProtocol = {
           ...protocol,

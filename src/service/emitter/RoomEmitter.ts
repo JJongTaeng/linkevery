@@ -1,11 +1,11 @@
 import { inject, injectable } from 'tsyringe';
 import { eventAction } from '../../decorators/eventAction';
 import { CATEGORY, ROOM_MESSAGE_ID } from '../../constants/eventType';
-import { EventManager } from '../event/EventManager';
+import type { EmitterService } from './EmitterService';
 
 @injectable()
 export class RoomEmitter {
-  constructor(@inject(EventManager) private eventManager: EventManager) {}
+  constructor(@inject('EmitterService') private sender: EmitterService) {}
 
   @eventAction({
     category: CATEGORY.ROOM,

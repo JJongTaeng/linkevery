@@ -2,7 +2,6 @@ import { inject, injectable, injectAll } from 'tsyringe';
 import {
   CATEGORY,
   EVENT_NAME,
-  EventType,
   HandlerMap,
   MessageId,
   StringifyProtocol,
@@ -28,6 +27,44 @@ export class HandlerManager {
   ) {
     this.setHandlers();
     this.subscribe();
+  }
+
+  handleHandler(stringifyProtocol: string) {
+    const protocol = JSON.parse(stringifyProtocol) as StringifyProtocol;
+    const key = protocol.from + protocol.category + protocol.messageId;
+    if (!this.messageAssembleMap.has(key))
+      this.messageAssembleMap.set(key, new MessageAssemble());
+    const messageAssemble = this.messageAssembleMap.get(key);
+    messageAssemble?.push(protocol.data);
+
+    if (protocol.index === protocol.endIndex) {
+      const dataString = messageAssemble?.getJoinedMessage() ?? '';
+      messageAssemble?.clear();
+      this.messageAssembleMap.delete(key);
+      const parsedData = JSON.parse(dataString);
+      const newProtocol = {
+        ...protocol,
+        data: parsedData,
+      };
+
+      try {
+        const handler =
+          this.handlerMap[protocol.category]?.[protocol.messageId];
+        if (!handler) {
+          throw new Error(ERROR_TYPE.FAILED_SEND_OFFER);
+        }
+        handler(newProtocol);
+
+        console.debug(
+          '%c[receive] ',
+          'color:blue;font-weight:bold;',
+          newProtocol,
+        );
+      } catch (e) {
+        console.error(e);
+        console.debug('%c[Error] ', 'color:red;font-weight:bold;', newProtocol);
+      }
+    }
   }
 
   setHandlers() {
@@ -60,82 +97,17 @@ export class HandlerManager {
   }
 
   subscribe() {
-    this.socketManager.socket.on(EVENT_NAME, (protocol: EventType) => {
-      const handler = this.handlerMap[protocol.category]?.[protocol.messageId];
-      if (!handler) {
-        throw new Error(
-          ERROR_TYPE.NOT_DEFINED_HANDLER +
-            `category = ${protocol.category} messageId = ${protocol.messageId}`,
-        );
-      }
-      try {
-        handler(protocol);
-        console.debug('%c[receive] ', 'color:blue;font-weight:bold;', protocol);
-      } catch (e) {
-        console.debug('%c[Error] ', 'color:red;font-weight:bold;', protocol);
-      }
+    this.socketManager.socket.on(EVENT_NAME, (stringifyProtocol: string) => {
+      this.handleHandler(stringifyProtocol);
     });
     this.rtcManager.on(
       RTCManager.RTC_EVENT.DATA,
-      (protocol: StringifyProtocol) => {
-        const key = protocol.from + protocol.category + protocol.messageId;
-        if (!this.messageAssembleMap.has(key))
-          this.messageAssembleMap.set(key, new MessageAssemble());
-        const messageAssemble = this.messageAssembleMap.get(key);
-        messageAssemble?.push(protocol.data);
-
-        if (protocol.index === protocol.endIndex) {
-          const dataString = messageAssemble?.getJoinedMessage() ?? '';
-          messageAssemble?.clear();
-          this.messageAssembleMap.delete(key);
-          const parsedData = JSON.parse(dataString);
-          const newProtocol = {
-            ...protocol,
-            data: parsedData,
-          };
-
-          try {
-            const handler =
-              this.handlerMap[protocol.category]?.[protocol.messageId];
-            if (!handler) {
-              throw new Error(ERROR_TYPE.FAILED_SEND_OFFER);
-            }
-            handler(newProtocol);
-
-            console.debug(
-              '%c[receive] ',
-              'color:blue;font-weight:bold;',
-              newProtocol,
-            );
-          } catch (e) {
-            console.error(e);
-            console.debug(
-              '%c[Error] ',
-              'color:red;font-weight:bold;',
-              newProtocol,
-            );
-          }
-        }
+      (stringifyProtocol: string) => {
+        this.handleHandler(stringifyProtocol);
       },
     );
-    this.eventManager.on(EVENT_NAME, (protocol: EventType) => {
-      const handler = this.handlerMap[protocol.category]?.[protocol.messageId];
-      if (!handler) {
-        throw new Error(
-          ERROR_TYPE.NOT_DEFINED_HANDLER +
-            `category = ${protocol.category} messageId = ${protocol.messageId}`,
-        );
-      }
-      try {
-        handler(protocol);
-        console.debug(
-          '%c[receive_local] ',
-          'color:#999;font-weight:bold;',
-          protocol,
-        );
-      } catch (e) {
-        console.debug('%c[Error] ', 'color:red;font-weight:bold;', protocol);
-      }
+    this.eventManager.on(EVENT_NAME, (stringifyProtocol: string) => {
+      this.handleHandler(stringifyProtocol);
     });
   }
 }

@@ -87,7 +87,8 @@ export class SignalingHandler {
 
   @messageId(SIGNALING_MESSAGE_ID.OFFER)
   async offer(protocol: EventType) {
-    const { offer } = protocol.data;
+    const offer = new RTCSessionDescription(protocol.data.offer);
+    console.log(offer);
     const { from } = protocol;
     // store.dispatch(roomActions.setMemberSize(size));
     this.rtcManager.createPeer(from);
@@ -147,7 +148,8 @@ export class SignalingHandler {
 
   @messageId(SIGNALING_MESSAGE_ID.ANSWER)
   answer(protocol: EventType) {
-    const { answer } = protocol.data;
+    const answer = new RTCSessionDescription(protocol.data.answer);
+    console.log(answer);
     const { from } = protocol;
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
@@ -173,10 +175,7 @@ export class SignalingHandler {
 
       rtcPeer.dataChannel = e.channel;
       rtcPeer.onDataChannelMessage((e) => {
-        const parsedMessage = {
-          ...JSON.parse(e.data),
-        };
-        this.rtcManager.emit(RTCManager.RTC_EVENT.DATA, parsedMessage);
+        this.rtcManager.emit(RTCManager.RTC_EVENT.DATA, e.data);
       });
     });
     this.signalingPeerEmitter.sendSignalingConnectDataChannelMessage({
@@ -195,10 +194,7 @@ export class SignalingHandler {
         console.debug('[open datachannel]', from);
       })
       .onDataChannelMessage((e) => {
-        const parsedMessage = {
-          ...JSON.parse(e.data),
-        };
-        this.rtcManager.emit(RTCManager.RTC_EVENT.DATA, parsedMessage);
+        this.rtcManager.emit(RTCManager.RTC_EVENT.DATA, e.data);
       });
   }
 
