@@ -1,7 +1,9 @@
 import { message } from 'antd';
 import { io } from 'socket.io-client';
 import { singleton } from 'tsyringe';
-import { EVENT_NAME, EventType } from '../../constants/eventType';
+import { EVENT_NAME, EventType } from 'constants/eventType';
+import { SLICE_LENGTH } from 'constants/message';
+import { utils } from '../utils/Utils';
 
 @singleton()
 export class SocketManager {
@@ -15,6 +17,17 @@ export class SocketManager {
 
   send(protocol: EventType) {
     console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
-    this.socket.emit(EVENT_NAME, protocol);
+    const dataString = JSON.stringify(protocol.data);
+    const slicedDataList = utils.sliceString(dataString, SLICE_LENGTH);
+    slicedDataList.forEach((slicedData, index) => {
+      const newProtocol = {
+        ...protocol,
+        data: slicedData,
+        index,
+        endIndex: slicedDataList.length - 1,
+      };
+      const stringify = JSON.stringify(newProtocol);
+      this.socket.emit(EVENT_NAME, stringify);
+    });
   }
 }

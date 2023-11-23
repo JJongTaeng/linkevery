@@ -1,4 +1,5 @@
-import { EventType, MESSAGE_TYPE } from '../../constants/eventType';
+import { EventType, MESSAGE_TYPE } from 'constants/eventType';
+import { SLICE_LENGTH } from 'constants/message';
 import { ERROR_TYPE } from 'error/error';
 import { utils } from 'service/utils/Utils';
 import { RTCManagerService } from './RTCManagerService';
@@ -24,7 +25,6 @@ export const config = {
 };
 
 export class RTCManager extends RTCManagerService {
-  static SLICE_LENGTH = 16000;
   public static RTC_EVENT = {
     DATA: 'RTC_DATA',
   };
@@ -60,10 +60,7 @@ export class RTCManager extends RTCManagerService {
     const peer = this.peerMap.get(to);
     const datachannel = peer?.getDataChannel();
     const dataString = JSON.stringify(protocol.data);
-    const slicedDataList = utils.sliceString(
-      dataString,
-      RTCManager.SLICE_LENGTH,
-    );
+    const slicedDataList = utils.sliceString(dataString, SLICE_LENGTH);
     slicedDataList.forEach((slicedData, index) => {
       const newProtocol = {
         ...protocol,
@@ -80,10 +77,7 @@ export class RTCManager extends RTCManagerService {
     this.peerMap.forEach((peer, key) => {
       const datachannel = peer.getDataChannel();
       const dataString = JSON.stringify(protocol.data);
-      const slicedDataList = utils.sliceString(
-        dataString,
-        RTCManager.SLICE_LENGTH,
-      );
+      const slicedDataList = utils.sliceString(dataString, SLICE_LENGTH);
       slicedDataList.forEach((slicedData, index) => {
         const newProtocol = {
           ...protocol,
