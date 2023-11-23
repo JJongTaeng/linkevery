@@ -53,13 +53,12 @@ export class HandlerManager {
         if (!handler) {
           throw new Error(ERROR_TYPE.FAILED_SEND_OFFER);
         }
-        handler(newProtocol);
-
         console.debug(
           '%c[receive] ',
           'color:blue;font-weight:bold;',
           newProtocol,
         );
+        handler(newProtocol);
       } catch (e) {
         console.error(e);
         console.debug('%c[Error] ', 'color:red;font-weight:bold;', newProtocol);

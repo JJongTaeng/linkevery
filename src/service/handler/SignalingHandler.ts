@@ -88,7 +88,6 @@ export class SignalingHandler {
   @messageId(SIGNALING_MESSAGE_ID.OFFER)
   async offer(protocol: EventType) {
     const offer = new RTCSessionDescription(protocol.data.offer);
-    console.log(offer);
     const { from } = protocol;
     // store.dispatch(roomActions.setMemberSize(size));
     this.rtcManager.createPeer(from);
@@ -149,7 +148,6 @@ export class SignalingHandler {
   @messageId(SIGNALING_MESSAGE_ID.ANSWER)
   answer(protocol: EventType) {
     const answer = new RTCSessionDescription(protocol.data.answer);
-    console.log(answer);
     const { from } = protocol;
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
