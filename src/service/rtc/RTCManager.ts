@@ -3,6 +3,7 @@ import { SLICE_LENGTH } from 'constants/message';
 import { ERROR_TYPE } from 'error/error';
 import { utils } from 'service/utils/Utils';
 import { RTCManagerService } from './RTCManagerService';
+import { storage } from '../storage/StorageService';
 
 export const config = {
   iceServers: [
@@ -34,7 +35,11 @@ export class RTCManager extends RTCManagerService {
   }
 
   send(protocol: EventType) {
-    console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
+    const clientId = storage.getItem('clientId');
+    console.debug('%c[send] ', 'color:green;font-weight:bold;', {
+      ...protocol,
+      from: clientId,
+    });
     const { to } = protocol.data;
     if (to) {
       this.sendTo(protocol);
@@ -44,6 +49,7 @@ export class RTCManager extends RTCManagerService {
   }
 
   private sendTo(protocol: EventType) {
+    const clientId = storage.getItem('clientId');
     const { to } = protocol.data;
     if (!to)
       throw new Error(
@@ -59,6 +65,7 @@ export class RTCManager extends RTCManagerService {
         data: slicedData,
         index,
         endIndex: slicedDataList.length - 1,
+        from: clientId,
       };
       const stringify = JSON.stringify(newProtocol);
       datachannel?.send(stringify);
@@ -66,6 +73,8 @@ export class RTCManager extends RTCManagerService {
   }
 
   private sendAll(protocol: EventType) {
+    const clientId = storage.getItem('clientId');
+
     this.peerMap.forEach((peer, key) => {
       const datachannel = peer.getDataChannel();
       const dataString = JSON.stringify(protocol.data);
@@ -76,6 +85,7 @@ export class RTCManager extends RTCManagerService {
           data: slicedData,
           index,
           endIndex: slicedDataList.length - 1,
+          from: clientId,
         };
         const stringify = JSON.stringify(newProtocol);
         datachannel?.send(stringify);
