@@ -7,11 +7,11 @@ import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { deleteAllMemberByDB } from 'store/thunk/roomThunk';
 import { addUserByDB, getUserByDB } from 'store/thunk/userThunk';
 import UsernameModal from './UsernameModal';
-import ChatForm from './ChatForm';
 import ChatList from '../chat/ChatList';
 import { debounce } from 'throttle-debounce';
 import { nanoid } from 'nanoid';
 import { useEmitter } from '../../hooks/useEmitter';
+import ChatForm from '../chat/ChatForm';
 
 const Room = () => {
   const { roomEmitter } = useEmitter();

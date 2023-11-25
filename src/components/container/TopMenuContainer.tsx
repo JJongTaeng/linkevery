@@ -1,10 +1,9 @@
-import { message, Tooltip } from 'antd';
+import { message } from 'antd';
 import Bowser from 'bowser';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { mdUtils } from 'service/media/MediaDeviceUtils';
 import { storage } from 'service/storage/StorageService';
-import { clipboard } from 'service/utils/Clipboard';
 import { roomActions } from 'store/features/roomSlice';
 import { statusActions } from 'store/features/statusSlice';
 import { userActions } from 'store/features/userSlice';
@@ -20,7 +19,6 @@ import { useRef } from 'react';
 import { container } from 'tsyringe';
 import { VideoManager } from 'service/media/VideoManager';
 import SvgMenu from '../icons/Menu';
-import SvgInviteMember from '../icons/InviteMember';
 import { EVENT_NAME } from '../../constants/gtm';
 
 const agentInfo = Bowser.parse(window.navigator.userAgent);
@@ -67,20 +65,6 @@ const TopMenuContainer = () => {
       </Button>
       <RoomName>
         <Text>{roomName ? roomName?.split('+')[0] : ''}</Text>
-        <div>
-          {roomName && (
-            <Tooltip
-              defaultOpen={true}
-              title="복사된 URL을 초대할 사람에게 보내주세요."
-            >
-              <SvgInviteMember
-                onClick={() => {
-                  clipboard.updateClipboard(window.location.href);
-                }}
-              />
-            </Tooltip>
-          )}
-        </div>
       </RoomName>
 
       {roomName && (

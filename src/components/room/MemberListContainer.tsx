@@ -1,14 +1,13 @@
-import { Button, Card, Popover, Slider } from 'antd';
-import { nanoid } from 'nanoid';
+import { Button, Card, Tooltip } from 'antd';
 import { useRef } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from 'store/hooks';
-import { highlight } from 'style';
-import SvgScreenShareOn from 'components/icons/ScreenShareOn';
-import SvgSpeakerOn from 'components/icons/SpeakerOn';
 import { container } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { VideoManager } from 'service/media/VideoManager';
+import MemberCard from './MemberCard';
+import { clipboard } from '../../service/utils/Clipboard';
+import SvgInviteMember from '../icons/InviteMember';
 
 interface MemberListContainerProps {}
 
@@ -28,50 +27,36 @@ const MemberListContainer = ({}: MemberListContainerProps) => {
 
   return (
     <MemberList className="member-list">
-      <Card size="small">
-        <div className="member-item">{myName} - me</div>
-      </Card>
-      {Object.keys(room.member).map((userKey) => (
-        <div key={nanoid()} className="member-item">
-          <Card size="small">
-            <span>{room.member[userKey].username}</span>
-            {room.member[userKey].screenShareStatus && (
-              <Button
-                className={'screen-share-button'}
-                size="small"
-                shape="circle"
-                onClick={() => {
-                  videoManager.openVideoPopup(room.member[userKey].clientId);
-                }}
-                icon={<SvgScreenShareOn />}
-              />
-            )}
-            {room.member[userKey].voiceStatus && (
-              <Popover
-                placement="right"
-                content={
-                  <Slider
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    style={{ width: 80 }}
-                    onChange={(value) => {
-                      onChangeVolume(room.member[userKey].clientId, value);
-                    }}
-                    defaultValue={0.5}
-                  />
-                }
-                trigger="click"
-              >
-                <Button size="small" shape="circle" icon={<SvgSpeakerOn />} />
-              </Popover>
-            )}
-          </Card>
-        </div>
-      ))}
+      <div>
+        <Card size="small">
+          <div>{myName} - me</div>
+        </Card>
+        {Object.keys(room.member).map((userKey) => (
+          <MemberCard key={userKey} userKey={userKey} />
+        ))}
+      </div>{' '}
+      <Tooltip
+        defaultOpen={true}
+        title="복사된 URL을 초대할 사람에게 보내주세요."
+      >
+        <StyledButton
+          onClick={() => {
+            clipboard.updateClipboard(window.location.href);
+          }}
+        >
+          <span>초대하기</span>
+          <SvgInviteMember style={{ marginLeft: 4, lineHeight: 1.8 }} />
+        </StyledButton>
+      </Tooltip>
     </MemberList>
   );
 };
+
+const StyledButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const MemberList = styled.div`
   display: flex;
@@ -84,22 +69,7 @@ const MemberList = styled.div`
   background-color: ${({ theme }) => theme.color.primary800};
   box-shadow: ${({ theme }) => theme.boxShadow};
 
-  .member-item:nth-child(1) {
-    color: ${({ theme }) => theme.color.primary100};
-    font-weight: bold;
-  }
-  .member-item {
-    color: ${({ theme }) => theme.color.grey100};
-    path {
-      stroke: #000;
-    }
-    .ant-btn {
-      margin-left: 4px;
-    }
-    .screen-share-button {
-      animation: ${highlight} 1s 1s infinite linear alternate;
-    }
-  }
+  justify-content: space-between;
 `;
 
 export default MemberListContainer;

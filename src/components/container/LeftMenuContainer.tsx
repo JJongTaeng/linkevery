@@ -136,9 +136,7 @@ const Container = styled.section<{ $leftMenuVisible: boolean }>`
   `}
   transform-origin: left;
   transition: 0.2s;
-  svg {
-    margin-top: 4px;
-  }
+
   g {
     fill: white;
   }
