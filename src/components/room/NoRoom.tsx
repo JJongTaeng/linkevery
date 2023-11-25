@@ -1,6 +1,6 @@
 import { Button } from 'antd';
 import { nanoid } from 'nanoid';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { storage } from 'service/storage/StorageService';
 import { roomActions } from 'store/features/roomSlice';
@@ -11,6 +11,8 @@ import { ColorsTypes, SizeTypes, theme } from 'style/theme';
 import CreateRoomModal from './CreateRoomModal';
 import UsernameModal from './UsernameModal';
 import { statusActions } from '../../store/features/statusSlice';
+import CoupangAds from '../ads/CoupangAds';
+import KakaoAdsfit from '../ads/KakaoAdsfit';
 
 const NoRoom = () => {
   const { username, usernameModalVisible } = useAppSelector((state) => ({
@@ -38,23 +40,34 @@ const NoRoom = () => {
   return (
     <>
       <NoRoomContent>
-        {username && (
+        <CoupangAds
+          src={
+            'https://ads-partners.coupang.com/widgets.html?id=732573&template=carousel&trackingCode=AF8730315&subId=&width=160&height=600&tsource='
+          }
+          width={160}
+          height={600}
+        />
+
+        <Description>
+          {username && (
+            <div>
+              <Text bold={true} size={'xxl'} color={'primary100'}>
+                <p>{username && username}님</p>
+                <p>안녕하세요</p>
+              </Text>
+            </div>
+          )}
           <div>
-            <Text bold={true} size={'xxl'} color={'primary100'}>
-              <p>{username && username}님</p>
-              <p>안녕하세요</p>
-            </Text>
+            <span>
+              <p>
+                <Button onClick={() => setOpen(true)}>+</Button> 으로 방을
+                생성하거나
+              </p>
+              <p>친구로 초대받은 링크로 접속해주세요!</p>
+            </span>
           </div>
-        )}
-        <div>
-          <span className={'no-room-description'}>
-            <p>
-              <Button onClick={() => setOpen(true)}>+</Button> 으로 방을
-              생성하거나
-            </p>
-            <p>친구로 초대받은 링크로 접속해주세요!</p>
-          </span>
-        </div>
+        </Description>
+        <KakaoAdsfit width={160} height={600} unit={'DAN-7io1KKhLPAggq6Bn'} />
         <UsernameModal
           open={usernameModalVisible}
           onSubmit={(username) => {
@@ -76,23 +89,19 @@ const NoRoomContent = styled.div`
   width: 100%;
   height: calc(100% - ${TOP_MENU_HEIGHT}px);
   display: flex;
+`;
+
+const Description = styled.div`
+  flex: 1 1 auto;
+  display: flex;
   justify-content: center;
-  align-items: center;
   flex-direction: column;
-  padding: 0 16px;
-
-  & > div {
-    margin-bottom: 20px;
+  font-size: ${({ theme }) => theme.size.lg}px;
+  .ant-btn-default:not(:disabled) {
+    cursor: auto;
   }
-
-  .no-room-description {
-    font-size: ${({ theme }) => theme.size.lg}px;
-    .ant-btn-default:not(:disabled) {
-      cursor: auto;
-    }
-    p {
-      text-align: center;
-    }
+  p {
+    text-align: center;
   }
 `;
 
