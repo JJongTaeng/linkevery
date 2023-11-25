@@ -102,8 +102,8 @@ const ChatList = () => {
     dayjs(before).isSame(after, 'day');
 
   return (
-    <ChatListContainer>
-      <StyledChatList id={'chat-list'} ref={chatListElement}>
+    <ChatListContainer ref={chatListElement} id={'chat-list'}>
+      <StyledChatList>
         <div id="chat-loading-trigger" ref={chatLoadingTriggerElement} />
         {messageList.map(
           ({ message, userKey, date, username, messageType }, index) => {
