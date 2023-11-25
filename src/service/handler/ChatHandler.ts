@@ -10,11 +10,15 @@ import { storage } from 'service/storage/StorageService';
 import { query } from '../db/Query';
 import { Message } from '../db/LinkeveryDB';
 import { ChatEmitter } from '../emitter/ChatEmitter';
+import { SoundEffect } from '../media/SoundEffect';
 
 @category(CATEGORY.CHAT)
 @injectable()
 export class ChatHandler {
-  constructor(@inject(ChatEmitter) private chatPeerEmitter: ChatEmitter) {}
+  constructor(
+    @inject(ChatEmitter) private chatPeerEmitter: ChatEmitter,
+    @inject(SoundEffect) private soundEffect: SoundEffect,
+  ) {}
 
   @messageId(CHAT_MESSAGE_ID.SEND)
   send(protocol: EventType) {
@@ -37,6 +41,7 @@ export class ChatHandler {
         roomName: storage.getItem('roomName'),
       }),
     );
+    if (!document.hasFocus()) this.soundEffect.receiveChat();
   }
 
   @messageId(CHAT_MESSAGE_ID.OK)
