@@ -102,65 +102,67 @@ const ChatList = () => {
     dayjs(before).isSame(after, 'day');
 
   return (
-    <StyledChatList id={'chat-list'} ref={chatListElement}>
-      <div id="chat-loading-trigger" ref={chatLoadingTriggerElement} />
-      {messageList.map(
-        ({ message, userKey, date, username, messageType }, index) => {
-          const prevMessage = messageList[index - 1];
-          const currentMessage = messageList[index];
-          const nextMessage = messageList[index + 1];
+    <ChatListContainer>
+      <StyledChatList id={'chat-list'} ref={chatListElement}>
+        <div id="chat-loading-trigger" ref={chatLoadingTriggerElement} />
+        {messageList.map(
+          ({ message, userKey, date, username, messageType }, index) => {
+            const prevMessage = messageList[index - 1];
+            const currentMessage = messageList[index];
+            const nextMessage = messageList[index + 1];
 
-          const isSameUserPrev =
-            prevMessage?.userKey === currentMessage.userKey;
-          const isSameUser = nextMessage?.userKey === currentMessage.userKey;
+            const isSameUserPrev =
+              prevMessage?.userKey === currentMessage.userKey;
+            const isSameUser = nextMessage?.userKey === currentMessage.userKey;
 
-          const isSameUserAndSameTimeForTime =
-            isSameUser && isSameTime(currentMessage?.date, nextMessage?.date);
-          const isSameUserAndSameTimeForUsername =
-            isSameTime(prevMessage?.date, currentMessage?.date) &&
-            isSameUserPrev;
-          return (
-            <React.Fragment key={nanoid()}>
-              {isSameDay(prevMessage?.date, currentMessage?.date) ? null : (
-                <Divider className="chat-date" plain>
-                  {dayjs(currentMessage.date).format('YYYY년 MM월 DD일')}
-                </Divider>
-              )}
-              <ChatBubble
-                key={nanoid()}
-                message={message}
-                date={
-                  isSameUserAndSameTimeForTime
-                    ? undefined
-                    : dayjs(date).format('YYYY-MM-DD HH:mm')
-                }
-                type={messageType}
-                username={
-                  isSameUserAndSameTimeForUsername ? undefined : username
-                }
-                isMyChat={userKey === storage.getItem('userKey')}
-              />
-            </React.Fragment>
-          );
-        },
-      )}
-      {isVisibleScrollButton && (
-        <Button
-          className={'scroll-down-button'}
-          style={{ marginBottom: 8 }}
-          onClick={() => {
-            moveToChatScrollBottom();
-          }}
-          shape="circle"
-        >
-          <SvgArrowDown />
-        </Button>
-      )}
-    </StyledChatList>
+            const isSameUserAndSameTimeForTime =
+              isSameUser && isSameTime(currentMessage?.date, nextMessage?.date);
+            const isSameUserAndSameTimeForUsername =
+              isSameTime(prevMessage?.date, currentMessage?.date) &&
+              isSameUserPrev;
+            return (
+              <React.Fragment key={nanoid()}>
+                {isSameDay(prevMessage?.date, currentMessage?.date) ? null : (
+                  <Divider className="chat-date" plain>
+                    {dayjs(currentMessage.date).format('YYYY년 MM월 DD일')}
+                  </Divider>
+                )}
+                <ChatBubble
+                  key={nanoid()}
+                  message={message}
+                  date={
+                    isSameUserAndSameTimeForTime
+                      ? undefined
+                      : dayjs(date).format('YYYY-MM-DD HH:mm')
+                  }
+                  type={messageType}
+                  username={
+                    isSameUserAndSameTimeForUsername ? undefined : username
+                  }
+                  isMyChat={userKey === storage.getItem('userKey')}
+                />
+              </React.Fragment>
+            );
+          },
+        )}
+        {isVisibleScrollButton && (
+          <Button
+            className={'scroll-down-button'}
+            style={{ marginBottom: 8 }}
+            onClick={() => {
+              moveToChatScrollBottom();
+            }}
+            shape="circle"
+          >
+            <SvgArrowDown />
+          </Button>
+        )}
+      </StyledChatList>
+    </ChatListContainer>
   );
 };
 
-const StyledChatList = styled.div`
+const ChatListContainer = styled.div`
   &::-webkit-scrollbar {
     background-color: white;
     width: 8px;
@@ -169,16 +171,22 @@ const StyledChatList = styled.div`
     border-radius: 4px;
     background-color: ${({ theme }) => theme.color.primary200};
   }
+
+  flex: 1 1 auto;
+  border-radius: 8px;
+  box-shadow: ${({ theme }) => theme.boxShadow};
+
+  overflow: overlay;
+`;
+
+const StyledChatList = styled.div`
   display: flex;
+  flex: 0 0 auto;
   box-sizing: border-box;
   flex-direction: column;
   width: 100%;
-  height: calc(100% - 100px);
-  overflow: overlay;
   padding: 20px 20px 0 20px;
-  box-shadow: ${({ theme }) => theme.boxShadow};
 
-  border-radius: 8px;
   .chat-bubble {
     max-width: 100%;
     margin-bottom: 4px;

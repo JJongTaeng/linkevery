@@ -187,8 +187,6 @@ const StyledChatForm = styled.form`
   flex-direction: column;
   height: 80px;
 
-  margin-top: 20px;
-
   border: 1px solid ${({ theme }) => theme.color.primary400};
   border-radius: 8px;
   box-shadow: ${({ theme }) => theme.boxShadow};

@@ -12,6 +12,7 @@ import { debounce } from 'throttle-debounce';
 import { nanoid } from 'nanoid';
 import { useEmitter } from '../../hooks/useEmitter';
 import ChatForm from '../chat/ChatForm';
+import KakaoAdsfitByDevice from '../ads/KakaoAdsfitByDevice';
 
 const Room = () => {
   const { roomEmitter } = useEmitter();
@@ -81,6 +82,7 @@ const Room = () => {
         <ContentContainer>
           <ChatContainer>
             <ChatList />
+            <KakaoAdsfitByDevice />
             <ChatForm />
           </ChatContainer>
         </ContentContainer>
@@ -99,15 +101,17 @@ const RoomContent = styled.div<{ $leftMenuVisible: boolean }>`
 const ContentContainer = styled.div`
   display: flex;
   width: 100%;
+  height: 100%;
   position: relative;
 `;
 
 const ChatContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  height: 100%;
   min-width: 30%;
   padding: 8px;
-
-  position: relative;
 `;
 
 export default Room;
