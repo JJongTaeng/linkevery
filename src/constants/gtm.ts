@@ -7,4 +7,10 @@ export enum EVENT_NAME {
   screenShareEnd = 'screenShareEnd',
   chatSend = 'chatSend',
   userCreate = 'userCreate',
+  clickAds = 'clickAds',
+}
+
+export enum ADS_TYPE {
+  COUPANG = 'COUPANG',
+  KAKAO = 'KAKAO',
 }
