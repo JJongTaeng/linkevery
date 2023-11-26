@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Message } from 'service/db/LinkeveryDB';
 import { query } from 'service/db/Query';
+import { storage } from '../../service/storage/StorageService';
 
 export const getChatListByDB = createAsyncThunk(
   'db/getChatList',
@@ -31,5 +32,15 @@ export const addChatByDB = createAsyncThunk(
   'db/addChat',
   async (message: Message) => {
     return await query.addMessage(message);
+  },
+);
+
+export const addChatListByDB = createAsyncThunk(
+  'db/addChatList',
+  async (messageList: Message[]) => {
+    const roomName = storage.getItem('roomName');
+    await query.addMessageList(messageList);
+
+    return query.getMessageListByPage(roomName);
   },
 );

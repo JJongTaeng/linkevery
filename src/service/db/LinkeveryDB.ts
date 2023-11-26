@@ -45,7 +45,7 @@ export class LinkeveryDB extends Dexie {
       user: '++id, &key, &username', // Primary key and indexed props
       room: '++id, &roomName, member',
       message:
-        '++id, &messageKey, roomName, username, userKey, message, messageType, date',
+        '&messageKey, roomName, username, userKey, message, messageType, date',
     });
 
     this.resetDB();

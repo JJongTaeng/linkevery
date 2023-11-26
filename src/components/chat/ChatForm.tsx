@@ -32,7 +32,7 @@ const ChatForm = () => {
   const sendChatMessage = (type = 'text') => {
     if (type === 'text' && !chatMessage) return;
     if (type === 'file' && !dataUrlFilenameList.length) return;
-    const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS');
+    const date = dayjs().format('YYYYMMDDHHmmssSSS');
     const message: any = {
       file: dataUrlFilenameList,
       text: chatMessage,

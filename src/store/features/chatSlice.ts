@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Message } from 'service/db/LinkeveryDB';
 import { CHAT_ITEM_HEIGHT, PAGE_OFFSET } from 'style/constants';
-import { getChatListPageByDB } from 'store/thunk/chatThunk';
+import { addChatListByDB, getChatListPageByDB } from 'store/thunk/chatThunk';
 
 interface ChatState {
   messageList: Omit<Message, 'id' | 'roomName'>[];
@@ -62,6 +62,10 @@ export const chatSlice = createSlice({
       const chatList = document.getElementById('chat-list');
       payload.length &&
         chatList?.scrollTo(0, CHAT_ITEM_HEIGHT * payload.length);
+    });
+    builder.addCase(addChatListByDB.fulfilled, (state, { payload }) => {
+      state.page = 1;
+      state.messageList = payload;
     });
   },
 });

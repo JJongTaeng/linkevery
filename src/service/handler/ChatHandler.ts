@@ -5,10 +5,9 @@ import { messageId } from '../../decorators/messageId';
 import { inject, injectable } from 'tsyringe';
 import { chatActions } from 'store/features/chatSlice';
 import { store } from 'store/store';
-import { addChatByDB } from 'store/thunk/chatThunk';
+import { addChatByDB, addChatListByDB } from 'store/thunk/chatThunk';
 import { storage } from 'service/storage/StorageService';
 import { query } from '../db/Query';
-import { Message } from '../db/LinkeveryDB';
 import { ChatEmitter } from '../emitter/ChatEmitter';
 import { SoundEffect } from '../media/SoundEffect';
 
@@ -58,17 +57,7 @@ export class ChatHandler {
     const { messageList } = protocol.data;
 
     if (messageList.length) {
-      await query.addMessageList(
-        messageList.map((message: Message) => ({
-          message: message.message,
-          date: message.date,
-          messageKey: message.messageKey,
-          userKey: message.userKey,
-          username: message.username,
-          roomName: message.roomName,
-          messageType: message.messageType,
-        })),
-      );
+      store.dispatch(addChatListByDB(messageList));
     }
 
     const myMessageList = await query.getMessageListByUsername(
@@ -86,17 +75,7 @@ export class ChatHandler {
     const { messageList } = protocol.data;
 
     if (messageList.length) {
-      await query.addMessageList(
-        messageList.map((message: Message) => ({
-          message: message.message,
-          date: message.date,
-          messageKey: message.messageKey,
-          userKey: message.userKey,
-          username: message.username,
-          roomName: message.roomName,
-          messageType: message.messageType,
-        })),
-      );
+      store.dispatch(addChatListByDB(messageList));
     }
   }
 }
