@@ -3,8 +3,13 @@ import ContentContainer from './components/container/ContentContainer';
 import LeftMenuContainer from './components/container/LeftMenuContainer';
 import TopMenuContainer from './components/container/TopMenuContainer';
 import { TOP_MENU_HEIGHT } from './style/constants';
+import { useEffect } from 'react';
 
 function App() {
+  useEffect(() => {
+    document.body.click();
+  }, []);
+
   return (
     <Container>
       <TopMenuContainer />

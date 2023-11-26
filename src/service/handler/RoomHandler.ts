@@ -37,7 +37,9 @@ export class RoomHandler {
     store.dispatch(statusActions.resetAllStatusState());
 
     this.connectionPeerEmitter.sendConnectionDisconnectMessage({ roomName });
-    this.voicePeerEmitter.sendVoiceDisconnectMessage({ userKey });
+    if (store.getState().user.voiceStatus) {
+      this.voicePeerEmitter.sendVoiceDisconnectMessage({ userKey });
+    }
     this.rtcManager.clearAudioTrack();
     this.audioManager.removeAllAudio();
     this.rtcManager.clearVideoTrack();
