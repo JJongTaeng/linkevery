@@ -28,7 +28,6 @@ export class App {
   public disconnectVoice() {
     const userKey = storage.getItem('userKey');
 
-    // this._dispatch.sendVoiceDisconnectMessage({ userKey });
     this.voicePeerEmitter.sendVoiceDisconnectMessage({ userKey });
     this.rtcManager.clearAudioTrack();
     this.audioManager.removeAllAudio();
