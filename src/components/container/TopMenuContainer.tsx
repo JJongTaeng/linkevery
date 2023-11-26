@@ -138,17 +138,17 @@ const TopMenuContainer = () => {
           >
             <SvgMicOn />
           </ToggleButton>
-          <Button style={{ background: 'white' }}>
-            <SvgExit
-              className={'exit'}
-              onClick={() => {
-                window.dataLayer.push({
-                  event: EVENT_NAME.exitRoom,
-                  roomName,
-                });
-                navigate('/');
-              }}
-            />
+          <Button
+            onClick={() => {
+              window?.dataLayer?.push({
+                event: EVENT_NAME.exitRoom,
+                roomName,
+              });
+              navigate('/');
+            }}
+            style={{ background: 'white' }}
+          >
+            <SvgExit className={'exit'} />
           </Button>
         </ControllerWrapper>
       )}
