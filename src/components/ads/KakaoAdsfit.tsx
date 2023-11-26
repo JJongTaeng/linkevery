@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { ADS_TYPE, EVENT_NAME } from '../../constants/gtm';
-import { storage } from '../../service/storage/StorageService';
 
 const Container = styled.div`
   display: flex;
@@ -45,14 +43,6 @@ const KakaoAdsfit = ({ width, height, unit }: KakaoAdsfitProps) => {
   return (
     <Container>
       <Ads
-        onClick={() => {
-          window.dataLayer.push({
-            event: EVENT_NAME.clickAds,
-            username: storage.getItem('username'),
-            roomName: storage.getItem('roomName'),
-            adsType: ADS_TYPE.KAKAO,
-          });
-        }}
         style={{
           width,
           height,
