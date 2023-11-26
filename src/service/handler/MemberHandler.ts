@@ -48,6 +48,7 @@ export class MemberHandler {
   @messageId(MEMBER_MESSAGE_ID.NAME_OK)
   async memberNameOk(protocol: EventType) {
     const roomName = storage.getItem('roomName');
+    const username = storage.getItem('username');
 
     store.dispatch(
       roomActions.updateMember({
@@ -64,7 +65,10 @@ export class MemberHandler {
       }),
     );
 
-    const messageList = await query.getMessageList(roomName);
+    const messageList = await query.getMessageListByUsername(
+      roomName,
+      username,
+    );
 
     this.chatPeerEmitter.sendSyncChatListMessage({
       messageList,

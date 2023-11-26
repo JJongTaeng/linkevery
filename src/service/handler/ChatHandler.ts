@@ -53,6 +53,7 @@ export class ChatHandler {
   @messageId(CHAT_MESSAGE_ID.SYNC_CHAT_LIST)
   async syncChatList(protocol: EventType) {
     const roomName = storage.getItem('roomName');
+    const username = storage.getItem('username');
 
     const { messageList } = protocol.data;
 
@@ -70,7 +71,10 @@ export class ChatHandler {
       );
     }
 
-    const myMessageList = await query.getMessageList(roomName);
+    const myMessageList = await query.getMessageListByUsername(
+      roomName,
+      username,
+    );
     this.chatPeerEmitter.sendSyncChatListOkMessage({
       messageList: myMessageList,
       to: protocol.from,

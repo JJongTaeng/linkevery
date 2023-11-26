@@ -81,6 +81,14 @@ class Query implements QueryService {
       .sortBy('date');
   }
 
+  async getMessageListByUsername(roomName: string, username: string) {
+    return await this.db.message
+      .where('roomName')
+      .equals(roomName)
+      .and((message) => message.username === username)
+      .sortBy('date');
+  }
+
   async getMessageListByPage(roomName: string, page = 1, offset = 30) {
     return await this.db.message
       .where('roomName')
