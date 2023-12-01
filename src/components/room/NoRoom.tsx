@@ -12,7 +12,6 @@ import CreateRoomModal from './CreateRoomModal';
 import UsernameModal from './UsernameModal';
 import { statusActions } from '../../store/features/statusSlice';
 import CoupangAds from '../ads/CoupangAds';
-import KakaoAdsfit from '../ads/KakaoAdsfit';
 
 const NoRoom = () => {
   const { username, usernameModalVisible } = useAppSelector((state) => ({
@@ -67,7 +66,6 @@ const NoRoom = () => {
             </span>
           </div>
         </Description>
-        <KakaoAdsfit width={160} height={600} unit={'DAN-7io1KKhLPAggq6Bn'} />
         <UsernameModal
           open={usernameModalVisible}
           onSubmit={(username) => {
