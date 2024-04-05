@@ -10,14 +10,18 @@ export function rtcAction({
   return function (target: any, key: string, desc: any): void {
     const originalMethod = desc.value;
     desc.value = function (data: any) {
-      const result = originalMethod.apply(this, data);
-      this.sender.send({
-        category,
-        messageId,
-        data,
-        messageType: MESSAGE_TYPE.RTC,
-      });
-      return result;
+      try {
+        const result = originalMethod.apply(this, data);
+        this.sender.send({
+          category,
+          messageId,
+          data,
+          messageType: MESSAGE_TYPE.RTC,
+        });
+        return result;
+      } catch (e) {
+        console.error('[rtcAction error]', e);
+      }
     };
   };
 }
