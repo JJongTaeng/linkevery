@@ -11,7 +11,6 @@ import { ColorsTypes, SizeTypes, theme } from 'style/theme';
 import CreateRoomModal from './CreateRoomModal';
 import UsernameModal from './UsernameModal';
 import { statusActions } from '../../store/features/statusSlice';
-import CoupangAds from '../ads/CoupangAds';
 
 const NoRoom = () => {
   const { username, usernameModalVisible } = useAppSelector((state) => ({
@@ -39,14 +38,6 @@ const NoRoom = () => {
   return (
     <>
       <NoRoomContent>
-        <CoupangAds
-          src={
-            'https://ads-partners.coupang.com/widgets.html?id=732573&template=carousel&trackingCode=AF8730315&subId=&width=160&height=600&tsource='
-          }
-          width={160}
-          height={600}
-        />
-
         <Description>
           {username && (
             <div>
