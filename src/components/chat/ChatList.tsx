@@ -163,6 +163,7 @@ const ChatList = () => {
 };
 
 const ChatListContainer = styled.div`
+  margin-bottom: 10px;
   &::-webkit-scrollbar {
     background-color: white;
     width: 8px;
