@@ -14,6 +14,7 @@
     "@types/react-dom": "^18.0.0",
     "antd": "^5.8.5",
     "bowser": "^2.11.0",
+    "canvas-craft": "^0.0.4",
     "clone-deep": "^4.0.1",
     "color": "^4.2.3",
     "dayjs": "^1.11.7",

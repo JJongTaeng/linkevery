@@ -25,6 +25,7 @@ export class RoomHandler {
     @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
     @inject(AudioManager) private audioManager: AudioManager,
   ) {}
+
   @messageId(ROOM_MESSAGE_ID.LEAVE)
   leave() {
     const roomName = storage.getItem('roomName');
