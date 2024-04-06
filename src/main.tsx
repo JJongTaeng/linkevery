@@ -4,18 +4,17 @@ import './initGTM';
 import './index.css';
 
 import ReactDOM from 'react-dom/client';
-import { ConfigProvider } from 'antd';
 import { Provider } from 'react-redux';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
-import { theme } from 'style/theme.ts';
 
 import { store } from 'store/store';
 import { initContainer } from 'container';
 import { ThemeProvider } from 'styled-components';
-
-import RoomPage from 'pages/RoomPage/RoomPage';
-import LobbyPage from 'pages/LobbyPage/LobbyPage';
-import AppComponent from 'App';
+import { theme } from './style/theme.ts';
+import { ConfigProvider } from 'antd';
+import AppComponent from './App.tsx';
+import LobbyPage from './pages/LobbyPage/LobbyPage.tsx';
+import RoomPage from './pages/RoomPage/RoomPage.tsx';
 
 initContainer();
 export const router = createHashRouter([
