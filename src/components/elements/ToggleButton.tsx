@@ -22,7 +22,7 @@ const ToggleButton = ({
     <ToggleButtonContainer
       style={{ ...style }}
       disabled={disabled}
-      toggled={checked}
+      $toggled={checked}
       onClick={(e) => {
         if (disabled) {
           return;
@@ -37,9 +37,9 @@ const ToggleButton = ({
 
 const ToggleButtonContainer = styled.div<{
   disabled: boolean;
-  toggled: boolean;
+  $toggled: boolean;
 }>`
-  animation: ${selectedAnimation} ${({ toggled }) => (toggled ? '3s' : '0s')}
+  animation: ${selectedAnimation} ${({ $toggled }) => ($toggled ? '3s' : '0s')}
     infinite linear;
   border-radius: 50%;
   border: 1px solid #fff;
