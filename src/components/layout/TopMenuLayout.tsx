@@ -25,7 +25,7 @@ const agentInfo = Bowser.parse(window.navigator.userAgent);
 
 const TopMenuLayout = () => {
   const navigate = useNavigate();
-  const { app, voicePeerEmitter, screenSharePeerEmitter } = useApp();
+  const { app, voiceEmitter, screenShareEmitter } = useApp();
   const videoManager = useRef(container.resolve(VideoManager))
     .current as VideoManager;
   const {
@@ -73,7 +73,7 @@ const TopMenuLayout = () => {
             <ToggleButton
               onChange={(value) => {
                 if (value) {
-                  screenSharePeerEmitter.sendScreenReadyMessage({});
+                  screenShareEmitter.sendScreenReadyMessage({});
                   window.dataLayer.push({
                     event: EVENT_NAME.screenShareStart,
                     roomName,
@@ -108,7 +108,7 @@ const TopMenuLayout = () => {
                 }
                 storage.setItem('voiceStatus', true);
                 dispatch(userActions.changeVoiceStatus(true));
-                voicePeerEmitter.sendVoiceReadyMessage({});
+                voiceEmitter.sendVoiceReadyMessage({});
 
                 window.dataLayer.push({
                   event: EVENT_NAME.voiceStart,

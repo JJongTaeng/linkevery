@@ -16,7 +16,7 @@ import SvgFileUploadIcon from '../icons/FileUploadIcon';
 import { EVENT_NAME } from '../../constants/gtm';
 
 const ChatForm = () => {
-  const { app, chatPeerEmitter } = useApp();
+  const { app, chatEmitter } = useApp();
   const focusInput = useRef<HTMLInputElement>(null);
   const focusTextArea = useRef<HTMLTextAreaElement>(null);
   const [chatMessage, setChatMessage] = useState('');
@@ -46,7 +46,7 @@ const ChatForm = () => {
       username,
     };
 
-    chatPeerEmitter.sendChatSendMessage(messageProtocol); // send
+    chatEmitter.sendChatSendMessage(messageProtocol); // send
     dispatch(chatActions.addChat(messageProtocol)); // store add
 
     // db add

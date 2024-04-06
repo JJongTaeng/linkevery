@@ -14,21 +14,19 @@ import { RoomEmitter } from '../service/emitter/RoomEmitter.ts';
 
 export const useApp = () => {
   const app = useRef(container.resolve(App)).current;
-  const connectionPeerEmitter = useRef(
+  const connectionEmitter = useRef(
     container.resolve(ConnectionEmitter),
   ).current;
-  const signalingPeerEmitter = useRef(
-    container.resolve(SignalingEmitter),
-  ).current;
-  const chatPeerEmitter = useRef(container.resolve(ChatEmitter)).current;
-  const memberPeerEmitter = useRef(container.resolve(MemberEmitter)).current;
-  const negotiationPeerEmitter = useRef(
+  const signalingEmitter = useRef(container.resolve(SignalingEmitter)).current;
+  const chatEmitter = useRef(container.resolve(ChatEmitter)).current;
+  const memberEmitter = useRef(container.resolve(MemberEmitter)).current;
+  const negotiationEmitter = useRef(
     container.resolve(NegotiationEmitter),
   ).current;
-  const screenSharePeerEmitter = useRef(
+  const screenShareEmitter = useRef(
     container.resolve(ScreenShareEmitter),
   ).current;
-  const voicePeerEmitter = useRef(container.resolve(VoiceEmitter)).current;
+  const voiceEmitter = useRef(container.resolve(VoiceEmitter)).current;
   const roomEmitter = useRef(container.resolve(RoomEmitter)).current;
   const audioManager = useRef(container.resolve(AudioManager))
     .current as AudioManager;
@@ -40,13 +38,13 @@ export const useApp = () => {
 
   return {
     app,
-    connectionPeerEmitter,
-    signalingPeerEmitter,
-    chatPeerEmitter,
-    memberPeerEmitter,
-    negotiationPeerEmitter,
-    screenSharePeerEmitter,
-    voicePeerEmitter,
+    connectionEmitter,
+    signalingEmitter,
+    chatEmitter,
+    memberEmitter,
+    negotiationEmitter,
+    screenShareEmitter,
+    voiceEmitter,
     roomEmitter,
     audioManager,
     videoManager,
