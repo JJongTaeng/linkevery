@@ -44,15 +44,12 @@
     "eject": "react-scripts eject",
     "predeploy": "yarn build",
     "deploy": "rimraf ./node_modules/.cache/gh-pages && gh-pages --branch gh-pages -d build",
-    "svgs": "npx @svgr/cli --icon --typescript --out-dir ./src/components/icons/ ./src/assets/*",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "svgs": "npx @svgr/cli --icon --typescript --out-dir ./src/components/icons/ ./src/assets/*"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest",
-      "plugin:storybook/recommended"
+      "react-app/jest"
     ]
   },
   "browserslist": {
@@ -69,15 +66,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.22.15",
-    "@storybook/addon-essentials": "^7.4.2",
-    "@storybook/addon-interactions": "^7.4.2",
-    "@storybook/addon-links": "^7.4.2",
-    "@storybook/addon-onboarding": "^1.0.8",
-    "@storybook/blocks": "^7.4.2",
-    "@storybook/preset-create-react-app": "^7.4.2",
-    "@storybook/react": "^7.4.2",
-    "@storybook/react-webpack5": "^7.4.2",
-    "@storybook/testing-library": "^0.2.1",
+
     "@types/clone-deep": "^4.0.1",
     "@types/color": "^3.0.3",
     "@types/color-string": "^1.5.2",
@@ -87,12 +76,10 @@
     "autoprefixer": "^10.4.13",
     "babel-plugin-named-exports-order": "^0.0.2",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
-    "eslint-plugin-storybook": "^0.6.13",
     "gh-pages": "^4.0.0",
     "prettier": "^2.8.1",
     "prop-types": "^15.8.1",
     "rimraf": "^3.0.2",
-    "storybook": "^7.4.2",
     "webpack": "^5.88.2"
   },
   "homepage": "https://jjongtaeng.github.io/linkevery"
