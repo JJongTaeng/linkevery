@@ -6,14 +6,14 @@ import { statusActions } from 'store/features/statusSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { deleteAllMemberByDB } from 'store/thunk/roomThunk';
 import { addUserByDB, getUserByDB } from 'store/thunk/userThunk';
-import UsernameModal from './UsernameModal';
-import ChatList from '../chat/ChatList';
 import { debounce } from 'throttle-debounce';
 import { nanoid } from 'nanoid';
 import { useEmitter } from '../../hooks/useEmitter';
-import ChatForm from '../chat/ChatForm';
+import UsernameModal from '../../pages/RoomPage/components/UsernameModal';
+import ChatList from '../../components/chat/ChatList';
+import ChatForm from '../../components/chat/ChatForm';
 
-const Room = () => {
+const RoomPage = () => {
   const { roomEmitter } = useEmitter();
   const dispatch = useAppDispatch();
   const handleViewportResize = debounce(
@@ -112,4 +112,4 @@ const ChatContainer = styled.div`
   padding: 8px;
 `;
 
-export default Room;
+export default RoomPage;

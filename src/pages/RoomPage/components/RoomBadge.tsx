@@ -2,7 +2,7 @@ import { Avatar } from 'antd';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { deleteRoomByDB } from 'store/thunk/roomThunk';
-import SvgCloseButton from '../icons/CloseButton';
+import SvgCloseButton from '../../../components/icons/CloseButton';
 
 interface RoomBadgeProps {
   name: string;

@@ -6,8 +6,8 @@ import { container } from 'tsyringe';
 import { AudioManager } from 'service/media/AudioManager';
 import { VideoManager } from 'service/media/VideoManager';
 import MemberCard from './MemberCard';
-import { clipboard } from '../../service/utils/Clipboard';
-import SvgInviteMember from '../icons/InviteMember';
+import { clipboard } from '../../../service/utils/Clipboard';
+import SvgInviteMember from '../../../components/icons/InviteMember';
 
 interface MemberListContainerProps {}
 

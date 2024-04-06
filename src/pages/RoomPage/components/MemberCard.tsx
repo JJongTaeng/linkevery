@@ -1,14 +1,14 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
+import { useAppSelector } from '../../../store/hooks';
+import { container } from 'tsyringe';
+import { AudioManager } from '../../../service/media/AudioManager';
+import { VideoManager } from '../../../service/media/VideoManager';
 import { nanoid } from 'nanoid';
 import { Button, Card, Popover, Slider } from 'antd';
-import SvgScreenShareOn from '../icons/ScreenShareOn';
-import SvgSpeakerOn from '../icons/SpeakerOn';
-import { useAppSelector } from '../../store/hooks';
-import { container } from 'tsyringe';
-import { VideoManager } from '../../service/media/VideoManager';
-import { AudioManager } from '../../service/media/AudioManager';
-import { highlight } from '../../style';
+import SvgScreenShareOn from '../../../components/icons/ScreenShareOn';
+import SvgSpeakerOn from '../../../components/icons/SpeakerOn';
 import styled from 'styled-components';
+import { highlight } from '../../../style';
 
 interface MemberCardProps {
   userKey: string;

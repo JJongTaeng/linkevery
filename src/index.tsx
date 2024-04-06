@@ -11,9 +11,9 @@ import { store } from './store/store';
 import { theme } from './style/theme';
 import { initContainer } from './container';
 import { ThemeProvider } from 'styled-components';
-import NoRoom from './components/room/NoRoom';
-import Room from './components/room/Room';
 import './initGTM';
+import RoomPage from './pages/RoomPage/RoomPage';
+import LobbyPage from './pages/LobbyPage/LobbyPage';
 
 initContainer();
 
@@ -40,11 +40,11 @@ export const router = createHashRouter([
     children: [
       {
         path: '/',
-        element: <NoRoom />,
+        element: <LobbyPage />,
       },
       {
         path: '/:roomName',
-        element: <Room />,
+        element: <RoomPage />,
       },
     ],
   },

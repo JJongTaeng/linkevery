@@ -1,18 +1,18 @@
-import { Button } from 'antd';
-import { nanoid } from 'nanoid';
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { storage } from 'service/storage/StorageService';
-import { roomActions } from 'store/features/roomSlice';
-import { useAppDispatch, useAppSelector } from 'store/hooks';
-import { addUserByDB, getUserByDB } from 'store/thunk/userThunk';
-import { TOP_MENU_HEIGHT } from 'style/constants';
-import { ColorsTypes, SizeTypes, theme } from 'style/theme';
-import CreateRoomModal from './CreateRoomModal';
-import UsernameModal from './UsernameModal';
 import { statusActions } from '../../store/features/statusSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useEffect, useState } from 'react';
+import { storage } from '../../service/storage/StorageService';
+import { roomActions } from '../../store/features/roomSlice';
+import { addUserByDB, getUserByDB } from '../../store/thunk/userThunk';
+import { Button } from 'antd';
+import UsernameModal from '../RoomPage/components/UsernameModal';
+import { nanoid } from 'nanoid';
+import CreateRoomModal from '../RoomPage/components/CreateRoomModal';
+import styled from 'styled-components';
+import { TOP_MENU_HEIGHT } from '../../style/constants';
+import { ColorsTypes, SizeTypes, theme } from '../../style/theme';
 
-const NoRoom = () => {
+const LobbyPage = () => {
   const { username, usernameModalVisible } = useAppSelector((state) => ({
     username: state.user.username,
     usernameModalVisible: state.status.usernameModalVisible,
@@ -108,4 +108,4 @@ const Text = styled.span<{
   }
 `;
 
-export default NoRoom;
+export default LobbyPage;

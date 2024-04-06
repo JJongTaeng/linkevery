@@ -7,11 +7,11 @@ import { statusActions } from 'store/features/statusSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { getRoomListByDB } from 'store/thunk/roomThunk';
 import { mediaSize } from 'style/theme';
-import CreateRoomModal from 'components/room/CreateRoomModal';
-import MemberListContainer from 'components/room/MemberListContainer';
-import RoomBadge from 'components/room/RoomBadge';
 import { useApp } from 'hooks/useApp';
 import { EVENT_NAME } from '../../constants/gtm';
+import MemberListContainer from '../../pages/RoomPage/components/MemberListContainer';
+import RoomBadge from '../../pages/RoomPage/components/RoomBadge';
+import CreateRoomModal from '../../pages/RoomPage/components/CreateRoomModal';
 
 const LeftMenuContainer = () => {
   const navigate = useNavigate();
