@@ -15,6 +15,7 @@ import { ConfigProvider } from 'antd';
 import AppComponent from './App.tsx';
 import LobbyPage from './pages/LobbyPage/LobbyPage.tsx';
 import RoomPage from './pages/RoomPage/RoomPage.tsx';
+import ScreenSharePage from "./pages/ScreenSharePage/ScreenSharePage.tsx";
 
 initContainer();
 export const router = createHashRouter([
@@ -38,6 +39,10 @@ export const router = createHashRouter([
         path: '/',
         element: <LobbyPage />,
       },
+      {
+        path: '/screen/:roomName',
+        element: <ScreenSharePage />
+      }
       {
         path: '/:roomName',
         element: <RoomPage />,

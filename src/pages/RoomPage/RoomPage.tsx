@@ -83,28 +83,26 @@ const RoomPage = () => {
   }, []);
 
   return (
-    <>
-      <Container>
-        <TopMenuContainer />
-        <div className={'main-content-container'}>
-          <LeftMenuContainer />
-          <ContentSection>
-            <RoomContent $leftMenuVisible={status.leftMenuVisible}>
-              <ContentContainer>
-                <ChatContainer>
-                  <ChatList />
-                  <ChatForm />
-                </ChatContainer>
-              </ContentContainer>
-              <UsernameModal
-                open={modalVisible}
-                onSubmit={handleUsernameSubmit}
-              />
-            </RoomContent>
-          </ContentSection>
-        </div>
-      </Container>
-    </>
+    <Container>
+      <TopMenuContainer />
+      <div className={'main-content-container'}>
+        <LeftMenuContainer />
+        <ContentSection>
+          <RoomContent $leftMenuVisible={status.leftMenuVisible}>
+            <ContentContainer>
+              <ChatContainer>
+                <ChatList />
+                <ChatForm />
+              </ChatContainer>
+            </ContentContainer>
+            <UsernameModal
+              open={modalVisible}
+              onSubmit={handleUsernameSubmit}
+            />
+          </RoomContent>
+        </ContentSection>
+      </div>
+    </Container>
   );
 };
 
