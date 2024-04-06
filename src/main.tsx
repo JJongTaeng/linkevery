@@ -1,26 +1,23 @@
 import 'reflect-metadata';
-import { ConfigProvider } from 'antd';
 import 'antd/dist/reset.css';
+import './initGTM';
+import './index.css';
+
 import ReactDOM from 'react-dom/client';
+import { ConfigProvider } from 'antd';
 import { Provider } from 'react-redux';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
-import './index.css';
-import AppComponent from './App';
-import reportWebVitals from './reportWebVitals';
+import { theme } from './style/theme.ts';
+
 import { store } from './store/store';
-import { theme } from './style/theme';
 import { initContainer } from './container';
 import { ThemeProvider } from 'styled-components';
-import './initGTM';
+
 import RoomPage from './pages/RoomPage/RoomPage';
 import LobbyPage from './pages/LobbyPage/LobbyPage';
+import AppComponent from './App';
 
 initContainer();
-
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement,
-);
-
 export const router = createHashRouter([
   {
     path: '/',
@@ -50,15 +47,8 @@ export const router = createHashRouter([
   },
 ]);
 
-root.render(
-  // <React.StrictMode>
+ReactDOM.createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
     <RouterProvider router={router} />
   </Provider>,
-  // </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

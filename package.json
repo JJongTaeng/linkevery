@@ -2,85 +2,55 @@
   "name": "new-meeting-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "predeploy": "pnpm run build",
+    "deploy": "rimraf ./node_modules/.cache/gh-pages && gh-pages --branch gh-pages -d dist",
+    "svgs": "npx @svgr/cli --icon --typescript --out-dir ./src/components/icons/ ./src/assets/*"
+  },
   "dependencies": {
-    "@craco/craco": "^7.1.0",
-    "@reduxjs/toolkit": "^1.9.3",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
-    "@testing-library/user-event": "^13.2.1",
-    "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.13",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "antd": "^5.8.5",
+    "antd": "^5.16.1",
     "bowser": "^2.11.0",
-    "canvas-craft": "^0.0.4",
-    "clone-deep": "^4.0.1",
     "color": "^4.2.3",
-    "dayjs": "^1.11.7",
-    "dexie": "^3.2.3",
+    "dayjs": "^1.11.10",
+    "dexie": "^4.0.1",
     "events": "^3.3.0",
-    "nanoid": "^4.0.0",
+    "nanoid": "^5.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-gtm-module": "^2.0.11",
-    "react-redux": "^8.0.5",
-    "react-router-dom": "^6.10.0",
-    "react-scripts": "5.0.1",
-    "react-spinners": "^0.13.7",
-    "reflect-metadata": "^0.1.13",
-    "socket.io-client": "^4.5.4",
+    "react-redux": "^9.1.0",
+    "react-router-dom": "^6.22.3",
+    "reflect-metadata": "^0.2.2",
+    "socket.io-client": "^4.7.5",
     "string-to-color": "^2.2.2",
-    "styled-components": "^5.3.9",
+    "styled-components": "^6.1.8",
     "throttle-debounce": "^5.0.0",
-    "tsyringe": "^4.8.0",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.0"
-  },
-  "scripts": {
-    "start": "craco start",
-    "build": "GENERATE_SOURCEMAP=false craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject",
-    "predeploy": "yarn build",
-    "deploy": "rimraf ./node_modules/.cache/gh-pages && gh-pages --branch gh-pages -d build",
-    "svgs": "npx @svgr/cli --icon --typescript --out-dir ./src/components/icons/ ./src/assets/*"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "tsyringe": "^4.8.0"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-decorators": "^7.22.15",
-
-    "@types/clone-deep": "^4.0.1",
-    "@types/color": "^3.0.3",
-    "@types/color-string": "^1.5.2",
-    "@types/react-gtm-module": "^2.0.1",
-    "@types/styled-components": "^5.1.26",
-    "@types/throttle-debounce": "^5.0.0",
-    "autoprefixer": "^10.4.13",
-    "babel-plugin-named-exports-order": "^0.0.2",
-    "babel-plugin-transform-typescript-metadata": "^0.3.2",
-    "gh-pages": "^4.0.0",
-    "prettier": "^2.8.1",
-    "prop-types": "^15.8.1",
-    "rimraf": "^3.0.2",
-    "webpack": "^5.88.2"
+    "@reduxjs/toolkit": "^2.2.3",
+    "@types/color": "^3.0.6",
+    "@types/node": "^20.12.5",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@types/react-gtm-module": "^2.0.3",
+    "@types/throttle-debounce": "^5.0.2",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "gh-pages": "^6.1.1",
+    "prettier": "^3.2.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "vite-tsconfig-paths": "^4.3.2"
   },
   "homepage": "https://jjongtaeng.github.io/linkevery"
 }

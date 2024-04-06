@@ -8,7 +8,7 @@ import { storage } from '../storage/StorageService';
 
 @singleton()
 export class SocketManager {
-  socket = io(process.env.REACT_APP_REQUEST_URL + '/rtc');
+  socket = io(import.meta.env.VITE_APP_REQUEST_URL + '/rtc');
 
   constructor() {
     this.socket.on('connect_error', () => {

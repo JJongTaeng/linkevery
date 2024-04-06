@@ -12,7 +12,7 @@ import { AudioManager } from 'service/media/AudioManager';
 import { VideoManager } from 'service/media/VideoManager';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { SignalingEmitter } from '../emitter/SignalingEmitter';
-import { router } from '../../index';
+import { router } from '../../main';
 import { RoomEmitter } from '../emitter/RoomEmitter';
 
 @category(CATEGORY.CONNECTION)

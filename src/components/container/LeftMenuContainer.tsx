@@ -127,7 +127,7 @@ const Container = styled.section<{ $leftMenuVisible: boolean }>`
     width: ${$leftMenuVisible ? '100%' : '0px'};  
     transform: ${$leftMenuVisible ? '' : 'scaleX(0)'};
     height: calc(100% - 50px);
-    ${LeftRightContainer} {
+    ${LeftRightContainer as any} {
       width: 100%;
       .member-list {
         width: 100%;

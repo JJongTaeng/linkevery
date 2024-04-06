@@ -5,7 +5,6 @@ import { RTCManagerService } from 'service/rtc/RTCManagerService';
 import { AudioManager } from 'service/media/AudioManager';
 import { ScreenShareEmitter } from '../emitter/ScreenShareEmitter';
 import { VoiceEmitter } from '../emitter/VoiceEmitter';
-import { ConnectionEmitter } from '../emitter/ConnectionEmitter';
 
 @singleton()
 export class App {
@@ -15,8 +14,6 @@ export class App {
     @inject(ScreenShareEmitter)
     private screenSharePeerEmitter: ScreenShareEmitter,
     @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
-    @inject(ConnectionEmitter)
-    private connectionPeerEmitter: ConnectionEmitter,
     @inject(RTCManager) private _rtcManager: RTCManagerService,
     @inject(AudioManager) private audioManager: AudioManager,
   ) {}

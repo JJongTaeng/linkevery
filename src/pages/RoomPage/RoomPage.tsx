@@ -1,17 +1,17 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import { storage } from 'service/storage/StorageService';
-import { statusActions } from 'store/features/statusSlice';
-import { useAppDispatch, useAppSelector } from 'store/hooks';
-import { deleteAllMemberByDB } from 'store/thunk/roomThunk';
-import { addUserByDB, getUserByDB } from 'store/thunk/userThunk';
-import { debounce } from 'throttle-debounce';
-import { nanoid } from 'nanoid';
-import { useEmitter } from '../../hooks/useEmitter';
-import UsernameModal from '../../pages/RoomPage/components/UsernameModal';
-import ChatList from '../../components/chat/ChatList';
-import ChatForm from '../../components/chat/ChatForm';
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import { storage } from "service/storage/StorageService";
+import { statusActions } from "store/features/statusSlice";
+import { useAppDispatch, useAppSelector } from "store/hooks";
+import { deleteAllMemberByDB } from "store/thunk/roomThunk";
+import { addUserByDB, getUserByDB } from "store/thunk/userThunk";
+import { debounce } from "throttle-debounce";
+import { nanoid } from "nanoid";
+import { useEmitter } from "hooks/useEmitter";
+import UsernameModal from "pages/RoomPage/components/UsernameModal";
+import ChatList from "components/chat/ChatList";
+import ChatForm from "components/chat/ChatForm";
 
 const RoomPage = () => {
   const { roomEmitter } = useEmitter();

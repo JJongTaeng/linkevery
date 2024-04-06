@@ -11,8 +11,8 @@ export const config = {
       urls: ['stun:ntk-turn-1.xirsys.com'],
     },
     {
-      username: process.env.REACT_APP_RTC_CONFIG_USERNAME,
-      credential: process.env.REACT_APP_RTC_CONFIG_CREDENTIAL,
+      username: import.meta.env.VITE_APP_RTC_CONFIG_USERNAME,
+      credential: import.meta.env.VITE_APP_RTC_CONFIG_CREDENTIAL,
       urls: [
         'turn:ntk-turn-1.xirsys.com:80?transport=udp',
         'turn:ntk-turn-1.xirsys.com:3478?transport=udp',

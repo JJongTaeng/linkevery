@@ -63,7 +63,7 @@ export class ChatPeerHandler {
 - **Connection** : 소켓의 연결 및 연결 끊김에 대한 핸들링
 - **Signaling** : RTC 커넥션을 하는 시그널링에 대한 핸들링
 - **Voice** : 음성 채팅 연결 및 연결 끊김에 대한 핸들링
-- **ScreenShare** : 화면 공유 연결 및 연결 끊김에 대한 핸들링 
+- **ScreenShare** : 화면 공유 연결 및 연결 끊김에 대한 핸들링
 - **Chat** : 채팅 및 파일 송신 및 수신에 대한 핸들링
 
 ## 리액트 컴포넌트 및 훅에서 이벤트 관련 함수 및 로직을 분리
@@ -87,7 +87,7 @@ export class ChatPeerHandler {
 
 Datachannel과 Socket의 통신을 추상화하여 받는 클라이언트 코드에선 해당 내용을 신경쓰지 않았으면 했습니다.
 
-따라서 Sender라는 클래스를 작성하여 send 메서드로 모든 이벤트를 보낼 때 Socket, Datachannel에 맞는 곳으로 보내고, Datachannel로 데이터를 보내는 것에 실패하면 자동으로 socket으로 이벤트를 전송하도록 작업했습니다. 
+따라서 Sender라는 클래스를 작성하여 send 메서드로 모든 이벤트를 보낼 때 Socket, Datachannel에 맞는 곳으로 보내고, Datachannel로 데이터를 보내는 것에 실패하면 자동으로 socket으로 이벤트를 전송하도록 작업했습니다.
 
 ```typescript
 send(protocol: PeerEvent) {
