@@ -1,3 +1,6 @@
+import { injectable } from 'tsyringe';
+
+@injectable()
 export class VideoManager {
   constructor() {}
   private videoElementMap: { [key: string]: HTMLVideoElement } = {};
@@ -23,6 +26,14 @@ export class VideoManager {
     videoElem.style.height = '100%';
     let remoteVideo = popUpWindow?.document.body.appendChild(videoElem);
     remoteVideo!.srcObject = this.videoElementMap[clientId].srcObject;
+  }
+
+  openTestPopup({ roomName }: { roomName: string }) {
+    const popUpWindow = window.open(
+      `/linkevery/#/screen/${roomName}`,
+      '_blank',
+      'x=y',
+    )!;
   }
 
   clearAllVideo() {

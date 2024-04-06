@@ -24,6 +24,9 @@ import { EmitterManager } from './service/emitter/EmitterManager';
 import { RoomHandler } from './service/handler/RoomHandler';
 
 export const initContainer = () => {
+  container.register('broadcastChannel', {
+    useValue: new BroadcastChannel('linkevery'),
+  });
   container.register('ee', { useValue: new EventEmitter() });
   container.register(
     EventManager,
