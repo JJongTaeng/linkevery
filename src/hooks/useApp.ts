@@ -8,8 +8,6 @@ import { MemberEmitter } from '../service/emitter/MemberEmitter';
 import { NegotiationEmitter } from '../service/emitter/NegotiationEmitter';
 import { ScreenShareEmitter } from '../service/emitter/ScreenShareEmitter';
 import { VoiceEmitter } from '../service/emitter/VoiceEmitter';
-import { AudioManager } from '../service/media/AudioManager.ts';
-import { VideoManager } from '../service/media/VideoManager.ts';
 
 export const useApp = () => {
   const app = useRef(container.resolve(App)).current;
@@ -28,13 +26,6 @@ export const useApp = () => {
     container.resolve(ScreenShareEmitter),
   ).current;
   const voicePeerEmitter = useRef(container.resolve(VoiceEmitter)).current;
-  const audioManager = useRef(container.resolve(AudioManager))
-    .current as AudioManager;
-  const videoManager = useRef(container.resolve(VideoManager))
-    .current as VideoManager;
-  const broadcastChannel = useRef<BroadcastChannel>(
-    container.resolve('broadcastChannel'),
-  ).current;
 
   return {
     app,
@@ -45,8 +36,5 @@ export const useApp = () => {
     negotiationPeerEmitter,
     screenSharePeerEmitter,
     voicePeerEmitter,
-    audioManager,
-    videoManager,
-    broadcastChannel,
   };
 };

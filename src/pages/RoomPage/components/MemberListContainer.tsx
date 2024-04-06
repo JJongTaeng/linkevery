@@ -11,7 +11,7 @@ import SvgInviteMember from '../../../components/icons/InviteMember';
 
 interface MemberListContainerProps {}
 
-const MemberList = ({}: MemberListContainerProps) => {
+const MemberListContainer = ({}: MemberListContainerProps) => {
   const { myName, room } = useAppSelector((state) => ({
     myName: state.user.username,
     room: state.room.current,
@@ -26,7 +26,7 @@ const MemberList = ({}: MemberListContainerProps) => {
   };
 
   return (
-    <Container className="member-list">
+    <MemberList className="member-list">
       <div>
         <Card size="small">
           <div>{myName} - me</div>
@@ -34,7 +34,7 @@ const MemberList = ({}: MemberListContainerProps) => {
         {Object.keys(room.member).map((userKey) => (
           <MemberCard key={userKey} userKey={userKey} />
         ))}
-      </div>
+      </div>{' '}
       <Tooltip
         defaultOpen={true}
         title="복사된 URL을 초대할 사람에게 보내주세요."
@@ -48,7 +48,7 @@ const MemberList = ({}: MemberListContainerProps) => {
           <SvgInviteMember style={{ marginLeft: 4, lineHeight: 1.8 }} />
         </StyledButton>
       </Tooltip>
-    </Container>
+    </MemberList>
   );
 };
 
@@ -58,7 +58,7 @@ const StyledButton = styled(Button)`
   justify-content: center;
 `;
 
-const Container = styled.div`
+const MemberList = styled.div`
   display: flex;
   flex-direction: column;
   width: 240px;
@@ -72,4 +72,4 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-export default MemberList;
+export default MemberListContainer;

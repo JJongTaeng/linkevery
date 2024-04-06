@@ -3,9 +3,11 @@ import { debounce } from 'throttle-debounce';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { nanoid } from 'nanoid';
+
+import { useEmitter } from 'hooks/useEmitter';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { statusActions } from 'store/features/statusSlice';
-import { addRoomByDB, deleteAllMemberByDB } from 'store/thunk/roomThunk';
+import { deleteAllMemberByDB } from 'store/thunk/roomThunk';
 import { addUserByDB, getUserByDB } from 'store/thunk/userThunk';
 
 import { storage } from 'service/storage/StorageService';
@@ -17,14 +19,9 @@ import ChatList from 'components/chat/ChatList';
 import ChatForm from 'components/chat/ChatForm';
 import TopMenuLayout from '../../components/layout/TopMenuLayout.tsx';
 import LeftMenuLayout from '../../components/layout/LeftMenuLayout.tsx';
-import { roomActions } from '../../store/features/roomSlice.ts';
-import { useApp } from '../../hooks/useApp.ts';
-import { userActions } from '../../store/features/userSlice.ts';
-import { chatActions } from '../../store/features/chatSlice.ts';
 
 const RoomPage = () => {
-  const { connectionPeerEmitter, voicePeerEmitter, audioManager, app } =
-    useApp();
+  const { roomEmitter } = useEmitter();
   const dispatch = useAppDispatch();
   const handleViewportResize = debounce(
     50,
@@ -37,46 +34,22 @@ const RoomPage = () => {
   const { roomName } = useParams<{
     roomName: string;
   }>();
-  const { username, status, modalVisible, voiceStatus } = useAppSelector(
-    (state) => ({
-      status: state.status,
-      username: state.user.username,
-      voiceStatus: state.user.voiceStatus,
-      modalVisible: state.status.usernameModalVisible,
-    }),
-  );
+  const { username, status, modalVisible } = useAppSelector((state) => ({
+    status: state.status,
+    username: state.user.username,
+    modalVisible: state.status.usernameModalVisible,
+  }));
 
   useEffect(() => {
-    const userKey = storage.getItem('userKey');
     if (username && roomName) {
       storage.setItem('roomName', roomName);
       dispatch(statusActions.setUsernameModalVisible(false));
-      dispatch(addRoomByDB({ roomName, member: {} }));
-      connectionPeerEmitter.sendConnectionConnectMessage({}); // socket join
-      connectionPeerEmitter.sendConnectionJoinRoomMessage({
-        roomName,
-        userKey,
-      }); // join
-      dispatch(roomActions.setRoomName(roomName));
+      roomEmitter.joinRoom();
     } else {
       dispatch(statusActions.setUsernameModalVisible(true));
     }
     return () => {
-      storage.setItem('voiceStatus', false);
-      dispatch(roomActions.leaveRoom());
-      dispatch(userActions.changeVoiceStatus(false));
-      dispatch(userActions.changeScreenShareStatus(false));
-      dispatch(chatActions.resetChatState());
-      dispatch(statusActions.resetAllStatusState());
-
-      connectionPeerEmitter.sendConnectionDisconnectMessage({ roomName });
-      if (voiceStatus) {
-        voicePeerEmitter.sendVoiceDisconnectMessage({ userKey });
-      }
-      app.rtcManager.clearAudioTrack();
-      audioManager.removeAllAudio();
-      app.rtcManager.clearVideoTrack();
-      app.rtcManager.clearPeerMap();
+      roomEmitter.leave();
     };
   }, [username, roomName]);
 
