@@ -8,10 +8,10 @@ import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { getRoomListByDB } from 'store/thunk/roomThunk';
 import { mediaSize } from 'style/theme';
 import { useApp } from 'hooks/useApp';
-import { EVENT_NAME } from '../../constants/gtm';
-import MemberListContainer from '../../pages/RoomPage/components/MemberListContainer';
-import RoomBadge from '../../pages/RoomPage/components/RoomBadge';
-import CreateRoomModal from '../../pages/RoomPage/components/CreateRoomModal';
+import { EVENT_NAME } from 'constants/gtm';
+import MemberList from '../../pages/RoomPage/components/MemberList.tsx';
+import RoomBadge from 'pages/RoomPage/components/RoomBadge';
+import CreateRoomModal from 'pages/RoomPage/components/CreateRoomModal';
 
 const LeftMenuLayout = () => {
   const navigate = useNavigate();
@@ -72,7 +72,7 @@ const LeftMenuLayout = () => {
 
       {currentRoomName && (
         <LeftRightContainer>
-          <MemberListContainer />
+          <MemberList />
         </LeftRightContainer>
       )}
 

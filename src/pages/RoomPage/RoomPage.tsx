@@ -3,8 +3,6 @@ import { debounce } from 'throttle-debounce';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { nanoid } from 'nanoid';
-
-import { useEmitter } from 'hooks/useEmitter';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { statusActions } from 'store/features/statusSlice';
 import { deleteAllMemberByDB } from 'store/thunk/roomThunk';
@@ -19,9 +17,10 @@ import ChatList from 'components/chat/ChatList';
 import ChatForm from 'components/chat/ChatForm';
 import TopMenuLayout from '../../components/layout/TopMenuLayout.tsx';
 import LeftMenuLayout from '../../components/layout/LeftMenuLayout.tsx';
+import { useApp } from '../../hooks/useApp.ts';
 
 const RoomPage = () => {
-  const { roomEmitter } = useEmitter();
+  const { roomEmitter } = useApp();
   const dispatch = useAppDispatch();
   const handleViewportResize = debounce(
     50,
