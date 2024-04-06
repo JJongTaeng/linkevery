@@ -13,7 +13,7 @@ import MemberListContainer from '../../pages/RoomPage/components/MemberListConta
 import RoomBadge from '../../pages/RoomPage/components/RoomBadge';
 import CreateRoomModal from '../../pages/RoomPage/components/CreateRoomModal';
 
-const LeftMenuContainer = () => {
+const LeftMenuLayout = () => {
   const navigate = useNavigate();
   const { app } = useApp();
   const [roomCreateModalVisible, setRoomCreateModalVisible] = useState(false);
@@ -153,4 +153,4 @@ const ControllerContainer = styled.div`
   align-items: center;
 `;
 
-export default LeftMenuContainer;
+export default LeftMenuLayout;

@@ -13,8 +13,8 @@ import { addUserByDB, getUserByDB } from 'store/thunk/userThunk';
 
 import { storage } from 'service/storage/StorageService';
 
-import TopMenuContainer from 'components/container/TopMenuContainer.tsx';
-import LeftMenuContainer from 'components/container/LeftMenuContainer.tsx';
+import TopMenuLayout from '../../components/layout/TopMenuLayout.tsx';
+import LeftMenuLayout from '../../components/layout/LeftMenuLayout.tsx';
 import UsernameModal from 'pages/RoomPage/components/UsernameModal';
 import CreateRoomModal from 'pages/RoomPage/components/CreateRoomModal';
 
@@ -43,9 +43,9 @@ const LobbyPage = () => {
 
   return (
     <Container>
-      <TopMenuContainer />
+      <TopMenuLayout />
       <div className={'main-content-container'}>
-        <LeftMenuContainer />
+        <LeftMenuLayout />
         <ContentSection>
           <NoRoomContent>
             <Description>

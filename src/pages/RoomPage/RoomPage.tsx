@@ -17,8 +17,8 @@ import { TOP_MENU_HEIGHT } from 'style/constants.ts';
 import UsernameModal from 'pages/RoomPage/components/UsernameModal';
 import ChatList from 'components/chat/ChatList';
 import ChatForm from 'components/chat/ChatForm';
-import TopMenuContainer from 'components/container/TopMenuContainer.tsx';
-import LeftMenuContainer from 'components/container/LeftMenuContainer.tsx';
+import TopMenuLayout from '../../components/layout/TopMenuLayout.tsx';
+import LeftMenuLayout from '../../components/layout/LeftMenuLayout.tsx';
 
 const RoomPage = () => {
   const { roomEmitter } = useEmitter();
@@ -84,9 +84,9 @@ const RoomPage = () => {
 
   return (
     <Container>
-      <TopMenuContainer />
+      <TopMenuLayout />
       <div className={'main-content-container'}>
-        <LeftMenuContainer />
+        <LeftMenuLayout />
         <ContentSection>
           <RoomContent $leftMenuVisible={status.leftMenuVisible}>
             <ContentContainer>

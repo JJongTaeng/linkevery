@@ -23,7 +23,7 @@ import { EVENT_NAME } from '../../constants/gtm';
 
 const agentInfo = Bowser.parse(window.navigator.userAgent);
 
-const TopMenuContainer = () => {
+const TopMenuLayout = () => {
   const navigate = useNavigate();
   const { app, voicePeerEmitter, screenSharePeerEmitter } = useApp();
   const videoManager = useRef(container.resolve(VideoManager))
@@ -202,4 +202,4 @@ const ControllerWrapper = styled.div`
   gap: 8px;
 `;
 
-export default TopMenuContainer;
+export default TopMenuLayout;
