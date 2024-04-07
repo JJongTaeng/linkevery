@@ -1,5 +1,11 @@
+import { inject, injectable } from 'tsyringe';
+import { ScreenShareEmitter } from '../emitter/ScreenShareEmitter.ts';
+
+@injectable()
 export class VideoManager {
-  constructor() {}
+  constructor(
+    @inject(ScreenShareEmitter) private screenShareEmitter: ScreenShareEmitter,
+  ) {}
   private videoElementMap: { [key: string]: HTMLVideoElement } = {};
   private windowPopupMap: { [key: string]: Window } = {};
 
@@ -25,8 +31,15 @@ export class VideoManager {
     remoteVideo!.srcObject = this.videoElementMap[clientId].srcObject;
   }
 
-  openTestPopup() {
+  openTestPopup(clientId: string) {
     const popUpWindow = window.open(`/linkevery/#/screen`, '_blank', 'x=y')!;
+    if (popUpWindow) {
+      setTimeout(() => {
+        this.screenShareEmitter.sendScreenPopupOpenMessage({
+          srcObject: this.videoElementMap[clientId],
+        });
+      }, 1000);
+    }
   }
 
   clearAllVideo() {

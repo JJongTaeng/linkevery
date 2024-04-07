@@ -93,4 +93,7 @@ export class ScreenShareHandler {
     );
     this.videoManager.clearVideo(from);
   }
+
+  @messageId(SCREEN_SHARE_MESSAGE_ID.POPUP_OPEN)
+  popupOpen(protocol: EventType) {}
 }

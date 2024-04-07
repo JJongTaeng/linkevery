@@ -1,15 +1,12 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import { useApp } from '../../hooks/useApp.ts';
 
 const ScreenSharePage = () => {
+  const { drawEmitter } = useApp();
+
   useEffect(() => {}, []);
 
-  return <Video autoPlay={true} />;
+  return <button>screen share page@</button>;
 };
-
-const Video = styled.video`
-  width: 100%;
-  height: 100%;
-`;
 
 export default ScreenSharePage;

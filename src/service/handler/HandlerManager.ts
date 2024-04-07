@@ -2,6 +2,7 @@ import { inject, injectable, injectAll } from 'tsyringe';
 import {
   CATEGORY,
   EVENT_NAME,
+  EventType,
   HandlerMap,
   MessageId,
   StringifyProtocol,
@@ -31,7 +32,21 @@ export class HandlerManager {
     this.subscribe();
   }
 
-  handleHandler(stringifyProtocol: string) {
+  handleHandlerWithProtocol(protocol: EventType) {
+    try {
+      const handler = this.handlerMap[protocol.category]?.[protocol.messageId];
+      if (!handler) {
+        throw new Error(ERROR_TYPE.FAILED_SEND_OFFER);
+      }
+      console.debug('%c[receive] ', 'color:blue;font-weight:bold;', protocol);
+      handler(protocol);
+    } catch (e) {
+      console.error(e);
+      console.debug('%c[Error] ', 'color:red;font-weight:bold;', protocol);
+    }
+  }
+
+  handleHandlerWithStringifyProtocol(stringifyProtocol: string) {
     const protocol = JSON.parse(stringifyProtocol) as StringifyProtocol;
     const key = protocol.from + protocol.category + protocol.messageId;
     if (!this.messageAssembleMap.has(key))
@@ -102,22 +117,21 @@ export class HandlerManager {
 
   subscribe() {
     this.socketManager.socket.on(EVENT_NAME, (stringifyProtocol: string) => {
-      this.handleHandler(stringifyProtocol);
+      this.handleHandlerWithStringifyProtocol(stringifyProtocol);
     });
     this.rtcManager.on(
       RTCManager.RTC_EVENT.DATA,
       (stringifyProtocol: string) => {
-        this.handleHandler(stringifyProtocol);
+        this.handleHandlerWithStringifyProtocol(stringifyProtocol);
       },
     );
     this.eventManager.on(EVENT_NAME, (stringifyProtocol: string) => {
-      this.handleHandler(stringifyProtocol);
+      this.handleHandlerWithStringifyProtocol(stringifyProtocol);
     });
-    console.log(this.broadcastManager);
     this.broadcastManager.broadcastChannel.addEventListener(
       'message',
       (event) => {
-        this.handleHandler(event.data);
+        this.handleHandlerWithProtocol(event.data);
       },
     );
   }

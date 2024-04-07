@@ -5,10 +5,10 @@ import { AudioManager } from '../../../service/media/AudioManager';
 import { VideoManager } from '../../../service/media/VideoManager';
 import { nanoid } from 'nanoid';
 import { Button, Card, Popover, Slider } from 'antd';
-import SvgScreenShareOn from '../../../components/icons/ScreenShareOn';
-import SvgSpeakerOn from '../../../components/icons/SpeakerOn';
+import SvgScreenShareOn from 'components/icons/ScreenShareOn';
+import SvgSpeakerOn from 'components/icons/SpeakerOn';
 import styled from 'styled-components';
-import { highlight } from '../../../style';
+import { highlight } from 'style';
 
 interface MemberCardProps {
   userKey: string;
@@ -37,7 +37,7 @@ const MemberCard = ({ userKey }: MemberCardProps) => {
             shape="circle"
             onClick={() => {
               // videoManager.openVideoPopup(room.member[userKey].clientId);
-              videoManager.openTestPopup();
+              videoManager.openTestPopup(room.member[userKey].clientId);
             }}
             icon={<SvgScreenShareOn />}
           />
