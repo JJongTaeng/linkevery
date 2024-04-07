@@ -20,7 +20,7 @@ import LeftMenuLayout from '../../components/layout/LeftMenuLayout.tsx';
 import { useApp } from '../../hooks/useApp.ts';
 
 const RoomPage = () => {
-  const { roomEmitter } = useApp();
+  const { roomEmitter, drawEmitter } = useApp();
   const dispatch = useAppDispatch();
   const handleViewportResize = debounce(
     50,
@@ -91,6 +91,9 @@ const RoomPage = () => {
             <ContentContainer>
               <ChatContainer>
                 <ChatList />
+                <button onClick={() => drawEmitter.startDraw({ x: 1000 })}>
+                  send test
+                </button>
                 <ChatForm />
               </ChatContainer>
             </ContentContainer>

@@ -4,6 +4,7 @@ export enum MESSAGE_TYPE {
   RTC = 'RTC',
   SOCKET = 'SOCKET',
   EVENT = 'EVENT',
+  BROADCAST = 'BROADCAST',
 }
 
 export enum CATEGORY {
@@ -15,6 +16,7 @@ export enum CATEGORY {
   NEGOTIATION = 'NEGOTIATION',
   MEMBER = 'MEMBER',
   ROOM = 'ROOM',
+  DRAW = 'DRAW',
 }
 
 export enum CONNECTION_MESSAGE_ID {
@@ -69,6 +71,9 @@ export enum ROOM_MESSAGE_ID {
   JOIN = 'JOIN',
   LEAVE = 'LEAVE',
 }
+export enum DRAW_MESSAGE_ID {
+  START = 'START',
+}
 
 export type MessageId =
   | CONNECTION_MESSAGE_ID
@@ -78,7 +83,8 @@ export type MessageId =
   | NEGOTIATION_MESSAGE_ID
   | SCREEN_SHARE_MESSAGE_ID
   | MEMBER_MESSAGE_ID
-  | ROOM_MESSAGE_ID;
+  | ROOM_MESSAGE_ID
+  | DRAW_MESSAGE_ID;
 
 export interface ProtocolData {
   [key: string]: any;

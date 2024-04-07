@@ -11,6 +11,7 @@ import { RTCManager } from 'service/rtc/RTCManager';
 import { MessageAssemble } from 'service/messages/MessageAssemble';
 import { ERROR_TYPE } from 'error/error';
 import { EventManager } from '../event/EventManager';
+import { BroadcastManager } from '../broadcast/BroadcastManager.ts';
 
 type CategoryHandlers = { [key in CATEGORY]?: HandlerMap<any> };
 
@@ -24,6 +25,7 @@ export class HandlerManager {
     @inject(SocketManager) private socketManager: SocketManager,
     @inject(RTCManager) private rtcManager: RTCManager,
     @inject(EventManager) private eventManager: EventManager,
+    @inject(BroadcastManager) private broadcastManager: BroadcastManager,
   ) {
     this.setHandlers();
     this.subscribe();
@@ -86,6 +88,9 @@ export class HandlerManager {
           'messageId',
         ) as MessageId;
 
+        console.debug(
+          `[init] category = ${category}, messageId = ${messageId}`,
+        );
         const method = instance[methodName].bind(instance);
         if (!this.handlerMap[category]) {
           this.handlerMap[category] = {};
@@ -108,5 +113,12 @@ export class HandlerManager {
     this.eventManager.on(EVENT_NAME, (stringifyProtocol: string) => {
       this.handleHandler(stringifyProtocol);
     });
+    console.log(this.broadcastManager);
+    this.broadcastManager.broadcastChannel.addEventListener(
+      'message',
+      (event) => {
+        this.handleHandler(event.data);
+      },
+    );
   }
 }

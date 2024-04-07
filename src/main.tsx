@@ -40,7 +40,7 @@ export const router = createHashRouter([
         element: <LobbyPage />,
       },
       {
-        path: '/screen/:roomName',
+        path: '/screen',
         element: <ScreenSharePage />,
       },
       {

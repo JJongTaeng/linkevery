@@ -18,16 +18,14 @@ import { NegotiationEmitter } from './service/emitter/NegotiationEmitter';
 import { ScreenShareEmitter } from './service/emitter/ScreenShareEmitter';
 import { VoiceEmitter } from './service/emitter/VoiceEmitter';
 import { SignalingEmitter } from './service/emitter/SignalingEmitter';
-import EventEmitter from 'events';
 import { EventManager } from './service/event/EventManager';
 import { EmitterManager } from './service/emitter/EmitterManager';
 import { RoomHandler } from './service/handler/RoomHandler';
+import { BroadcastManager } from './service/broadcast/BroadcastManager.ts';
+import { DrawEmitter } from './service/emitter/DrawEmitter.ts';
+import { DrawHandler } from './service/handler/DrawHandler.ts';
 
 export const initContainer = () => {
-  container.register('broadcastChannel', {
-    useValue: new BroadcastChannel('linkevery'),
-  });
-  container.register('ee', { useValue: new EventEmitter() });
   container.register(
     EventManager,
     { useClass: EventManager },
@@ -48,6 +46,11 @@ export const initContainer = () => {
     { useClass: RTCManager },
     { lifecycle: Lifecycle.Singleton },
   );
+  container.register(
+    BroadcastManager,
+    { useClass: BroadcastManager },
+    { lifecycle: Lifecycle.Singleton },
+  );
 
   container.register('EmitterService', { useClass: EmitterManager });
 
@@ -64,6 +67,9 @@ export const initContainer = () => {
     useClass: ScreenShareEmitter,
   });
   container.register(VoiceEmitter, { useClass: VoiceEmitter });
+  container.register(DrawEmitter, {
+    useClass: DrawEmitter,
+  });
 
   container.register('PeerHandler', { useClass: ConnectionHandler });
   container.register('PeerHandler', { useClass: SignalingHandler });
@@ -73,6 +79,7 @@ export const initContainer = () => {
   container.register('PeerHandler', { useClass: ScreenShareHandler });
   container.register('PeerHandler', { useClass: MemberHandler });
   container.register('PeerHandler', { useClass: RoomHandler });
+  container.register('PeerHandler', { useClass: DrawHandler });
 
   container.register('HandlerManager', { useClass: HandlerManager });
   container.resolve(App);

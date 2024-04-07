@@ -25,12 +25,8 @@ export class VideoManager {
     remoteVideo!.srcObject = this.videoElementMap[clientId].srcObject;
   }
 
-  openTestPopup({ roomName }: { roomName: string }) {
-    const popUpWindow = window.open(
-      `/linkevery/#/screen/${roomName}`,
-      '_blank',
-      'x=y',
-    )!;
+  openTestPopup() {
+    const popUpWindow = window.open(`/linkevery/#/screen`, '_blank', 'x=y')!;
   }
 
   clearAllVideo() {
