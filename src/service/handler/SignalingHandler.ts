@@ -12,6 +12,8 @@ import { SignalingEmitter } from '../emitter/SignalingEmitter';
 import { NegotiationEmitter } from '../emitter/NegotiationEmitter';
 import { VoiceEmitter } from '../emitter/VoiceEmitter';
 import { MemberEmitter } from '../emitter/MemberEmitter';
+import { AudioManager } from '../media/AudioManager.ts';
+import { VideoManager } from '../media/VideoManager.ts';
 
 @category(CATEGORY.SIGNALING)
 @injectable()
@@ -24,6 +26,8 @@ export class SignalingHandler {
     @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
     @inject(MemberEmitter) private memberPeerEmitter: MemberEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
+    @inject(AudioManager) private audioManager: AudioManager,
+    @inject(VideoManager) private videoManager: VideoManager,
   ) {}
 
   @messageId(SIGNALING_MESSAGE_ID.START)
@@ -40,7 +44,14 @@ export class SignalingHandler {
           ice,
         });
       })
-      .onTrack(from)
+      .onTrack((e) => {
+        const videoTrack = e.streams[0].getVideoTracks()[0];
+        if (videoTrack) {
+          this.videoManager.addVideo(from, e.streams[0]);
+        } else {
+          this.audioManager.addAudio(from, e.streams[0]);
+        }
+      })
       .onNegotiationNeeded(async (e: any) => {
         if (e.currentTarget.signalingState === 'stable') {
           const offer = await rtcPeer.createOffer();
@@ -99,7 +110,14 @@ export class SignalingHandler {
           ice,
         });
       })
-      .onTrack(from)
+      .onTrack((e) => {
+        const videoTrack = e.streams[0].getVideoTracks()[0];
+        if (videoTrack) {
+          this.videoManager.addVideo(from, e.streams[0]);
+        } else {
+          this.audioManager.addAudio(from, e.streams[0]);
+        }
+      })
       .onNegotiationNeeded(async (e: any) => {
         if (e.currentTarget.signalingState === 'stable') {
           const offer = await rtcPeer.createOffer();
