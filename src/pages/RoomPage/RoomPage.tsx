@@ -91,9 +91,6 @@ const RoomPage = () => {
             <ContentContainer>
               <ChatContainer>
                 <ChatList />
-                <button onClick={() => drawEmitter.startDraw({ x: 1000 })}>
-                  send test
-                </button>
                 <ChatForm />
               </ChatContainer>
             </ContentContainer>
