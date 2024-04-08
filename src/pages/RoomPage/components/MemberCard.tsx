@@ -36,8 +36,8 @@ const MemberCard = ({ userKey }: MemberCardProps) => {
             size="small"
             shape="circle"
             onClick={() => {
-              // videoManager.openVideoPopup(room.member[userKey].clientId);
-              videoManager.openTestPopup(room.member[userKey].clientId);
+              videoManager.openVideoPopup(room.member[userKey].clientId);
+              // videoManager.openTestPopup(room.member[userKey].clientId);
             }}
             icon={<SvgScreenShareOn />}
           />

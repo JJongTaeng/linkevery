@@ -116,8 +116,8 @@ export class HandlerManager {
   }
 
   subscribe() {
-    this.socketManager.socket.on(EVENT_NAME, (stringifyProtocol: string) => {
-      this.handleHandlerWithStringifyProtocol(stringifyProtocol);
+    this.socketManager.socket.on(EVENT_NAME, (protocol: EventType) => {
+      this.handleHandlerWithProtocol(protocol);
     });
     this.rtcManager.on(
       RTCManager.RTC_EVENT.DATA,
@@ -125,8 +125,8 @@ export class HandlerManager {
         this.handleHandlerWithStringifyProtocol(stringifyProtocol);
       },
     );
-    this.eventManager.on(EVENT_NAME, (stringifyProtocol: string) => {
-      this.handleHandlerWithStringifyProtocol(stringifyProtocol);
+    this.eventManager.on(EVENT_NAME, (protocol: EventType) => {
+      this.handleHandlerWithProtocol(protocol);
     });
     this.broadcastManager.broadcastChannel.addEventListener(
       'message',
