@@ -1,19 +1,19 @@
 import React, { useRef, useState } from 'react';
-import UploadButton from '../chat/UploadButton';
+import UploadButton from 'components/chat/UploadButton';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
 import dayjs from 'dayjs';
-import { storage } from '../../service/storage/StorageService';
-import { chatActions } from '../../store/features/chatSlice';
-import { addChatByDB } from '../../store/thunk/chatThunk';
-import { useApp } from '../../hooks/useApp';
-import SvgSend from '../icons/Send';
-import Button from '../elements/Button';
-import { utils } from '../../service/utils/Utils';
-import PreFileFormat from '../chat/PreFileFormat';
-import SvgImageUploadIcon from '../icons/ImageUploadIcon';
-import SvgFileUploadIcon from '../icons/FileUploadIcon';
-import { EVENT_NAME } from '../../constants/gtm';
+import { storage } from 'service/storage/StorageService';
+import { chatActions } from 'store/features/chatSlice';
+import { addChatByDB } from 'store/thunk/chatThunk';
+import { useApp } from 'hooks/useApp';
+import SvgSend from 'components/icons/Send';
+import Button from 'components/elements/Button';
+import { utils } from 'service/utils/Utils';
+import PreFileFormat from 'components/chat/PreFileFormat';
+import SvgImageUploadIcon from 'components/icons/ImageUploadIcon';
+import SvgFileUploadIcon from 'components/icons/FileUploadIcon';
+import { EVENT_NAME } from 'constants/gtm';
 
 const ChatForm = () => {
   const { app, chatEmitter } = useApp();
@@ -121,7 +121,7 @@ const ChatForm = () => {
       {dataUrlFilenameList.length ? (
         <PreFileFormat
           dataUrlFilenameList={dataUrlFilenameList}
-          onRemove={(index) => {
+          onRemove={(index: number) => {
             const newArr = dataUrlFilenameList.filter((_, i) => i !== index);
             setDataUrlFilenameList([...newArr]);
           }}

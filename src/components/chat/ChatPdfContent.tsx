@@ -1,6 +1,6 @@
 import React from 'react';
 import { nanoid } from 'nanoid';
-import { utils } from '../../service/utils/Utils';
+import { utils } from 'service/utils/Utils.ts';
 import styled from 'styled-components';
 import SvgPdfIcon from '../icons/PdfIcon';
 import SvgDownload from '../icons/Download';

@@ -4,7 +4,7 @@ import SvgCloseButton from '../icons/CloseButton';
 import Button from '../elements/Button';
 import { nanoid } from 'nanoid';
 import SvgPdfIcon from '../icons/PdfIcon';
-import { utils } from '../../service/utils/Utils';
+import { utils } from 'service/utils/Utils.ts';
 
 interface PreImageProps {
   dataUrlFilenameList: { dataUrl: string; filename: string }[];

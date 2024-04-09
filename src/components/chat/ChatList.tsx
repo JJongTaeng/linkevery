@@ -3,16 +3,16 @@ import { nanoid } from 'nanoid';
 import { Button, Divider } from 'antd';
 import dayjs from 'dayjs';
 import ChatBubble from './ChatBubble';
-import { storage } from '../../service/storage/StorageService';
+import { storage } from 'service/storage/StorageService.ts';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
-import { utils } from '../../service/utils/Utils';
-import { getChatListPageByDB } from '../../store/thunk/chatThunk';
-import { PAGE_OFFSET } from '../../style/constants';
+import { useAppDispatch, useAppSelector } from 'store/hooks.ts';
+import { useIntersectionObserver } from 'hooks/useIntersectionObserver.ts';
+import { utils } from 'service/utils/Utils.ts';
+import { getChatListPageByDB } from 'store/thunk/chatThunk.ts';
+import { PAGE_OFFSET } from 'style/constants.ts';
 import { useParams } from 'react-router-dom';
 import SvgArrowDown from '../icons/ArrowDown';
-import { chatActions } from '../../store/features/chatSlice';
+import { chatActions } from 'store/features/chatSlice.ts';
 import { debounce } from 'throttle-debounce';
 
 const ChatList = () => {
