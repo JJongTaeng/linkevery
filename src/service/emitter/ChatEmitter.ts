@@ -1,32 +1,32 @@
 import { inject, injectable } from 'tsyringe';
-import type { ProtocolData } from '../../constants/eventType';
-import { CATEGORY, CHAT_MESSAGE_ID } from '../../constants/eventType';
-import { rtcAction } from '../../decorators/rtcAction';
+import type { ProtocolData } from 'constants/eventType.ts';
+import { CATEGORY, CHAT_MESSAGE_ID } from 'constants/eventType.ts';
 import type { EmitterService } from 'service/emitter/EmitterService';
+import { socketAction } from 'decorators/socketAction.ts';
 
 @injectable()
 export class ChatEmitter {
   constructor(@inject('EmitterService') private sender: EmitterService) {}
 
-  @rtcAction({
+  @socketAction({
     category: CATEGORY.CHAT,
     messageId: CHAT_MESSAGE_ID.SEND,
   })
   sendChatSendMessage(data: ProtocolData) {}
 
-  @rtcAction({
+  @socketAction({
     category: CATEGORY.CHAT,
     messageId: CHAT_MESSAGE_ID.OK,
   })
   sendChatOkMessage(data: ProtocolData) {}
 
-  @rtcAction({
+  @socketAction({
     category: CATEGORY.CHAT,
     messageId: CHAT_MESSAGE_ID.SYNC_CHAT_LIST,
   })
   sendSyncChatListMessage(data: ProtocolData) {}
 
-  @rtcAction({
+  @socketAction({
     category: CATEGORY.CHAT,
     messageId: CHAT_MESSAGE_ID.SYNC_CHAT_LIST_OK,
   })
