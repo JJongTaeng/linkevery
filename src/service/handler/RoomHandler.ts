@@ -1,26 +1,26 @@
-import { CATEGORY, ROOM_MESSAGE_ID } from '../../constants/eventType';
+import { CATEGORY, ROOM_MESSAGE_ID } from 'constants/eventType.ts';
 import { inject, injectable } from 'tsyringe';
 import { storage } from '../storage/StorageService';
-import { store } from '../../store/store';
-import { roomActions } from '../../store/features/roomSlice';
-import { userActions } from '../../store/features/userSlice';
+import { store } from 'store/store.ts';
+import { roomActions } from 'store/features/roomSlice.ts';
+import { userActions } from 'store/features/userSlice.ts';
 import { ConnectionEmitter } from '../emitter/ConnectionEmitter';
 import { RTCManager } from '../rtc/RTCManager';
 import { RTCManagerService } from '../rtc/RTCManagerService';
 import { VoiceEmitter } from '../emitter/VoiceEmitter';
 import { AudioManager } from '../media/AudioManager';
-import { chatActions } from '../../store/features/chatSlice';
-import { statusActions } from '../../store/features/statusSlice';
-import { addRoomByDB } from '../../store/thunk/roomThunk';
-import { category } from '../../decorators/category';
-import { messageId } from '../../decorators/messageId';
+import { chatActions } from 'store/features/chatSlice.ts';
+import { statusActions } from 'store/features/statusSlice.ts';
+import { addRoomByDB } from 'store/thunk/roomThunk.ts';
+import { category } from 'decorators/category.ts';
+import { messageId } from 'decorators/messageId.ts';
 
 @category(CATEGORY.ROOM)
 @injectable()
 export class RoomHandler {
   constructor(
     @inject(ConnectionEmitter)
-    private connectionPeerEmitter: ConnectionEmitter,
+    private connectionEmitter: ConnectionEmitter,
     @inject(RTCManager) private rtcManager: RTCManagerService,
     @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
     @inject(AudioManager) private audioManager: AudioManager,
@@ -38,7 +38,7 @@ export class RoomHandler {
     store.dispatch(chatActions.resetChatState());
     store.dispatch(statusActions.resetAllStatusState());
 
-    this.connectionPeerEmitter.sendConnectionDisconnectMessage({ roomName });
+    this.connectionEmitter.sendConnectionDisconnectMessage({ roomName });
     if (store.getState().user.voiceStatus) {
       this.voicePeerEmitter.sendVoiceDisconnectMessage({ userKey });
     }
@@ -53,8 +53,8 @@ export class RoomHandler {
     const roomName = storage.getItem('roomName');
     const userKey = storage.getItem('userKey');
     store.dispatch(addRoomByDB({ roomName, member: {} }));
-    this.connectionPeerEmitter.sendConnectionConnectMessage({}); // socket join
-    this.connectionPeerEmitter.sendConnectionJoinRoomMessage({
+    this.connectionEmitter.sendConnectionConnectMessage({}); // socket join
+    this.connectionEmitter.sendConnectionJoinRoomMessage({
       roomName,
       userKey,
     }); // join
