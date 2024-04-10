@@ -31,8 +31,8 @@ export class RoomHandler {
     const roomName = storage.getItem('roomName');
     const userKey = storage.getItem('userKey');
 
-    storage.setItem('voiceStatus', false);
     store.dispatch(roomActions.leaveRoom());
+    storage.setItem('voiceStatus', false);
     store.dispatch(userActions.changeVoiceStatus(false));
     store.dispatch(userActions.changeScreenShareStatus(false));
     store.dispatch(chatActions.resetChatState());

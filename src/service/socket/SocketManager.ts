@@ -2,6 +2,7 @@ import { message } from 'antd';
 import { io } from 'socket.io-client';
 import { singleton } from 'tsyringe';
 import { EVENT_NAME, EventType } from 'constants/eventType';
+import { storage } from 'service/storage/StorageService.ts';
 
 @singleton()
 export class SocketManager {
@@ -14,7 +15,11 @@ export class SocketManager {
   }
 
   send(protocol: EventType) {
+    const clientId = storage.getItem('clientId');
     console.debug('%c[send] ', 'color:green;font-weight:bold;', protocol);
-    this.socket.emit(EVENT_NAME, protocol);
+    this.socket.emit(EVENT_NAME, {
+      ...protocol,
+      from: clientId,
+    });
   }
 }

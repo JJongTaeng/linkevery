@@ -19,11 +19,12 @@ import { RoomEmitter } from '../emitter/RoomEmitter';
 @injectable()
 export class ConnectionHandler {
   constructor(
-    @inject(RoomEmitter) private roomLocalEmitter: RoomEmitter,
+    @inject(RoomEmitter) private roomEmitter: RoomEmitter,
+    @inject(SignalingEmitter)
+    private signalingEmitter: SignalingEmitter,
+
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(VideoManager) private videoManager: VideoManager,
-    @inject(SignalingEmitter)
-    private signalingPeerEmitter: SignalingEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(CONNECTION_MESSAGE_ID.CONNECT)
@@ -38,10 +39,10 @@ export class ConnectionHandler {
     const myUserKey = storage.getItem('userKey');
 
     if (myUserKey === userKey) {
-      this.roomLocalEmitter.leave();
+      this.roomEmitter.leave();
       router.navigate('/');
     }
-    this.signalingPeerEmitter.sendSignalingStartMessage({
+    this.signalingEmitter.sendSignalingStartMessage({
       roomName,
       to: protocol.from,
     });

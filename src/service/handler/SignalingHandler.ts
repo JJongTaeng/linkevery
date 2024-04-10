@@ -20,11 +20,11 @@ import { VideoManager } from '../media/VideoManager.ts';
 export class SignalingHandler {
   constructor(
     @inject(SignalingEmitter)
-    private signalingPeerEmitter: SignalingEmitter,
+    private signalingEmitter: SignalingEmitter,
     @inject(NegotiationEmitter)
-    private negotiationPeerEmitter: NegotiationEmitter,
-    @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
-    @inject(MemberEmitter) private memberPeerEmitter: MemberEmitter,
+    private negotiationEmitter: NegotiationEmitter,
+    @inject(VoiceEmitter) private voiceEmitter: VoiceEmitter,
+    @inject(MemberEmitter) private memberEmitter: MemberEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
     @inject(AudioManager) private audioManager: AudioManager,
     @inject(VideoManager) private videoManager: VideoManager,
@@ -39,7 +39,7 @@ export class SignalingHandler {
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer
       .onIceCandidate((ice) => {
-        this.signalingPeerEmitter.sendSignalingIceMessage({
+        this.signalingEmitter.sendSignalingIceMessage({
           to: from,
           ice,
         });
@@ -60,7 +60,7 @@ export class SignalingHandler {
             '[negotiationneeded connection state] ',
             e.currentTarget?.connectionState,
           );
-          this.negotiationPeerEmitter.sendNegotiationOfferMessage({
+          this.negotiationEmitter.sendNegotiationOfferMessage({
             offer,
             to: from,
           });
@@ -89,7 +89,7 @@ export class SignalingHandler {
       });
     const offer = await rtcPeer.createOffer();
     rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-    this.signalingPeerEmitter.sendSignalingOfferMessage({
+    this.signalingEmitter.sendSignalingOfferMessage({
       offer,
       to: from,
       roomName,
@@ -105,7 +105,7 @@ export class SignalingHandler {
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer
       .onIceCandidate((ice) => {
-        this.signalingPeerEmitter.sendSignalingIceMessage({
+        this.signalingEmitter.sendSignalingIceMessage({
           to: from,
           ice,
         });
@@ -126,7 +126,7 @@ export class SignalingHandler {
             '[negotiationneeded connection state] ',
             e.currentTarget?.connectionState,
           );
-          this.negotiationPeerEmitter.sendNegotiationOfferMessage({
+          this.negotiationEmitter.sendNegotiationOfferMessage({
             offer,
             to: from,
           });
@@ -157,7 +157,7 @@ export class SignalingHandler {
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
-    this.signalingPeerEmitter.sendSignalingAnswerMessage({
+    this.signalingEmitter.sendSignalingAnswerMessage({
       answer,
       to: from,
     });
@@ -169,7 +169,7 @@ export class SignalingHandler {
     const { from } = protocol;
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
-    this.signalingPeerEmitter.sendSignalingCreateDataChannelMessage({
+    this.signalingEmitter.sendSignalingCreateDataChannelMessage({
       to: from,
     });
   }
@@ -187,14 +187,14 @@ export class SignalingHandler {
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.onDataChannel((e) => {
       console.debug('[open datachannel]', from);
-      this.signalingPeerEmitter.sendSignalingEndMessage({});
+      this.signalingEmitter.sendSignalingEndMessage({});
 
       rtcPeer.dataChannel = e.channel;
       rtcPeer.onDataChannelMessage((e) => {
         this.rtcManager.emit(RTCManager.RTC_EVENT.DATA, e.data);
       });
     });
-    this.signalingPeerEmitter.sendSignalingConnectDataChannelMessage({
+    this.signalingEmitter.sendSignalingConnectDataChannelMessage({
       to: from,
     });
   }
@@ -220,15 +220,15 @@ export class SignalingHandler {
     const { username, userKey } = storage.getAll();
 
     if (store.getState().user.voiceStatus) {
-      this.voicePeerEmitter.sendVoiceReadyMessage({ to: from });
+      this.voiceEmitter.sendVoiceReadyMessage({ to: from });
     }
 
-    this.memberPeerEmitter.sendMemberNameMessage({
+    this.memberEmitter.sendMemberNameMessage({
       to: from,
       username,
       userKey,
     });
-    this.signalingPeerEmitter.sendSignalingEndOkMessage({ to: from });
+    this.signalingEmitter.sendSignalingEndOkMessage({ to: from });
   }
 
   @messageId(SIGNALING_MESSAGE_ID.END_OK)
