@@ -14,6 +14,22 @@ import { VoiceEmitter } from '../emitter/VoiceEmitter';
 import { MemberEmitter } from '../emitter/MemberEmitter';
 import { VideoManager } from '../media/VideoManager.ts';
 import { AudioStreamManager } from 'service/media/AudioStreamManager.ts';
+import { utils } from 'service/utils/Utils.ts';
+
+const onChangeSpeakVolume = (volume: number, userKey: string) => {
+  if (
+    !store.getState().room.current.member?.[userKey]?.speaking &&
+    volume < 10
+  ) {
+    return;
+  }
+  store.dispatch(
+    roomActions.setMemberSpeakingStatus({
+      userKey: userKey,
+      speaking: volume > 10,
+    }),
+  );
+};
 
 @category(CATEGORY.SIGNALING)
 @injectable()
@@ -54,7 +70,7 @@ export class SignalingHandler {
           this.audioStreamManager.addAudioStream(from, e.streams[0]);
           const audioStream = this.audioStreamManager.audioStreamMap.get(from);
           audioStream?.onChangeSpeakVolume(100, (volume: number) => {
-            // TODO: speaking 구현
+            onChangeSpeakVolume(volume, utils.getUserKeyByClientId(from)!);
           });
         }
       })
@@ -124,7 +140,9 @@ export class SignalingHandler {
           this.audioStreamManager.addAudioStream(from, e.streams[0]);
           const audioStream = this.audioStreamManager.audioStreamMap.get(from);
           audioStream?.onChangeSpeakVolume(100, (volume: number) => {
-            // TODO: speaking 구현
+            audioStream?.onChangeSpeakVolume(100, (volume: number) => {
+              onChangeSpeakVolume(volume, utils.getUserKeyByClientId(from)!);
+            });
           });
         }
       })

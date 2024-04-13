@@ -64,6 +64,16 @@ export const roomSlice = createSlice({
         screenShareStatus,
       };
     },
+    setMemberSpeakingStatus: (
+      state,
+      { payload }: { payload: { speaking: boolean; userKey: string } },
+    ) => {
+      const { userKey, speaking } = payload;
+      state.current.member[userKey] = {
+        ...state.current.member[userKey],
+        speaking,
+      };
+    },
     deleteMember: (state, { payload }) => {
       const { userKey } = payload;
       delete state.current.member[userKey];

@@ -24,6 +24,7 @@ export interface Member {
     clientId: string;
     voiceStatus?: boolean;
     screenShareStatus?: boolean;
+    speaking: boolean;
   };
 }
 export interface Room {

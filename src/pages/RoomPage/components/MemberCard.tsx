@@ -6,6 +6,7 @@ import SvgSpeakerOn from 'components/icons/SpeakerOn';
 import styled from 'styled-components';
 import { highlight } from 'style';
 import { useApp } from 'hooks/useApp.ts';
+import { useMemo } from 'react';
 
 interface MemberCardProps {
   userKey: string;
@@ -19,23 +20,25 @@ const MemberCard = ({ userKey }: MemberCardProps) => {
   const onChangeVolume = (id: string, volume: number) => {
     audioStreamManager.setVolume(id, volume);
   };
+
+  const member = useMemo(() => room.member[userKey], [room, userKey]);
   return (
     <MemberCardContainer key={nanoid()}>
       <Card size="small">
-        <span>{room.member[userKey].username}</span>
-        {room.member[userKey].screenShareStatus && (
+        <span>{member.username}</span>
+        {member.screenShareStatus && (
           <Button
             className={'screen-share-button'}
             size="small"
             shape="circle"
             onClick={() => {
-              videoManager.openVideoPopup(room.member[userKey].clientId);
-              // videoManager.openTestPopup(room.member[userKey].clientId);
+              videoManager.openVideoPopup(member.clientId);
+              // videoManager.openTestPopup(user.clientId);
             }}
             icon={<SvgScreenShareOn />}
           />
         )}
-        {room.member[userKey].voiceStatus && (
+        {member.voiceStatus && (
           <Popover
             placement="right"
             content={
@@ -45,20 +48,31 @@ const MemberCard = ({ userKey }: MemberCardProps) => {
                 step={0.01}
                 style={{ width: 80 }}
                 onChange={(value) => {
-                  onChangeVolume(room.member[userKey].clientId, value);
+                  onChangeVolume(member.clientId, value);
                 }}
                 defaultValue={0.5}
               />
             }
             trigger="click"
           >
-            <Button size="small" shape="circle" icon={<SvgSpeakerOn />} />
+            <SpeakerButton
+              size="small"
+              shape="circle"
+              icon={<SvgSpeakerOn />}
+              speaking={member.speaking}
+            />
           </Popover>
         )}
       </Card>
     </MemberCardContainer>
   );
 };
+
+const SpeakerButton = styled(Button)<{ speaking: boolean }>`
+  box-shadow: ${({ speaking }) =>
+    speaking ? '0 0 4px 4px rgba(0, 0, 255, .2)' : 'none'};
+  transition: box-shadow 0.3s;
+`;
 
 const MemberCardContainer = styled.div`
   color: ${({ theme }) => theme.color.grey100};
