@@ -2,9 +2,9 @@ import { RTCManager } from 'service/rtc/RTCManager';
 import { storage } from 'service/storage/StorageService';
 import { inject, singleton } from 'tsyringe';
 import { RTCManagerService } from 'service/rtc/RTCManagerService';
-import { AudioManager } from 'service/media/AudioManager';
 import { ScreenShareEmitter } from '../emitter/ScreenShareEmitter';
 import { VoiceEmitter } from '../emitter/VoiceEmitter';
+import { AudioStreamManager } from 'service/media/AudioStreamManager.ts';
 
 @singleton()
 export class App {
@@ -15,7 +15,7 @@ export class App {
     private screenSharePeerEmitter: ScreenShareEmitter,
     @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
     @inject(RTCManager) private _rtcManager: RTCManagerService,
-    @inject(AudioManager) private audioManager: AudioManager,
+    @inject(AudioStreamManager) private audioStreamManager: AudioStreamManager,
   ) {}
 
   get rtcManager() {
@@ -27,7 +27,7 @@ export class App {
 
     this.voicePeerEmitter.sendVoiceDisconnectMessage({ userKey });
     this.rtcManager.clearAudioTrack();
-    this.audioManager.removeAllAudio();
+    this.audioStreamManager.clear();
     this.rtcManager.clearVideoTrack();
   }
 

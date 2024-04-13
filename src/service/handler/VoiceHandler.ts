@@ -1,22 +1,22 @@
-import type { EventType } from '../../constants/eventType';
-import { CATEGORY, VOICE_MESSAGE_ID } from '../../constants/eventType';
+import type { EventType } from 'constants/eventType';
+import { CATEGORY, VOICE_MESSAGE_ID } from 'constants/eventType';
 import { storage } from 'service/storage/StorageService';
 import { store } from 'store/store';
 import { roomActions } from 'store/features/roomSlice';
-import { messageId } from '../../decorators/messageId';
-import { category } from '../../decorators/category';
+import { messageId } from 'decorators/messageId';
+import { category } from 'decorators/category';
 import { inject, injectable } from 'tsyringe';
-import { AudioManager } from 'service/media/AudioManager';
 import { SoundEffect } from 'service/media/SoundEffect';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { VoiceEmitter } from '../emitter/VoiceEmitter';
 import { ScreenShareEmitter } from '../emitter/ScreenShareEmitter';
+import { AudioStreamManager } from 'service/media/AudioStreamManager.ts';
 
 @category(CATEGORY.VOICE)
 @injectable()
 export class VoiceHandler {
   constructor(
-    @inject(AudioManager) private audioManager: AudioManager,
+    @inject(AudioStreamManager) private audioStreamManager: AudioStreamManager,
     @inject(SoundEffect) private soundEffect: SoundEffect,
     @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
     @inject(ScreenShareEmitter)
@@ -99,8 +99,8 @@ export class VoiceHandler {
     }
     const peer = this.rtcManager.getPeer(from);
     peer.removeAudioTrack();
-    this.audioManager.removeAudio(from);
 
+    this.audioStreamManager.removeAudioStream(from);
     this.soundEffect.closeVoice();
 
     store.dispatch(

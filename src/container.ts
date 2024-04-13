@@ -7,7 +7,6 @@ import { VoiceHandler } from './service/handler/VoiceHandler';
 import { HandlerManager } from './service/handler/HandlerManager';
 import { ChatHandler } from './service/handler/ChatHandler';
 import { ScreenShareHandler } from './service/handler/ScreenShareHandler';
-import { AudioManager } from './service/media/AudioManager';
 import { VideoManager } from './service/media/VideoManager';
 import { RTCManager } from './service/rtc/RTCManager';
 import { MemberHandler } from './service/handler/MemberHandler';
@@ -31,11 +30,7 @@ export const initContainer = () => {
     { useClass: EventManager },
     { lifecycle: Lifecycle.Singleton },
   );
-  container.register(
-    AudioManager,
-    { useClass: AudioManager },
-    { lifecycle: Lifecycle.Singleton },
-  );
+
   container.register(
     VideoManager,
     { useClass: VideoManager },

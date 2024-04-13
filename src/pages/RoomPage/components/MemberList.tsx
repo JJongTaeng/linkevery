@@ -1,13 +1,9 @@
 import { Button, Card, Tooltip } from 'antd';
-import { useRef } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from 'store/hooks';
-import { container } from 'tsyringe';
-import { AudioManager } from 'service/media/AudioManager';
-import { VideoManager } from 'service/media/VideoManager';
 import MemberCard from './MemberCard';
-import { clipboard } from '../../../service/utils/Clipboard';
-import SvgInviteMember from '../../../components/icons/InviteMember';
+import { clipboard } from 'service/utils/Clipboard';
+import SvgInviteMember from 'components/icons/InviteMember';
 
 interface MemberListContainerProps {}
 
@@ -16,15 +12,6 @@ const MemberList = ({}: MemberListContainerProps) => {
     myName: state.user.username,
     room: state.room.current,
   }));
-  const audioManager = useRef(container.resolve(AudioManager))
-    .current as AudioManager;
-  const videoManager = useRef(container.resolve(VideoManager))
-    .current as VideoManager;
-
-  const onChangeVolume = (id: string, volume: number) => {
-    audioManager.changeVolume(id, volume);
-  };
-
   return (
     <Container className="member-list">
       <div>

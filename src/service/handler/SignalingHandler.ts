@@ -1,7 +1,7 @@
-import { category } from '../../decorators/category';
-import type { EventType } from '../../constants/eventType';
-import { CATEGORY, SIGNALING_MESSAGE_ID } from '../../constants/eventType';
-import { messageId } from '../../decorators/messageId';
+import { category } from 'decorators/category';
+import type { EventType } from 'constants/eventType';
+import { CATEGORY, SIGNALING_MESSAGE_ID } from 'constants/eventType';
+import { messageId } from 'decorators/messageId';
 import { store } from 'store/store';
 import { SdpType } from 'service/rtc/RTCPeerService';
 import { storage } from 'service/storage/StorageService';
@@ -12,8 +12,8 @@ import { SignalingEmitter } from '../emitter/SignalingEmitter';
 import { NegotiationEmitter } from '../emitter/NegotiationEmitter';
 import { VoiceEmitter } from '../emitter/VoiceEmitter';
 import { MemberEmitter } from '../emitter/MemberEmitter';
-import { AudioManager } from '../media/AudioManager.ts';
 import { VideoManager } from '../media/VideoManager.ts';
+import { AudioStreamManager } from 'service/media/AudioStreamManager.ts';
 
 @category(CATEGORY.SIGNALING)
 @injectable()
@@ -26,8 +26,10 @@ export class SignalingHandler {
     @inject(VoiceEmitter) private voiceEmitter: VoiceEmitter,
     @inject(MemberEmitter) private memberEmitter: MemberEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
-    @inject(AudioManager) private audioManager: AudioManager,
-    @inject(VideoManager) private videoManager: VideoManager,
+    @inject(AudioStreamManager)
+    private audioStreamManager: AudioStreamManager,
+    @inject(VideoManager)
+    private videoManager: VideoManager,
   ) {}
 
   @messageId(SIGNALING_MESSAGE_ID.START)
@@ -49,7 +51,11 @@ export class SignalingHandler {
         if (videoTrack) {
           this.videoManager.addVideo(from, e.streams[0]);
         } else {
-          this.audioManager.addAudio(from, e.streams[0]);
+          this.audioStreamManager.addAudioStream(from, e.streams[0]);
+          const audioStream = this.audioStreamManager.audioStreamMap.get(from);
+          audioStream?.onChangeSpeakVolume(100, (volume: number) => {
+            // TODO: speaking 구현
+          });
         }
       })
       .onNegotiationNeeded(async (e: any) => {
@@ -115,7 +121,11 @@ export class SignalingHandler {
         if (videoTrack) {
           this.videoManager.addVideo(from, e.streams[0]);
         } else {
-          this.audioManager.addAudio(from, e.streams[0]);
+          this.audioStreamManager.addAudioStream(from, e.streams[0]);
+          const audioStream = this.audioStreamManager.audioStreamMap.get(from);
+          audioStream?.onChangeSpeakVolume(100, (volume: number) => {
+            // TODO: speaking 구현
+          });
         }
       })
       .onNegotiationNeeded(async (e: any) => {
