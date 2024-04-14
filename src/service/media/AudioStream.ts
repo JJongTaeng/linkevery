@@ -69,16 +69,21 @@ export class AudioStream {
 
   // 오디오 처리 정지
   stopAudioProcessing() {
-    this.on = false;
     this.sourceNode?.disconnect();
     this.gainNode.disconnect();
+    this.analyserNode.disconnect();
+    this.audioContext.close();
+
+    this.on = false;
+
+    this.audio.pause();
     // @ts-ignore
     const tracks = this.audio.srcObject?.getTracks();
     if (!tracks) return;
     tracks.forEach((track: any) => {
       track.stop();
     });
+    this.audio.srcObject = null;
     this.audio.remove();
-    this.audioContext.close();
   }
 }

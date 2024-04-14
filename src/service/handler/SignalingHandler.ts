@@ -17,6 +17,7 @@ import { AudioStreamManager } from 'service/media/AudioStreamManager.ts';
 import { utils } from 'service/utils/Utils.ts';
 
 const onChangeSpeakVolume = (volume: number, userKey: string) => {
+  console.log(volume);
   if (
     !store.getState().room.current.member?.[userKey]?.speaking &&
     volume < 10
@@ -140,9 +141,7 @@ export class SignalingHandler {
           this.audioStreamManager.addAudioStream(from, e.streams[0]);
           const audioStream = this.audioStreamManager.audioStreamMap.get(from);
           audioStream?.onChangeSpeakVolume(100, (volume: number) => {
-            audioStream?.onChangeSpeakVolume(100, (volume: number) => {
-              onChangeSpeakVolume(volume, utils.getUserKeyByClientId(from)!);
-            });
+            onChangeSpeakVolume(volume, utils.getUserKeyByClientId(from)!);
           });
         }
       })
