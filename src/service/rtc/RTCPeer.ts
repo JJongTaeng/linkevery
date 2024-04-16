@@ -172,6 +172,7 @@ export class RTCPeer extends RTCPeerService {
     this.audioStream?.getTracks().forEach((track) => track.stop());
     this.audioStream = undefined;
     this.peer?.removeTrack(this.audioSender);
+    this.audioSender = undefined;
   }
 
   public removeVideoTrack() {
@@ -179,6 +180,7 @@ export class RTCPeer extends RTCPeerService {
     this.videoStream?.getTracks().forEach((track) => track.stop());
     this.videoStream = undefined;
     this.peer?.removeTrack(this.videoSender);
+    this.videoSender = undefined;
   }
 
   public sendMessage(protocol: EventType) {

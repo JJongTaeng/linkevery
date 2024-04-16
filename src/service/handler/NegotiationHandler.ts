@@ -1,8 +1,8 @@
-import type { EventType } from '../../constants/eventType';
-import { CATEGORY, NEGOTIATION_MESSAGE_ID } from '../../constants/eventType';
+import type { EventType } from 'constants/eventType';
+import { CATEGORY, NEGOTIATION_MESSAGE_ID } from 'constants/eventType';
 import { SdpType } from 'service/rtc/RTCPeerService';
-import { messageId } from '../../decorators/messageId';
-import { category } from '../../decorators/category';
+import { messageId } from 'decorators/messageId';
+import { category } from 'decorators/category';
 import { inject, injectable } from 'tsyringe';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { NegotiationEmitter } from '../emitter/NegotiationEmitter';
@@ -18,9 +18,10 @@ export class NegotiationHandler {
   @messageId(NEGOTIATION_MESSAGE_ID.OFFER)
   async offer(protocol: EventType) {
     const { from } = protocol;
-    const offer = new RTCSessionDescription(protocol.data.offer);
-
     const rtcPeer = this.rtcManager.getPeer(from);
+    let peer = rtcPeer.getPeer();
+    if (peer.signalingState !== 'stable') return;
+    const offer = new RTCSessionDescription(protocol.data.offer);
 
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
