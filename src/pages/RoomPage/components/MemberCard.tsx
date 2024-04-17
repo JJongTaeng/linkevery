@@ -16,9 +16,9 @@ const MemberCard = ({ userKey }: MemberCardProps) => {
   const { room } = useAppSelector((state) => ({
     room: state.room.current,
   }));
-  const { audioStreamManager, videoManager } = useApp();
+  const { audioPlayerManager, videoManager } = useApp();
   const onChangeVolume = (id: string, volume: number) => {
-    audioStreamManager.setVolume(id, volume);
+    audioPlayerManager.setVolume(id, volume);
   };
 
   const member = useMemo(() => room.member[userKey], [room, userKey]);

@@ -1,12 +1,12 @@
-import { AudioStream } from 'service/media/AudioStream.ts';
+import { AudioPlayer } from 'service/media/AudioPlayer.ts';
 import { singleton } from 'tsyringe';
 
 @singleton()
-export class AudioStreamManager {
-  audioStreamMap: Map<string, AudioStream> = new Map();
+export class AudioPlayerManager {
+  audioStreamMap: Map<string, AudioPlayer> = new Map();
 
   addAudioStream(clientId: string, stream: MediaStream) {
-    this.audioStreamMap.set(clientId, new AudioStream(stream));
+    this.audioStreamMap.set(clientId, new AudioPlayer(stream));
   }
 
   removeAudioStream(clientId: string) {

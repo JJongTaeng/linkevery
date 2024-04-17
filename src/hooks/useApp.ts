@@ -11,7 +11,7 @@ import { VoiceEmitter } from '../service/emitter/VoiceEmitter';
 import { VideoManager } from '../service/media/VideoManager.ts';
 import { RoomEmitter } from '../service/emitter/RoomEmitter.ts';
 import { DrawEmitter } from '../service/emitter/DrawEmitter.ts';
-import { AudioStreamManager } from 'service/media/AudioStreamManager.ts';
+import { AudioPlayerManager } from 'service/media/AudioPlayerManager.ts';
 
 export const useApp = () => {
   const app = useRef(container.resolve(App)).current;
@@ -31,8 +31,8 @@ export const useApp = () => {
     .current as DrawEmitter;
   const voiceEmitter = useRef(container.resolve(VoiceEmitter)).current;
   const roomEmitter = useRef(container.resolve(RoomEmitter)).current;
-  const audioStreamManager = useRef(container.resolve(AudioStreamManager))
-    .current as AudioStreamManager;
+  const audioPlayerManager = useRef(container.resolve(AudioPlayerManager))
+    .current as AudioPlayerManager;
   const videoManager = useRef(container.resolve(VideoManager))
     .current as VideoManager;
 
@@ -47,7 +47,7 @@ export const useApp = () => {
     voiceEmitter,
     roomEmitter,
     drawEmitter,
-    audioStreamManager,
+    audioPlayerManager,
     videoManager,
   };
 };

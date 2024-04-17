@@ -10,13 +10,13 @@ import { SoundEffect } from 'service/media/SoundEffect';
 import { RTCManager } from 'service/rtc/RTCManager';
 import { VoiceEmitter } from '../emitter/VoiceEmitter';
 import { ScreenShareEmitter } from '../emitter/ScreenShareEmitter';
-import { AudioStreamManager } from 'service/media/AudioStreamManager.ts';
+import { AudioPlayerManager } from 'service/media/AudioPlayerManager.ts';
 
 @category(CATEGORY.VOICE)
 @injectable()
 export class VoiceHandler {
   constructor(
-    @inject(AudioStreamManager) private audioStreamManager: AudioStreamManager,
+    @inject(AudioPlayerManager) private audioPlayerManager: AudioPlayerManager,
     @inject(SoundEffect) private soundEffect: SoundEffect,
     @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
     @inject(ScreenShareEmitter)
@@ -100,7 +100,7 @@ export class VoiceHandler {
     const peer = this.rtcManager.getPeer(from);
     peer.removeAudioTrack();
 
-    this.audioStreamManager.removeAudioStream(from);
+    this.audioPlayerManager.removeAudioStream(from);
     this.soundEffect.closeVoice();
 
     store.dispatch(

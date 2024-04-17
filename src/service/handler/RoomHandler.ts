@@ -13,7 +13,7 @@ import { statusActions } from 'store/features/statusSlice.ts';
 import { addRoomByDB } from 'store/thunk/roomThunk.ts';
 import { category } from 'decorators/category.ts';
 import { messageId } from 'decorators/messageId.ts';
-import { AudioStreamManager } from 'service/media/AudioStreamManager.ts';
+import { AudioPlayerManager } from 'service/media/AudioPlayerManager.ts';
 
 @category(CATEGORY.ROOM)
 @injectable()
@@ -23,7 +23,7 @@ export class RoomHandler {
     private connectionEmitter: ConnectionEmitter,
     @inject(RTCManager) private rtcManager: RTCManagerService,
     @inject(VoiceEmitter) private voicePeerEmitter: VoiceEmitter,
-    @inject(AudioStreamManager) private audioStreamManager: AudioStreamManager,
+    @inject(AudioPlayerManager) private audioPlayerManager: AudioPlayerManager,
   ) {}
 
   @messageId(ROOM_MESSAGE_ID.LEAVE)
@@ -43,7 +43,7 @@ export class RoomHandler {
       this.voicePeerEmitter.sendVoiceDisconnectMessage({ userKey });
     }
     this.rtcManager.clearAudioTrack();
-    this.audioStreamManager.clear();
+    this.audioPlayerManager.clear();
     this.rtcManager.clearVideoTrack();
     this.rtcManager.clearPeerMap();
   }

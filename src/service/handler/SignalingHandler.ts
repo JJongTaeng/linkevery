@@ -13,8 +13,7 @@ import { NegotiationEmitter } from '../emitter/NegotiationEmitter';
 import { VoiceEmitter } from '../emitter/VoiceEmitter';
 import { MemberEmitter } from '../emitter/MemberEmitter';
 import { VideoManager } from '../media/VideoManager.ts';
-import { AudioStreamManager } from 'service/media/AudioStreamManager.ts';
-import { utils } from 'service/utils/Utils.ts';
+import { AudioPlayerManager } from 'service/media/AudioPlayerManager.ts';
 
 const onChangeSpeakVolume = (volume: number, userKey: string) => {
   console.log(volume);
@@ -43,8 +42,8 @@ export class SignalingHandler {
     @inject(VoiceEmitter) private voiceEmitter: VoiceEmitter,
     @inject(MemberEmitter) private memberEmitter: MemberEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
-    @inject(AudioStreamManager)
-    private audioStreamManager: AudioStreamManager,
+    @inject(AudioPlayerManager)
+    private audioPlayerManager: AudioPlayerManager,
     @inject(VideoManager)
     private videoManager: VideoManager,
   ) {}
@@ -68,21 +67,22 @@ export class SignalingHandler {
         if (videoTrack) {
           this.videoManager.addVideo(from, e.streams[0]);
         } else {
-          this.audioStreamManager.addAudioStream(from, e.streams[0]);
-          const audioStream = this.audioStreamManager.audioStreamMap.get(from);
-          audioStream?.onChangeSpeakVolume(100, (volume: number) => {
-            onChangeSpeakVolume(volume, utils.getUserKeyByClientId(from)!);
-          });
+          this.audioPlayerManager.addAudioStream(from, e.streams[0]);
         }
       })
       .onNegotiationNeeded(async (e: any) => {
+        console.debug(
+          '[negotiationneeded connection state] ',
+          e.currentTarget?.connectionState,
+        );
+        console.debug(
+          '[negotiationneeded signaling state] ',
+          e.currentTarget?.signalingState,
+        );
         if (e.currentTarget.signalingState === 'stable') {
           const offer = await rtcPeer.createOffer();
           rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-          console.debug(
-            '[negotiationneeded connection state] ',
-            e.currentTarget?.connectionState,
-          );
+
           this.negotiationEmitter.sendNegotiationOfferMessage({
             offer,
             to: from,
@@ -138,21 +138,22 @@ export class SignalingHandler {
         if (videoTrack) {
           this.videoManager.addVideo(from, e.streams[0]);
         } else {
-          this.audioStreamManager.addAudioStream(from, e.streams[0]);
-          const audioStream = this.audioStreamManager.audioStreamMap.get(from);
-          audioStream?.onChangeSpeakVolume(100, (volume: number) => {
-            onChangeSpeakVolume(volume, utils.getUserKeyByClientId(from)!);
-          });
+          this.audioPlayerManager.addAudioStream(from, e.streams[0]);
         }
       })
       .onNegotiationNeeded(async (e: any) => {
+        console.debug(
+          '[negotiationneeded connection state] ',
+          e.currentTarget?.connectionState,
+        );
+        console.debug(
+          '[negotiationneeded signaling state] ',
+          e.currentTarget?.signalingState,
+        );
         if (e.currentTarget.signalingState === 'stable') {
           const offer = await rtcPeer.createOffer();
           rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-          console.debug(
-            '[negotiationneeded connection state] ',
-            e.currentTarget?.connectionState,
-          );
+
           this.negotiationEmitter.sendNegotiationOfferMessage({
             offer,
             to: from,

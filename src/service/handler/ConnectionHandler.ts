@@ -13,7 +13,7 @@ import { RTCManager } from 'service/rtc/RTCManager';
 import { SignalingEmitter } from '../emitter/SignalingEmitter';
 import { router } from '../../main';
 import { RoomEmitter } from '../emitter/RoomEmitter';
-import { AudioStreamManager } from 'service/media/AudioStreamManager.ts';
+import { AudioPlayerManager } from 'service/media/AudioPlayerManager.ts';
 
 @category(CATEGORY.CONNECTION)
 @injectable()
@@ -23,7 +23,7 @@ export class ConnectionHandler {
     @inject(SignalingEmitter)
     private signalingEmitter: SignalingEmitter,
 
-    @inject(AudioStreamManager) private audioStreamManager: AudioStreamManager,
+    @inject(AudioPlayerManager) private audioPlayerManager: AudioPlayerManager,
     @inject(VideoManager) private videoManager: VideoManager,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
@@ -55,7 +55,7 @@ export class ConnectionHandler {
     const userKey = utils.getUserKeyByClientId(from) || '';
     store.dispatch(roomActions.deleteMember({ userKey }));
     store.dispatch(deleteMemberByDB({ userKey, roomName }));
-    this.audioStreamManager.removeAudioStream(from);
+    this.audioPlayerManager.removeAudioStream(from);
     this.videoManager.clearVideo(from);
     try {
       this.rtcManager.removePeer(from);
