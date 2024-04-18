@@ -19,8 +19,6 @@ export class NegotiationHandler {
   async offer(protocol: EventType) {
     const { from } = protocol;
     const rtcPeer = this.rtcManager.getPeer(from);
-    let peer = rtcPeer.getPeer();
-    if (peer.signalingState !== 'stable') return;
     const offer = new RTCSessionDescription(protocol.data.offer);
 
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
