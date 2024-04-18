@@ -12,7 +12,6 @@ import { Room } from 'service/db/LinkeveryDB';
 interface RoomState {
   current: Omit<Room, 'id'>;
   roomList: string[];
-  size: number;
 }
 
 const initialState: RoomState = {
@@ -21,7 +20,6 @@ const initialState: RoomState = {
     roomName: '',
   },
   roomList: [],
-  size: 0,
 };
 
 export const roomSlice = createSlice({
@@ -83,9 +81,7 @@ export const roomSlice = createSlice({
       state.current.roomName = '';
       state.current.member = {};
     },
-    setMemberSize: (state, { payload }) => {
-      state.size = payload;
-    },
+
     setAllMemberVoiceOff: (state) => {
       for (const key in state.current.member) {
         state.current.member[key].voiceStatus = false;

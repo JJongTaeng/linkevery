@@ -19,8 +19,12 @@ export class NegotiationHandler {
   async offer(protocol: EventType) {
     const { from } = protocol;
     const rtcPeer = this.rtcManager.getPeer(from);
-    const offer = new RTCSessionDescription(protocol.data.offer);
-
+    let offer: RTCSessionDescription;
+    if (typeof protocol.data.offer === 'string') {
+      offer = JSON.parse(protocol.data.offer) as RTCSessionDescription;
+    } else {
+      offer = protocol.data.offer;
+    }
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
@@ -32,9 +36,13 @@ export class NegotiationHandler {
   }
   @messageId(NEGOTIATION_MESSAGE_ID.ANSWER)
   async answer(protocol: EventType) {
-    const answer = new RTCSessionDescription(protocol.data.answer);
-
+    let answer: RTCSessionDescription;
+    if (typeof protocol.data.answer === 'string') {
+      answer = JSON.parse(protocol.data.answer) as RTCSessionDescription;
+    } else {
+      answer = protocol.data.answer;
+    }
     const rtcPeer = this.rtcManager.getPeer(protocol.from);
-    rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
+    await rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
   }
 }

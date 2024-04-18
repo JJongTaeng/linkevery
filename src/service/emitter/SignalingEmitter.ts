@@ -10,21 +10,15 @@ export class SignalingEmitter {
 
   @socketAction({
     category: CATEGORY.SIGNALING,
-    messageId: SIGNALING_MESSAGE_ID.START,
+    messageId: SIGNALING_MESSAGE_ID.READY,
   })
-  sendSignalingStartMessage(data: ProtocolData) {}
+  sendSignalingReadyMessage(data: ProtocolData) {}
 
   @socketAction({
     category: CATEGORY.SIGNALING,
-    messageId: SIGNALING_MESSAGE_ID.OFFER,
+    messageId: SIGNALING_MESSAGE_ID.READY_OK,
   })
-  sendSignalingOfferMessage(data: ProtocolData) {}
-
-  @socketAction({
-    category: CATEGORY.SIGNALING,
-    messageId: SIGNALING_MESSAGE_ID.ANSWER,
-  })
-  sendSignalingAnswerMessage(data: ProtocolData) {}
+  sendSignalingReadyOkMessage(data: ProtocolData) {}
 
   @socketAction({
     category: CATEGORY.SIGNALING,

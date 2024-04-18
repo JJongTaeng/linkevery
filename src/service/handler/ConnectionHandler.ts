@@ -42,7 +42,7 @@ export class ConnectionHandler {
       this.roomEmitter.leave();
       router.navigate('/');
     }
-    this.signalingEmitter.sendSignalingStartMessage({
+    this.signalingEmitter.sendSignalingReadyMessage({
       roomName,
       to: protocol.from,
     });

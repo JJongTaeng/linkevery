@@ -48,11 +48,9 @@ export class SignalingHandler {
     private videoManager: VideoManager,
   ) {}
 
-  @messageId(SIGNALING_MESSAGE_ID.START)
-  async start(protocol: EventType) {
-    const { roomName, size } = protocol.data;
+  @messageId(SIGNALING_MESSAGE_ID.READY)
+  async ready(protocol: EventType) {
     const { from } = protocol;
-    store.dispatch(roomActions.setMemberSize(size));
     this.rtcManager.createPeer(from);
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer
@@ -110,20 +108,14 @@ export class SignalingHandler {
       .onIceCandidateError((e: any) => {
         console.debug('[ice candidate error]', e);
       });
-    const offer = await rtcPeer.createOffer();
-    rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
-    this.signalingEmitter.sendSignalingOfferMessage({
-      offer,
+    this.signalingEmitter.sendSignalingReadyOkMessage({
       to: from,
-      roomName,
     });
   }
 
-  @messageId(SIGNALING_MESSAGE_ID.OFFER)
-  async offer(protocol: EventType) {
-    const offer = new RTCSessionDescription(protocol.data.offer);
+  @messageId(SIGNALING_MESSAGE_ID.READY_OK)
+  async readyOk(protocol: EventType) {
     const { from } = protocol;
-    // store.dispatch(roomActions.setMemberSize(size));
     this.rtcManager.createPeer(from);
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer
@@ -161,7 +153,7 @@ export class SignalingHandler {
         }
       })
       .onSignalingStateChange((e: any) => {
-        console.debug('[signaling state]', e.currentTarget.signalingState);
+        console.debug('[signalingstate]', e.currentTarget.signalingState);
       })
       .onConnectionStateChange((e: any) => {
         console.debug(
@@ -182,22 +174,7 @@ export class SignalingHandler {
         console.debug('[ice candidate error]', e);
       });
 
-    await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
-    const answer = await rtcPeer.createAnswer();
-    await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
-    this.signalingEmitter.sendSignalingAnswerMessage({
-      answer,
-      to: from,
-    });
-  }
-
-  @messageId(SIGNALING_MESSAGE_ID.ANSWER)
-  answer(protocol: EventType) {
-    const answer = new RTCSessionDescription(protocol.data.answer);
-    const { from } = protocol;
-    const rtcPeer = this.rtcManager.getPeer(from);
-    rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
-    this.signalingEmitter.sendSignalingCreateDataChannelMessage({
+    this.signalingEmitter.sendSignalingConnectDataChannelMessage({
       to: from,
     });
   }
@@ -209,8 +186,8 @@ export class SignalingHandler {
     rtcPeer.setIcecandidate(ice);
   }
 
-  @messageId(SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL)
-  createDataChannel(protocol: EventType) {
+  @messageId(SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL)
+  connectDataChannel(protocol: EventType): void {
     const { from } = protocol;
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.onDataChannel((e) => {
@@ -222,13 +199,13 @@ export class SignalingHandler {
         this.rtcManager.emit(RTCManager.RTC_EVENT.DATA, e.data);
       });
     });
-    this.signalingEmitter.sendSignalingConnectDataChannelMessage({
+    this.signalingEmitter.sendSignalingCreateDataChannelMessage({
       to: from,
     });
   }
 
-  @messageId(SIGNALING_MESSAGE_ID.CONNECT_DATA_CHANNEL)
-  connectDataChannel(protocol: EventType): void {
+  @messageId(SIGNALING_MESSAGE_ID.CREATE_DATA_CHANNEL)
+  createDataChannel(protocol: EventType) {
     const roomName = storage.getItem('roomName');
     const { from } = protocol;
     const rtcPeer = this.rtcManager.getPeer(from);
