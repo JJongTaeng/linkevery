@@ -26,9 +26,6 @@ export class NegotiationHandler {
       offer = protocol.data.offer;
     }
 
-    if (rtcPeer.getPeer().signalingState !== 'stable') {
-      return;
-    }
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
@@ -47,7 +44,6 @@ export class NegotiationHandler {
       answer = protocol.data.answer;
     }
     const rtcPeer = this.rtcManager.getPeer(protocol.from);
-    if (rtcPeer.getPeer().signalingState !== 'have-local-offer') return;
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
   }
 }

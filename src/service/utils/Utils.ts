@@ -108,6 +108,16 @@ class Utils {
         return 'unknown';
     }
   }
+
+  getUsernameByClientId(clientId: string) {
+    const member = store.getState().room.current.member;
+
+    for (const key in member) {
+      if (member[key].clientId === clientId) {
+        return member[key].username;
+      }
+    }
+  }
 }
 
 export const utils = new Utils();

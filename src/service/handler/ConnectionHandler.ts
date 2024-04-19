@@ -52,7 +52,6 @@ export class ConnectionHandler {
   disconnect(protocol: EventType): void {
     const { from } = protocol;
     const { roomName } = storage.getAll();
-    console.log(this.audioPlayerManager.audioStreamMap.get(from), from);
     this.audioPlayerManager.removeAudioStream(from);
     this.videoManager.clearVideo(from);
     try {
