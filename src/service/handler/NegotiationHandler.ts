@@ -12,7 +12,7 @@ import { NegotiationEmitter } from '../emitter/NegotiationEmitter';
 export class NegotiationHandler {
   constructor(
     @inject(NegotiationEmitter)
-    private negotiationPeerEmitter: NegotiationEmitter,
+    private negotiationEmitter: NegotiationEmitter,
     @inject(RTCManager) private rtcManager: RTCManager,
   ) {}
   @messageId(NEGOTIATION_MESSAGE_ID.OFFER)
@@ -25,11 +25,15 @@ export class NegotiationHandler {
     } else {
       offer = protocol.data.offer;
     }
+
+    if (rtcPeer.getPeer().signalingState !== 'stable') {
+      return;
+    }
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
 
-    this.negotiationPeerEmitter.sendNegotiationAnswerMessage({
+    this.negotiationEmitter.sendNegotiationAnswerMessage({
       answer,
       to: from,
     });
@@ -43,6 +47,7 @@ export class NegotiationHandler {
       answer = protocol.data.answer;
     }
     const rtcPeer = this.rtcManager.getPeer(protocol.from);
+    if (rtcPeer.getPeer().signalingState !== 'have-local-offer') return;
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
   }
 }
