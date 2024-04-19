@@ -3,33 +3,16 @@ import type { EventType } from 'constants/eventType';
 import { CATEGORY, SIGNALING_MESSAGE_ID } from 'constants/eventType';
 import { messageId } from 'decorators/messageId';
 import { store } from 'store/store';
-import { SdpType } from 'service/rtc/RTCPeerService';
 import { storage } from 'service/storage/StorageService';
 import { inject, injectable } from 'tsyringe';
 import { RTCManager } from 'service/rtc/RTCManager';
-import { roomActions } from 'store/features/roomSlice';
 import { SignalingEmitter } from '../emitter/SignalingEmitter';
 import { NegotiationEmitter } from '../emitter/NegotiationEmitter';
 import { VoiceEmitter } from '../emitter/VoiceEmitter';
 import { MemberEmitter } from '../emitter/MemberEmitter';
 import { VideoManager } from '../media/VideoManager.ts';
 import { AudioPlayerManager } from 'service/media/AudioPlayerManager.ts';
-
-const onChangeSpeakVolume = (volume: number, userKey: string) => {
-  console.log(volume);
-  if (
-    !store.getState().room.current.member?.[userKey]?.speaking &&
-    volume < 10
-  ) {
-    return;
-  }
-  store.dispatch(
-    roomActions.setMemberSpeakingStatus({
-      userKey: userKey,
-      speaking: volume > 10,
-    }),
-  );
-};
+import { SdpType } from 'service/rtc/RTCPeerService.ts';
 
 @category(CATEGORY.SIGNALING)
 @injectable()
@@ -69,23 +52,15 @@ export class SignalingHandler {
         }
       })
       .onNegotiationNeeded(async (e: any) => {
-        console.debug(
-          '[negotiationneeded connection state] ',
-          e.currentTarget?.connectionState,
-        );
-        console.debug(
-          '[negotiationneeded signaling state] ',
-          e.currentTarget?.signalingState,
-        );
-        if (e.currentTarget.signalingState === 'stable') {
-          const offer = await rtcPeer.createOffer();
-          rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
+        console.debug('[negotiationneed] ', e.currentTarget.signalingState);
+        if (e.currentTarget.signalingState !== 'stable') return;
+        const offer = await rtcPeer.createOffer();
+        await rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
 
-          this.negotiationEmitter.sendNegotiationOfferMessage({
-            offer,
-            to: from,
-          });
-        }
+        this.negotiationEmitter.sendNegotiationOfferMessage({
+          offer,
+          to: from,
+        });
       })
       .onSignalingStateChange((e: any) => {
         console.debug('[signalingstate]', e.currentTarget.signalingState);
@@ -134,23 +109,15 @@ export class SignalingHandler {
         }
       })
       .onNegotiationNeeded(async (e: any) => {
-        console.debug(
-          '[negotiationneeded connection state] ',
-          e.currentTarget?.connectionState,
-        );
-        console.debug(
-          '[negotiationneeded signaling state] ',
-          e.currentTarget?.signalingState,
-        );
-        if (e.currentTarget.signalingState === 'stable') {
-          const offer = await rtcPeer.createOffer();
-          rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
+        console.debug('[negotiationneed] ', e.currentTarget.signalingState);
+        if (e.currentTarget.signalingState !== 'stable') return;
+        const offer = await rtcPeer.createOffer();
+        await rtcPeer.setSdp({ sdp: offer, type: SdpType.local });
 
-          this.negotiationEmitter.sendNegotiationOfferMessage({
-            offer,
-            to: from,
-          });
-        }
+        this.negotiationEmitter.sendNegotiationOfferMessage({
+          offer,
+          to: from,
+        });
       })
       .onSignalingStateChange((e: any) => {
         console.debug('[signalingstate]', e.currentTarget.signalingState);

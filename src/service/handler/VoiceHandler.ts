@@ -97,8 +97,6 @@ export class VoiceHandler {
     if (!store.getState().user.voiceStatus) {
       return;
     }
-    const peer = this.rtcManager.getPeer(from);
-    peer.removeAudioTrack();
 
     this.audioPlayerManager.removeAudioStream(from);
     this.soundEffect.closeVoice();

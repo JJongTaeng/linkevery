@@ -52,13 +52,15 @@ export class ConnectionHandler {
   disconnect(protocol: EventType): void {
     const { from } = protocol;
     const { roomName } = storage.getAll();
-    const userKey = utils.getUserKeyByClientId(from) || '';
-    store.dispatch(roomActions.deleteMember({ userKey }));
-    store.dispatch(deleteMemberByDB({ userKey, roomName }));
+    console.log(this.audioPlayerManager.audioStreamMap.get(from), from);
     this.audioPlayerManager.removeAudioStream(from);
     this.videoManager.clearVideo(from);
     try {
       this.rtcManager.removePeer(from);
     } catch (e) {}
+
+    const userKey = utils.getUserKeyByClientId(from) || '';
+    store.dispatch(roomActions.deleteMember({ userKey }));
+    store.dispatch(deleteMemberByDB({ userKey, roomName }));
   }
 }
