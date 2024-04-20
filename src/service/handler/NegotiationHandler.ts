@@ -26,7 +26,13 @@ export class NegotiationHandler {
       offer = protocol.data.offer;
     }
 
-    if (rtcPeer.getPeer().signalingState !== 'stable') return;
+    if (rtcPeer.getPeer().signalingState !== 'stable') {
+      console.debug(
+        '[negotiation] offer failed signalingState = ',
+        rtcPeer.getPeer().signalingState,
+      );
+      return;
+    }
     await rtcPeer.setSdp({ sdp: offer, type: SdpType.remote });
     const answer = await rtcPeer.createAnswer();
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.local });
@@ -45,7 +51,13 @@ export class NegotiationHandler {
       answer = protocol.data.answer;
     }
     const rtcPeer = this.rtcManager.getPeer(protocol.from);
-    if (rtcPeer.getPeer().signalingState !== 'have-local-offer') return;
+    if (rtcPeer.getPeer().signalingState !== 'have-local-offer') {
+      console.debug(
+        '[negotiation] answer failed signalingState = ',
+        rtcPeer.getPeer().signalingState,
+      );
+      return;
+    }
     await rtcPeer.setSdp({ sdp: answer, type: SdpType.remote });
   }
 }
