@@ -91,11 +91,6 @@ const LeftLeftContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${({ theme }) => theme.color.primary100};
-  background: linear-gradient(
-    180deg,
-    ${({ theme }) => theme.color.primary100} 40%,
-    ${({ theme }) => theme.color.primary400} 100%
-  );
   .room-list {
     display: flex;
     flex-direction: column;
