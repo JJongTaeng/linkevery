@@ -75,7 +75,9 @@ export class VoiceHandler {
     });
     mediaStream?.getTracks().forEach((track) => {
       const peer = this.rtcManager.getPeer(from);
-      peer.addTrack(track, mediaStream);
+      setTimeout(() => {
+        peer.addTrack(track, mediaStream);
+      }, 1000);
     });
 
     this.soundEffect.startVoice();

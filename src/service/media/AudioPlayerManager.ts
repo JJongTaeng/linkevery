@@ -42,7 +42,6 @@ export class AudioPlayerManager {
     audioNodeList.forEach((audio) => {
       // @ts-ignore
       audio.srcObject.getTracks().forEach((track: MediaStreamTrack) => {
-        console.log(track);
         track.stop();
       });
 

@@ -118,6 +118,16 @@ class Utils {
       }
     }
   }
+
+  wait(conditionFunc: () => boolean, callback: () => void, interval = 100) {
+    const intervalId = setInterval(() => {
+      if (conditionFunc()) {
+        // 조건 함수가 true를 반환하면
+        clearInterval(intervalId); // 인터벌을 중지합니다.
+        callback(); // 콜백 함수를 실행합니다.
+      }
+    }, interval);
+  }
 }
 
 export const utils = new Utils();
