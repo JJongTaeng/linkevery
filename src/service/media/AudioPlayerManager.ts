@@ -15,22 +15,40 @@ export class AudioPlayerManager {
     audio.setAttribute('id', utils.getUsernameByClientId(clientId) || '');
     audio.classList.add('voice-audio');
     audio.srcObject = stream;
+    audio.controls = import.meta.env.DEV;
     document.body.appendChild(audio);
     await audio.play();
+    audio.addEventListener('volumechange', () => {
+      console.log(utils.getUsernameByClientId(clientId), audio.volume);
+    });
   }
 
   removeAudioStream(clientId: string) {
     const audio = document.getElementById(
       utils.getUsernameByClientId(clientId) || '',
-    );
+    ) as HTMLAudioElement;
     if (!audio) return;
-    audio.parentNode?.removeChild(audio);
+    // @ts-ignore
+    audio.srcObject.getTracks().forEach((track: MediaStreamTrack) => {
+      console.log(track);
+      track.stop();
+    });
+    audio.srcObject = null;
+    audio.remove();
   }
 
   clear() {
     const audioNodeList = document.querySelectorAll('.voice-audio');
-    audioNodeList.forEach((node) => {
-      node.parentNode?.removeChild(node);
+    audioNodeList.forEach((audio) => {
+      // @ts-ignore
+      audio.srcObject.getTracks().forEach((track: MediaStreamTrack) => {
+        console.log(track);
+        track.stop();
+      });
+
+      // @ts-ignore
+      audio.srcObject = null;
+      audio.remove();
     });
   }
 

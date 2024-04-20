@@ -159,7 +159,7 @@ export class SignalingHandler {
     const rtcPeer = this.rtcManager.getPeer(from);
     rtcPeer.onDataChannel((e) => {
       console.debug('[open datachannel]', from);
-      this.signalingEmitter.sendSignalingEndMessage({});
+      this.signalingEmitter.sendSignalingEndMessage({ to: from });
 
       rtcPeer.dataChannel = e.channel;
       rtcPeer.onDataChannelMessage((e) => {
