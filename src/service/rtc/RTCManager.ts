@@ -36,10 +36,14 @@ export class RTCManager extends RTCManagerService {
 
   send(protocol: EventType) {
     const clientId = storage.getItem('clientId');
-    console.debug('%c[send] ', 'color:green;font-weight:bold;', {
-      ...protocol,
-      from: clientId,
-    });
+    console.debug(
+      `%c[send] to = ${utils.getUsernameByClientId(protocol.data.to) ?? 'all'}`,
+      'color:green;font-weight:bold;',
+      {
+        ...protocol,
+        from: clientId,
+      },
+    );
     const { to } = protocol.data;
     if (to) {
       this.sendTo(protocol);

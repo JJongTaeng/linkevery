@@ -13,6 +13,7 @@ import { MessageAssemble } from 'service/messages/MessageAssemble';
 import { ERROR_TYPE } from 'error/error';
 import { EventManager } from '../event/EventManager';
 import { BroadcastManager } from '../broadcast/BroadcastManager.ts';
+import { utils } from 'service/utils/Utils.ts';
 
 type CategoryHandlers = { [key in CATEGORY]?: HandlerMap<any> };
 
@@ -38,7 +39,11 @@ export class HandlerManager {
       if (!handler) {
         throw new Error(ERROR_TYPE.FAILED_SEND_OFFER);
       }
-      console.debug('%c[receive] ', 'color:blue;font-weight:bold;', protocol);
+      console.debug(
+        `%c[receive] from = ${utils.getUsernameByClientId(protocol.from)}`,
+        'color:blue;font-weight:bold;',
+        protocol,
+      );
       handler(protocol);
     } catch (e) {
       console.error(e);
@@ -71,10 +76,11 @@ export class HandlerManager {
           throw new Error(ERROR_TYPE.FAILED_SEND_OFFER);
         }
         console.debug(
-          '%c[receive] ',
+          `%c[receive] from = ${utils.getUsernameByClientId(protocol.from)}`,
           'color:blue;font-weight:bold;',
           newProtocol,
         );
+
         handler(newProtocol);
       } catch (e) {
         console.error(e);
