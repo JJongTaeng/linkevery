@@ -22,7 +22,7 @@ const MemberListVer2 = ({ member }) => {
           <span>인태</span>
         </div>
       </MemberList>
-      <Divider style={{ margin: '8px 0' }} />
+      <Divider style={{ margin: '12px 0' }} />
       <Menu>
         <SpeakerOn /> <MenuTitle>음성 참가자</MenuTitle>
       </Menu>
@@ -72,6 +72,7 @@ const MemberList = styled.div`
 const RoomNameTitle = styled.div`
   font-size: 18px;
   font-weight: bold;
+  margin-left: 8px;
 
   color: ${({ theme }) => theme.color.dark200};
 `;
