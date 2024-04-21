@@ -214,7 +214,7 @@ const StyledChatForm = styled.form`
     justify-content: space-between;
     align-items: center;
     height: 100%;
-    background-color: ${({ theme }) => theme.color.grey800};
+    background-color: ${({ theme }) => theme.color.primary200};
     border-bottom-right-radius: 8px;
     border-bottom-left-radius: 8px;
     padding: 0 8px;

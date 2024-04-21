@@ -160,7 +160,7 @@ const Container = styled.div`
   width: 100%;
   height: ${TOP_MENU_HEIGHT}px;
   background-color: ${({ theme }) => theme.color.primary100};
-  color: ${({ theme }) => theme.color.white};
+  color: ${({ theme }) => theme.color.dark100};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -175,9 +175,8 @@ const Container = styled.div`
 `;
 
 const Text = styled.span`
-  color: ${({ theme }) => theme.color.primary100};
   font-weight: bold;
-  color: ${({ theme }) => theme.color.white};
+  color: ${({ theme }) => theme.color.dark100};
 `;
 
 const RoomName = styled.div`

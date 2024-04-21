@@ -8,13 +8,15 @@ interface MediaTest {
 
 const color = {
   white: '#ffffff',
-  primary100: '#2e2a63',
-  primary200: '#47419c',
-  primary400: '#c7b9ed',
-  primary800: '#f9f7fc',
+  dark100: '#060607',
+  primary100: '#D8D9DD',
+  primary200: '#E3E5E8',
+  primary400: '#F2F3F5',
+  primary800: '#FFFFFF',
   grey100: '#3c3a42',
   grey400: '#8c8c8c',
   grey800: '#dddae6',
+  borderColor: 'rgba(128, 132, 142, 0.24)',
 };
 
 export const mediaSize = {
