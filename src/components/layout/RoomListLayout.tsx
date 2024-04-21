@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import Divider from 'components/elements/Divider.tsx';
 
 interface RoomListLayoutProps {
   roomList: { name: string; id: string }[];
@@ -86,11 +87,6 @@ const RoomItem = styled.div<{ selected: boolean }>`
 const RoomText = styled.span`
   text-overflow: ellipsis;
   overflow: hidden;
-`;
-
-const Divider = styled.div`
-  border-bottom: 1px solid ${({ theme }) => theme.color.primary200};
-  width: 100%;
 `;
 
 export default RoomListLayout;

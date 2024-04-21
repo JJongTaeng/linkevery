@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "predeploy": "pnpm run build",
     "deploy": "rimraf ./node_modules/.cache/gh-pages && gh-pages --branch gh-pages -d dist",
-    "svgs": "npx @svgr/cli --icon --typescript --out-dir ./src/components/icons/ ./src/assets/*",
+    "svgs": "pnpm dlx @svgr/cli --icon --typescript --out-dir ./src/components/icons/ ./src/assets/*",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
