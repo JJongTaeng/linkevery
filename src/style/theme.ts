@@ -9,10 +9,17 @@ interface MediaTest {
 const color = {
   white: '#ffffff',
   dark100: '#060607',
+  dark200: '#4E5058',
   primary100: '#D8D9DD',
   primary200: '#E3E5E8',
   primary400: '#F2F3F5',
   primary800: '#FFFFFF',
+
+  blue400: '#5865F2',
+
+  red400: '#DA373C',
+  red800: '#EB459F',
+
   grey100: '#3c3a42',
   grey400: '#8c8c8c',
   grey800: '#dddae6',
