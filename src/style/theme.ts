@@ -12,6 +12,7 @@ const color = {
   dark200: '#4E5058',
   primary100: '#D8D9DD',
   primary200: '#E3E5E8',
+  primary300: '#EBEDEE',
   primary400: '#F2F3F5',
   primary800: '#FFFFFF',
 

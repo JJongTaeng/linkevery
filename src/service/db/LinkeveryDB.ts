@@ -25,6 +25,7 @@ export interface Member {
     voiceStatus?: boolean;
     screenShareStatus?: boolean;
     speaking: boolean;
+    on: boolean;
   };
 }
 export interface Room {

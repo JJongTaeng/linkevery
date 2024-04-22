@@ -29,6 +29,7 @@ const RoomListLayout = ({
         <Divider />
         {roomList.map((room) => (
           <RoomItem
+            key={room.id}
             selected={selectedRoomId === room.id}
             onClick={() => {
               onClickRoom(room);

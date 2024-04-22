@@ -22,5 +22,36 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
-  args: {},
+  args: {
+    member: {
+      asd: {
+        username: '인태',
+        clientId: 'asdasdfsdf',
+        speaking: false,
+        voiceStatus: false,
+        on: true,
+      },
+      assssd: {
+        username: '현규',
+        clientId: 'asdasdfsdf',
+        speaking: false,
+        voiceStatus: false,
+        on: false,
+      },
+      asdsss11: {
+        username: '인태22',
+        clientId: 'asdasdfsdf',
+        speaking: false,
+        voiceStatus: false,
+        on: true,
+      },
+      assasaassd: {
+        username: '혜린',
+        clientId: 'asdasdfsdf',
+        speaking: false,
+        voiceStatus: true,
+        on: true,
+      },
+    },
+  },
 };
