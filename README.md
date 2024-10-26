@@ -1,6 +1,6 @@
 # linkevery
 
-RTC를 이용한 웹 채팅 어플리케이션 [배포 링크](https://jjongtaeng.github.io/linkevery/)
+RTC를 이용한 웹 채팅 어플리케이션 
 
 ## 기능명세
 <img src="./readme/linkevery.png" width="600" height="400"/>
